@@ -1,0 +1,61 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="680" height="44" viewBox="0 0 680 44">
+  <defs>
+    <linearGradient id="gl" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0%"   stop-color="#2c2417" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#2c2417" stop-opacity="0.75"/>
+    </linearGradient>
+    <linearGradient id="gr" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0%"   stop-color="#2c2417" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#2c2417" stop-opacity="0"/>
+    </linearGradient>
+    <style>
+      .flower { animation: pulse 3s ease-in-out infinite; }
+      @keyframes pulse {
+        0%,100% { opacity: 0.65; }
+        50%      { opacity: 1;    }
+      }
+    </style>
+  </defs>
+
+  <!-- 왼쪽 선 -->
+  <rect x="0"   y="21" width="308" height="1.5" fill="url(#gl)" rx="1"/>
+  <!-- 오른쪽 선 -->
+  <rect x="372" y="21" width="308" height="1.5" fill="url(#gr)" rx="1"/>
+
+  <!-- 무궁화 (5장 꽃잎 + 수술) -->
+  <g class="flower" transform="translate(340,22)">
+
+    <!-- 꽃잎 5장 (72° 간격) -->
+    <g transform="rotate(0)">
+      <path d="M 0,0 C -5,-3 -5,-13 0,-17 C 5,-13 5,-3 0,0 Z"
+            fill="#8B6914" opacity="0.9"/>
+    </g>
+    <g transform="rotate(72)">
+      <path d="M 0,0 C -5,-3 -5,-13 0,-17 C 5,-13 5,-3 0,0 Z"
+            fill="#8B6914" opacity="0.9"/>
+    </g>
+    <g transform="rotate(144)">
+      <path d="M 0,0 C -5,-3 -5,-13 0,-17 C 5,-13 5,-3 0,0 Z"
+            fill="#8B6914" opacity="0.9"/>
+    </g>
+    <g transform="rotate(216)">
+      <path d="M 0,0 C -5,-3 -5,-13 0,-17 C 5,-13 5,-3 0,0 Z"
+            fill="#8B6914" opacity="0.9"/>
+    </g>
+    <g transform="rotate(288)">
+      <path d="M 0,0 C -5,-3 -5,-13 0,-17 C 5,-13 5,-3 0,0 Z"
+            fill="#8B6914" opacity="0.9"/>
+    </g>
+
+    <!-- 꽃받침 (중앙 원) -->
+    <circle r="6"   fill="#2c2417"/>
+    <!-- 수술 머리 (금색 중심) -->
+    <circle r="3"   fill="#8B6914"/>
+    <!-- 수술 점 5개 -->
+    <circle cx="0"    cy="-4.5" r="1" fill="#2c2417"/>
+    <circle cx=" 4.3" cy="-1.4" r="1" fill="#2c2417"/>
+    <circle cx=" 2.6" cy=" 3.7" r="1" fill="#2c2417"/>
+    <circle cx="-2.6" cy=" 3.7" r="1" fill="#2c2417"/>
+    <circle cx="-4.3" cy="-1.4" r="1" fill="#2c2417"/>
+  </g>
+</svg>
