@@ -58,7 +58,7 @@
 
 <br/><br/>
 
-<img src="frontend/src/assets/Kor_logo.png" alt="1차 프로젝트 로고" width="340"/>
+<img src="frontend/src/assets/logo/Kor_logo.png" alt="1차 프로젝트 로고" width="340"/>
 
 <br/><br/>
 
@@ -66,11 +66,11 @@
 
 <br/><br/>
 
-<img src="frontend/src/assets/Jipdaum-logo-Light.png" alt="집다움 로고 Light" width="300"/>
+<img src="frontend/src/assets/logo/Jipdaum-logo-Light.png" alt="집다움 로고 Light" width="300"/>
 &nbsp;&nbsp;&nbsp;&nbsp;
-<img src="frontend/src/assets/Jipdaum-logo-Dark.png" alt="집다움 로고 Dark" width="300"/>
+<img src="frontend/src/assets/logo/Jipdaum-logo-Dark.png" alt="집다움 로고 Dark" width="300"/>
 &nbsp;&nbsp;&nbsp;&nbsp;
-<img src="frontend/src/assets/Jipdaum-logo.png" alt="집다움 워드마크" width="300"/>
+<img src="frontend/src/assets/logo/Jipdaum-logo.png" alt="집다움 워드마크" width="300"/>
 
 <br/>
 
