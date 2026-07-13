@@ -1,0 +1,34 @@
+C##ELITE 사용자 계정 및 권한 생성하기 :
+ 
+Oracle XE 21c는 기본적으로 멀티테넌트(Multitenant) 아키텍처를 사용하므로, C##ELITE라는 이름의 공통 계정(Common User)을 생성하고 관리자 권한을 부여해야 한다.
+
+1. Win + R 키를 누르고 cmd를 입력하여 명령 프롬프트를 켠다.
+
+2. 최고 관리자 권한으로 데이터베이스에 접속한다.
+
+	SQL>  sqlplus sys/ctrlaltelite as sysdba
+
+3. 정상적으로 SQL> 프롬프트가 뜨면, 아래 명령어를 차례대로 입력하여 계정을 생성하고 권한을 부여한다. 
+   (한 줄씩 복사해서 엔터를 치세요.)
+
+	-- 1) C##ELITE 계정 생성 및 비밀번호(rewq4321) 설정 : 
+
+	CREATE USER C##ELITE IDENTIFIED BY rewq4321;
+
+	-- 2) 데이터베이스 접속 및 테이블 생성을 위한 기본 권한(RESOURCE, CONNECT) 부여 :
+ 
+	GRANT CONNECT, RESOURCE TO C##ELITE;
+
+	-- 3) 테이블 스페이스(저장 공간) 사용 권한 무제한 부여 : 
+
+	GRANT UNLIMITED TABLESPACE TO C##ELITE;
+
+	-- 4) DB 관리자 및 설계 업무가 가능하도록 DBA 권한 추가 부여 (선택/권장) : 
+
+	GRANT DBA TO C##ELITE;
+
+4. 설정이 끝났으면 exit를 입력하여 SQL*Plus를 빠져 나온다.
+
+
+
+

@@ -1,0 +1,363 @@
+.detailPage {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Noto Sans KR", sans-serif;
+  min-height: 100vh;
+  padding-top: 82px;
+  animation: detailPageIn 3.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes detailPageIn {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.detailLayout {
+  display: grid;
+  grid-template-columns: 68% 32%;
+  min-height: 100vh;
+  border-top: 1px solid var(--border);
+  box-shadow: 0 2px 24px rgba(0,0,0,0.07);
+}
+
+.detailLeft {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 90px;
+  background: var(--card);
+  border-right: 1px solid var(--border);
+}
+
+.detailLeft img {
+  width: 80%;
+  max-height: 760px;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 32px rgba(0,0,0,0.13));
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.detailLeft img:hover {
+  transform: scale(1.02);
+  filter: drop-shadow(0 20px 48px rgba(0,0,0,0.18));
+}
+
+.detailRight {
+  display: flex;
+  flex-direction: column;
+  background: var(--card);
+  box-shadow: -4px 0 20px rgba(0,0,0,0.04);
+}
+
+.detailInfoBox {
+  padding: 42px 38px;
+  cursor: default;
+  user-select: none;
+}
+
+.detailDesc {
+  color: var(--muted-foreground);
+  font-size: 15px;
+  margin-bottom: 14px;
+}
+
+.detailTitleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.detailTitleRow h1 {
+  font-family: "Noto Serif KR", serif;
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+  flex: 1;
+}
+
+.detailWishBtn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #ccc;
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+  transition: color 0.18s, transform 0.18s;
+}
+.detailWishBtn:hover { color: #e05; transform: scale(1.15); }
+.detailWishBtn.active { color: #e05; }
+
+.detailInfoBox strong {
+  display: block;
+  font-size: 22px;
+  margin-bottom: 28px;
+}
+
+.detailSpec {
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 42px;
+  padding: 16px 18px;
+  background: var(--card);
+  border-left: 3px solid var(--border);
+  color: var(--muted-foreground);
+}
+
+.optionArea {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 20px;
+}
+
+.optionArea > span {
+  width: 80px;
+  font-size: 15px;
+  color: var(--muted-foreground);
+  flex-shrink: 0;
+}
+
+.optionBtns {
+  display: flex;
+  gap: 8px;
+}
+
+.optionArea button {
+  border: 1px solid var(--border);
+  background: var(--card);
+  padding: 7px 16px;
+  font-size: 15px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.optionArea button:hover {
+  border-color: #913a22;
+  background: var(--background);
+  box-shadow: 0 2px 8px rgba(145,58,34,0.12);
+}
+
+.quantityArea {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.quantityArea > span {
+  width: 80px;
+  font-size: 15px;
+  color: var(--muted-foreground);
+  flex-shrink: 0;
+}
+
+.quantityControl {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+}
+
+.quantityControl button {
+  width: 34px;
+  height: 34px;
+  border: none;
+  background: var(--secondary);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantityControl button:hover {
+  background: var(--muted);
+}
+
+.quantityControl > span {
+  width: 44px;
+  text-align: center;
+  font-size: 15px;
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  line-height: 34px;
+}
+
+.buyBox {
+  border-top: 1px solid var(--border);
+  padding: 28px 38px;
+  margin-top: auto;
+  background: var(--card);
+  box-shadow: inset 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.totalLine {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 20px;
+  font-size: 15px;
+  cursor: default;
+  user-select: none;
+}
+
+.totalLine strong {
+  font-size: 18px;
+}
+
+.totalLine em {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+  font-style: normal;
+  margin-left: 4px;
+}
+
+.buyBtns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.buyBtns button {
+  height: 54px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  transition: filter 0.2s, transform 0.15s;
+}
+
+.buyBtns button:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+.buyBtns button:active {
+  transform: translateY(0);
+  filter: brightness(0.95);
+}
+
+.buyNow {
+  background: #913a22;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(145,58,34,0.28);
+}
+
+.addCart {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.22);
+}
+
+.naverPay {
+  width: 100%;
+  height: 42px;
+  margin-top: 10px;
+  border: none;
+  background: #03c75a;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(3,199,90,0.25);
+  transition: filter 0.2s, transform 0.15s;
+}
+
+.naverPay:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.reviewSection {
+  padding: 80px 10%;
+  background: var(--secondary);
+}
+
+.reviewSection textarea {
+  width: 70%;
+  height: 120px;
+  background: var(--card);
+  color: var(--foreground);
+  margin-top: 20px;
+}
+.reviewList {
+  margin-top: 40px;
+}
+
+.reviewItem {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+}
+
+.reviewItem p {
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.reviewItem span {
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+
+.emptyReview {
+  margin-top: 50px;
+  color: var(--muted-foreground);
+}
+
+.ratingBox {
+  display: flex;
+  gap: 4px;
+  margin: 18px 0 12px;
+}
+
+.star {
+  border: none;
+  background: transparent;
+  font-size: 26px;
+  color: #c9c1b8;
+  cursor: pointer;
+}
+
+/* ── 다크모드 ── */
+body.dark .detailPage {
+  background-color: #060d1e;
+  color: #bfcbec;
+}
+
+body.dark .reviewItem {
+  background: #0b1430;
+  border-bottom-color: rgba(150, 185, 255, 0.1);
+}
+
+body.dark .reviewItem span {
+  color: #5a6d9a;
+}
+
+body.dark .reviewTextarea {
+  background: #0b1430;
+  color: #bfcbec;
+  border-color: rgba(150, 185, 255, 0.15);
+}
+
+.star.active {
+  color: #b0301f;
+}
+
+.reviewStars {
+  color: #b0301f;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+

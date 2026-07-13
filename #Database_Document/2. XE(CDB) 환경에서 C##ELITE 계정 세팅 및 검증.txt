@@ -1,0 +1,25 @@
+XE(CDB) 환경에서 C##ELITE 계정 세팅 및 검증 : 
+
+호스트 127.0.0.1, 포트 1521, SID 또는 서비스 이름 XE로 바로 접속할 수 있도록 내부 설정을 확인하고 마무리하는 단계.
+
+1. 명령 프롬프트(CMD) 실행 후, 최고 관리자 권한으로 접속한다.
+
+SQL>  sqlplus sys/ctrlaltelite as sysdba
+
+2. 현재 접속할 컨테이너가 XE(CDB$ROOT)인지 확인한다. 
+처음 접속하면 XE라는 전체 컨테이너 루트로 진입하게 된다. 아래 명령어로 현재 위치를 확인한다.
+
+SQL>  SHOW CON_NAME;
+
+출력 결과로 CDB$ROOT가 나오면 정상이다. 이 상태가 바로 XE 서비스로 직접 접근하는 영역이다.
+
+3. C##ELITE 계정이 XE 영역에 올바르게 생성되었는지 확인 : 
+
+앞서 2단계에서 생성한 C##ELITE 계정은 이름 앞에 C##이 붙은 공통 계정(Common User)이기 때문에, 별도의 복잡한 이동 없이 XE 루트 컨테이너에서 즉시 사용할 수 있다. 혹시 모르니 아래 명령어로 계정이 잘 존재하는지 체크한다.
+
+SQL)  SELECT username FROM dba_users WHERE username = 'C##ELITE';
+
+C##ELITE가 정상적으로 조회된다면 준비는 끝났다. exit를 입력해 SQL*Plus를 종료한다.
+
+
+

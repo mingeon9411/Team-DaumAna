@@ -1,0 +1,68 @@
+
+⭐소셜 로그인 설정
+
+✅ 카카오
+
+➡️ django-allauth (65.18.0)설치
+➡️ settings.py INSTALLED_APPS 추가 
+➡️ migrate 완료 
+➡️ 카카오 개발자 센터 (developers.kakao.com) 앱등록
+➡️ 애플리케이션 이름: Jipdaum
+➡️ REST API 키 발급 (Client ID로 사용)
+➡️ 카카오 로그인 활성화 ON
+➡️ Redirect URI 등록 : http://localhost:8000/accounts/kakao/login/callback/
+➡️ .env 파일 생성 (backend/.env)
+➡️ KAKAO_CLIENT_ID = 발급받은_REST_API_키 입력
+➡️ settings.py에서 SOCIALACCOUNT_PROVIDERS 카카오 설정 추가
+➡️ os.gerenv('KAKAO_CLIENT_ID')로 키 불러오기
+➡️ /admin 소셜 애플리케이션 등록
+➡️ Provider 입력란에 Kakao입력 
+➡️ 클라이언트 아이디 : REST API 키 입력
+➡️ Sites:localhost:8000 선택 후 저장
+
+
+
+✅ 네이버
+
+➡️ 네이버 개발자 센터 (developers.naver.com) 앱 등록
+➡️ 애플리케이션 이름 : Jipdaum
+➡️ 사용 API: 네이버 로그인 선택 
+➡️ 서비스 URL 등록 : http://localhost:8000
+➡️ Callback URL 등록 : http://localhost:8000/accounts/naver/login/callback/
+➡️ Client ID 및 Client Secret 발급
+➡️ .env 파일에 추가
+➡️ NAVER_CLIENT_ID = 발급받은_클라이언트_ID 키 입력
+➡️ NAVER_SECRET_ID = 발급받은_시크릿_ID 키 입력
+➡️ settings.py SOCAILACCOUNT_PROVIDERS 네이버 설정 추가
+➡️ os.getenv('NAVER_CLIENT_ID'), os.getenv('NAVER_SECRET')키로 불러오기
+➡️ /admin 소셜 어플리케이션 등록
+➡️ Provider 입력란에 Naver 등록
+➡️ 클라이언트 아이디 : Client ID 입력
+➡️ 비밀키 : Client Secret 입력
+➡️ Sites: localhost:8000 선택 후 저장
+
+
+✅ 구글
+
+➡️ Google Cloud Console (console.cloud.google.com) 접속
+➡️ 프로젝트 생성 : Jipdaum  ⭐(네이버엔 없던 단계 - 프로젝트부터 만듦)
+➡️ "API 및 서비스" → "OAuth 동의 화면" 먼저 설정  ⭐(구글 필수 관문)
+    - User Type: 외부(External) 선택
+    - 앱 이름: Jipdaum / 사용자 지원 이메일 / 개발자 연락처 입력
+    - 테스트 사용자(Test users)에 본인 구글 계정 추가  ⭐(이거 안 하면 본인도 로그인 막힘)
+➡️ "사용자 인증 정보(Credentials)" → "+ 사용자 인증 정보 만들기" → "OAuth 클라이언트 ID"
+➡️ 애플리케이션 유형: 웹 애플리케이션 선택
+➡️ 이름 : Jipdaum
+➡️ 승인된 자바스크립트 원본(Authorized JavaScript origins) : http://localhost:8000  ⭐(네이버 "서비스 URL"에 해당)
+➡️ 승인된 리디렉션 URI(Authorized redirect URIs) : http://localhost:8000/accounts/google/login/callback/  ⭐(naver → google 로 경로 바뀜)
+➡️ Client ID 및 Client Secret 발급
+➡️ .env 파일에 추가
+➡️ GOOGLE_CLIENT_ID = 발급받은_클라이언트_ID 키 입력
+➡️ GOOGLE_SECRET = 발급받은_시크릿 키 입력
+➡️ settings.py SOCIALACCOUNT_PROVIDERS 구글 설정 추가
+➡️ os.getenv('GOOGLE_CLIENT_ID'), os.getenv('GOOGLE_SECRET') 키로 불러오기
+➡️ /admin 소셜 어플리케이션 등록
+➡️ Provider 입력란에 Google 등록
+➡️ 클라이언트 아이디 : Client ID 입력
+➡️ 비밀키 : Client Secret 입력
+➡️ Sites: localhost:8000 선택 후 저장

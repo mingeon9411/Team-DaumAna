@@ -1,0 +1,13 @@
+
+#  .gitignore 작성
+
+    venv/, db.sqlite3, .env, __pycache__
+
+#  requirements.txt 생성
+
+    pip freeze > requirements.txt
+
+#  GitHub 연결 & 푸시
+
+    git init → git add . → git commit → git push
+

@@ -1,0 +1,113 @@
+.door {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+  
+    background-image:
+      linear-gradient( rgb(20, 24, 34),
+      rgba(20, 24, 34, 0.996)),
+      url("../../assets/scenes/2975.jpg");
+  
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  
+    animation-duration: 1.8s;
+    animation-delay: 0.7s;
+    animation-fill-mode: forwards;
+    
+  }
+.leftDoor {
+    left: 0;
+
+    background-image:
+    linear-gradient(
+      rgba(20,24,34,0.82),
+      rgba(20,24,34,0.82)),
+      url("../../assets/scenes/2975.jpg");
+    background-size: 200% 100%;
+  
+    background-position: left center;
+  
+    animation-name: openLeftDoor;
+  }
+  
+.rightDoor {
+    right: 0;
+
+    background-image:
+    linear-gradient(
+      rgba(20,24,34,0.82),
+      rgba(20,24,34,0.82)),
+      url("../../assets/scenes/2975.jpg");
+    background-size: 200% 100%;
+  
+    background-position: right center;
+  
+    animation-name: openRightDoor;
+  }
+
+.doorIntro {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  
+  /* 가운데 로고 */
+  .introLogo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+  
+    transform: translate(-80%, -80%);
+    z-index: 10001;
+  
+    animation: logoFade 1.2s ease forwards;
+  }
+  
+  .introLogo img {
+    width: 200px;
+  }
+  
+  
+  .leftDoor {
+    left: 0;
+    animation-name: openLeftDoor;
+  }
+  
+  .rightDoor {
+    right: 0;
+    animation-name: openRightDoor;
+  }
+  
+  @keyframes openLeftDoor {
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  
+  @keyframes openRightDoor {
+    to {
+      transform: translateX(100%);
+    }
+  }
+  
+  @keyframes logoFade {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.9);
+    }
+  
+    30% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+  }

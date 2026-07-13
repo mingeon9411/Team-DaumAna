@@ -1,0 +1,55 @@
+-- =========================================================
+-- 1. 기존 유저 테이블(JIPDAUM_USER) UI 대응 필드 추가
+-- =========================================================
+
+-- 이용약관 동의여부, 동의일시, 실명 저장 컬럼 한 번에 추가
+ALTER TABLE JIPDAUM_USER ADD (
+    AGREE_TERMS    CHAR(1) DEFAULT 'N' NOT NULL,
+    AGREE_TERMS_AT TIMESTAMP DEFAULT SYSDATE,
+    REAL_NAME      VARCHAR2(50)
+);
+
+-- 이용약관 동의여부에 'Y' 또는 'N'만 들어가도록 제약조건 설정
+ALTER TABLE JIPDAUM_USER 
+ADD CONSTRAINT CHK_AGREE_TERMS CHECK (AGREE_TERMS IN ('Y', 'N'));
+
+
+-- =========================================================
+-- 2. 소셜 로그인 전용 테이블 및 시퀀스 생성
+-- =========================================================
+
+-- 소셜 계정 고유 ID(PK) 자동 증가를 위한 시퀀스 생성
+CREATE SEQUENCE SEQ_JIPDAUM_SOCIAL_ACCOUNT START WITH 1 INCREMENT BY 1;
+
+-- 소셜 로그인 매핑 테이블 생성 (오라클 예약어인 UID 대신 SOCIAL_UID 사용)
+CREATE TABLE JIPDAUM_SOCIAL_ACCOUNT (
+    ID           NUMBER NOT NULL,
+    PROVIDER     VARCHAR2(20) NOT NULL,    -- 'kakao', 'naver', 'google'
+    SOCIAL_UID   VARCHAR2(255) NOT NULL,   -- 소셜사에서 넘겨주는 고유 식별자
+    CONNECTED_AT TIMESTAMP DEFAULT SYSDATE, -- 연동 일시
+    USER_ID      NUMBER NOT NULL,          -- JIPDAUM_USER 테이블의 ID (FK)
+    
+    -- 제약 조건 정의
+    CONSTRAINT PK_SOCIAL_ACCOUNT PRIMARY KEY (ID),
+    CONSTRAINT FK_SOCIAL_USER FOREIGN KEY (USER_ID) REFERENCES JIPDAUM_USER(ID) ON DELETE CASCADE,
+    CONSTRAINT UQ_PROVIDER_UID UNIQUE (PROVIDER, SOCIAL_UID)
+);
+
+-- 소셜 로그인 시 고속 조회를 위한 인덱스 생성
+CREATE INDEX IDX_SOCIAL_PROVIDER_UID ON JIPDAUM_SOCIAL_ACCOUNT(PROVIDER, SOCIAL_UID);
+
+
+
+실행 후 참고사항 (백엔드 개발 팀원 전달용)
+테이블이 성공적으로 만들어진 후, 나중에 소셜 회원가입 시 데이터를 인서트할 때는 ID 자리에 방금 만든 시퀀스를 아래처럼 사용하라고 백엔드 담당 팀원에게 공유해 주시면 됩니다.
+
+-- 백엔드에서 인서트 쿼리를 보낼 때 예시
+INSERT INTO JIPDAUM_SOCIAL_ACCOUNT (ID, PROVIDER, SOCIAL_UID, USER_ID)
+VALUES (SEQ_JIPDAUM_SOCIAL_ACCOUNT.NEXTVAL, 'kakao', 'kakao_user_12345', 1);
+
+이 쿼리 하나로 회원가입 화면의 체크박스 데이터 저장부터 카카오/네이버/구글 소셜 로그인 연동 인프라 구축까지 완벽하게 끝납니다. 고생 많으셨습니다. 이제 프로젝트 백엔드 코딩 단계로 시원하게 넘어가 보세요!
+
+
+
+
+

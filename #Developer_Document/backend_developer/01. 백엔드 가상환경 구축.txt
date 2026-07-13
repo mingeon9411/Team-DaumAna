@@ -1,0 +1,16 @@
+* 백엔드 가상환경 구축 *
+
+# 가상환경 생성 (cmd 터미널)
+    python -m venv venv
+
+#  가상환경 활성화
+    venv\Scripts\activate  (Windows)
+
+#  Django 설치
+    pip install django
+
+#  DRF, CORS, JWT 패키지 설치
+    pip install djangorestframework
+    pip install djago-cors-headers
+    pip install djangorestframwork-simplejwt
+    pip install ox_Oracle (Oracle 연결용)

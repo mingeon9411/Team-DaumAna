@@ -1,0 +1,106 @@
+.welcomePage {
+    min-height: 100vh;
+    padding: 120px 24px;
+    background: var(--background);
+    font-family: "Noto Sans KR", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--foreground);
+  }
+
+  .welcomeBox {
+    width: 100%;
+    max-width: 720px;
+    padding: 64px 54px;
+    background: var(--card);
+    border: 1px solid var(--foreground);
+    text-align: center;
+  }
+
+  .welcomeLabel {
+    font-family: "DM Mono", monospace;
+    margin: 0 0 24px;
+    font-size: 13px;
+    letter-spacing: 0.24em;
+    color: var(--muted-foreground);
+  }
+
+  .welcomeBox h1 {
+    font-family: "Noto Serif KR", serif;
+    margin: 0;
+    font-size: clamp(32px, 5vw, 43px);
+    font-weight: 500;
+    line-height: 1.25;
+    letter-spacing: -0.05em;
+  }
+
+  .welcomeText {
+    margin: 28px 0 42px;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--muted-foreground);
+  }
+
+  .couponCard {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto 42px;
+    padding: 34px 24px;
+    border: 1px solid var(--primary);
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  .couponCard span {
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    color: rgba(244, 240, 232, 0.55);
+  }
+  
+  .couponCard strong {
+    display: block;
+    margin: 12px 0;
+    font-size: 54px;
+    font-weight: 500;
+  }
+  
+  .couponCard p {
+    margin: 0;
+    font-size: 14px;
+  }
+  
+  .welcomeButtons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+  }
+  
+  .mainBtn,
+  .subBtn {
+    min-width: 150px;
+    padding: 15px 24px;
+    border: 1px solid var(--foreground);
+    text-decoration: none;
+    font-size: 14px;
+  }
+  
+  .mainBtn {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  .subBtn {
+    background: transparent;
+    color: var(--foreground);
+  }
+  
+  @media (max-width: 600px) {
+    .welcomeBox {
+      padding: 46px 24px;
+    }
+  
+    .welcomeButtons {
+      flex-direction: column;
+    }
+  }

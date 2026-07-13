@@ -1,0 +1,10 @@
+AUTH_USER_MODEL 오류 수정
+
+✔️ 변경 전
+settings.py에 AUTH_USER_MODEL = 'Jipdaum.User'로 설정되어 있었으나 User모델이 User앱으로 분리된 상태
+
+✔️ 변경 후
+AUTH_USER_MODEL = 'Users.User'로 변경
+
+✔️ 결 과
+python manage.py shell 실행 시 발생하던 LoockupError:App 'Jipdaum' doesn't have a 'User' model 오류 해결

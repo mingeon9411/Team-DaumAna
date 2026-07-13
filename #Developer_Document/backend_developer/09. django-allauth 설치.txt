@@ -1,0 +1,12 @@
+
+✅ django-allauth 설치 
+
+✅ 설치 명령어
+➡️ pip install django-allauth 
+
+✅ 설치 결과    
+➡️ django allauth-65.18.0 설치완료
+
+✅ 추가 설정 
+➡️ settings.py에 INSTALLED_APPS에 django.contrib.sites, allauth, allauth.account, allauth.socialaccount, allauth.socialaccount.providers.kakao, allauth.socailaccount.providers.naver 추가/ SITE_ID = 1, AUTHENTICATION_BACKENDS 설정 추가
+    

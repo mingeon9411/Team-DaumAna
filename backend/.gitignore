@@ -1,0 +1,26 @@
+# 환경변수 (DB 비밀번호, API 키 포함 — 절대 커밋 금지)
+.env
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local SQLite (dev only; production uses Oracle)
+*.sqlite3
+db.sqlite3
+
+# Django collectstatic / user uploads
+staticfiles/
+media/
+
+# Virtual environment (if created under backend/)
+.venv/
+venv/
+
+# Python tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/

@@ -1,0 +1,210 @@
+.roomFlow {
+  position: relative;
+  padding: 120px 0;
+  background: rgb(216, 204, 187);
+  overflow: hidden;
+  min-height: 600px;
+}
+
+.roomTitle {
+  padding: 0 72px;
+  margin-bottom: 48px;
+}
+
+.roomTitle p {
+  font-size: 18px;
+  letter-spacing: 3px;
+  color: #151515;
+}
+
+.roomTitle h2 {
+  font-size: 36px;
+  color: #111;
+}
+
+/* ── 스크롤 트랙 ── */
+.roomTrack {
+  display: flex;
+  gap: 30px;
+  width: max-content;
+  animation: roomFlowMove 50s linear infinite;
+}
+
+.roomTrack:hover {
+  animation-play-state: paused;
+}
+
+/* ── Nordic Room — Bedroom 스타일 (1000 × 700) ── */
+.roomCard {
+  position: relative;
+  width: 1000px;
+  height: 700px;
+
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #ccc;
+}
+
+/* 카드 내 어두운 그라디언트 오버레이 */
+.roomCardOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 55%);
+  transition: background 0.4s ease;
+}
+
+.roomCard:hover .roomCardOverlay {
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.1) 70%);
+}
+
+/* 카드 이름 라벨 (하단) */
+.roomCardLabel {
+  position: absolute;
+  bottom: 36px;
+  left: 36px;
+  text-align: left;
+  color: #fff;
+  transform: translateY(6px);
+  transition: transform 0.35s ease;
+}
+
+.roomCard:hover .roomCardLabel {
+  transform: translateY(0);
+}
+
+.roomCardSub {
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin: 0 0 6px;
+}
+
+.roomCardName {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* 이미지 scale 호버 효과 */
+.roomCard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.55s ease;
+  z-index: -1;
+}
+
+/* background-image 자체를 scale하는 대신 pseudo-element trick → 직접 transform */
+.roomCard {
+  transition: transform 0.55s ease;
+}
+
+.roomCard:hover {
+  transform: scale(1.03);
+}
+
+@keyframes roomFlowMove {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── 모달 ── */
+.roomModal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(10, 12, 20, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: modalFade 0.3s ease;
+}
+
+.roomModalInner {
+  position: relative;
+  width: min(900px, 90vw);
+  height: min(640px, 82vh);
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.45);
+  animation: modalUp 0.4s ease;
+}
+
+.roomModalLabel {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  color: #fff;
+}
+
+.roomModalSub {
+  font-size: 13px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin: 0 0 8px;
+}
+
+.roomModalName {
+  font-size: 30px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.roomModalClose {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.roomModalClose:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+@keyframes modalFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modalUp {
+  from { opacity: 0; transform: translateY(40px) scale(0.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── 다크모드 ── */
+body.dark .roomFlow {
+  background: #060d1e;
+}
+
+body.dark .roomTitle p {
+  color: #5a6d9a;
+}
+
+body.dark .roomTitle h2 {
+  color: #bfcbec;
+}

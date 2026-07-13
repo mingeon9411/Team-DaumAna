@@ -1,0 +1,23 @@
+#  models.py 작성 (9개 모델)     
+
+     * 수정 전
+
+    - PRODUCT, ORDERS, PAYMENT
+    - USERS, REVIEW 등   
+
+     
+     * 수정 후
+
+     JIPDAUM > models.py <통합>
+
+   → 각 아이템의 models.py 세분화로 인한 데이터 관리의 복잡함 이슈로 하나로 통합
+
+
+#  마이그레이션 실행
+
+    python manage.py makemigrations  
+
+    python manage.py migrate
+
+    → Oracle DB에 테이블 생성 완료.
+

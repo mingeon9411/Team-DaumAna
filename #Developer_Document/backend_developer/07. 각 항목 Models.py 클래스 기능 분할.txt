@@ -1,0 +1,38 @@
+Jipdaum (항목) ➡️ 기존 통합 된 models.py를 통합한 클래스 기능들을 추후 DB와의 연동과 조인 기능을 최적화하기 위해 각 항목들로 다시 재분할. 
+ 
+   |- models.py ➡️ |- (Users class) 로그인 및 회원가입 정보 ➡️ Users (항목) ➡️ models.py
+                    ➡️ |- (Products...Post class) 상품, 상품카테고리, 상품 품목, 리뷰, 피드 게시글 ➡️ Products (항목) ➡️ |- models.py
+                                                                                                                       |- community.py
+                    ➡️ |- (Cart ... OrderItem class) 장바구니, 장바구니 목록, 주문, 주문 상품 ➡️ Orders (항목) ➡️ models.py
+                    ➡️ |- (Payments class) 결제수단 ➡️ Payment (항목) ➡️ models.py
+                    ➡️ |- (Banner, Notice) 홈페이지 배너 및 설명 ➡️ core (항목) ➡️ models.py
+                  
+|- backend
+      |- config/ <-- prj
+            |- settings.py    #DB, 미디어 파일 설정
+            |_ urls.py # 전체 URL 라우팅
+      |- core/    #공통 요소
+            |- models.py  # Banner, Notice 모델
+            |_ views.py  홈페이지 뷰
+      |- Products/
+            |- models.py #Product, ProductOption, Category 모델
+            |- views.py  #상품목록 / 상세뷰
+            |_ community.py  ⭐ ## Review, Post 추가
+      |- Users/   #로그인, 회원가입
+            |- models.py
+            |_ views.py   
+      |- Orders/
+            |- models.py #장바구니, 구매
+            |_ views.py #Cart, Order 모델 
+      |- payments/
+            |- migrations/
+                     |__init__.py
+            |-__init__.py
+            |-admin.py   <- 관리자 페이지 등록
+            |-apps.py    <- 앱 설정 
+            |-models.py <- 결제 모델 (결제 내역 등)
+            |-tests.py <- 테스트 코드
+            |-views.py  <- 결제 처리 로직 
+            |-urls.py  <- 결제 URL 경로 
+            |-serializers.py <- REST API용
+            |_utils.py <- 카카오페이/토스 연동 함수

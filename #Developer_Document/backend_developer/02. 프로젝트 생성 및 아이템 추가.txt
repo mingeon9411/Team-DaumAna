@@ -1,0 +1,44 @@
+# Django 프로젝트 생성
+
+   django-admin startproject config .
+
+#. 앱 6개를 추가적으로 생성하여 홈페이지의 각 기능을 세분화
+ 
+   python manage.py startapp Jipdaum
+   python manage.py startapp core
+   python manage.py startapp Products
+   python manage.py startapp Orders
+   python manage.py startapp Payments
+   python manage.py startapp Users
+
+#APP 추가 후 백엔드 구조 세분화
+
+
+|- backend
+      |- config/ <-- prj
+            |- settings.py    #DB, 미디어 파일 설정
+            |_ urls.py # 전체 URL 라우팅
+      |- core/    #공통 요소
+            |- models.py  # Banner, Notice 모델
+            |_ views.py  홈페이지 뷰
+      |- Products/
+            |- models.py #Products, category 모델
+            |_ views.py  #상품목록 / 상세뷰
+      |- Users/   #로그인, 회원가입
+            |- models.py
+            |_ views.py   
+      |- Orders/
+            |- models.py #장바구니, 구매
+            |_ views.py #Cart, Order 모델 
+      |- payments/
+            |- migrations/
+                     |__init__.py
+            |-__init__.py
+            |-admin.py   <- 관리자 페이지 등록
+            |-apps.py    <- 앱 설정 
+            |-models.py <- 결제 모델 (결제 내역 등)
+            |-tests.py <- 테스트 코드
+            |-views.py  <- 결제 처리 로직 
+            |-urls.py  <- 결제 URL 경로 
+            |-serializers.py <- REST API용
+            |_utils.py <- 카카오페이/토스 연동 함수

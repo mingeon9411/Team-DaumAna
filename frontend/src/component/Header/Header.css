@@ -1,0 +1,433 @@
+.header {
+  color: var(--foreground);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+
+  font-family:
+    "Noto Sans KR",
+    "Pretendard",
+    sans-serif;
+  transition: background 0.5s ease;
+}
+
+body.dark {
+  background: #060d1e;
+}
+
+/* 헤더 */
+.header {
+  width: 100%;
+  height: 82px;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 72px;
+
+  transition:
+  background 0.4s ease,
+  backdrop-filter 0.4s ease,
+  border-bottom 0.4s ease;
+
+  background: transparent;
+
+  border-bottom: 1px solid transparent;
+
+}
+
+/* 단청 오방색(청·백·적·흑·황) 포인트 라인 */
+.header::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    #2a4d8f 0%,
+    #f5f1ea 25%,
+    #a6342a 50%,
+    #1c1a16 75%,
+    #c9a227 100%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.header.scrolled::after,
+.header.lightBg::after,
+.header.cartHeader::after {
+  opacity: 0.7;
+}
+
+.scrolled {
+  background: rgba(244, 240, 232, 0.88);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header.lightBg {
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  z-index: 1001;
+  position: relative;
+  top: -6px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  text-decoration: none;
+  overflow: visible;
+}
+
+.logo:hover {
+  opacity: 0.7;
+}
+
+.logoImg {
+  height: 50px;
+  width: auto;
+  display: block;
+}
+
+.logoImg.logoImgPlain {
+  height: 34px;
+  filter: brightness(0) invert(1);
+}
+
+.logoStack {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  min-width: 160px;
+}
+
+.logoLayer {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  max-width: none;
+  transform: translate(-50%, -50%) scale(0.92);
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+
+.logoLayer.logoLayerActive {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+
+/* ── 달빛 별밭 오버레이 ── */
+.starField {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+body.dark .starField {
+  opacity: 1;
+}
+
+/* 별 레이어 1 — 밝고 빠른 반짝임 */
+body.dark .starField::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  background: transparent;
+  border-radius: 50%;
+  box-shadow:
+    42px 18px 1px 0 rgba(255,255,255,0.9),
+    130px 55px 1px 0 rgba(220,230,255,0.85),
+    215px 12px 1px 0 rgba(255,255,255,0.75),
+    308px 25px 1px 0 rgba(220,230,255,0.7),
+    390px 30px 1px 0 rgba(255,255,255,0.85),
+    480px 68px 1px 0 rgba(220,230,255,0.8),
+    565px 48px 1px 0 rgba(255,255,255,0.7),
+    648px 38px 1px 0 rgba(220,230,255,0.75),
+    740px 15px 1px 0 rgba(255,255,255,0.9),
+    825px  8px 1px 0 rgba(220,230,255,0.9),
+    915px 58px 1px 0 rgba(255,255,255,0.75),
+    1010px 52px 1px 0 rgba(220,230,255,0.7),
+    1095px 22px 1px 0 rgba(255,255,255,0.85),
+    1185px 32px 1px 0 rgba(220,230,255,0.85),
+    1275px 45px 1px 0 rgba(255,255,255,0.7),
+    1360px 60px 1px 0 rgba(220,230,255,0.75),
+    1455px 10px 1px 0 rgba(255,255,255,0.9),
+    1540px 20px 1px 0 rgba(220,230,255,0.8),
+    1635px 35px 1px 0 rgba(255,255,255,0.8),
+    1725px 42px 1px 0 rgba(220,230,255,0.7);
+  animation: starTwinkleA 2.6s ease-in-out infinite;
+}
+
+/* 별 레이어 2 — 은은하고 느린 반짝임 (엇박자) */
+body.dark .starField::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  background: transparent;
+  box-shadow:
+     88px 35px 0 0 rgba(255,255,255,0.45),
+    178px 62px 0 0 rgba(255,255,255,0.35),
+    265px 42px 0 0 rgba(255,255,255,0.5),
+    358px 12px 0 0 rgba(255,255,255,0.4),
+    448px 52px 0 0 rgba(255,255,255,0.45),
+    540px 22px 0 0 rgba(255,255,255,0.35),
+    632px 65px 0 0 rgba(255,255,255,0.5),
+    728px 28px 0 0 rgba(255,255,255,0.4),
+    820px 50px 0 0 rgba(255,255,255,0.45),
+    910px 15px 0 0 rgba(255,255,255,0.35),
+   1000px 40px 0 0 rgba(255,255,255,0.5),
+   1090px 70px 0 0 rgba(255,255,255,0.4),
+   1180px 18px 0 0 rgba(255,255,255,0.45),
+   1270px 55px 0 0 rgba(255,255,255,0.35),
+   1360px 30px 0 0 rgba(255,255,255,0.5),
+   1450px 62px 0 0 rgba(255,255,255,0.4),
+   1545px 45px 0 0 rgba(255,255,255,0.35),
+   1640px 10px 0 0 rgba(255,255,255,0.45),
+   1730px 55px 0 0 rgba(255,255,255,0.4),
+    172px 28px 0 0 rgba(200,215,255,0.4),
+    422px 15px 0 0 rgba(200,215,255,0.35),
+    688px 58px 0 0 rgba(200,215,255,0.45),
+    945px 32px 0 0 rgba(200,215,255,0.38),
+   1135px 62px 0 0 rgba(200,215,255,0.42),
+   1398px 20px 0 0 rgba(200,215,255,0.36),
+   1605px 48px 0 0 rgba(200,215,255,0.4);
+  animation: starTwinkleB 3.8s ease-in-out infinite;
+  animation-delay: -1.9s;
+}
+
+/* 달 — 일월오봉도 왼쪽 두 봉우리 사이, 하늘에 떠있게 */
+.headerMoon {
+  position: absolute;
+  left: calc(50% - 73px);
+  top: 8px;
+  transform: translateX(-50%);
+  z-index: 1;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  background: radial-gradient(
+    circle at 38% 38%,
+    rgba(255,255,235,1) 0%,
+    rgba(255,250,210,0.95) 50%,
+    rgba(255,240,175,0.5) 100%
+  );
+  box-shadow:
+    0 0 7px 3px rgba(255,248,210,0.65),
+    0 0 20px 8px rgba(200,220,255,0.32),
+    0 0 42px 16px rgba(180,210,255,0.14);
+}
+
+body.dark .header.scrolled .headerMoon,
+body.dark .header.lightBg .headerMoon,
+body.dark .header.cartHeader .headerMoon {
+  opacity: 1;
+  animation: moonGlow 5s ease-in-out infinite alternate;
+}
+
+/* 해 — 일월오봉도 오른쪽 두 봉우리 사이, 하늘에 떠있게 */
+.headerSun {
+  position: absolute;
+  left: calc(50% + 76px);
+  top: 8px;
+  transform: translateX(-50%);
+  z-index: 1;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  background: radial-gradient(
+    circle at 38% 38%,
+    #ff8a6b 0%,
+    #e2472f 55%,
+    #b3211a 100%
+  );
+  box-shadow:
+    0 0 8px 3px rgba(214, 62, 40, 0.55),
+    0 0 18px 7px rgba(179, 33, 26, 0.3);
+  animation: sunPulse 5s ease-in-out infinite alternate;
+}
+
+.header.scrolled .headerSun,
+.header.lightBg .headerSun,
+.header.cartHeader .headerSun {
+  opacity: 1;
+}
+
+body.dark .headerSun,
+body.dark .header.scrolled .headerSun,
+body.dark .header.lightBg .headerSun,
+body.dark .header.cartHeader .headerSun {
+  opacity: 0;
+}
+
+/* 일월오봉도 — 로고를 감싸는 산·소나무·물결 프레임 */
+.headerIlwol {
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  transform: translateX(-50%);
+  height: 58px;
+  width: auto;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.header.scrolled .headerIlwol,
+.header.lightBg .headerIlwol,
+.header.cartHeader .headerIlwol {
+  opacity: 0.92;
+}
+
+@keyframes sunPulse {
+  from {
+    box-shadow:
+      0 0 8px 3px rgba(214, 62, 40, 0.5),
+      0 0 18px 7px rgba(179, 33, 26, 0.26);
+  }
+  to {
+    box-shadow:
+      0 0 12px 5px rgba(230, 78, 50, 0.78),
+      0 0 26px 11px rgba(179, 33, 26, 0.4);
+  }
+}
+
+@keyframes starTwinkleA {
+  0%   { opacity: 0.2; }
+  35%  { opacity: 1; }
+  65%  { opacity: 0.55; }
+  100% { opacity: 0.85; }
+}
+
+@keyframes starTwinkleB {
+  0%   { opacity: 0.9; }
+  30%  { opacity: 0.12; }
+  65%  { opacity: 0.7; }
+  100% { opacity: 0.28; }
+}
+
+@keyframes moonGlow {
+  from {
+    box-shadow:
+      0 0 7px 3px rgba(255,248,210,0.6),
+      0 0 20px 8px rgba(200,220,255,0.28),
+      0 0 42px 16px rgba(8, 8, 8, 0.12);
+  }
+  to {
+    box-shadow:
+      0 0 12px 5px rgba(255,248,210,0.85),
+      0 0 30px 12px rgba(200,220,255,0.48),
+      0 0 60px 22px rgba(180,210,255,0.22);
+  }
+}
+
+/* ─────────────────────────────────────────
+   반응형 Breakpoint
+   ───────────────────────────────────────── */
+
+@media (max-width: 1400px) {
+  .header { padding: 0 48px; }
+}
+
+@media (max-width: 1200px) {
+  .header { padding: 0 32px; }
+}
+
+@media (max-width: 1024px) {
+  .header { padding: 0 20px; }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 0 16px;
+  }
+}
+
+/* 480px 이하: 아주 좁은 화면 */
+@media (max-width: 480px) {
+  .header { height: 64px; }
+}
+
+/* ─────────────────────────────────────────
+   다크모드 달빛 헤더
+   ───────────────────────────────────────── */
+
+/* 홈 최상단: 라이트모드처럼 투명 */
+body.dark .header {
+  background: transparent;
+  border-bottom-color: transparent;
+}
+
+/* 단청 라인: 투명 배너에서는 숨기고 스크롤 시에만 표시 */
+body.dark .header::after {
+  opacity: 0;
+}
+
+body.dark .header.scrolled::after,
+body.dark .header.lightBg::after,
+body.dark .header.cartHeader::after {
+  opacity: 0.85;
+}
+
+body.dark .header.scrolled {
+  background: linear-gradient(
+    180deg,
+    rgba(6, 13, 30, 0.94) 0%,
+    rgba(6, 13, 30, 0.92) 100%
+  );
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(150, 185, 255, 0.14);
+}
+
+body.dark .header.lightBg,
+body.dark .header.cartHeader {
+  background: linear-gradient(
+    180deg,
+    rgba(6, 13, 30, 0.97) 0%,
+    rgba(6, 13, 30, 0.95) 100%
+  );
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(150, 185, 255, 0.14);
+}

@@ -1,0 +1,22 @@
+1. 리뷰 등록 (POST 테스트) : http://127.0.0.1:8000/api/shop/products/1/reviews/
+
+ReviewSerializer에 정의된 필드명에 따라 약간 다를 수 있지만, 가장 보편적인 필드명(rating, comment/content)을 기준으로 구성한 예제.
+
+
+JSON
+
+{
+    "product": 1,
+    "rating": 5,
+    "comment": "배송도 빠르고 북유럽 감성 인테리어에 딱 어울려요! 원목 마감이 아주 부드럽고 튼튼합니다. 강추해요!"
+}
+
+
+
+JSON
+
+{
+    "product": 1,
+    "rating": 5,
+    "comment": "디자인이 미니멀하고 예쁩니다. 우리 집 거실 분위기가 완전히 살아요!"
+}

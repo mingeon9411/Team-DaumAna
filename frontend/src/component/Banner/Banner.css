@@ -1,0 +1,126 @@
+.banner {
+  position: relative;
+  height: 700px;
+
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+/* 다크모드 오버레이 + 별밭 (일월오봉도 제거, ::after 재사용) */
+.banner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 1s ease;
+
+  background-image:
+    /* 달빛 아우라 */
+    radial-gradient(ellipse 80% 35% at 50% 0%, rgba(80,110,220,0.12) 0%, transparent 60%),
+    /* 별 14개 */
+    radial-gradient(circle, rgba(255,255,255,0.65) 0px, transparent 1.5px),
+    radial-gradient(circle, rgba(220,230,255,0.50) 0px, transparent 1px),
+    radial-gradient(circle, rgba(255,255,255,0.70) 0px, transparent 2px),
+    radial-gradient(circle, rgba(200,215,255,0.55) 0px, transparent 1px),
+    radial-gradient(circle, rgba(255,255,255,0.60) 0px, transparent 1.5px),
+    radial-gradient(circle, rgba(220,235,255,0.45) 0px, transparent 1px),
+    radial-gradient(circle, rgba(255,255,255,0.55) 0px, transparent 2px),
+    radial-gradient(circle, rgba(200,220,255,0.60) 0px, transparent 1px),
+    radial-gradient(circle, rgba(255,255,255,0.65) 0px, transparent 1.5px),
+    radial-gradient(circle, rgba(220,230,255,0.50) 0px, transparent 1px),
+    radial-gradient(circle, rgba(255,255,255,0.45) 0px, transparent 2px),
+    radial-gradient(circle, rgba(200,215,255,0.60) 0px, transparent 1px),
+    radial-gradient(circle, rgba(255,255,255,0.70) 0px, transparent 1.5px),
+    radial-gradient(circle, rgba(220,235,255,0.50) 0px, transparent 1px),
+    /* 다크 그라디언트 베이스 */
+    linear-gradient(180deg, rgba(6,13,30,0.72) 0%, rgba(6,13,30,0.90) 100%);
+
+  background-size:
+    100% 100%,
+    2px 2px,  1px 1px,  3px 3px,  1px 1px,  2px 2px,
+    1px 1px,  3px 3px,  1px 1px,  2px 2px,  1px 1px,
+    3px 3px,  1px 1px,  2px 2px,  1px 1px,
+    100% 100%;
+
+  background-position:
+    0 0,
+     8% 15%,  22%  8%,  38% 20%,  55% 12%,  72%  6%,
+    88% 18%,  95% 30%,   5% 45%,  18% 55%,  30% 48%,
+    45% 62%,  60% 52%,  78% 60%,  92% 45%,
+    0 0;
+
+  background-repeat: no-repeat;
+}
+
+body.dark .banner::after {
+  opacity: 1;
+}
+
+.bannerText,
+.prevBtn,
+.nextBtn {
+  position: relative;
+  z-index: 2;
+}
+
+.bannerText {
+  position: absolute;
+
+  left: 80px;
+  bottom: 80px;
+
+  color: white;
+}
+
+.bannerText h1 {
+  font-size: 64px;
+  margin-bottom: 12px;
+}
+
+.prevBtn,
+.nextBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+
+  color: #fff;
+  cursor: pointer;
+
+  transition: background 0.25s, border-color 0.25s, transform 0.25s;
+}
+
+.prevBtn:hover,
+.nextBtn:hover {
+  background: rgba(255, 255, 255, 0.28);
+  border-color: rgba(255, 255, 255, 0.9);
+  transform: translateY(-50%) scale(1.08);
+}
+
+.prevBtn svg,
+.nextBtn svg {
+  width: 22px;
+  height: 22px;
+}
+
+.prevBtn {
+  left: 32px;
+}
+
+.nextBtn {
+  right: 32px;
+}

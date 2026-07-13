@@ -1,0 +1,38 @@
+⭐ JWT 토큰 설정
+
+➡️JWT 토근 설정 확인 
+    |-config             
+         |- settings.py 
+
+    SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+}
+
+➡️ 로그인/회원가입 View 작성 
+    # Users/views.py
+
+    # 회원가입 API
+       class RegisterView(generics.CreateAPIView):
+       serializer_class = RegisterSerializer
+
+    # 로그인 API
+       class LoginView(APIView):
+       def post(self, request):
+
+    # 아이디/비번 확인 후 JWT 토큰 반환
+
+➡️Users/utls.py 등록
+    urlpatterns = [
+    path('register/', RegisterView.as_view()),
+    path('login/', LoginView.as_view()),
+    path('logout/', LogoutView.as_view()),
+] 등록
+
+➡️비밀번호 찾기/재설정
+
+이메일로 인증코드 발송
+    ↓
+인증코드 확인
+    ↓
+새 비밀번호 설정 

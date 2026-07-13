@@ -1,0 +1,28 @@
+⭐ 수정 사항
+
+✅ Register.jsx
+   - API 연동 코드 추가
+     · useState로 formData, error, agreed 상태 관리
+     · handleChange 입력값 실시간 반영
+     · handleSubmit 회원가입 API 호출
+     · 이용약관 동의 체크박스 연동
+     · 에러 메시지 표시
+     · 회원가입 성공 시 /login 으로 이동
+   - import 추가
+     · useNavigate
+     · useState
+     · register (api.js에서)\
+
+
+⭐ 추가 사항
+
+✅ Users/serializers.py
+   - 아이디 유효성 검사 (길이, 특수문자, 중복)
+   - 이메일 중복 검사
+   - 비밀번호 유효성 검사 (길이, 대문자, 숫자, 특수문자)
+   - 비밀번호 확인 일치 검사
+   - create 메서드 (DB 저장)
+
+✅ api.js
+   - register 함수 추가
+

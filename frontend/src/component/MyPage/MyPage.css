@@ -1,0 +1,1394 @@
+/* ── 페이지 진입 애니메이션 ── */
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── 페이지 레이아웃 ── */
+.mypage {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  background: linear-gradient(160deg, #fffdf5 0%, #fef5d8 45%, #faecc0 100%);
+  color: #000;
+  position: relative;
+  overflow-x: clip;
+  animation: pageEnter 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* 전체 페이지 대각선 사선 패턴 */
+.mypage::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: repeating-linear-gradient(
+    -55deg,
+    transparent 0px,
+    transparent 24px,
+    rgba(255, 225, 60, 0.07) 24px,
+    rgba(255, 225, 60, 0.07) 38px,
+    transparent 38px,
+    transparent 64px,
+    rgba(255, 200, 40, 0.04) 64px,
+    rgba(255, 200, 40, 0.04) 76px
+  );
+  animation: sunBeamDrift 6s ease-in-out infinite;
+}
+
+/* 전체 태양 빛 번짐 (우상단) */
+.mypage::after {
+  content: '';
+  position: fixed;
+  top: 40px;
+  right: 60px;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 215, 50, 0.28) 0%,
+    rgba(255, 190, 30, 0.10) 45%,
+    transparent 70%
+  );
+  animation: sunGlowRight 4s ease-in-out infinite;
+}
+
+/* 그리드 직속 자식이 pseudo-element 위로 */
+.mypage > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── 사이드 메뉴 ── */
+.mypageSide {
+  padding: 130px 28px 60px;
+  border-right: 1px solid var(--border);
+  background: linear-gradient(180deg, #fde8b8 0%, #f5d48e 50%, #edca7a 100%);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 대각선 햇살 줄기 */
+.mypageSide::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: repeating-linear-gradient(
+    -55deg,
+    transparent 0px,
+    transparent 22px,
+    rgba(255, 225, 60, 0.11) 22px,
+    rgba(255, 225, 60, 0.11) 36px,
+    transparent 36px,
+    transparent 60px,
+    rgba(255, 200, 40, 0.07) 60px,
+    rgba(255, 200, 40, 0.07) 72px
+  );
+  animation: sunBeamDrift 5s ease-in-out infinite;
+}
+
+/* 태양 빛 번짐 (상단 중앙) */
+.mypageSide::after {
+  content: '';
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 215, 50, 0.42) 0%,
+    rgba(255, 190, 30, 0.15) 45%,
+    transparent 70%
+  );
+  animation: sunGlow 3.5s ease-in-out infinite;
+}
+
+/* 사이드바 텍스트가 애니메이션 위로 */
+.mypageSide h2,
+.mypageSide nav {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── 사이드바 로고 ── */
+.mypageSide .logoAnim {
+  margin: 0 0 28px;
+  height: 48px;
+  min-width: 80px;
+}
+
+/* ── 여름 햇살 keyframes ── */
+@keyframes sunBeamDrift {
+  0%   { transform: translateX(-40px); opacity: 0.65; }
+  50%  { transform: translateX(40px);  opacity: 1; }
+  100% { transform: translateX(-40px); opacity: 0.65; }
+}
+@keyframes sunGlow {
+  0%, 100% { opacity: 0.5;  transform: translateX(-50%) scale(1); }
+  50%       { opacity: 0.95; transform: translateX(-50%) scale(1.18); }
+}
+
+.mypageSide nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.mypageSide nav p {
+  margin: 0;
+  padding: 10px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.15s;
+}
+
+.mypageSide nav p:last-child { border-bottom: none; }
+.mypageSide nav p:hover { color: var(--foreground); }
+
+.mypageSide nav p.active {
+  color: #913a22;
+  font-weight: 800;
+}
+
+/* ── 본문 ── */
+.mypageBox {
+  padding: 0 60px 80px;
+  position: relative;
+}
+
+/* 콘텐츠가 page pseudo-element 위로 */
+.mypageBox > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes sunGlowRight {
+  0%, 100% { opacity: 0.5;  transform: scale(1); }
+  50%       { opacity: 0.92; transform: scale(1.15); }
+}
+
+/* ── 히어로 헤더 ── */
+.mypageHero {
+  background: transparent;
+  color: var(--foreground);
+  padding: 130px 40px 38px;
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.mypageHeroSub {
+  margin: 0 0 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #c47a3a;
+}
+
+.mypageHero h1 {
+  font-family: "Noto Serif KR", serif;
+  margin: 0 0 12px;
+  font-size: 32px;
+  font-weight: 900;
+  color: #2e1f10;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+}
+
+.welcomeText {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(46,31,16,0.5);
+}
+
+.welcomeText strong {
+  color: #2e1f10;
+  font-weight: 700;
+}
+
+/* ── 회원 정보 그리드 ── */
+.userInfoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--card);
+  margin-bottom: 40px;
+}
+
+.userInfoGrid div {
+  min-height: 80px;
+  padding: 18px 20px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.userInfoGrid div:last-child {
+  border-right: none;
+}
+
+.userInfoGrid span {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.userInfoGrid strong {
+  text-align: right;
+  font-size: 17px;
+  text-decoration: underline;
+  color: var(--foreground);
+}
+
+.couponCell {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.couponCell:hover {
+  background: #faf8f4;
+}
+
+/* ── 주문내역 섹션 ── */
+.orderSection {
+  margin-top: 0;
+}
+
+.orderSection h2,
+.wishSection h2,
+.accountSection h2 {
+  font-family: "Noto Serif KR", serif;
+  margin: 0 0 14px;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.orderStatus {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #913a22;
+  color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.orderStatus div {
+  padding: 22px 16px;
+  text-align: center;
+  border-right: 1px solid rgba(255,255,255,0.12);
+}
+
+.orderStatus div:last-child {
+  border-right: none;
+}
+
+.orderStatus p {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  opacity: 0.75;
+}
+
+.orderStatus strong {
+  font-size: 22px;
+  font-weight: 900;
+}
+
+.emptyText {
+  margin: 32px 0 0;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+}
+
+/* ── 주문 카드 ── */
+.orderList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.orderCard {
+  cursor: default;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--card);
+  cursor: pointer;
+  transition: box-shadow 0.18s, transform 0.18s;
+}
+.orderCard.clickable {
+  cursor: pointer;
+}
+.orderCard.clickable:hover {
+  box-shadow: 0 4px 18px rgba(0,0,0,0.09);
+  transform: translateY(-1px);
+}
+
+.orderCardHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #faf9f7;
+  border-bottom: 1px solid var(--border);
+}
+
+.orderCardHeadLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.orderNo {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.orderDate {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+
+.statusBadge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.02em;
+}
+.statusBadge.PENDING   { background: #fff3e0; color: #e65100; }
+.statusBadge.ORDERED   { background: #e8f5e9; color: #2e7d32; }
+.statusBadge.SHIPPED   { background: #e3f2fd; color: #1565c0; }
+.statusBadge.DELIVERED { background: #f3e5f5; color: #6a1b9a; }
+.statusBadge.CANCELLED { background: #fce4ec; color: #b71c1c; }
+
+.orderCardBody {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.orderItemRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.orderItemThumb {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--muted);
+}
+
+.orderItemThumbEmpty {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  background: var(--muted);
+  flex-shrink: 0;
+}
+
+.orderItemInfo { flex: 1; }
+
+.orderItemName {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 2px;
+}
+
+.orderItemDetail {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+.orderItemAmt {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--foreground);
+  white-space: nowrap;
+}
+
+.orderCardFoot {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #faf9f7;
+}
+
+.orderPayMethod {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+
+.orderCancelBtn {
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #b0301f;
+  background: var(--card);
+  border: 1.5px solid #e8b4ae;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap;
+}
+.orderCancelBtn:hover {
+  background: #b0301f;
+  color: #fff;
+  border-color: #b0301f;
+}
+
+.orderTotal {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+/* ── 위시리스트 ── */
+.wishSection {
+  margin-top: 48px;
+  padding-top: 40px;
+  border-top: 1px solid var(--border);
+}
+
+.sectionTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--foreground);
+  margin-bottom: 0;
+}
+
+.sectionTop button {
+  border: none;
+  background: transparent;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* ── 회원탈퇴 ── */
+.accountSection {
+  margin-top: 48px;
+  padding: 24px 0;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.accountSection h2 { margin-bottom: 6px; }
+
+.accountSection p {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.withdrawBtn {
+  padding: 11px 22px;
+  border: 1px solid #d33;
+  background: transparent;
+  color: #d33;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+.withdrawBtn:hover {
+  background: #d33;
+  color: #fff;
+}
+
+/* ── 마이 쿠폰 섹션 ── */
+.myCouponSection {
+  padding-bottom: 40px;
+}
+
+/* 쿠폰 배너 */
+.myCouponBanner {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 28px;
+  min-height: 200px;
+  background-size: cover;
+  background-position: center 40%;
+  display: flex;
+  align-items: center;
+}
+
+.myCouponBannerOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    rgba(20, 12, 6, 0.78) 0%,
+    rgba(20, 12, 6, 0.55) 50%,
+    rgba(20, 12, 6, 0.15) 100%
+  );
+}
+
+.myCouponBannerCenter {
+  position: relative;
+  z-index: 1;
+  padding: 40px 48px;
+  color: #fff;
+}
+
+.myCouponBannerSub {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.myCouponBannerTitle {
+  margin: 0 0 12px;
+  font-size: 30px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.myCouponBannerCount {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.myCouponBannerCount strong {
+  font-size: 22px;
+  font-weight: 900;
+  color: #f5c97a;
+  margin-right: 3px;
+}
+
+.myCouponCountBar {
+  padding: 12px 18px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  background: rgba(255,255,255,0.65);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(4px);
+}
+.myCouponCountBar strong {
+  font-size: 15px;
+  font-weight: 800;
+  color: #913a22;
+}
+
+.myCouponList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+
+/* ── 쿠폰 카드 (cp = coupon) ── */
+.cpCard {
+  display: flex;
+  align-items: stretch;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.08);
+  background: #fffef9;
+  position: relative;
+  min-height: 118px;
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.cpCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 24px rgba(0,0,0,0.13);
+}
+
+.cpCardLeft {
+  width: 118px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 14px;
+  gap: 5px;
+  border-right: 2px dashed rgba(255,255,255,0.28);
+}
+.cpCard.percent .cpCardLeft { background: #7b3b24; }
+.cpCard.fixed   .cpCardLeft { background: #2a2016; }
+
+.cpValue {
+  font-size: 28px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.cpValueLabel {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cpCardRight {
+  flex: 1;
+  padding: 18px 20px 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.cpCardDeco {
+  position: absolute;
+  right: -10px;
+  bottom: -14px;
+  width: 130px;
+  height: 130px;
+  object-fit: contain;
+  opacity: 0.13;
+  pointer-events: none;
+  user-select: none;
+  transform: rotate(-8deg);
+}
+
+.cpName {
+  margin: 0 0 3px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--foreground);
+  line-height: 1.35;
+}
+.cpDesc {
+  margin: 0 0 3px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #913a22;
+}
+.cpCond {
+  margin: 0 0 10px;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+.cpBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.cpCode {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  color: #5a4a3a;
+  background: #f0ebe0;
+  padding: 3px 9px;
+  border-radius: 5px;
+  letter-spacing: 0.08em;
+}
+.cpExpiry {
+  font-size: 11px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+.cpExpiry.noExpiry { color: #c0a87a; font-weight: 600; }
+
+.myCouponEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 80px 0;
+  color: var(--muted-foreground);
+}
+.myCouponEmptyIcon { font-size: 52px; }
+.myCouponEmpty p { margin: 0; font-size: 18px; font-weight: 700; color: var(--muted-foreground); }
+.myCouponEmpty span { font-size: 13px; text-align: center; }
+
+.myCouponFootNote {
+  margin: 32px 0 0;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── 위시리스트 미리보기 (메인 탭) ── */
+.wishPreviewGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.wishPreviewCard {
+  cursor: pointer;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--border);
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.wishPreviewCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+.wishPreviewImgBox {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #f5f1ea;
+}
+.wishPreviewImgBox img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.wishPreviewCard:hover .wishPreviewImgBox img {
+  transform: scale(1.05);
+}
+
+.wishRemoveBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(255,255,255,0.9);
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 14px;
+  color: #e05;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.15s;
+}
+.wishRemoveBtn:hover {
+  background: var(--card);
+  transform: scale(1.15);
+}
+
+.wishPreviewName {
+  margin: 8px 10px 2px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.wishPreviewPrice {
+  margin: 0 10px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #913a22;
+}
+
+/* ── 위시리스트 전체 섹션 ── */
+.myWishSection {
+  padding-bottom: 40px;
+}
+
+.myWishCountBar {
+  padding: 12px 18px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  background: rgba(255,255,255,0.65);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 24px;
+  backdrop-filter: blur(4px);
+}
+.myWishCountBar strong {
+  font-size: 15px;
+  font-weight: 800;
+  color: #913a22;
+}
+
+.myWishGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 18px;
+}
+
+.myWishCard {
+  cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--card);
+  border: 1px solid var(--border);
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.myWishCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.myWishImgBox {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #f5f1ea;
+}
+.myWishImgBox img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+.myWishCard:hover .myWishImgBox img {
+  transform: scale(1.05);
+}
+
+.myWishHeartBtn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255,255,255,0.92);
+  border: none;
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  font-size: 16px;
+  color: #e05;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.15s;
+}
+.myWishHeartBtn:hover {
+  background: var(--card);
+  transform: scale(1.2);
+}
+
+.myWishInfo {
+  padding: 12px 14px 14px;
+}
+.myWishName {
+  margin: 0 0 4px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+.myWishDesc {
+  margin: 0 0 4px;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.myWishPrice {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #913a22;
+}
+.myWishReview {
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  font-weight: 600;
+}
+
+.myWishEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 80px 0;
+  color: var(--muted-foreground);
+}
+.myWishEmptyIcon { font-size: 52px; }
+.myWishEmpty p { margin: 0; font-size: 18px; font-weight: 700; color: var(--muted-foreground); }
+.myWishEmpty span { font-size: 13px; text-align: center; }
+
+/* ── 주문내역 피드 섹션 ── */
+.myOrderFeedSection {
+  padding-bottom: 60px;
+}
+
+.myOrderFeedHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 36px;
+}
+.myOrderFeedHeader h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--foreground);
+}
+.myOrderFeedCount {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+
+.myOrderFeedEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 80px 0;
+  color: var(--muted-foreground);
+}
+.myOrderFeedEmptyIcon { font-size: 52px; }
+.myOrderFeedEmpty p {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+}
+.myOrderFeedEmpty span:not(.myOrderFeedEmptyIcon) {
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ── 타임라인 피드 ── */
+.feedList {
+  position: relative;
+  padding-left: 36px;
+}
+.feedList::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  bottom: 20px;
+  width: 2px;
+  background: linear-gradient(to bottom, #c47a3a 0%, var(--border) 100%);
+  border-radius: 2px;
+}
+
+.feedItem {
+  position: relative;
+  margin-bottom: 28px;
+  cursor: default;
+}
+.feedItem.clickable {
+  cursor: pointer;
+}
+.feedItem:last-child { margin-bottom: 0; }
+
+.feedDot {
+  position: absolute;
+  left: -36px;
+  top: 15px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #7b3b24;
+  border: 3px solid #fdf5e0;
+  box-shadow: 0 0 0 2px #c47a3a;
+  z-index: 1;
+  transition: transform 0.18s;
+}
+.feedItem.clickable:hover .feedDot {
+  transform: scale(1.25);
+}
+
+.feedMeta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.feedDate {
+  font-size: 12px;
+  font-weight: 700;
+  color: #7b5a3a;
+}
+
+.feedCard {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.feedItem.clickable:hover .feedCard {
+  transform: translateX(5px);
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+}
+
+.feedCardTop {
+  padding: 13px 16px 6px;
+}
+.feedOrderNo {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+  letter-spacing: 0.04em;
+}
+
+.feedThumbStrip {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.feedThumbStrip::-webkit-scrollbar { display: none; }
+
+.feedThumb {
+  width: 76px;
+  height: 76px;
+  object-fit: cover;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--muted);
+}
+.feedThumbEmpty {
+  width: 76px;
+  height: 76px;
+  border-radius: 9px;
+  background: var(--muted);
+  flex-shrink: 0;
+}
+
+.feedCardFoot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px 14px;
+  border-top: 1px solid var(--border);
+}
+.feedItemCount {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+.feedTotal {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+.feedReceipt {
+  font-size: 11px;
+  font-weight: 700;
+  color: #913a22;
+  white-space: nowrap;
+  padding: 4px 10px;
+  border: 1px solid #913a22;
+  border-radius: 20px;
+  transition: background 0.15s, color 0.15s;
+}
+.feedItem.clickable:hover .feedReceipt {
+  background: #913a22;
+  color: #fff;
+}
+
+/* ── 회원 등급 섹션 ── */
+.myGradeSection {
+  padding-bottom: 60px;
+}
+
+.gradeHeroCard {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  padding: 40px 44px;
+  margin-bottom: 36px;
+  min-height: 190px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+}
+
+.gradeHeroImg {
+  position: absolute;
+  right: -16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 240px;
+  height: 240px;
+  object-fit: contain;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+.gradeHeroContent {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+}
+
+.gradeHeroLabel {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+}
+
+.gradeHeroName {
+  margin: 0 0 14px;
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.gradeHeroSpent {
+  margin: 0 0 20px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  font-weight: 500;
+}
+.gradeHeroSpent strong {
+  color: rgba(255,255,255,0.88);
+  font-weight: 700;
+}
+
+.gradeHeroMax {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.gradeHeroProgress { max-width: 320px; }
+
+.gradeHeroProgressLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: rgba(255,255,255,0.5);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.gradeProgressBarBg {
+  height: 6px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.gradeProgressBarFill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gradeTierTitle {
+  margin: 0 0 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted-foreground);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.gradeTierList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.gradeTierCard {
+  display: flex;
+  align-items: center;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background: var(--card);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+.gradeTierCard:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+.gradeTierCard.current { box-shadow: 0 4px 22px rgba(0,0,0,0.15); }
+.gradeTierCard.achieved { opacity: 0.82; }
+.gradeTierCard.locked   { opacity: 0.38; filter: grayscale(0.5); }
+
+.gradeTierLeft {
+  width: 96px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 10px;
+  gap: 5px;
+  min-height: 90px;
+}
+.gradeTierRank {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.gradeTierName {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+.gradeTierImg {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin: 0 6px;
+  opacity: 0.8;
+}
+
+.gradeTierInfo {
+  flex: 1;
+  padding: 0 16px;
+  min-width: 0;
+}
+.gradeTierDesc {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+.gradeTierMin {
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+.gradeTierStatus {
+  padding: 0 18px;
+  flex-shrink: 0;
+}
+
+.gradeTierBadge {
+  display: inline-block;
+  padding: 5px 13px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.badgeCurrent  { color: #fff; }
+.badgeAchieved { background: #e8f5e9; color: #2e7d32; }
+.badgeLocked   { background: #f5f5f5; color: #ccc; }
+
+/* ── 반응형 ── */
+@media (max-width: 900px) {
+  .mypage {
+    grid-template-columns: 1fr;
+  }
+
+  .mypageSide {
+    position: static;
+    height: auto;
+    padding: 60px 24px 28px;
+  }
+
+  .mypageSide nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0;
+  }
+
+  .mypageSide nav p {
+    border-bottom: none;
+    padding: 6px 12px;
+    border-right: 1px solid var(--border);
+  }
+
+  .mypageBox {
+    padding: 0 24px 60px;
+  }
+
+  .userInfoGrid,
+  .orderStatus {
+    grid-template-columns: 1fr;
+    border-radius: 0;
+  }
+
+  .userInfoGrid div,
+  .orderStatus div {
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .accountSection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+}
+

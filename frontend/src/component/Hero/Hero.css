@@ -1,0 +1,168 @@
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.heroSlider {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.7s ease;
+}
+
+.heroSlide {
+  min-width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.heroMedia {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 1;
+}
+
+.heroContent {
+  position: absolute;
+  left: 80px;
+  bottom: 100px;
+  color: white;
+  z-index: 2;
+}
+
+/* ── 슬라이드 화살표 버튼 ── */
+.heroPrev,
+.heroNext {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.2s, border-color 0.2s;
+  backdrop-filter: blur(6px);
+}
+
+.heroPrev { left: 32px; }
+.heroNext { right: 32px; }
+
+.heroPrev:hover,
+.heroNext:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.6);
+  transform: translateY(-50%) scale(1.08);
+}
+
+/* 화살표 ‹ › 모양 (CSS pseudo로 그리기) */
+.heroPrev span,
+.heroNext span {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid #fff;
+  border-right: 2px solid #fff;
+  border-radius: 1px;
+}
+
+.heroPrev span {
+  transform: rotate(-135deg) translate(-2px, 2px);
+}
+
+.heroNext span {
+  transform: rotate(45deg) translate(-2px, 2px);
+}
+
+.heroIndicator {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  z-index: 10;
+}
+
+.divider {
+  opacity: 0.5;
+}
+
+.slideBtn {
+  position: absolute;
+  top: 50%;
+  width: 80px;
+  height: 80px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.bestSlider {
+  position: relative;
+}
+.bestGrid {
+  position: relative;
+  z-index: 1;
+}
+
+.slideBtn {
+  z-index: 10;
+}
+
+.slideBtn::before,
+.slideBtn::after {
+  content: "";
+  position: absolute;
+  width: 42px;      /* 길이 */
+  height: 2px;      /* 두께 */
+  background: #f7f0f0;
+  left: 20px;
+}
+
+.prevBtn::before {
+  top: 26px;
+  transform: rotate(-45deg);
+}
+
+.prevBtn::after {
+  top: 54px;
+  transform: rotate(45deg);
+}
+
+.nextBtn::before {
+  top: 26px;
+  transform: rotate(45deg);
+}
+
+.nextBtn::after {
+  top: 54px;
+  transform: rotate(-45deg);
+}
+
+.prevBtn {
+  left: -80px;
+}
+
+.nextBtn {
+  right: -80px;
+}

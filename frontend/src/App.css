@@ -1,0 +1,40 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #f5f1ea;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+body.dark {
+  background: #2c3d67;
+  color: #333231;
+}
+body.dark .home,
+body.dark .cartPage,
+body.dark .registerPage {
+  background: #141822;
+  color: #f5f1ea;
+}
+
+body.dark .homeTitle h2,
+body.dark .homeTitle p {
+  color: #f5f1ea;
+}
+
+body.dark .categoryCard {
+  background-color: #222;
+}
+
+body.dark .footer {
+  background: #000;
+}
+

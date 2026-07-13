@@ -1,0 +1,170 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&family=Noto+Sans+KR:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'TwayFly';
+  src: url('./assets/font/tway_fly.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --radius: var(--radius);
+}
+
+:root {
+  --background: #f4f0e8;
+  --foreground: #1c1a16;
+  --card: #ede8dd;
+  --card-foreground: #1c1a16;
+  --primary: #1c1a16;
+  --primary-foreground: #f4f0e8;
+  --secondary: #e8e3d8;
+  --secondary-foreground: #1c1a16;
+  --muted: #e4dfd3;
+  --muted-foreground: #7a7060;
+  --accent: #2b4a3f;
+  --accent-foreground: #f4f0e8;
+  --border: rgba(28, 26, 22, 0.12);
+  --radius: 0rem;
+}
+
+/* 다크모드 — 사이트 전역에서 쓰는 달빛 네이비 톤과 통일 */
+body.dark {
+  --background: #060d1e;
+  --foreground: #bfcbec;
+  --card: #0b1430;
+  --card-foreground: #bfcbec;
+  --primary: #bfcbec;
+  --primary-foreground: #060d1e;
+  --secondary: #0f1f3d;
+  --secondary-foreground: #bfcbec;
+  --muted: #0f1f3d;
+  --muted-foreground: #7a8db5;
+  --accent: #1f3a30;
+  --accent-foreground: #dbe6f7;
+  --border: rgba(150, 185, 255, 0.16);
+
+  /* Tailwind의 @theme 블록은 var() 참조를 빌드 타임에 고정값으로 굽기 때문에,
+     --color-* 유틸 변수들도 여기서 다시 선언해야 다크모드가 실제로 반영된다. */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── 라이트/다크 테마 전환 트랜지션 ── */
+body,
+main, section, article, aside, header,
+.home, .bestItem, .roomFlow, .placeSection,
+.placeCard, .thumbBox,
+.spaceAccordion, .ShowroomAccordion, .spaceInfo {
+  transition:
+    background-color 0.8s ease,
+    background     0.8s ease,
+    border-color   0.6s ease;
+}
+
+h1, h2, h3, h4, h5, h6, p, span, a, strong, em, li {
+  transition: color 0.6s ease;
+}
+
+/* 스크롤바 기본: 투명 */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 3px;
+  transition: background 1.6s cubic-bezier(0, 0, 0.15, 1);
+}
+
+/* 스크롤 중일 때만 표시 */
+body.is-scrolling::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+*:not(input):not(textarea):not([contenteditable="true"]) {
+  cursor: default;
+  user-select: none;
+}
+
+input, textarea, [contenteditable="true"] {
+  cursor: text;
+  user-select: text;
+}
+
+a, button, [role="button"], label[for], select {
+  cursor: pointer;
+}
+
+:root {
+  font-family: "Noto Sans KR", system-ui, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: var(--foreground);
+  background-color: var(--background);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Noto Serif KR", serif;
+  font-weight: 400;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  color: var(--foreground);
+  background-color: var(--background);
+}
+
+button {
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}

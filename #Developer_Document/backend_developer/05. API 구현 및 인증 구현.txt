@@ -1,0 +1,27 @@
+#  serializers.py 작성
+
+    → DB 데이터 ↔ JSON 변환 설정
+
+#  views.py 작성
+
+    → 각 앱의 API 로직 작성
+
+#  urls.py 연결
+
+    → config/urls.py ↔ 각 앱 urls.py 연결
+
+#  Django Admin 등록
+
+    → admin.py에 모델 등록
+
+#  JWT 토큰 API 연결
+
+    /api/token/         → 로그인
+
+    /api/token/refresh/ → 토큰 갱신
+
+#  JWT 작동 확인
+
+    python manage.py runserver
+
+    → http://127.0.0.1:8000/api/token/ 접속 확인

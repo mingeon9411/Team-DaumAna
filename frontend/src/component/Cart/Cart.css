@@ -1,0 +1,504 @@
+.cartPage {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  padding: 140px 72px 120px;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Noto Sans KR", sans-serif;
+  overflow: hidden;
+  animation: cartPageIn 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes cartPageIn {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 전체 배경 이미지 */
+.cartPage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("../../assets/scenes/cart_back.png") center top / cover no-repeat;
+  opacity: 0.38;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* 은은한 베이지 필터 */
+.cartPage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(244, 241, 236, 0.34);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.cartInner {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  position: relative;
+  z-index: 2;
+
+  background: rgba(255, 255, 255, 0.212);
+
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+
+  border: 1px solid rgba(255, 255, 255, 0.5);
+
+  border-radius: 24px;
+
+  padding: 60px;
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.06),
+    0 4px 12px rgba(0,0,0,0.03);
+}
+
+.cartHeader h1 {
+  font-family: "Noto Serif KR", serif;
+  font-size: 32px;
+  font-weight: 500;
+  margin-bottom: 18px;
+}
+
+.cartHeader p {
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+
+/* 배송 탭 */
+.cartTabs {
+  display: flex;
+  gap: 32px;
+  border-bottom: 3px solid var(--foreground);
+  margin-bottom: 0;
+}
+
+.cartTabs button {
+  height: 56px;
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--muted-foreground);
+}
+
+.cartTabs .active {
+  color: var(--foreground);
+}
+
+/* 장바구니 표 */
+.cartTable {
+  background: transparent;
+  border-bottom: 1px solid rgba(28, 26, 22, 0.18);
+}
+
+/* 표 헤더 */
+.cartTableHead {
+  height: 58px;
+  display: grid;
+  grid-template-columns: 110px 1fr 140px 100px 140px 130px;
+  align-items: center;
+
+  border-bottom: 1px solid rgba(28, 26, 22, 0.14);
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+
+.cartTableHead label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cartTableHead span {
+  text-align: center;
+}
+
+.cartTableHead span:first-of-type {
+  text-align: left;
+}
+
+/* 상품 행 */
+.cartRow {
+  display: grid;
+  grid-template-columns: 110px 1fr 140px 100px 140px 130px;
+  align-items: center;
+  min-height: 170px;
+
+  border-bottom: 1px solid rgba(28, 26, 22, 0.1);
+  font-size: 14px;
+}
+
+.cartRow > label {
+  padding-left: 8px;
+}
+
+.cartRow > strong {
+  text-align: center;
+}
+
+.cartRow > .rowBtns {
+  align-items: center;
+  justify-content: center;
+}
+
+.cartTable input {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--primary);
+}
+
+/* 빈 장바구니 */
+.emptyCart {
+  min-height: 250px;
+  padding: 70px 20px;
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: 16px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.emptyCart button {
+  margin-top: 28px;
+  width: 140px;
+  height: 42px;
+  border: none;
+  border-radius: 5px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* 상품 정보 */
+.productInfo {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.productImg {
+  position: relative;
+  width: 90px;
+  height: 120px;
+  background: rgba(228, 223, 211, 0.6);
+  overflow: hidden;
+}
+
+.productImg img,
+.cartThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.brand {
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--muted-foreground);
+  margin-bottom: 8px;
+}
+
+.productInfo h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.option {
+  font-size: 13px;
+  color: var(--foreground);
+  margin-bottom: 14px;
+}
+
+.optionBtn {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* 수량 */
+.qty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(28, 26, 22, 0.2);
+  border-radius: 2px;
+  width: fit-content;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.qty button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.qty button:hover:not(:disabled) {
+  background: rgba(28, 26, 22, 0.06);
+}
+
+.qty button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.qty span {
+  width: 36px;
+  height: 30px;
+  border-left: 1px solid rgba(28, 26, 22, 0.15);
+  border-right: 1px solid rgba(28, 26, 22, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: var(--foreground);
+  background: transparent;
+}
+
+/* 배송정보 */
+.delivery {
+  text-align: center;
+}
+
+.delivery strong {
+  font-size: 13px;
+}
+
+.delivery p {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+/* 행 버튼 */
+.rowBtns {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.rowBtns button {
+  height: 30px;
+  border: none;
+  border-radius: 3px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.rowBtns .blackBtn {
+  background: #b0301f;
+}
+
+/* 총 금액 영역 */
+.cartTotal {
+  min-height: 76px;
+  margin-top: 22px;
+  padding: 0 8px;
+
+  background: transparent;
+  border-top: 1px solid rgba(28, 26, 22, 0.14);
+  border-bottom: 1px solid rgba(28, 26, 22, 0.14);
+
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 24px;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.cartTotal strong {
+  margin-left: 8px;
+}
+
+.finalPrice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.finalPrice strong {
+  color: #c33f2e;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* 하단 버튼 */
+.cartActions {
+  margin-top: 58px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.cartActions button {
+  min-width: 150px;
+  height: 46px;
+  padding: 0 24px;
+  border: none;
+  border-radius: 5px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cartActions .orderBtn {
+  background: #b0301f;
+  color: #fff;
+}
+
+/* 품절 행 */
+.cartRow.soldOutRow {
+  opacity: 0.55;
+}
+
+.soldOutBadge {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* ── 다크모드 ── */
+body.dark .cartPage {
+  background-color: #060d1e;
+  color: #bfcbec;
+}
+
+body.dark .cartTableHead span,
+body.dark .cartRow > strong {
+  color: #7a8db5;
+}
+
+body.dark .qty {
+  border-color: rgba(150, 185, 255, 0.2);
+}
+
+body.dark .qty button {
+  color: #9aadda;
+}
+
+body.dark .qty span {
+  border-color: rgba(150, 185, 255, 0.15);
+  color: #bfcbec;
+}
+
+body.dark .cartSummary {
+  border-top-color: rgba(150, 185, 255, 0.15);
+}
+
+body.dark .finalPrice strong {
+  color: #bfcbec;
+}
+
+/* 로그인 유도 모달 */
+.loginModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loginModal {
+  background: var(--card);
+  border-radius: 4px;
+  padding: 40px 48px;
+  min-width: 320px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+
+.loginModalMsg {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--foreground);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+.loginModalBtns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.loginModalCancel,
+.loginModalConfirm {
+  width: 110px;
+  height: 42px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: 0.2s;
+}
+
+.loginModalCancel {
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--muted-foreground);
+}
+
+.loginModalCancel:hover {
+  background: var(--background);
+}
+
+.loginModalConfirm {
+  border: none;
+  background: #b0301f;
+  color: #fff;
+  font-weight: 600;
+}
+
+.loginModalConfirm:hover {
+  background: #8c2417;
+}
