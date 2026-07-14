@@ -1,16 +1,19 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { socialExchange, getMe } from '../../api';
+import { useAuthModal } from '../../context/AuthModalContext';
 
 function SocialCallback() {
     const navigate = useNavigate();
+    const { openLogin } = useAuthModal();
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
 
         if (!code) {
-            navigate('/login', { replace: true });
+            navigate('/', { replace: true });
+            openLogin();
             return;
         }
 
@@ -42,12 +45,13 @@ function SocialCallback() {
             .catch(() => {
                 sessionStorage.removeItem('pending_access_token');
                 sessionStorage.removeItem('pending_refresh_token');
-                navigate('/login', { replace: true });
+                navigate('/', { replace: true });
+                openLogin();
             });
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontSize: '16px', color: '#666' }}>
+        <div data-hsnap style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw', height: '100vh', flexShrink: 0, fontSize: '16px', color: '#666' }}>
             로그인 처리 중...
         </div>
     );

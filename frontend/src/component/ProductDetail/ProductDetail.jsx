@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getProductDetail, addToCart } from "../../api";
 import products from "../../data/products";
 import { isWished, toggleWish } from "../../utils/wishlist";
+import { useAuthModal } from "../../context/AuthModalContext";
 
 function ProductDetail() {
   const { id } = useParams();
@@ -26,6 +27,7 @@ function ProductDetail() {
     : null;
 
   const navigate = useNavigate();
+  const { openLogin } = useAuthModal();
   const [quantity, setQuantity] = useState(0);
   const [wished, setWished] = useState(() => isWished(Number(id)));
 
@@ -76,7 +78,7 @@ function ProductDetail() {
     }
     if (!localStorage.getItem("access_token")) {
       alert("로그인이 필요합니다.");
-      navigate("/login");
+      openLogin();
       return;
     }
     try {
@@ -110,7 +112,7 @@ function ProductDetail() {
   if (!product) return <main>상품을 찾을 수 없습니다.</main>;
 
   return (
-    <main className="detailPage">
+    <main className="detailPage" data-lenis-prevent data-hsnap>
       <section className="detailLayout">
         <div className="detailLeft">
           <img src={product.image} alt={product.name} />

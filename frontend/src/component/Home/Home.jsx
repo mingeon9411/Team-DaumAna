@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { ChevronLeft, ChevronRight, Heart, ArrowUpRight } from "lucide-react";
+import { FaInstagram } from "react-icons/fa6";
 import "./Home.css";
 import heroDay from "../../assets/scenes/hanok-bedroom.jpg";
 import heroNight from "../../assets/scenes/hanok-bedroom-night.jpg";
@@ -72,6 +73,44 @@ const SPREAD = {
   alt: "한옥 중정 전경 - 단청 처마와 연못이 보이는 마루",
 };
 
+const LOOKBOOK_PHOTOS = [
+  "photo-1484101403633-562f891dc89a",
+  "photo-1493663284031-b7e3aefcae8e",
+  "photo-1507003211169-0a1dd7228f2d",
+  "photo-1512918728675-ed5a9ecdebfd",
+  "photo-1519710164239-da123dc03ef4",
+  "photo-1522708323590-d24dbb6b0267",
+  "photo-1522771739844-6a9f6d5f14af",
+  "photo-1524758631624-e2822e304c36",
+  "photo-1533090161767-e6ffed986c88",
+  "photo-1540932239986-30128078f3c5",
+  "photo-1550581190-9c1c48d21d6c",
+  "photo-1554995207-c18c203602cb",
+  "photo-1556228453-efd6c1ff04f6",
+  "photo-1560448204-e02f11c3d0e2",
+  "photo-1567016376408-0226e4d0c1ea",
+  "photo-1567016432779-094069958ea5",
+  "photo-1567538096630-e0c55bd6374c",
+  "photo-1573883431205-98b5f10aaedb",
+  "photo-1583847268964-b28dc8f51f92",
+  "photo-1586023492125-27b2c045efd7",
+  "photo-1594026112284-02bb6f3352fe",
+  "photo-1595526114035-0d45ed16cfbf",
+  "photo-1599619351208-3e6c839d6828",
+  "photo-1600210492486-724fe5c67fb0",
+  "photo-1600585154340-be6161a56a0c",
+  "photo-1606760227091-3dd870d97f1d",
+  "photo-1615529182904-14819c35db37",
+  "photo-1616486338812-3dadae4b4ace",
+  "photo-1616627561950-9f746e330187",
+  "photo-1618220179428-22790b461013",
+  "photo-1618221195710-dd6b41faaea6",
+  "photo-1631679706909-1844bbd07221",
+  "photo-1631889993959-41b4e9c6e3c5",
+].map((id) => `https://images.unsplash.com/${id}?w=400&h=400&fit=crop&auto=format`);
+
+const LOOKBOOK_PAGE_SIZE = 21;
+
 function Hairline({ className = "" }) {
   return (
     <div
@@ -95,7 +134,14 @@ function Label({ children, className = "" }) {
 function Home() {
   const [wishlist, setWishlist] = useState([]);
   const [heroSlide, setHeroSlide] = useState(0);
+  const [lookbookPage, setLookbookPage] = useState(0);
   const carouselRef = useRef(null);
+
+  const lookbookPageCount = Math.ceil(LOOKBOOK_PHOTOS.length / LOOKBOOK_PAGE_SIZE);
+  const lookbookPhotos = LOOKBOOK_PHOTOS.slice(
+    lookbookPage * LOOKBOOK_PAGE_SIZE,
+    lookbookPage * LOOKBOOK_PAGE_SIZE + LOOKBOOK_PAGE_SIZE
+  );
 
   const toggleWish = (id) =>
     setWishlist((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
@@ -111,10 +157,10 @@ function Home() {
     carouselRef.current?.scrollBy({ left: dir === "right" ? 380 : -380, behavior: "smooth" });
 
   return (
-    <div className="home bg-background text-foreground" style={SANS}>
+    <div className="home bg-background text-foreground flex flex-row" style={SANS}>
 
       {/* HERO */}
-      <section className="relative h-[88vh] min-h-[560px] overflow-hidden bg-muted">
+      <section data-hsnap className="relative w-screen h-screen shrink-0 overflow-hidden bg-muted">
         {HERO_SLIDES.map((slide, i) => (
           <img
             key={slide.src}
@@ -143,62 +189,68 @@ function Home() {
       </section>
 
       {/* EDITORIAL GRID */}
-      <section id="home-essay" className="max-w-7xl mx-auto px-8 py-20">
-        <Hairline className="mb-10" />
-        <div className="grid grid-cols-1 md:grid-cols-3">
-          <div className="overflow-hidden bg-muted aspect-[3/4] group cursor-pointer">
-            <img src={FEATURES[0].image} alt={FEATURES[0].alt}
-              className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
-          </div>
-          <div className="overflow-hidden bg-muted aspect-[3/4] group cursor-pointer md:mt-32">
-            <img src={FEATURES[1].image} alt={FEATURES[1].alt}
-              className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
-          </div>
-          <div className="overflow-hidden bg-muted aspect-[3/4] group cursor-pointer md:mt-64">
-            <img src={FEATURES[2].image} alt={FEATURES[2].alt}
-              className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+      <section id="home-essay" data-hsnap className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center">
+        <div className="max-w-7xl mx-auto px-8 py-10 w-full">
+          <Hairline className="mb-6" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="overflow-hidden bg-muted aspect-4/3 group cursor-pointer">
+              <img src={FEATURES[0].image} alt={FEATURES[0].alt}
+                className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+            </div>
+            <div className="overflow-hidden bg-muted aspect-4/3 group cursor-pointer md:mt-6">
+              <img src={FEATURES[1].image} alt={FEATURES[1].alt}
+                className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+            </div>
+            <div className="overflow-hidden bg-muted aspect-4/3 group cursor-pointer md:mt-12">
+              <img src={FEATURES[2].image} alt={FEATURES[2].alt}
+                className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+            </div>
           </div>
         </div>
       </section>
 
       {/* EDITORIAL GRID — 오른쪽에서 왼쪽으로 내려가는 배치 */}
-      <section className="max-w-7xl mx-auto px-8 pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-3">
-          <div className="overflow-hidden bg-muted aspect-[3/4] group cursor-pointer md:mt-64">
-            <img src={heroOverhead} alt="집다움 - 한옥 침실 위에서"
-              className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
-          </div>
-          <div className="overflow-hidden bg-muted aspect-[3/4] group cursor-pointer md:mt-32">
-            <img src={heroDoorway} alt="집다움 - 한옥 침실 문 너머로"
-              className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
-          </div>
-          <div className="overflow-hidden bg-muted aspect-[3/4] group cursor-pointer">
-            <img src={heroWardrobe} alt="집다움 - 한옥 장롱"
-              className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+      <section data-hsnap className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center">
+        <div className="max-w-7xl mx-auto px-8 py-10 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="overflow-hidden bg-muted aspect-4/3 group cursor-pointer md:mt-12">
+              <img src={heroOverhead} alt="집다움 - 한옥 침실 위에서"
+                className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+            </div>
+            <div className="overflow-hidden bg-muted aspect-4/3 group cursor-pointer md:mt-6">
+              <img src={heroDoorway} alt="집다움 - 한옥 침실 문 너머로"
+                className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+            </div>
+            <div className="overflow-hidden bg-muted aspect-4/3 group cursor-pointer">
+              <img src={heroWardrobe} alt="집다움 - 한옥 장롱"
+                className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+            </div>
           </div>
         </div>
       </section>
 
       {/* EDITORIAL GRID — 왼쪽에서 오른쪽으로 내려가는 배치 */}
-      <section className="max-w-7xl mx-auto px-8 pb-20">
-        <div className="grid grid-cols-1 md:grid-cols-3">
-          <div className="overflow-hidden bg-muted aspect-[3/4] group cursor-pointer">
-            <img src={heroDay} alt="집다움 - 한옥 침실"
-              className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
-          </div>
-          <div className="overflow-hidden bg-muted aspect-[3/4] group cursor-pointer md:mt-32">
-            <img src={heroTea} alt="집다움 - 한옥에서 차를 따르는 모습"
-              className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
-          </div>
-          <div className="overflow-hidden bg-muted aspect-[3/4] group cursor-pointer md:mt-64">
-            <img src={heroNight} alt="집다움 - 한옥 침실 야경"
-              className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+      <section data-hsnap className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center">
+        <div className="max-w-7xl mx-auto px-8 py-10 w-full">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="overflow-hidden bg-muted aspect-4/3 group cursor-pointer">
+              <img src={heroDay} alt="집다움 - 한옥 침실"
+                className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+            </div>
+            <div className="overflow-hidden bg-muted aspect-4/3 group cursor-pointer md:mt-6">
+              <img src={heroTea} alt="집다움 - 한옥에서 차를 따르는 모습"
+                className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+            </div>
+            <div className="overflow-hidden bg-muted aspect-4/3 group cursor-pointer md:mt-12">
+              <img src={heroNight} alt="집다움 - 한옥 침실 야경"
+                className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+            </div>
           </div>
         </div>
       </section>
 
       {/* PULL QUOTE SPREAD */}
-      <section className="grid grid-cols-1 md:grid-cols-2 min-h-[56vh]">
+      <section data-hsnap className="grid grid-cols-1 md:grid-cols-2 w-screen h-screen shrink-0 overflow-y-auto">
         <div className="overflow-hidden bg-muted h-72 md:h-auto">
           <img src={SPREAD.image} alt={SPREAD.alt} className="w-full h-full object-cover hover:scale-[1.03] transition-transform duration-1000" />
         </div>
@@ -215,7 +267,7 @@ function Home() {
       </section>
 
       {/* PRODUCT CAROUSEL */}
-      <section className="py-20">
+      <section data-hsnap className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center py-20">
         <div className="max-w-7xl mx-auto px-8 mb-10">
           <div className="flex items-baseline justify-between">
             <div>
@@ -256,7 +308,7 @@ function Home() {
       </section>
 
       {/* PHILOSOPHY */}
-      <section className="bg-accent text-accent-foreground py-20 px-8">
+      <section data-hsnap className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center bg-accent text-accent-foreground py-20 px-8">
         <div className="max-w-4xl mx-auto text-center">
           <Label className="block mb-6 text-accent-foreground/50">OUR PHILOSOPHY</Label>
           <p className="text-3xl md:text-4xl font-light leading-[1.6] mb-10" style={SERIF}>
@@ -270,31 +322,68 @@ function Home() {
       </section>
 
       {/* LOOKBOOK */}
-      <section className="py-20 max-w-7xl mx-auto px-8">
-        <div className="flex items-baseline justify-between mb-10">
-          <div>
-            <Label className="block mb-3">@jipdaum.official</Label>
-            <h2 className="text-3xl font-light text-foreground" style={SERIF}>갤러리</h2>
-          </div>
-        </div>
-        <Hairline className="mb-10" />
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[
-            "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=500&h=500&fit=crop&auto=format",
-            "https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=500&h=500&fit=crop&auto=format",
-            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&h=500&fit=crop&auto=format",
-            "https://images.unsplash.com/photo-1599619351208-3e6c839d6828?w=500&h=500&fit=crop&auto=format",
-          ].map((src, i) => (
-            <div key={i} className="group overflow-hidden bg-muted aspect-square cursor-pointer relative">
-              <img src={src} alt={`리빙 갤러리 ${i + 1}`} className="w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-600" />
-              <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/15 transition-colors duration-300" />
+      <section data-hsnap className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center">
+        <div className="max-w-7xl mx-auto px-8 py-10 w-full">
+          <div className="flex items-baseline justify-between mb-4">
+            <div>
+              <Label className="block mb-2">@jipdaum.official</Label>
+              <h2 className="text-3xl font-light text-foreground" style={SERIF}>갤러리</h2>
             </div>
-          ))}
+          </div>
+          <Hairline className="mb-4" />
+          <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 gap-2">
+            {lookbookPhotos.map((src, i) => (
+              <div key={src} className="group overflow-hidden bg-muted aspect-square cursor-pointer relative">
+                <img src={src} alt={`리빙 갤러리 ${lookbookPage * LOOKBOOK_PAGE_SIZE + i + 1}`} className="w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-600" />
+                <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/15 transition-colors duration-300" />
+                <FaInstagram className="absolute top-2 right-2 text-white drop-shadow" size={14} />
+              </div>
+            ))}
+          </div>
+
+          {lookbookPageCount > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-6">
+              <button
+                type="button"
+                aria-label="이전 페이지"
+                onClick={() => setLookbookPage((p) => Math.max(0, p - 1))}
+                disabled={lookbookPage === 0}
+                className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              {Array.from({ length: lookbookPageCount }, (_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  aria-label={`${i + 1}페이지`}
+                  onClick={() => setLookbookPage(i)}
+                  className={`w-8 h-8 text-sm flex items-center justify-center transition-colors ${
+                    i === lookbookPage
+                      ? "bg-foreground text-background"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                  style={MONO}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                type="button"
+                aria-label="다음 페이지"
+                onClick={() => setLookbookPage((p) => Math.min(lookbookPageCount - 1, p + 1))}
+                disabled={lookbookPage === lookbookPageCount - 1}
+                className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
       {/* NEWSLETTER */}
-      <section className="border-t border-border py-20 px-8 bg-secondary">
+      <section data-hsnap className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center border-t border-border py-20 px-8 bg-secondary">
         <div className="max-w-lg mx-auto text-center">
           <Label className="block mb-5">LETTER FROM EDITOR</Label>
           <h3 className="text-3xl font-light text-foreground mb-4" style={SERIF}>집다움만의 소식을 들어보세요.</h3>

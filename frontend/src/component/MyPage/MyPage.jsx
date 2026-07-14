@@ -11,6 +11,7 @@ import orientCloud from "../../assets/decor/orient_cloud.png";
 import flower2Img from "../../assets/decor/flower2.png";
 import Receipt from "./Receipt";
 import ChatBot from "./ChatBot";
+import { useAuthModal } from "../../context/AuthModalContext";
 
 const STATUS_LABEL = {
   PENDING: "입금대기",
@@ -39,6 +40,7 @@ function formatDate(isoStr) {
 
 function MyPage() {
   const navigate = useNavigate();
+  const { openLogin } = useAuthModal();
   const nickname = localStorage.getItem("nickname") || "회원";
 
   const [orders, setOrders] = useState([]);
@@ -95,7 +97,8 @@ function MyPage() {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("nickname");
-    navigate("/login");
+    navigate("/");
+    openLogin();
   };
 
   const handleCancelOrder = async (e, orderId) => {
@@ -112,7 +115,7 @@ function MyPage() {
   };
 
   return (
-    <main className="mypage">
+    <main className="mypage" data-lenis-prevent data-hsnap>
       {selectedOrder && (
         <Receipt
           order={selectedOrder}

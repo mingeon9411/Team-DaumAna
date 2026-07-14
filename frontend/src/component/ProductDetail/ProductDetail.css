@@ -2,8 +2,12 @@
   background: var(--background);
   color: var(--foreground);
   font-family: "Noto Sans KR", sans-serif;
-  min-height: 100vh;
-  padding-top: 82px;
+  width: 100vw;
+  height: 100vh;
+  flex-shrink: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-top: 130px;
   animation: detailPageIn 3.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 

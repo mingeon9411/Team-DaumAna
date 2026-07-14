@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as PortOne from "@portone/browser-sdk/v2";
 import { createOrder, readyPayment, verifyPayment, getMyCoupons, validateCoupon } from "../../api";
+import { useAuthModal } from "../../context/AuthModalContext";
 import "./Checkout.css";
 
 const PAYMENT_METHODS = [
@@ -12,6 +13,7 @@ const PAYMENT_METHODS = [
 function Checkout() {
   const { state } = useLocation();
   const navigate = useNavigate();
+  const { openLogin } = useAuthModal();
 
   const items = state?.cartItems
     || (state?.product ? [{ ...state.product, quantity: state.quantity }] : null);
@@ -98,7 +100,7 @@ function Checkout() {
     const token = localStorage.getItem("access_token");
     if (!token) {
       alert("로그인이 필요합니다.");
-      navigate("/login");
+      openLogin();
       return;
     }
 
@@ -172,7 +174,7 @@ function Checkout() {
   };
 
   return (
-    <main className="checkoutPage">
+    <main className="checkoutPage" data-lenis-prevent data-hsnap>
       <div className="checkoutInner">
         <h1 className="checkoutTitle">주문 / 결제</h1>
 

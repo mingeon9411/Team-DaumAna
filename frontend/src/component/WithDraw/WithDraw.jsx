@@ -2,7 +2,7 @@ import "./Withdraw.css";
 
 function Withdraw() {
   return (
-    <main className="withdrawPage">
+    <main className="withdrawPage" data-hsnap>
       <section className="withdrawBox">
         <h1>회원 탈퇴</h1>
         <p>

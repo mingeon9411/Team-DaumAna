@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import products from "../../data/products";
 import { getWishlist, toggleWish } from "../../utils/wishlist";
 import { addToCart } from "../../api";
+import { useAuthModal } from "../../context/AuthModalContext";
 
 import table from "../../assets/products/table.jpg";
 import table2 from "../../assets/products/table2.jpg";
@@ -17,6 +18,7 @@ function BestItem() {
     getWishlist().map((p) => p.id)
   );
   const navigate = useNavigate();
+  const { openLogin } = useAuthModal();
   /*
   const products = [
     {
@@ -57,7 +59,7 @@ function BestItem() {
   const handleCart = async (product) => {
     if (!localStorage.getItem("access_token")) {
       alert("로그인이 필요합니다.");
-      navigate("/login");
+      openLogin();
       return;
     }
     try {

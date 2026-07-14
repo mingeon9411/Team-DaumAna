@@ -1,10 +1,11 @@
 import "./Login.css";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { SiKakaotalk, SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
 import { useState, useRef } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { loginUser } from "../../api";
+import { useAuthModal } from "../../context/AuthModalContext";
 
 const SPRING = "http://localhost:8081";
 const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
@@ -13,6 +14,7 @@ const IS_DEV = import.meta.env.DEV;
 function Login() {
   const navigate = useNavigate();
   const recaptchaRef = useRef(null);
+  const { close, openRegister } = useAuthModal();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -61,6 +63,7 @@ function Login() {
       sessionStorage.setItem("pending_access_token", res.data.access);
       sessionStorage.setItem("pending_refresh_token", res.data.refresh);
       sessionStorage.setItem("pending_nickname", res.data.user.nickname);
+      close();
       navigate("/email-verify");
     } catch (err) {
       const msg = err.response?.data?.error || "로그인에 실패했습니다. 다시 시도해주세요.";
@@ -72,10 +75,8 @@ function Login() {
   };
 
   return (
-    <main className="loginPage">
-      <div className="loginOverlay"></div>
-
       <section className="loginBox">
+        <button type="button" className="authModalClose" aria-label="닫기" onClick={close}>×</button>
         <p className="loginLabel">JIPDAUM MEMBER</p>
 
         <h1>로그인</h1>
@@ -130,7 +131,7 @@ function Login() {
           <span></span>
           <a href="#">비밀번호 찾기</a>
           <span></span>
-          <Link to="/register">회원가입</Link>
+          <button type="button" className="linkBtn" onClick={openRegister}>회원가입</button>
         </div>
 
         <div className="snsLogin">
@@ -168,7 +169,6 @@ function Login() {
           </button>
         </div>
       </section>
-    </main>
   );
 }
 

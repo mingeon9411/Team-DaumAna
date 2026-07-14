@@ -21,9 +21,9 @@ function Header() {
     const handleScroll = () => {
       if (isHome) {
         const essay = document.getElementById("home-essay");
-        setScrolled(essay ? essay.getBoundingClientRect().top <= 82 : window.scrollY > 50);
+        setScrolled(essay ? essay.getBoundingClientRect().left <= 0 : window.scrollX > 50);
       } else {
-        setScrolled(window.scrollY > 50);
+        setScrolled(window.scrollX > 50);
       }
     };
 

@@ -23,7 +23,7 @@ function SearchResults() {
 
     return (
         <div className="srPage">
-            <div className="srWrap">
+            <div className="srWrap" data-hsnap>
                 <div className="srHeader">
                     <h2 className="srTitle">
                         {query ? (
@@ -44,29 +44,29 @@ function SearchResults() {
                         <p className="srEmptySub">다른 키워드로 검색해보세요.</p>
                     </div>
                 )}
-
-                <ul className="srGrid">
-                    {products.map((product) => (
-                        <li key={product.id} className="srCard">
-                            <Link to={`/product/${product.id}`} className="srCardLink">
-                                <div className="srImgWrap">
-                                    <img
-                                        src={localProducts.find(p => p.name === product.name)?.image || product.thumbnail_url || 'https://placehold.co/400x400?text=No+Image'}
-                                        alt={product.name}
-                                        className="srImg"
-                                    />
-                                </div>
-                                <div className="srInfo">
-                                    <span className="srCategory">{product.category_name}</span>
-                                    <p className="srName">{product.name}</p>
-                                    <p className="srBrand">{product.brand}</p>
-                                    <p className="srPrice">{product.base_price.toLocaleString()}원</p>
-                                </div>
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
             </div>
+
+            <ul className="srGrid">
+                {products.map((product) => (
+                    <li key={product.id} className="srCard">
+                        <Link to={`/product/${product.id}`} className="srCardLink">
+                            <div className="srImgWrap">
+                                <img
+                                    src={localProducts.find(p => p.name === product.name)?.image || product.thumbnail_url || 'https://placehold.co/400x400?text=No+Image'}
+                                    alt={product.name}
+                                    className="srImg"
+                                />
+                            </div>
+                            <div className="srInfo">
+                                <span className="srCategory">{product.category_name}</span>
+                                <p className="srName">{product.name}</p>
+                                <p className="srBrand">{product.brand}</p>
+                                <p className="srPrice">{product.base_price.toLocaleString()}원</p>
+                            </div>
+                        </Link>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }

@@ -63,7 +63,8 @@ const handle401 = async (error) => {
   if (!refreshToken) {
     isRefreshing = false;
     localStorage.removeItem('access_token');
-    window.location.href = '/login';
+    sessionStorage.setItem('open_login_modal', '1');
+    window.location.href = '/';
     return Promise.reject(error);
   }
 
@@ -81,7 +82,8 @@ const handle401 = async (error) => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('nickname');
-    window.location.href = '/login';
+    sessionStorage.setItem('open_login_modal', '1');
+    window.location.href = '/';
     return Promise.reject(error);
   } finally {
     isRefreshing = false;

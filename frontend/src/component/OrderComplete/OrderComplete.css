@@ -16,7 +16,9 @@
 }
 
 .ocPage {
-  min-height: 80vh;
+  width: 100vw;
+  height: 100vh;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;

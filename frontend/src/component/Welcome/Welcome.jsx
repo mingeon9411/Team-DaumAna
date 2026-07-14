@@ -3,7 +3,7 @@ import "./Welcome.css";
 
 function Welcome() {
   return (
-    <main className="welcomePage">
+    <main className="welcomePage" data-hsnap>
       <section className="welcomeBox">
         <p className="welcomeLabel">WELCOME TO JIPDAUM</p>
 

@@ -1,11 +1,13 @@
 // #회원가입 페이지
 import "./Register.css";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { registerUser, checkNicknameAPI } from "../../api";
+import { useAuthModal } from "../../context/AuthModalContext";
 
 function Register() {
   const navigate = useNavigate();
+  const { close, openLogin } = useAuthModal();
 
   const [showTerms, setShowTerms] = useState(false);
 
@@ -104,6 +106,7 @@ function Register() {
     try {
       await registerUser({ email, nickname, password, password_confirm: passwordConfirm });
       localStorage.setItem("nickname", nickname);
+      close();
       navigate("/welcome");
     } catch (err) {
       const data = err.response?.data;
@@ -120,8 +123,8 @@ function Register() {
   };
 
   return (
-    <main className="registerPage">
       <section className="registerBox">
+        <button type="button" className="authModalClose" aria-label="닫기" onClick={close}>×</button>
         <p className="registerLabel">JOIN JIPDAUM</p>
 
         <h1>회원가입</h1>
@@ -248,10 +251,9 @@ function Register() {
 
         <div className="registerLinks">
           <span>이미 계정이 있으신가요?</span>
-          <Link to="/login">로그인</Link>
+          <button type="button" className="linkBtn" onClick={openLogin}>로그인</button>
         </div>
       </section>
-    </main>
   );
 }
 

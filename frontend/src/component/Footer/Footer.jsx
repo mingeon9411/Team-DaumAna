@@ -6,7 +6,7 @@ import JipdaumLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent.png
 
 function Footer() {
   return (
-    <footer className="footer">
+    <footer className="footer" data-hsnap>
       <div className="footerTop">
         <div className="footerBrand">
           <img src={JipdaumLogoDark} alt="집다움" className="footerLogo" />

@@ -9,7 +9,7 @@ function OrderComplete() {
 
   if (!productName) {
     return (
-      <main className="ocPage">
+      <main className="ocPage" data-hsnap>
         <p className="ocError">잘못된 접근입니다.</p>
         <button className="ocHomeBtn" onClick={() => navigate("/")}>홈으로</button>
       </main>

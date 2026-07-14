@@ -76,10 +76,6 @@ body.dark {
   --color-border: var(--border);
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 /* ── 라이트/다크 테마 전환 트랜지션 ── */
 body,
 main, section, article, aside, header,
@@ -99,6 +95,7 @@ h1, h2, h3, h4, h5, h6, p, span, a, strong, em, li {
 /* 스크롤바 기본: 투명 */
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -152,7 +149,7 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-y: hidden;
   color: var(--foreground);
   background-color: var(--background);
 }

@@ -12,10 +12,11 @@ import {
   LuMoon,
   LuLogOut,
   LuChevronLeft,
-  LuChevronsUp,
-  LuChevronsDown,
+  LuChevronsLeft,
+  LuChevronsRight,
 } from "react-icons/lu";
 import { logoutUser, getCartItems } from "../../api";
+import { useAuthModal } from "../../context/AuthModalContext";
 
 function Sidebar() {
   const [cartCount, setCartCount] = useState(0);
@@ -33,6 +34,7 @@ function Sidebar() {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const { openLogin } = useAuthModal();
   const isHome = location.pathname === "/";
   const searchInputRef = useRef(null);
 
@@ -132,12 +134,12 @@ function Sidebar() {
 
   const scrollToTop = () => {
     if (window.lenis) window.lenis.scrollTo(0);
-    else window.scrollTo({ top: 0, behavior: "smooth" });
+    else window.scrollTo({ left: 0, behavior: "smooth" });
   };
 
   const scrollToBottom = () => {
-    if (window.lenis) window.lenis.scrollTo("bottom");
-    else window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    if (window.lenis) window.lenis.scrollTo("end");
+    else window.scrollTo({ left: document.body.scrollWidth, behavior: "smooth" });
   };
 
   const handleLogout = async () => {
@@ -228,9 +230,15 @@ function Sidebar() {
             <LuLogOut />
           </button>
         ) : (
-          <Link to="/login" className="railBtn" aria-label="로그인" data-tooltip="로그인" onClick={triggerPop}>
+          <button
+            type="button"
+            className="railBtn"
+            aria-label="로그인"
+            data-tooltip="로그인"
+            onClick={(e) => { triggerPop(e); openLogin(); }}
+          >
             <LuUserRoundPlus />
-          </Link>
+          </button>
         )}
 
         <span className="railDivider" />
@@ -238,21 +246,21 @@ function Sidebar() {
         <button
           type="button"
           className="railBtn"
-          aria-label="맨 위로"
-          data-tooltip="맨 위로"
+          aria-label="처음으로"
+          data-tooltip="처음으로"
           onClick={(e) => { triggerPop(e); scrollToTop(); }}
         >
-          <LuChevronsUp />
+          <LuChevronsLeft />
         </button>
 
         <button
           type="button"
           className="railBtn"
-          aria-label="맨 아래로"
-          data-tooltip="맨 아래로"
+          aria-label="끝으로"
+          data-tooltip="끝으로"
           onClick={(e) => { triggerPop(e); scrollToBottom(); }}
         >
-          <LuChevronsDown />
+          <LuChevronsRight />
         </button>
       </div>
     </aside>

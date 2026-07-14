@@ -3,9 +3,11 @@ import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCartItems, updateCartItem, deleteCartItem } from "../../api";
 import products from "../../data/products";
+import { useAuthModal } from "../../context/AuthModalContext";
 
 function Cart() {
   const navigate = useNavigate();
+  const { openLogin } = useAuthModal();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -112,7 +114,7 @@ function Cart() {
   };
 
   return (
-    <main className="cartPage">
+    <main className="cartPage" data-lenis-prevent data-hsnap>
       <section className="cartInner">
         <div className="cartHeader">
           <h1>장바구니</h1>
@@ -271,7 +273,7 @@ function Cart() {
               </button>
               <button
                 className="loginModalConfirm"
-                onClick={() => navigate("/login")}
+                onClick={() => { setShowLoginModal(false); openLogin(); }}
               >
                 로그인하기
               </button>

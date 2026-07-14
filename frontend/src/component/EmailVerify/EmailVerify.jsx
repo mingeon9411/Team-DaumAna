@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sendEmailOTP, verifyEmailOTP } from '../../api';
+import { useAuthModal } from '../../context/AuthModalContext';
 import './EmailVerify.css';
 
 function EmailVerify() {
     const navigate = useNavigate();
+    const { openLogin } = useAuthModal();
     const verifiedRef = useRef(false);
     const cleanupTimerRef = useRef(null);
     const [step, setStep] = useState(1);       // 1: 이메일 입력, 2: 코드 입력
@@ -19,9 +21,10 @@ function EmailVerify() {
         // localStorage(일반 로그인) 또는 sessionStorage(소셜 미인증 임시) 토큰 확인
         const hasToken = localStorage.getItem('access_token') || sessionStorage.getItem('pending_access_token');
         if (!hasToken) {
-            navigate('/login');
+            navigate('/');
+            openLogin();
         }
-    }, [navigate]);
+    }, [navigate, openLogin]);
 
     // 페이지 이탈 시 임시 토큰 삭제 (StrictMode 이중 마운트 대응: 타이머로 지연)
     useEffect(() => {
@@ -116,7 +119,7 @@ function EmailVerify() {
     };
 
     return (
-        <div className="evWrap">
+        <div className="evWrap" data-hsnap>
             <div className="evBox">
                 <div className="evIcon">✉</div>
                 <h2 className="evTitle">이메일 인증</h2>
