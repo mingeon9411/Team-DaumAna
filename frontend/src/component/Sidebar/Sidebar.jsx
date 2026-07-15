@@ -19,13 +19,12 @@ import { logoutUser, getCartItems } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useCartModal } from "../../context/CartModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
+import { useSearchModal } from "../../context/SearchModalContext";
 
 function Sidebar() {
   const [cartCount, setCartCount] = useState(0);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const [darkMode, setDarkMode] = useState(
-    () => document.body.classList.contains("dark")
+    () => localStorage.getItem("darkMode") === "1"
   );
   const [isLoggedIn, setIsLoggedIn] = useState(
     !!localStorage.getItem("access_token")
@@ -39,12 +38,9 @@ function Sidebar() {
   const { openLogin } = useAuthModal();
   const { openCart } = useCartModal();
   const { openMyPage } = useMyPageModal();
+  const { openSearch } = useSearchModal();
   const isHome = location.pathname === "/";
-  const searchInputRef = useRef(null);
-
-  useEffect(() => {
-    if (searchOpen) searchInputRef.current?.focus();
-  }, [searchOpen]);
+  const pendingProductScrollRef = useRef(false);
 
   const getHomeCartTotal = () => {
     try {
@@ -100,15 +96,16 @@ function Sidebar() {
     }
   }, [isHome]);
 
-  // 검색 결과 페이지 진입 시 현재 쿼리를 검색창에 표시
+  // 다른 페이지에서 "상품" 버튼을 눌러 홈으로 이동한 경우 — ScrollToTop이 스크롤을
+  // 0으로 되돌리고 패널을 재등록하는 처리가 끝난 뒤에 6번째 패널(전체 상품)로 이동한다.
   useEffect(() => {
-    if (location.pathname === "/search") {
-      const params = new URLSearchParams(location.search);
-      const q = params.get("q") || "";
-      setSearchQuery(q);
-      setSearchOpen(!!q);
+    if (isHome && pendingProductScrollRef.current) {
+      pendingProductScrollRef.current = false;
+      // Home이 실제로 마운트되고 레이아웃/Lenis 콘텐츠 크기가 갱신될 시간을 준 뒤 이동
+      const timer = setTimeout(() => scrollToProductsPanel(), 200);
+      return () => clearTimeout(timer);
     }
-  }, [location.pathname, location.search]);
+  }, [isHome]);
 
   useEffect(() => {
     if (darkMode) {
@@ -116,26 +113,9 @@ function Sidebar() {
     } else {
       document.body.classList.remove("dark");
     }
+    localStorage.setItem("darkMode", darkMode ? "1" : "0");
     window.dispatchEvent(new Event("darkmodechange"));
   }, [darkMode]);
-
-  const executeSearch = () => {
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
-
-  const handleSearchKeyDown = (e) => {
-    if (e.key === "Enter") executeSearch();
-  };
-
-  const handleSearchIconClick = () => {
-    if (searchOpen && searchQuery.trim()) {
-      executeSearch();
-    } else {
-      setSearchOpen(!searchOpen);
-    }
-  };
 
   useEffect(() => {
     localStorage.setItem("sidebarCollapsed", collapsed ? "1" : "0");
@@ -146,6 +126,29 @@ function Sidebar() {
     el.classList.remove("railPop");
     void el.offsetWidth; // 리플로우로 애니메이션 재시작 보장
     el.classList.add("railPop");
+  };
+
+  // 전체 상품이 나열된 6번째 패널(data-hsnap 6번째 섹션)로 바로 이동
+  const scrollToProductsPanel = () => {
+    const target = document.querySelectorAll("[data-hsnap]")[5];
+    if (!target) return;
+    if (window.lenis) {
+      // 방금 마운트된 페이지의 콘텐츠 폭을 Lenis가 아직 반영하지 못했을 수 있어,
+      // 스크롤 한계(limit)를 먼저 다시 계산시킨 뒤 이동한다.
+      window.lenis.resize();
+      window.lenis.scrollTo(target);
+    } else {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const goToProductsPage = () => {
+    if (isHome) {
+      scrollToProductsPanel();
+    } else {
+      pendingProductScrollRef.current = true;
+      navigate("/");
+    }
   };
 
   const scrollToTop = () => {
@@ -181,36 +184,29 @@ function Sidebar() {
       </button>
 
       <div className="railItems">
-        <Link to="/" className="railBtn" aria-label="상품" data-tooltip="상품" onClick={triggerPop}>
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="상품"
+          data-tooltip="상품"
+          onClick={(e) => { triggerPop(e); goToProductsPage(); }}
+        >
           <LuStore />
-        </Link>
+        </button>
 
         <Link to="/" className="railBtn" aria-label="공지사항" data-tooltip="공지사항" onClick={triggerPop}>
           <LuMegaphone />
         </Link>
 
-        <div className="railSearch">
-          <button
-            type="button"
-            className="railBtn"
-            aria-label="검색"
-            data-tooltip="검색"
-            onClick={(e) => { triggerPop(e); handleSearchIconClick(); }}
-          >
-            <LuSearch />
-          </button>
-
-          <div className={`railSearchFlyout ${searchOpen ? "railSearchFlyoutOpen" : ""}`}>
-            <input
-              ref={searchInputRef}
-              type="text"
-              placeholder="7월 할인행사 이벤트"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={handleSearchKeyDown}
-            />
-          </div>
-        </div>
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="검색"
+          data-tooltip="검색"
+          onClick={(e) => { triggerPop(e); openSearch(); }}
+        >
+          <LuSearch />
+        </button>
 
         <span className="railDivider" />
 

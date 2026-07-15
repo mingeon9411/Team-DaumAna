@@ -1,9 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Lenis from "lenis";
 import Snap from "lenis/snap";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import ScrollToTop from "./component/ScrollToTop";
+import DoorIntro from "./component/DoorIntro/DoorIntro";
 import Header from "./component/Header/Header";
 import Sidebar from "./component/Sidebar/Sidebar";
 import MyPage from "./component/MyPage/MyPage";
@@ -11,6 +12,7 @@ import Withdraw from "./component/WithDraw/WithDraw";
 import Home from "./component/Home/Home";
 
 import Cart from "./component/Cart/Cart";
+import SearchModal from "./component/SearchModal/SearchModal";
 import Welcome from "./component/Welcome/Welcome";
 import ProductDetail from "./component/ProductDetail/ProductDetail";
 import SocialCallback from "./component/SocialCallback/SocialCallback";
@@ -23,8 +25,28 @@ import AuthModal from "./component/AuthModal/AuthModal";
 import { AuthModalProvider } from "./context/AuthModalContext";
 import { CartModalProvider } from "./context/CartModalContext";
 import { MyPageModalProvider } from "./context/MyPageModalContext";
+import { SearchModalProvider } from "./context/SearchModalContext";
 import { createPagingController } from "./utils/snapSetup";
 import "./App.css";
+
+// 홈("/")에 들어올 때마다 — 새로고침이든 다른 페이지에서 돌아오는 것이든 —
+// 매번 대문 애니메이션을 다시 보여준다.
+function DoorIntroController() {
+  const { pathname } = useLocation();
+  const [showDoorIntro, setShowDoorIntro] = useState(false);
+
+  useEffect(() => {
+    if (pathname !== "/") {
+      setShowDoorIntro(false);
+      return;
+    }
+    setShowDoorIntro(true);
+    const timer = setTimeout(() => setShowDoorIntro(false), 7700);
+    return () => clearTimeout(timer);
+  }, [pathname]);
+
+  return showDoorIntro ? <DoorIntro /> : null;
+}
 
 function App() {
     const lenisRef = useRef(null);
@@ -33,9 +55,9 @@ function App() {
 
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.4,
+      duration: 1.1,
       smoothWheel: true,
-      wheelMultiplier: 0.5,
+      wheelMultiplier: 0.7,
       orientation: "horizontal",
       gestureOrientation: "vertical",
     });
@@ -83,13 +105,15 @@ function App() {
     <AuthModalProvider>
     <CartModalProvider>
     <MyPageModalProvider>
+    <SearchModalProvider>
     <ScrollToTop lenis={lenisRef} controller={controllerRef} panelsUnsub={panelsUnsubRef} />
-     { /*<DoorIntro /> */}
+    <DoorIntroController />
     <Header />
     <Sidebar />
     <AuthModal />
     <Cart />
     <MyPage />
+    <SearchModal />
 
     <div className="hTrack">
       <Routes>
@@ -109,6 +133,7 @@ function App() {
       </Routes>
       <Footer />
     </div>
+    </SearchModalProvider>
     </MyPageModalProvider>
     </CartModalProvider>
     </AuthModalProvider>

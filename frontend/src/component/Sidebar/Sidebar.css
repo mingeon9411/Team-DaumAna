@@ -186,57 +186,6 @@
   justify-content: center;
 }
 
-/* 검색 플라이아웃 */
-.railSearch {
-  position: relative;
-}
-
-.railSearchFlyout {
-  position: absolute;
-  left: 50%;
-  top: auto;
-  bottom: calc(100% + 14px);
-  transform: translateX(-50%) translateY(6px);
-
-  max-width: 0;
-  opacity: 0;
-  overflow: hidden;
-
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
-
-  padding: 4px 0;
-  pointer-events: none;
-
-  transition: max-width 0.25s ease, opacity 0.2s ease, transform 0.25s ease, padding 0.25s ease;
-}
-
-.railSearchFlyout.railSearchFlyoutOpen {
-  max-width: 220px;
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-  padding: 4px 6px;
-  pointer-events: auto;
-}
-
-.railSearchFlyout input {
-  width: 200px;
-  height: 32px;
-  padding: 0 12px;
-
-  border: none;
-  outline: none;
-  background: transparent;
-  color: var(--foreground);
-  font-size: 13px;
-}
-
-.railSearchFlyout input::placeholder {
-  color: var(--muted-foreground);
-}
-
 /* 다크모드 */
 body.dark .sidebarRail {
   background: rgba(6, 13, 30, 0.92);
@@ -270,18 +219,6 @@ body.dark .railBtn::after {
   color: #c8d5f2;
 }
 
-body.dark .railSearchFlyout {
-  background: rgba(6, 13, 30, 0.96);
-  border-color: rgba(150, 185, 255, 0.16);
-}
-
-body.dark .railSearchFlyout input {
-  color: #c8d5f2;
-}
-
-body.dark .railSearchFlyout input::placeholder {
-  color: rgba(200, 213, 242, 0.4);
-}
 
 /* 좁은 화면: 여백만 살짝 축소 */
 @media (max-width: 480px) {
