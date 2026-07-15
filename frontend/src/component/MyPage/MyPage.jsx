@@ -12,6 +12,7 @@ import flower2Img from "../../assets/decor/flower2.png";
 import Receipt from "./Receipt";
 import ChatBot from "./ChatBot";
 import { useAuthModal } from "../../context/AuthModalContext";
+import { useMyPageModal } from "../../context/MyPageModalContext";
 
 const STATUS_LABEL = {
   PENDING: "입금대기",
@@ -41,6 +42,7 @@ function formatDate(isoStr) {
 function MyPage() {
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
+  const { isOpen, closeMyPage } = useMyPageModal();
   const nickname = localStorage.getItem("nickname") || "회원";
 
   const [orders, setOrders] = useState([]);
@@ -51,6 +53,7 @@ function MyPage() {
   const [activeSection, setActiveSection] = useState("main");
 
   useEffect(() => {
+    if (!isOpen) return;
     getOrderHistory()
       .then((res) => setOrders(res.data))
       .catch(() => setOrders([]))
@@ -58,7 +61,7 @@ function MyPage() {
     getMyCoupons()
       .then((res) => setMyCoupons(res.data))
       .catch(() => {});
-  }, []);
+  }, [isOpen]);
 
   useEffect(() => {
     setWishlist(getWishlist());
@@ -97,6 +100,7 @@ function MyPage() {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("nickname");
+    closeMyPage();
     navigate("/");
     openLogin();
   };
@@ -114,8 +118,15 @@ function MyPage() {
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <main className="mypage" data-lenis-prevent data-hsnap>
+    <div className="mypageModalOverlay" onClick={closeMyPage}>
+    <main className="mypage" onClick={(e) => e.stopPropagation()}>
+      <button type="button" className="mypageModalClose" onClick={closeMyPage} aria-label="닫기">
+        ×
+      </button>
+
       {selectedOrder && (
         <Receipt
           order={selectedOrder}
@@ -273,7 +284,7 @@ function MyPage() {
                     <div
                       key={item.id}
                       className="wishPreviewCard"
-                      onClick={() => navigate(`/product/${item.id}`)}
+                      onClick={() => { closeMyPage(); navigate(`/product/${item.id}`); }}
                     >
                       <div className="wishPreviewImgBox">
                         <img src={item.image} alt={item.name} />
@@ -296,7 +307,7 @@ function MyPage() {
                 <h2>내 계정 관리</h2>
                 <p>회원정보 수정, 비밀번호 변경, 회원탈퇴를 관리할 수 있습니다.</p>
               </div>
-              <button className="withdrawBtn" onClick={() => navigate("/withdraw")}>
+              <button className="withdrawBtn" onClick={() => { closeMyPage(); navigate("/withdraw"); }}>
                 회원탈퇴
               </button>
             </section>
@@ -562,7 +573,7 @@ function MyPage() {
                   <div
                     key={item.id}
                     className="myWishCard"
-                    onClick={() => navigate(`/product/${item.id}`)}
+                    onClick={() => { closeMyPage(); navigate(`/product/${item.id}`); }}
                   >
                     <div className="myWishImgBox">
                       <img src={item.image} alt={item.name} />
@@ -590,6 +601,7 @@ function MyPage() {
 
       <ChatBot />
     </main>
+    </div>
   );
 }
 

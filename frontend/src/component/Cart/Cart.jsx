@@ -4,10 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { getCartItems, updateCartItem, deleteCartItem } from "../../api";
 import products from "../../data/products";
 import { useAuthModal } from "../../context/AuthModalContext";
+import { useCartModal } from "../../context/CartModalContext";
 
 function Cart() {
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
+  const { isOpen, closeCart } = useCartModal();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -30,8 +32,8 @@ function Cart() {
   }, []);
 
   useEffect(() => {
-    fetchCart();
-  }, [fetchCart]);
+    if (isOpen) fetchCart();
+  }, [isOpen, fetchCart]);
 
   const allChecked =
     cartItems.length > 0 && cartItems.every((item) => item.checked);
@@ -100,6 +102,11 @@ function Cart() {
     option_id: item.option_id || null,
   });
 
+  const goToCheckout = (items) => {
+    closeCart();
+    navigate("/checkout", { state: { cartItems: items } });
+  };
+
   const handleBuySelected = () => {
     if (!localStorage.getItem("access_token")) {
       setShowLoginModal(true);
@@ -110,12 +117,18 @@ function Cart() {
       alert("주문할 상품을 선택해주세요.");
       return;
     }
-    navigate("/checkout", { state: { cartItems: selected.map(toCheckoutItem) } });
+    goToCheckout(selected.map(toCheckoutItem));
   };
 
+  if (!isOpen) return null;
+
   return (
-    <main className="cartPage" data-lenis-prevent data-hsnap>
-      <section className="cartInner">
+    <div className="cartModalOverlay" onClick={closeCart}>
+      <div className="cartInner" onClick={(e) => e.stopPropagation()}>
+        <button type="button" className="cartModalClose" onClick={closeCart} aria-label="닫기">
+          ×
+        </button>
+
         <div className="cartHeader">
           <h1>장바구니</h1>
           <p>로그인 후, JIPDAUM에서 혜택을 확인하세요.</p>
@@ -150,7 +163,7 @@ function Cart() {
           ) : cartItems.length === 0 ? (
             <div className="emptyCart">
               <p>장바구니에 담긴 상품이 없습니다.</p>
-              <button onClick={() => navigate("/")}>쇼핑 계속하기</button>
+              <button onClick={closeCart}>쇼핑 계속하기</button>
             </div>
           ) : (
             cartItems.map((item) => (
@@ -213,9 +226,7 @@ function Cart() {
                         setShowLoginModal(true);
                         return;
                       }
-                      navigate("/checkout", {
-                        state: { cartItems: [toCheckoutItem(item)] },
-                      });
+                      goToCheckout([toCheckoutItem(item)]);
                     }}
                   >
                     바로구매
@@ -247,41 +258,41 @@ function Cart() {
 
         <div className="cartActions">
           <button onClick={handleDeleteSelected}>선택상품 삭제</button>
-          <button onClick={() => navigate("/")}>쇼핑계속하기</button>
+          <button onClick={closeCart}>쇼핑계속하기</button>
           <button className="orderBtn" onClick={handleBuySelected}>
             선택상품 주문
           </button>
         </div>
-      </section>
 
-      {showLoginModal && (
-        <div
-          className="loginModalOverlay"
-          onClick={() => setShowLoginModal(false)}
-        >
+        {showLoginModal && (
           <div
-            className="loginModal"
-            onClick={(e) => e.stopPropagation()}
+            className="loginModalOverlay"
+            onClick={() => setShowLoginModal(false)}
           >
-            <p className="loginModalMsg">로그인 이후 주문이 가능합니다.</p>
-            <div className="loginModalBtns">
-              <button
-                className="loginModalCancel"
-                onClick={() => setShowLoginModal(false)}
-              >
-                취소
-              </button>
-              <button
-                className="loginModalConfirm"
-                onClick={() => { setShowLoginModal(false); openLogin(); }}
-              >
-                로그인하기
-              </button>
+            <div
+              className="loginModal"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <p className="loginModalMsg">로그인 이후 주문이 가능합니다.</p>
+              <div className="loginModalBtns">
+                <button
+                  className="loginModalCancel"
+                  onClick={() => setShowLoginModal(false)}
+                >
+                  취소
+                </button>
+                <button
+                  className="loginModalConfirm"
+                  onClick={() => { setShowLoginModal(false); closeCart(); openLogin(); }}
+                >
+                  로그인하기
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </main>
+        )}
+      </div>
+    </div>
   );
 }
 

@@ -21,6 +21,8 @@ import OrderComplete from "./component/OrderComplete/OrderComplete";
 import Footer from "./component/Footer/Footer";
 import AuthModal from "./component/AuthModal/AuthModal";
 import { AuthModalProvider } from "./context/AuthModalContext";
+import { CartModalProvider } from "./context/CartModalContext";
+import { MyPageModalProvider } from "./context/MyPageModalContext";
 import { createPagingController } from "./utils/snapSetup";
 import "./App.css";
 
@@ -41,15 +43,17 @@ function App() {
     lenisRef.current = lenis;
     window.lenis = lenis;
 
-    // duration을 넉넉하게 줘서 패널 전환이 스무스하고 느긋하게 느껴지도록 한다.
+    // "proximity"(기본값)는 스크롤이 멈춘 지점이 다음 패널과 거리 임계값(뷰포트의
+    // 50%) 이상 떨어져 있으면 스냅을 포기하고 그 자리에 멈춰버려, 전체화면 패널
+    // 두 개가 반반씩 걸친 어중간한 상태로 남을 수 있다. "mandatory"는 임계값 없이
+    // 스크롤이 멈출 때마다 항상 가장 가까운 패널로 스냅해 이 상태를 방지한다.
+    // (스크롤 도중엔 자유롭게 흐르고, 멈췄을 때만 반드시 한 패널로 완성된다.)
     const snap = new Snap(lenis, {
-      type: "lock",
+      type: "mandatory",
       duration: 1.4,
       easing: (t) => 1 - Math.pow(1 - t, 3),
     });
 
-    // 살짝만 스크롤해도 다음/이전 패널로 완전히 넘어가도록, 거리 기반 자동
-    // 스냅 대신 휠 방향만 보고 next()/previous()를 직접 호출하는 방식.
     const controller = createPagingController(lenis, snap);
     controllerRef.current = controller;
 
@@ -77,20 +81,22 @@ function App() {
   return (
     <BrowserRouter>
     <AuthModalProvider>
+    <CartModalProvider>
+    <MyPageModalProvider>
     <ScrollToTop lenis={lenisRef} controller={controllerRef} panelsUnsub={panelsUnsubRef} />
      { /*<DoorIntro /> */}
     <Header />
     <Sidebar />
     <AuthModal />
+    <Cart />
+    <MyPage />
 
     <div className="hTrack">
       <Routes>
 
         <Route path="/" element={<Home />} />
 
-        <Route path="/cart" element={<Cart />} />
         <Route path="/welcome" element={<Welcome />} />
-        <Route path="/mypage" element={<MyPage />} />
         <Route path="/withdraw" element={<Withdraw />} />
         <Route path="/social-callback" element={<SocialCallback />} />
         <Route path="/email-verify" element={<EmailVerify />} />
@@ -103,6 +109,8 @@ function App() {
       </Routes>
       <Footer />
     </div>
+    </MyPageModalProvider>
+    </CartModalProvider>
     </AuthModalProvider>
     </BrowserRouter>
   );

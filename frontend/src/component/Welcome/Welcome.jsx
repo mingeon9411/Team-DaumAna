@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
+import { useMyPageModal } from "../../context/MyPageModalContext";
 import "./Welcome.css";
 
 function Welcome() {
+  const { openMyPage } = useMyPageModal();
+
   return (
     <main className="welcomePage" data-hsnap>
       <section className="welcomeBox">
@@ -30,9 +33,9 @@ function Welcome() {
             메인으로 가기
           </Link>
 
-          <Link to="/mypage" className="subBtn">
+          <button type="button" className="subBtn" onClick={openMyPage}>
             마이페이지 확인
-          </Link>
+          </button>
         </div>
       </section>
     </main>

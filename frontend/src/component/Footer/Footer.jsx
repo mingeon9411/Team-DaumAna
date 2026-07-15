@@ -3,10 +3,15 @@ import { FaThreads } from "react-icons/fa6";
 import "./Footer.css";
 import JipdaumLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent.png";
 
+const CLOSING_QUOTE = "집이란 나의 공간에\n나만의 색을 더해가는 또다른 세상이다.";
 
 function Footer() {
   return (
     <footer className="footer" data-hsnap>
+      <div className="footerQuote">
+        <p>{CLOSING_QUOTE}</p>
+      </div>
+
       <div className="footerTop">
         <div className="footerBrand">
           <img src={JipdaumLogoDark} alt="집다움" className="footerLogo" />
@@ -14,6 +19,18 @@ function Footer() {
           <p className = "footerNum">
           02-123-4567
           </p>
+
+          <div className="footerSNS">
+            <a href="https://instagram.com" target="_blank" rel="noreferrer">
+              <FaInstagram />
+            </a>
+            <a href="https://threads.net" target="_blank" rel="noreferrer">
+              <FaThreads />
+            </a>
+            <a href="https://x.com" target="_blank" rel="noreferrer">
+              <FaXTwitter />
+            </a>
+          </div>
         </div>
 
         <div className="footerMenu">
@@ -48,33 +65,5 @@ function Footer() {
     </footer>
   );
 }
-
-    <div className="footerSNS">
-
-    <a
-    href="https://instagram.com"
-    target="_blank"
-    rel="noreferrer"
-  >
-    <FaInstagram />
-  </a>
-
-  <a
-    href="https://threads.net"
-    target="_blank"
-    rel="noreferrer"
-  >
-    <FaThreads />
-  </a>
-
-  <a
-    href="https://x.com"
-    target="_blank"
-    rel="noreferrer"
-  >
-    <FaXTwitter />
-  </a>
-
-  </div>
 
 export default Footer;

@@ -1,9 +1,11 @@
 import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useMyPageModal } from "../../context/MyPageModalContext";
 import "./OrderComplete.css";
 
 function OrderComplete() {
   const { state } = useLocation();
   const navigate = useNavigate();
+  const { openMyPage } = useMyPageModal();
 
   const { productName, totalAmount, quantity, shippingAddr } = state || {};
 
@@ -51,7 +53,7 @@ function OrderComplete() {
 
         <div className="ocBtns">
           <Link to="/" className="ocHomeBtn">홈으로 가기</Link>
-          <Link to="/mypage" className="ocMypageBtn">주문 내역 보기</Link>
+          <button type="button" className="ocMypageBtn" onClick={openMyPage}>주문 내역 보기</button>
         </div>
       </div>
     </main>

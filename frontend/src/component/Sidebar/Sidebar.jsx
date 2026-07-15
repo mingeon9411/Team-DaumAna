@@ -17,6 +17,8 @@ import {
 } from "react-icons/lu";
 import { logoutUser, getCartItems } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
+import { useCartModal } from "../../context/CartModalContext";
+import { useMyPageModal } from "../../context/MyPageModalContext";
 
 function Sidebar() {
   const [cartCount, setCartCount] = useState(0);
@@ -35,6 +37,8 @@ function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
+  const { openCart } = useCartModal();
+  const { openMyPage } = useMyPageModal();
   const isHome = location.pathname === "/";
   const searchInputRef = useRef(null);
 
@@ -42,17 +46,27 @@ function Sidebar() {
     if (searchOpen) searchInputRef.current?.focus();
   }, [searchOpen]);
 
+  const getHomeCartTotal = () => {
+    try {
+      const counts = JSON.parse(localStorage.getItem("homeCartCounts")) || {};
+      return Object.values(counts).reduce((sum, n) => sum + n, 0);
+    } catch {
+      return 0;
+    }
+  };
+
   const fetchCartCount = () => {
+    const homeTotal = getHomeCartTotal();
     if (!localStorage.getItem("access_token")) {
-      setCartCount(0);
+      setCartCount(homeTotal);
       return;
     }
     getCartItems()
       .then((res) => {
         const total = res.data.reduce((sum, item) => sum + (item.quantity || 1), 0);
-        setCartCount(total);
+        setCartCount(total + homeTotal);
       })
-      .catch(() => setCartCount(0));
+      .catch(() => setCartCount(homeTotal));
   };
 
   const syncLoginState = () => setIsLoggedIn(!!localStorage.getItem("access_token"));
@@ -71,9 +85,11 @@ function Sidebar() {
     fetchCartCount();
     window.addEventListener("cartchange", fetchCartCount);
     window.addEventListener("authchange", fetchCartCount);
+    window.addEventListener("homecartchange", fetchCartCount);
     return () => {
       window.removeEventListener("cartchange", fetchCartCount);
       window.removeEventListener("authchange", fetchCartCount);
+      window.removeEventListener("homecartchange", fetchCartCount);
     };
   }, []);
 
@@ -198,14 +214,26 @@ function Sidebar() {
 
         <span className="railDivider" />
 
-        <Link to="/cart" className="railBtn" aria-label="장바구니" data-tooltip="장바구니" onClick={triggerPop}>
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="장바구니"
+          data-tooltip="장바구니"
+          onClick={(e) => { triggerPop(e); openCart(); }}
+        >
           <LuShoppingBag />
           {cartCount > 0 && <span className="railBadge">{cartCount}</span>}
-        </Link>
+        </button>
 
-        <Link to="/mypage" className="railBtn" aria-label="마이페이지" data-tooltip="마이페이지" onClick={triggerPop}>
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="마이페이지"
+          data-tooltip="마이페이지"
+          onClick={(e) => { triggerPop(e); openMyPage(); }}
+        >
           <LuUserRound />
-        </Link>
+        </button>
 
         <button
           type="button"

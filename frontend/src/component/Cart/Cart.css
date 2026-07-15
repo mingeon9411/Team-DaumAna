@@ -1,71 +1,75 @@
-.cartPage {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  flex-shrink: 0;
-  padding: 140px 72px 120px;
-  background: var(--background);
-  color: var(--foreground);
-  font-family: "Noto Sans KR", sans-serif;
+.cartModalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(13, 13, 13, 0.55);
+  backdrop-filter: blur(4px);
+
+  padding: 24px;
   overflow-y: auto;
-  overflow-x: hidden;
-  animation: cartPageIn 2.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  font-family: "Noto Sans KR", sans-serif;
 }
 
-@keyframes cartPageIn {
+.cartModalClose {
+  position: absolute;
+  top: 18px;
+  right: 22px;
+  z-index: 3;
+
+  width: 32px;
+  height: 32px;
+
+  border: none;
+  background: transparent;
+  color: var(--foreground);
+
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.cartModalClose:hover {
+  opacity: 1;
+}
+
+@keyframes cartModalIn {
   from {
     opacity: 0;
-    transform: translateY(32px);
+    transform: translateY(20px) scale(0.98);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
-}
-
-/* 전체 배경 이미지 */
-.cartPage::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: url("../../assets/scenes/cart_back.png") center top / cover no-repeat;
-  opacity: 0.38;
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* 은은한 베이지 필터 */
-.cartPage::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: rgba(244, 241, 236, 0.34);
-  z-index: 1;
-  pointer-events: none;
 }
 
 .cartInner {
   width: 100%;
   max-width: 1400px;
+  max-height: calc(100vh - 48px);
   margin: 0 auto;
 
   position: relative;
-  z-index: 2;
+  overflow-y: auto;
+  animation: cartModalIn 0.25s ease;
 
-  background: rgba(255, 255, 255, 0.212);
+  background: var(--card);
+  color: var(--foreground);
 
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-
-  border: 1px solid rgba(255, 255, 255, 0.5);
-
+  border: 1px solid var(--border);
   border-radius: 24px;
 
   padding: 60px;
 
   box-shadow:
-    0 20px 60px rgba(0,0,0,0.06),
-    0 4px 12px rgba(0,0,0,0.03);
+    0 20px 60px rgba(0,0,0,0.12),
+    0 4px 12px rgba(0,0,0,0.06);
 }
 
 .cartHeader h1 {
@@ -409,8 +413,9 @@
 }
 
 /* ── 다크모드 ── */
-body.dark .cartPage {
-  background-color: #060d1e;
+body.dark .cartInner {
+  background-color: #0b1430;
+  border-color: rgba(150, 185, 255, 0.16);
   color: #bfcbec;
 }
 

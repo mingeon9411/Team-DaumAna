@@ -5,6 +5,7 @@ import { getProductDetail, addToCart } from "../../api";
 import products from "../../data/products";
 import { isWished, toggleWish } from "../../utils/wishlist";
 import { useAuthModal } from "../../context/AuthModalContext";
+import { useCartModal } from "../../context/CartModalContext";
 
 function ProductDetail() {
   const { id } = useParams();
@@ -28,6 +29,7 @@ function ProductDetail() {
 
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
+  const { openCart } = useCartModal();
   const [quantity, setQuantity] = useState(0);
   const [wished, setWished] = useState(() => isWished(Number(id)));
 
@@ -84,7 +86,7 @@ function ProductDetail() {
     try {
       await addToCart({ product: product.id, quantity, option: null });
       window.dispatchEvent(new Event("cartchange"));
-      navigate("/cart");
+      openCart();
     } catch {
       alert("장바구니 추가에 실패했습니다. 다시 시도해주세요.");
     }
