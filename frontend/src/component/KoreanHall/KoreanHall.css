@@ -1,0 +1,179 @@
+.khPage {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    flex-shrink: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: var(--background);
+    font-family: "Noto Sans KR", sans-serif;
+    animation: khFadeIn 0.8s ease-out forwards;
+}
+
+@keyframes khFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes khSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(28px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.khIntro {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 140px 60px 60px;
+    animation: khSlideUp 0.8s ease-out forwards;
+}
+
+.khIntro::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: url("../../assets/scenes/korean-royal-modern-interior.jpg") center / cover no-repeat;
+    opacity: 0.3;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.khIntro::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(244, 240, 232, 0.55);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.khIntro > * {
+    position: relative;
+    z-index: 2;
+}
+
+.khLabel {
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    margin-bottom: 16px;
+}
+
+.khTitle {
+    font-family: "Noto Serif KR", serif;
+    font-size: 40px;
+    font-weight: 500;
+    color: var(--foreground);
+    letter-spacing: -0.3px;
+    margin-bottom: 24px;
+}
+
+.khDesc {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--muted-foreground);
+    max-width: 480px;
+}
+
+.khGrid {
+    list-style: none;
+    margin: 0;
+    padding: 20px 60px 100px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 40px 32px;
+}
+
+@media (max-width: 768px) {
+    .khIntro { padding: 120px 20px 40px; }
+    .khGrid { padding: 20px 20px 60px; gap: 24px 16px; }
+}
+
+.khCard {
+    transition: transform 0.2s ease;
+}
+
+.khCard:hover {
+    transform: translateY(-4px);
+}
+
+.khCardLink {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.khImgWrap {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--muted);
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+.khImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.khCard:hover .khImg {
+    transform: scale(1.04);
+}
+
+.khName {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--foreground);
+    margin: 0 0 6px;
+    line-height: 1.4;
+}
+
+.khProductDesc {
+    font-size: 13px;
+    color: var(--muted-foreground);
+    margin: 0 0 8px;
+    line-height: 1.5;
+}
+
+.khPrice {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--foreground);
+    margin: 0;
+}
+
+/* ── 다크모드 ── */
+body.dark .khPage {
+  background-color: #060d1e;
+  color: #bfcbec;
+}
+
+body.dark .khIntro::after {
+  background: rgba(6, 13, 30, 0.72);
+}
+
+body.dark .khName {
+  color: #bfcbec;
+}
+
+body.dark .khLabel,
+body.dark .khDesc,
+body.dark .khProductDesc {
+  color: #5a6d9a;
+}
+
+body.dark .khPrice {
+  color: #9aadda;
+}

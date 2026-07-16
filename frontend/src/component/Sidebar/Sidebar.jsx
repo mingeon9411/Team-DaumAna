@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import {
   LuHouse,
   LuStore,
+  LuFlower,
   LuMegaphone,
   LuSearch,
   LuShoppingBag,
@@ -148,25 +149,27 @@ function Sidebar() {
 
   const goToProductsPage = () => {
     if (isHome) {
-      scrollToPanel(4);
+      scrollToPanel(2);
     } else {
-      pendingPanelRef.current = 4;
+      pendingPanelRef.current = 2;
       sessionStorage.setItem("skipHomeDefaultPanel", "1");
       navigate("/");
     }
   };
+
+  const goToKoreanHall = () => navigate("/korean-hall");
 
   const scrollToTop = () => {
     if (window.lenis) window.lenis.scrollTo(0);
     else window.scrollTo({ left: 0, behavior: "smooth" });
   };
 
-  // "홈" 아이콘은 2번째 패널(에세이)로 이동 — 메인 페이지 기본 진입 위치(5페이지)와는 별개
+  // "홈" 아이콘은 1번째 패널(에세이)로 이동
   const goHome = () => {
     if (isHome) {
-      scrollToPanel(1);
+      scrollToPanel(0);
     } else {
-      pendingPanelRef.current = 1;
+      pendingPanelRef.current = 0;
       sessionStorage.setItem("skipHomeDefaultPanel", "1");
       navigate("/");
     }
@@ -218,6 +221,16 @@ function Sidebar() {
           onClick={(e) => { triggerPop(e); goToProductsPage(); }}
         >
           <LuStore />
+        </button>
+
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="한국관"
+          data-tooltip="한국관"
+          onClick={(e) => { triggerPop(e); goToKoreanHall(); }}
+        >
+          <LuFlower />
         </button>
 
         <button

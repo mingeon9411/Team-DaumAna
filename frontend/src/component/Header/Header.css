@@ -68,6 +68,74 @@ body.dark {
   filter: brightness(0) invert(1);
 }
 
+/* 한국관 — 일월오봉도 봉우리 사이에 얹히는 기와집 집다움 로고, 헤더 위쪽 여백 없이 맨 위로 붙임 */
+.header.koreanHallHeader .headerIlwol {
+  height: 50px;
+  bottom: 40px;
+}
+
+.header.koreanHallHeader .logo {
+  position: absolute;
+  left: 50%;
+  bottom: 53px;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.logoImgHanok {
+  height: 37px;
+  filter: none;
+}
+
+/* 한국관 — 해/달을 봉우리 위로 살짝 띄워 겹치지 않게 배치
+   (ilwolobongdo.png 픽셀을 직접 샘플링해 봉우리·소나무 사이의 실제 여백을 확인한 값) */
+.header.koreanHallHeader .headerMoon,
+.header.koreanHallHeader .headerSun {
+  display: block;
+  top: 12px;
+  width: 11px;
+  height: 11px;
+}
+
+.header.koreanHallHeader .headerMoon {
+  left: calc(50% - 69px);
+}
+
+body.dark .header.lightBg.koreanHallHeader .headerMoon {
+  animation-name: moonGlowSmall;
+}
+
+.header.koreanHallHeader .headerSun {
+  left: calc(50% + 71px);
+  animation-name: sunPulseSmall;
+}
+
+@keyframes sunPulseSmall {
+  from {
+    box-shadow:
+      0 0 5px 2px rgba(214, 62, 40, 0.5),
+      0 0 10px 4px rgba(179, 33, 26, 0.24);
+  }
+  to {
+    box-shadow:
+      0 0 7px 3px rgba(230, 78, 50, 0.7),
+      0 0 14px 5px rgba(179, 33, 26, 0.32);
+  }
+}
+
+@keyframes moonGlowSmall {
+  from {
+    box-shadow:
+      0 0 4px 2px rgba(255,248,210,0.55),
+      0 0 11px 4px rgba(200,220,255,0.24);
+  }
+  to {
+    box-shadow:
+      0 0 7px 3px rgba(255,248,210,0.75),
+      0 0 16px 6px rgba(200,220,255,0.4);
+  }
+}
+
 /* ── 달빛 별밭 오버레이 ── */
 .starField {
   position: absolute;
@@ -229,6 +297,25 @@ body.dark .header.scrolled .headerSun,
 body.dark .header.lightBg .headerSun,
 body.dark .header.cartHeader .headerSun {
   opacity: 0;
+}
+
+.headerIlwol {
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  transform: translateX(-50%);
+  height: 58px;
+  width: auto;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.header.scrolled .headerIlwol,
+.header.lightBg .headerIlwol,
+.header.cartHeader .headerIlwol {
+  opacity: 0.92;
 }
 
 @keyframes sunPulse {

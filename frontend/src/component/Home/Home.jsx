@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState, useRef } from "react";
-import { ChevronLeft, ChevronRight, Heart, ArrowUpRight, X, Search } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ChevronLeft, ChevronRight, Heart, X, Search } from "lucide-react";
 import { FaInstagram } from "react-icons/fa6";
 import "./Home.css";
 import storageCabinet from "../../assets/products/storage-cabinet.jpg";
 import moonJarLamp from "../../assets/달항아리 램프.png";
-import lowPlatformBed from "../../assets/로우 플랫폼 침대.png";
+import patchworkBedding from "../../assets/조각보 침구 세트.png";
 
 const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
 const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
@@ -33,17 +33,11 @@ const PRODUCTS = [
     image: storageCabinet, alt: "한국 모던 나비 문양 수납장" },
 ];
 
-const ESSAY = {
-  title: "여러분이 생각하는 집다움은 \n 어떤 공간인가요?",
-};
-
-const ESSAY_2 = {
-  title: "누군가에게는 편안함이고,\n누군가에게는 따뜻한 온기입니다.",
-};
-
-const ESSAY_3 = {
-  title: "하지만 정답은 없습니다.\n나를 표현한 공간이면 충분합니다.",
-};
+const ESSAYS = [
+  { title: "여러분이 생각하는 집다움은 \n 어떤 공간인가요?" },
+  { title: "누군가에게는 편안함이고,\n누군가에게는 따뜻한 온기입니다." },
+  { title: "하지만 정답은 없습니다.\n나를 표현한 공간이면 충분합니다." },
+];
 
 const LOOKBOOK_PHOTOS = [
   "photo-1484101403633-562f891dc89a",
@@ -147,7 +141,50 @@ function Home() {
       return {};
     }
   });
-  const carouselRef = useRef(null);
+  // 통합된 에세이 섹션 — 일정 간격으로 다음 멘트로 부드럽게 전환
+  const [essayIndex, setEssayIndex] = useState(0);
+  const [essayFading, setEssayFading] = useState(false);
+
+  // 마지막 멘트("하지만 정답은 없습니다...")에서 반복하지 않고 멈춘 뒤,
+  // 사용자가 아직 에세이 페이지에 머물러 있으면 상품 페이지로 천천히 스크롤한다.
+  useEffect(() => {
+    let holdTimer;
+    let fadeTimer;
+
+    function advance(index) {
+      holdTimer = setTimeout(() => {
+        if (index >= ESSAYS.length - 1) {
+          const essayEl = document.getElementById("home-essay");
+          const stillOnEssay = essayEl && Math.abs(essayEl.getBoundingClientRect().left) < 50;
+          if (stillOnEssay && window.lenis) {
+            const target = document.querySelectorAll("[data-hsnap]")[2];
+            if (target) {
+              window.lenis.resize();
+              window.lenis.scrollTo(target, {
+                duration: 2.4,
+                easing: (t) => 1 - Math.pow(1 - t, 3),
+              });
+            }
+          }
+          return;
+        }
+
+        setEssayFading(true);
+        fadeTimer = setTimeout(() => {
+          setEssayIndex(index + 1);
+          setEssayFading(false);
+          advance(index + 1);
+        }, 900);
+      }, 4800);
+    }
+
+    advance(0);
+
+    return () => {
+      clearTimeout(holdTimer);
+      clearTimeout(fadeTimer);
+    };
+  }, []);
 
   const openQuickView = (product) => {
     setQuickViewProduct(product);
@@ -183,17 +220,15 @@ function Home() {
   const toggleWish = (id) =>
     setWishlist((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
-  const scroll = (dir) =>
-    carouselRef.current?.scrollBy({ left: dir === "right" ? 560 : -560, behavior: "smooth" });
-
-  // 도어인트로를 지나 홈에 들어오면 기본적으로 5번째 패널(전체 상품)에서 시작한다.
+  // 도어인트로를 지나 홈에 들어오면 기본적으로 1번째 패널(에세이)에서 시작한다.
+  // (HERO가 전체 상품 페이지 앞으로 옮겨가면서 에세이가 첫 패널이 됨)
   // 사이드바의 "홈"/"상품" 버튼으로 진입한 경우엔 각자 원하는 패널로 직접 이동하므로 건너뛴다.
   useEffect(() => {
     if (sessionStorage.getItem("skipHomeDefaultPanel")) {
       sessionStorage.removeItem("skipHomeDefaultPanel");
       return;
     }
-    const target = document.querySelectorAll("[data-hsnap]")[4];
+    const target = document.querySelectorAll("[data-hsnap]")[0];
     if (!target) return;
     const timer = setTimeout(() => {
       if (window.lenis) {
@@ -209,7 +244,23 @@ function Home() {
   return (
     <div className="home bg-background text-foreground flex flex-row" style={SANS}>
 
-      {/* HERO */}
+      {/* ESSAY SPREAD — 세 개의 멘트가 한 페이지 안에서 순서대로 부드럽게 전환됨 */}
+      <section id="home-essay" data-hide-header data-hsnap className="sparkleBg holoMesh w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center text-foreground py-20 px-8">
+        <ShootingStars />
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
+          <p
+            className={`text-3xl md:text-4xl font-light leading-[1.6] mb-10 whitespace-pre-line transition-all duration-[900ms] ease-in-out ${
+              essayFading ? "opacity-0 blur-md scale-105" : "opacity-100 blur-none scale-100"
+            }`}
+            style={SERIF}
+          >
+            {ESSAYS[essayIndex].title}
+          </p>
+          <Hairline className="border-foreground/20 mb-10 max-w-xs mx-auto" />
+        </div>
+      </section>
+
+      {/* HERO — 전체 상품(검색) 페이지 바로 앞에 배치 */}
       <section data-hsnap className="relative w-screen h-screen shrink-0 overflow-hidden bg-background flex flex-row">
         <div className="relative w-1/2 h-full overflow-hidden">
           <img
@@ -221,49 +272,17 @@ function Home() {
 
         <div className="relative w-1/2 h-full overflow-hidden">
           <img
-            src={lowPlatformBed}
-            alt="로우 플랫폼 침대 - 원목 프레임의 낮은 침대"
+            src={patchworkBedding}
+            alt="조각보 침구 세트 - 전통 조각보 패턴의 침구와 베개"
             className="w-full h-full object-cover"
           />
         </div>
       </section>
 
-      {/* ESSAY SPREAD */}
-      <section id="home-essay" data-hide-header data-hsnap className="sparkleBg holoMesh w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center text-foreground py-20 px-8">
-        <ShootingStars />
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <p className="text-3xl md:text-4xl font-light leading-[1.6] mb-10 whitespace-pre-line" style={SERIF}>
-            {ESSAY.title}
-          </p>
-          <Hairline className="border-foreground/20 mb-10 max-w-xs mx-auto" />
-        </div>
-      </section>
-
-      {/* ESSAY SPREAD 2 */}
-      <section data-hide-header data-hsnap className="sparkleBg holoMesh w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center text-foreground py-20 px-8">
-        <ShootingStars />
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <p className="text-3xl md:text-4xl font-light leading-[1.6] mb-10 whitespace-pre-line" style={SERIF}>
-            {ESSAY_2.title}
-          </p>
-          <Hairline className="border-foreground/20 mb-10 max-w-xs mx-auto" />
-        </div>
-      </section>
-
-      {/* ESSAY SPREAD 3 */}
-      <section data-hide-header data-hsnap className="sparkleBg holoMesh w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center text-foreground py-20 px-8">
-        <ShootingStars />
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <p className="text-3xl md:text-4xl font-light leading-[1.6] mb-10 whitespace-pre-line" style={SERIF}>
-            {ESSAY_3.title}
-          </p>
-          <Hairline className="border-foreground/20 mb-10 max-w-xs mx-auto" />
-        </div>
-      </section>
-
       {/* PRODUCT GRID */}
-      <section data-hsnap className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center py-20 px-8">
-        <div className="max-w-7xl mx-auto w-full mb-10 flex items-end justify-between gap-8 flex-wrap">
+      <section data-hsnap className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center py-20 px-8">
+        <ShootingStars />
+        <div className="relative z-10 max-w-7xl mx-auto w-full mb-10 flex items-end justify-between gap-8 flex-wrap">
           <div>
             <Label className="block mb-3">전체 상품</Label>
             <h2 className="text-3xl font-light text-foreground" style={SERIF}>집다움의 모든 상품</h2>
@@ -291,13 +310,13 @@ function Home() {
             )}
           </div>
         </div>
-        <Hairline className="max-w-7xl mx-auto w-full mb-10" />
+        <Hairline className="relative z-10 max-w-7xl mx-auto w-full mb-10" />
         {filteredProducts.length === 0 ? (
-          <p className="max-w-7xl mx-auto w-full text-center text-sm text-muted-foreground py-16" style={SANS}>
+          <p className="relative z-10 max-w-7xl mx-auto w-full text-center text-sm text-muted-foreground py-16" style={SANS}>
             "{productSearchQuery}"에 대한 검색 결과가 없습니다.
           </p>
         ) : (
-        <div className="max-w-7xl mx-auto w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
           {filteredProducts.map((p) => (
             <article key={p.id} className="group cursor-pointer" onClick={() => openQuickView(p)}>
               <div className="relative overflow-hidden bg-muted mb-3 aspect-[5/6]">
@@ -319,72 +338,6 @@ function Home() {
           ))}
         </div>
         )}
-      </section>
-
-      {/* PRODUCT CAROUSEL */}
-      <section data-hsnap className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center py-20">
-        <div className="max-w-7xl mx-auto px-8 mb-10">
-          <div className="flex items-baseline justify-between">
-            <div>
-              <Label className="block mb-3">이달의 상품</Label>
-              <h2 className="text-3xl font-light text-foreground" style={SERIF}>고객의 추천 상품</h2>
-            </div>
-            <div className="flex items-center gap-3">
-              <button onClick={() => scroll("left")} className="w-9 h-9 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"><ChevronLeft size={16} /></button>
-              <button onClick={() => scroll("right")} className="w-9 h-9 border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"><ChevronRight size={16} /></button>
-            </div>
-          </div>
-      </div>
-        <Hairline className="max-w-7xl mx-auto px-8 mb-10" />
-        <div className="max-w-7xl mx-auto px-8">
-          <div ref={carouselRef} className="flex gap-10 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
-            {PRODUCTS.map((p) => (
-              <article key={p.id} className="group flex-shrink-0 w-96 md:w-[30rem] cursor-pointer" onClick={() => openQuickView(p)}>
-                <div className="relative overflow-hidden bg-muted mb-5 aspect-[5/6]">
-                  <img src={p.image} alt={p.alt} className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
-                  <button onClick={(e) => { e.stopPropagation(); toggleWish(p.id); }}
-                    className="absolute top-4 right-4 w-8 h-8 bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <Heart size={14} className={wishlist.includes(p.id) ? "fill-foreground text-foreground" : "text-foreground"} />
-                  </button>
-                  {cartCounts[p.id] > 0 && (
-                    <span className="absolute top-4 left-4 min-w-[22px] h-[22px] px-1 rounded-full bg-foreground text-background text-[11px] font-semibold flex items-center justify-center" style={MONO}>
-                      {cartCounts[p.id]}
-                    </span>
-                  )}
-                  <button
-                    onClick={(e) => { e.stopPropagation(); addToHomeCart(p.id, 1); }}
-                    className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-foreground text-background py-3 text-center text-xs tracking-widest"
-                    style={SANS}
-                  >
-                    담기
-                  </button>
-                </div>
-                <div className="flex items-end justify-between">
-                  <div>
-                    <span className="text-[10px] text-muted-foreground block mb-1" style={MONO}>{p.no} · {p.label}</span>
-                    <h4 className="text-lg font-medium text-foreground mb-0.5" style={SANS}>{p.name}</h4>
-                    <p className="text-sm text-muted-foreground font-light">{p.sub}</p>
-                  </div>
-                  <span className="text-4xl font-semibold text-foreground shrink-0 ml-3" style={MONO}>₩{p.price}</span>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* PHILOSOPHY */}
-      <section data-hsnap className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center bg-background text-foreground py-20 px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <Label className="block mb-6 text-accent-foreground/50">OUR PHILOSOPHY</Label>
-          <p className="text-3xl md:text-4xl font-light leading-[1.6] mb-10" style={SERIF}>
-            한국 고유의 향을 느껴보세요.<br />당신이 살고 싶은 공간을 선택합니다.
-          </p>
-          <Hairline className="border-foreground/20 mb-10 max-w-xs mx-auto" />
-          <a href="#" className="inline-flex items-center gap-2 text-sm text-accent-foreground/70 hover:text-accent-foreground transition-colors" style={SANS}>
-            브랜드 이야기 <ArrowUpRight size={14} />
-          </a>
-        </div>
       </section>
 
       {/* LOOKBOOK */}

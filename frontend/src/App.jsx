@@ -5,6 +5,8 @@ import Snap from "lenis/snap";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import ScrollToTop from "./component/ScrollToTop";
 import DoorIntro from "./component/DoorIntro/DoorIntro";
+import JipdaumHanokLogo from "./assets/logo/Jipdaum-logo-Light-transparent.png";
+import JipdaumHanokLogoDark from "./assets/logo/Jipdaum-logo-Dark-transparent.png";
 import Header from "./component/Header/Header";
 import Sidebar from "./component/Sidebar/Sidebar";
 import MyPage from "./component/MyPage/MyPage";
@@ -13,11 +15,13 @@ import Home from "./component/Home/Home";
 
 import Cart from "./component/Cart/Cart";
 import SearchModal from "./component/SearchModal/SearchModal";
+import NoticeModal from "./component/NoticeModal/NoticeModal";
 import Welcome from "./component/Welcome/Welcome";
 import ProductDetail from "./component/ProductDetail/ProductDetail";
 import SocialCallback from "./component/SocialCallback/SocialCallback";
 import EmailVerify from "./component/EmailVerify/EmailVerify";
 import SearchResults from "./component/SearchResults/SearchResults";
+import KoreanHall from "./component/KoreanHall/KoreanHall";
 import Checkout from "./component/Checkout/Checkout";
 import OrderComplete from "./component/OrderComplete/OrderComplete";
 import Footer from "./component/Footer/Footer";
@@ -26,26 +30,37 @@ import { AuthModalProvider } from "./context/AuthModalContext";
 import { CartModalProvider } from "./context/CartModalContext";
 import { MyPageModalProvider } from "./context/MyPageModalContext";
 import { SearchModalProvider } from "./context/SearchModalContext";
+import { NoticeModalProvider } from "./context/NoticeModalContext";
 import { createPagingController } from "./utils/snapSetup";
 import "./App.css";
 
-// 홈("/")에 들어올 때마다 — 새로고침이든 다른 페이지에서 돌아오는 것이든 —
-// 매번 대문 애니메이션을 다시 보여준다.
+// 홈("/")과 한국관("/korean-hall")에 들어올 때마다 — 새로고침이든 다른 페이지에서
+// 돌아오는 것이든, 이미 그 페이지에 있는 상태에서 사이드바 버튼을 다시 눌렀을 때든 —
+// 매번 대문 애니메이션을 다시 보여준다. pathname만 보면 같은 경로로 다시 이동할 때
+// (예: 한국관에 있는 채로 "한국관" 버튼 재클릭) 값이 안 바뀌어 재실행되지 않으므로,
+// 매 네비게이션마다 고유하게 바뀌는 location.key를 기준으로 삼는다.
 function DoorIntroController() {
-  const { pathname } = useLocation();
+  const { pathname, key } = useLocation();
   const [showDoorIntro, setShowDoorIntro] = useState(false);
+  const isKoreanHall = pathname === "/korean-hall";
 
   useEffect(() => {
-    if (pathname !== "/") {
+    if (pathname !== "/" && !isKoreanHall) {
       setShowDoorIntro(false);
       return;
     }
     setShowDoorIntro(true);
     const timer = setTimeout(() => setShowDoorIntro(false), 7700);
     return () => clearTimeout(timer);
-  }, [pathname]);
+  }, [key, pathname, isKoreanHall]);
 
-  return showDoorIntro ? <DoorIntro /> : null;
+  if (!showDoorIntro) return null;
+
+  return isKoreanHall ? (
+    <DoorIntro logoLight={JipdaumHanokLogo} logoDark={JipdaumHanokLogoDark} theme="hanji" />
+  ) : (
+    <DoorIntro lightEffect="sparkle" />
+  );
 }
 
 function App() {
@@ -106,6 +121,7 @@ function App() {
     <CartModalProvider>
     <MyPageModalProvider>
     <SearchModalProvider>
+    <NoticeModalProvider>
     <ScrollToTop lenis={lenisRef} controller={controllerRef} panelsUnsub={panelsUnsubRef} />
     <DoorIntroController />
     <Header />
@@ -114,6 +130,7 @@ function App() {
     <Cart />
     <MyPage />
     <SearchModal />
+    <NoticeModal />
 
     <div className="hTrack">
       <Routes>
@@ -125,6 +142,7 @@ function App() {
         <Route path="/social-callback" element={<SocialCallback />} />
         <Route path="/email-verify" element={<EmailVerify />} />
         <Route path="/search" element={<SearchResults />} />
+        <Route path="/korean-hall" element={<KoreanHall />} />
 
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/checkout" element={<Checkout />} />
@@ -133,6 +151,7 @@ function App() {
       </Routes>
       <Footer />
     </div>
+    </NoticeModalProvider>
     </SearchModalProvider>
     </MyPageModalProvider>
     </CartModalProvider>
