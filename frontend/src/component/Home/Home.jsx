@@ -1,20 +1,14 @@
-import { useEffect, useState, useRef } from "react";
-import { ChevronLeft, ChevronRight, Heart, ArrowUpRight, X } from "lucide-react";
+import { useEffect, useMemo, useState, useRef } from "react";
+import { ChevronLeft, ChevronRight, Heart, ArrowUpRight, X, Search } from "lucide-react";
 import { FaInstagram } from "react-icons/fa6";
 import "./Home.css";
-import jipdaumBrushes from "../../assets/scenes/jipdaum-brushes.png";
-import jipdaumColorBurst from "../../assets/scenes/jipdaum-color-burst.png";
 import storageCabinet from "../../assets/products/storage-cabinet.jpg";
-import royalCourtyardView from "../../assets/scenes/royal-modern-courtyard-view.jpg";
+import moonJarLamp from "../../assets/달항아리 램프.png";
+import lowPlatformBed from "../../assets/로우 플랫폼 침대.png";
 
 const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
 const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
 const MONO = { fontFamily: "'TwayFly', 'DM Mono', monospace" };
-
-const HERO_SLIDES = [
-  { src: jipdaumBrushes, alt: "집다움 히어로 - 오방색 붓끝이 모여 만든 별 모양" },
-  { src: jipdaumColorBurst, alt: "집다움 히어로 - 오방색 물감이 터지는 모습" },
-];
 
 const PRODUCTS = [
   { id: 1, no: "No.1", name: "린넨 암체어", sub: "내추럴 베이지", price: "328,000", label: "BESTSELLER",
@@ -38,12 +32,6 @@ const PRODUCTS = [
     spec: "SIZE : W80 D40 H85 · MATERIAL : walnut, brass",
     image: storageCabinet, alt: "한국 모던 나비 문양 수납장" },
 ];
-
-const SPREAD = {
-  quote: "집은 취향의 모음집이 아니라\n삶의 방식을 선택하는 나만의 공간이다.",
-  image: royalCourtyardView,
-  alt: "한옥 중정 전경 - 단청 처마와 연못이 보이는 마루",
-};
 
 const ESSAY = {
   title: "여러분이 생각하는 집다움은 \n 어떤 공간인가요?",
@@ -115,9 +103,40 @@ function Label({ children, className = "" }) {
   );
 }
 
+function ShootingStars() {
+  const stars = useMemo(
+    () =>
+      Array.from({ length: 4 }, (_, i) => ({
+        id: i,
+        top: `${5 + Math.random() * 35}%`,
+        left: `${50 + Math.random() * 45}%`,
+        duration: `${6 + Math.random() * 4}s`,
+        delay: `${-(Math.random() * 10).toFixed(2)}s`,
+      })),
+    []
+  );
+
+  return (
+    <div className="shootingStars" aria-hidden="true">
+      {stars.map((s) => (
+        <span
+          key={s.id}
+          className="shootingStar"
+          style={{
+            top: s.top,
+            left: s.left,
+            animationDuration: s.duration,
+            animationDelay: s.delay,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 function Home() {
   const [wishlist, setWishlist] = useState([]);
-  const [heroSlide, setHeroSlide] = useState(0);
+  const [productSearchQuery, setProductSearchQuery] = useState("");
   const [lookbookPage, setLookbookPage] = useState(0);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [quickViewQty, setQuickViewQty] = useState(1);
@@ -144,6 +163,17 @@ function Home() {
     window.dispatchEvent(new Event("homecartchange"));
   };
 
+  const filteredProducts = (() => {
+    const q = productSearchQuery.trim().toLowerCase();
+    if (!q) return PRODUCTS;
+    return PRODUCTS.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.sub.toLowerCase().includes(q) ||
+        p.label.toLowerCase().includes(q)
+    );
+  })();
+
   const lookbookPageCount = Math.ceil(LOOKBOOK_PHOTOS.length / LOOKBOOK_PAGE_SIZE);
   const lookbookPhotos = LOOKBOOK_PHOTOS.slice(
     lookbookPage * LOOKBOOK_PAGE_SIZE,
@@ -153,53 +183,55 @@ function Home() {
   const toggleWish = (id) =>
     setWishlist((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setHeroSlide((i) => (i + 1) % HERO_SLIDES.length);
-    }, 9000);
-    return () => clearInterval(timer);
-  }, []);
-
   const scroll = (dir) =>
     carouselRef.current?.scrollBy({ left: dir === "right" ? 560 : -560, behavior: "smooth" });
+
+  // 도어인트로를 지나 홈에 들어오면 기본적으로 5번째 패널(전체 상품)에서 시작한다.
+  // 사이드바의 "홈"/"상품" 버튼으로 진입한 경우엔 각자 원하는 패널로 직접 이동하므로 건너뛴다.
+  useEffect(() => {
+    if (sessionStorage.getItem("skipHomeDefaultPanel")) {
+      sessionStorage.removeItem("skipHomeDefaultPanel");
+      return;
+    }
+    const target = document.querySelectorAll("[data-hsnap]")[4];
+    if (!target) return;
+    const timer = setTimeout(() => {
+      if (window.lenis) {
+        window.lenis.resize();
+        window.lenis.scrollTo(target, { immediate: true });
+      } else {
+        target.scrollIntoView();
+      }
+    }, 200);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="home bg-background text-foreground flex flex-row" style={SANS}>
 
       {/* HERO */}
-      <section data-hsnap className="relative w-screen h-screen shrink-0 overflow-hidden bg-background">
-        <div
-          className="absolute inset-0 flex h-full transition-transform duration-[900ms] ease-in-out"
-          style={{ transform: `translateX(calc(-${heroSlide} * 100vw))` }}
-        >
-          {HERO_SLIDES.map((slide) => (
-            <img
-              key={slide.src}
-              src={slide.src}
-              alt={slide.alt}
-              className="w-screen h-full object-cover shrink-0"
-            />
-          ))}
+      <section data-hsnap className="relative w-screen h-screen shrink-0 overflow-hidden bg-background flex flex-row">
+        <div className="relative w-1/2 h-full overflow-hidden">
+          <img
+            src={moonJarLamp}
+            alt="달항아리 램프 - 은은한 조명이 켜진 도자 램프"
+            className="w-full h-full object-cover"
+          />
         </div>
 
-        <div className="absolute bottom-16 right-10 md:right-16 flex gap-2 z-10">
-          {HERO_SLIDES.map((slide, i) => (
-            <button
-              key={slide.src}
-              type="button"
-              aria-label={`${i + 1}번째 사진 보기`}
-              onClick={() => setHeroSlide(i)}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === heroSlide ? "w-6 bg-white" : "w-1.5 bg-white/50 hover:bg-white/75"
-              }`}
-            />
-          ))}
+        <div className="relative w-1/2 h-full overflow-hidden">
+          <img
+            src={lowPlatformBed}
+            alt="로우 플랫폼 침대 - 원목 프레임의 낮은 침대"
+            className="w-full h-full object-cover"
+          />
         </div>
       </section>
 
       {/* ESSAY SPREAD */}
-      <section data-hsnap className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center bg-background text-foreground py-20 px-8">
-        <div className="max-w-4xl mx-auto text-center">
+      <section id="home-essay" data-hide-header data-hsnap className="sparkleBg holoMesh w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center text-foreground py-20 px-8">
+        <ShootingStars />
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
           <p className="text-3xl md:text-4xl font-light leading-[1.6] mb-10 whitespace-pre-line" style={SERIF}>
             {ESSAY.title}
           </p>
@@ -208,8 +240,9 @@ function Home() {
       </section>
 
       {/* ESSAY SPREAD 2 */}
-      <section data-hsnap className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center bg-background text-foreground py-20 px-8">
-        <div className="max-w-4xl mx-auto text-center">
+      <section data-hide-header data-hsnap className="sparkleBg holoMesh w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center text-foreground py-20 px-8">
+        <ShootingStars />
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
           <p className="text-3xl md:text-4xl font-light leading-[1.6] mb-10 whitespace-pre-line" style={SERIF}>
             {ESSAY_2.title}
           </p>
@@ -218,8 +251,9 @@ function Home() {
       </section>
 
       {/* ESSAY SPREAD 3 */}
-      <section data-hsnap className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center bg-background text-foreground py-20 px-8">
-        <div className="max-w-4xl mx-auto text-center">
+      <section data-hide-header data-hsnap className="sparkleBg holoMesh w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center text-foreground py-20 px-8">
+        <ShootingStars />
+        <div className="relative z-10 max-w-4xl mx-auto text-center">
           <p className="text-3xl md:text-4xl font-light leading-[1.6] mb-10 whitespace-pre-line" style={SERIF}>
             {ESSAY_3.title}
           </p>
@@ -227,29 +261,44 @@ function Home() {
         </div>
       </section>
 
-      {/* PULL QUOTE SPREAD (복제 3) */}
-      <section data-hsnap className="grid grid-cols-1 md:grid-cols-2 w-screen h-screen shrink-0 overflow-y-auto">
-        <div className="overflow-hidden bg-muted h-72 md:h-auto">
-          <img src={SPREAD.image} alt={SPREAD.alt} className="w-full h-full object-cover hover:scale-[1.03] transition-transform duration-1000" />
-        </div>
-        <div className="bg-secondary flex flex-col justify-center px-12 md:px-16 py-16 md:py-0">
-          <Label className="mb-8 block">{SPREAD.author}</Label>
-          <blockquote className="text-2xl md:text-3xl font-light leading-[1.55] text-foreground whitespace-pre-line mb-10" style={SERIF}>
-            {SPREAD.quote}
-          </blockquote>
-          <Hairline className="mb-8 w-16" />
-        </div>
-      </section>
-
       {/* PRODUCT GRID */}
       <section data-hsnap className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center py-20 px-8">
-        <div className="max-w-7xl mx-auto w-full mb-10">
-          <Label className="block mb-3">전체 상품</Label>
-          <h2 className="text-3xl font-light text-foreground" style={SERIF}>집다움의 모든 상품</h2>
+        <div className="max-w-7xl mx-auto w-full mb-10 flex items-end justify-between gap-8 flex-wrap">
+          <div>
+            <Label className="block mb-3">전체 상품</Label>
+            <h2 className="text-3xl font-light text-foreground" style={SERIF}>집다움의 모든 상품</h2>
+          </div>
+          <div className="flex items-center gap-2 border-b border-foreground w-full sm:w-72 pb-2">
+            <Search size={15} className="text-muted-foreground shrink-0" />
+            <input
+              type="text"
+              value={productSearchQuery}
+              onChange={(e) => setProductSearchQuery(e.target.value)}
+              placeholder="상품명, 브랜드로 검색"
+              aria-label="전체 상품 검색"
+              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+              style={SANS}
+            />
+            {productSearchQuery && (
+              <button
+                type="button"
+                onClick={() => setProductSearchQuery("")}
+                aria-label="검색어 지우기"
+                className="text-muted-foreground hover:text-foreground transition-colors shrink-0"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
         </div>
         <Hairline className="max-w-7xl mx-auto w-full mb-10" />
+        {filteredProducts.length === 0 ? (
+          <p className="max-w-7xl mx-auto w-full text-center text-sm text-muted-foreground py-16" style={SANS}>
+            "{productSearchQuery}"에 대한 검색 결과가 없습니다.
+          </p>
+        ) : (
         <div className="max-w-7xl mx-auto w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-          {PRODUCTS.map((p) => (
+          {filteredProducts.map((p) => (
             <article key={p.id} className="group cursor-pointer" onClick={() => openQuickView(p)}>
               <div className="relative overflow-hidden bg-muted mb-3 aspect-[5/6]">
                 <img src={p.image} alt={p.alt} className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
@@ -269,6 +318,7 @@ function Home() {
             </article>
           ))}
         </div>
+        )}
       </section>
 
       {/* PRODUCT CAROUSEL */}

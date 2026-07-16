@@ -6,23 +6,38 @@
   overflow: hidden;
   pointer-events: none;
 
-  /* 한지 질감 — 은은한 섬유결(교차 사선) + 로고 자리의 부드러운 음영 + 따뜻한 한지색 바탕 */
+  /* 홀로그램 톤 배경 — 파스텔 무지개 메쉬 */
   background:
-    radial-gradient(circle at 50% 48%, rgba(59, 41, 20, 0.32) 0%, rgba(59, 41, 20, 0) 32%),
-    repeating-linear-gradient(115deg, rgba(120, 90, 50, 0.06) 0px, rgba(120, 90, 50, 0.06) 1px, transparent 1px, transparent 3px),
-    repeating-linear-gradient(25deg, rgba(120, 90, 50, 0.05) 0px, rgba(120, 90, 50, 0.05) 1px, transparent 1px, transparent 4px),
-    radial-gradient(circle at 50% 45%, #f3ead2 0%, #e8dcb8 55%, #d3c092 100%);
+    radial-gradient(32% 38% at 22% 14%, rgba(182, 172, 226, 0.95), transparent 70%),
+    radial-gradient(28% 32% at 78% 8%, rgba(160, 202, 236, 0.92), transparent 70%),
+    radial-gradient(38% 42% at 12% 55%, rgba(150, 222, 184, 0.92), transparent 70%),
+    radial-gradient(46% 48% at 62% 42%, rgba(236, 156, 184, 0.9), transparent 70%),
+    radial-gradient(48% 40% at 85% 78%, rgba(150, 196, 236, 0.9), transparent 70%),
+    radial-gradient(55% 34% at 32% 92%, rgba(150, 222, 186, 0.85), transparent 70%),
+    linear-gradient(150deg, #cfc4ef 0%, #cfe9d5 45%, #f0c9d8 100%);
+  background-size: 240% 240%;
+  background-position: 0% 30%;
 
-  animation: mistDissolve 7.5s ease forwards;
+  animation: mistDissolve 7.5s ease forwards, holoWaveIntro 7.5s ease forwards;
 }
 
-/* 다크모드 — 흑백 로고에 맞춰 한지색 대신 어두운 톤 배경 */
+/* 다크모드 — 톤을 낮춘 홀로그램 배경 */
 .doorIntro.dark {
   background:
-    radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 32%),
-    repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.035) 0px, rgba(255, 255, 255, 0.035) 1px, transparent 1px, transparent 3px),
-    repeating-linear-gradient(25deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 4px),
-    radial-gradient(circle at 50% 45%, #2b2f3a 0%, #1b1e26 55%, #0e1013 100%);
+    radial-gradient(32% 38% at 22% 14%, rgba(120, 100, 185, 0.55), transparent 70%),
+    radial-gradient(28% 32% at 78% 8%, rgba(70, 125, 175, 0.5), transparent 70%),
+    radial-gradient(38% 42% at 12% 55%, rgba(70, 155, 120, 0.5), transparent 70%),
+    radial-gradient(46% 48% at 62% 42%, rgba(180, 80, 120, 0.45), transparent 70%),
+    radial-gradient(48% 40% at 85% 78%, rgba(70, 125, 175, 0.45), transparent 70%),
+    radial-gradient(55% 34% at 32% 92%, rgba(70, 155, 120, 0.4), transparent 70%),
+    linear-gradient(150deg, #14121e 0%, #101a15 45%, #1c1017 100%);
+  background-size: 240% 240%;
+  background-position: 0% 30%;
+}
+
+@keyframes holoWaveIntro {
+  0% { background-position: 0% 30%; }
+  100% { background-position: 100% 70%; }
 }
 
 /* 다크모드에서는 안개를 옅게 눌러 별빛이 가려지지 않게 함 */
@@ -254,13 +269,17 @@
     opacity: 1;
     filter: blur(0);
   }
-  45% {
+  40% {
     opacity: 1;
     filter: blur(0);
   }
+  70% {
+    opacity: 0.65;
+    filter: blur(24px);
+  }
   100% {
     opacity: 0;
-    filter: blur(26px);
+    filter: blur(52px);
   }
 }
 
@@ -279,6 +298,12 @@
 .introLogo img {
   width: 420px;
   max-width: 60vw;
+  transition: filter 0.4s ease;
+}
+
+/* 다크모드 홀로그램 배경에 맞춰 로고를 흰색으로 */
+.doorIntro.dark .introLogo img {
+  filter: brightness(0) invert(1);
 }
 
 @keyframes logoFade {
@@ -294,15 +319,21 @@
     filter: blur(0);
   }
 
-  55% {
+  50% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
     filter: blur(0);
   }
 
+  75% {
+    opacity: 0.6;
+    transform: translate(-50%, -50%) scale(1.05);
+    filter: blur(10px);
+  }
+
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.08);
-    filter: blur(4px);
+    transform: translate(-50%, -50%) scale(1.15);
+    filter: blur(22px);
   }
 }

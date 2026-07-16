@@ -32,3 +32,220 @@
 body.dark .home::before {
   opacity: 0.6;
 }
+
+/* 파스텔 홀로그램 메쉬 배경 — 에세이 스프레드 3개 섹션(2, 3, 4페이지), 무지개 시트가 물결처럼 흐르는 애니메이션 */
+.sparkleBg.holoMesh {
+  background-image:
+    repeating-linear-gradient(115deg,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 176, 217, 0.3) 8%,
+      rgba(255, 219, 153, 0.3) 16%,
+      rgba(179, 255, 199, 0.3) 24%,
+      rgba(153, 219, 255, 0.3) 32%,
+      rgba(199, 179, 255, 0.3) 40%,
+      rgba(255, 255, 255, 0.4) 48%
+    ),
+    radial-gradient(32% 38% at 22% 14%, rgba(182, 172, 226, 0.95), transparent 70%),
+    radial-gradient(28% 32% at 78% 8%, rgba(160, 202, 236, 0.92), transparent 70%),
+    radial-gradient(38% 42% at 12% 55%, rgba(150, 222, 184, 0.92), transparent 70%),
+    radial-gradient(46% 48% at 62% 42%, rgba(236, 156, 184, 0.9), transparent 70%),
+    radial-gradient(48% 40% at 85% 78%, rgba(150, 196, 236, 0.9), transparent 70%),
+    radial-gradient(55% 34% at 32% 92%, rgba(150, 222, 186, 0.85), transparent 70%),
+    linear-gradient(150deg, #cfc4ef 0%, #cfe9d5 45%, #f0c9d8 100%);
+  background-blend-mode: overlay, normal, normal, normal, normal, normal, normal, normal;
+  background-size:
+    340% 340%,
+    240% 240%, 240% 240%, 240% 240%, 240% 240%, 240% 240%, 240% 240%,
+    240% 240%;
+  animation: holoWave 14s ease-in-out infinite;
+}
+
+body.dark .sparkleBg.holoMesh {
+  background-image:
+    repeating-linear-gradient(115deg,
+      rgba(255, 255, 255, 0.22) 0%,
+      rgba(255, 176, 217, 0.18) 8%,
+      rgba(255, 219, 153, 0.18) 16%,
+      rgba(179, 255, 199, 0.18) 24%,
+      rgba(153, 219, 255, 0.18) 32%,
+      rgba(199, 179, 255, 0.18) 40%,
+      rgba(255, 255, 255, 0.22) 48%
+    ),
+    radial-gradient(32% 38% at 22% 14%, rgba(120, 100, 185, 0.55), transparent 70%),
+    radial-gradient(28% 32% at 78% 8%, rgba(70, 125, 175, 0.5), transparent 70%),
+    radial-gradient(38% 42% at 12% 55%, rgba(70, 155, 120, 0.5), transparent 70%),
+    radial-gradient(46% 48% at 62% 42%, rgba(180, 80, 120, 0.45), transparent 70%),
+    radial-gradient(48% 40% at 85% 78%, rgba(70, 125, 175, 0.45), transparent 70%),
+    radial-gradient(55% 34% at 32% 92%, rgba(70, 155, 120, 0.4), transparent 70%),
+    linear-gradient(150deg, #14121e 0%, #101a15 45%, #1c1017 100%);
+  background-blend-mode: overlay, normal, normal, normal, normal, normal, normal, normal;
+  background-size:
+    340% 340%,
+    240% 240%, 240% 240%, 240% 240%, 240% 240%, 240% 240%, 240% 240%,
+    240% 240%;
+  animation: holoWave 14s ease-in-out infinite;
+}
+
+@keyframes holoWave {
+  0%, 100% {
+    background-position:
+      0% 10%,
+      0% 30%, 0% 30%, 0% 30%, 0% 30%, 0% 30%, 0% 30%,
+      0% 30%;
+  }
+  50% {
+    background-position:
+      220% 90%,
+      100% 70%, 100% 70%, 100% 70%, 100% 70%, 100% 70%, 100% 70%,
+      100% 70%;
+  }
+}
+
+/* 별똥별 — 다크모드 에세이 스프레드에서만 보임 */
+.shootingStars {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+body.dark .shootingStars {
+  opacity: 1;
+}
+
+.shootingStar {
+  position: absolute;
+  width: 160px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+  border-radius: 2px;
+  opacity: 0;
+  animation-name: shootAcross;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+}
+
+@keyframes shootAcross {
+  0% {
+    transform: translate(0, 0) rotate(-32deg);
+    opacity: 0;
+  }
+  2% {
+    opacity: 1;
+  }
+  9% {
+    transform: translate(-480px, 300px) rotate(-32deg);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 반짝이는 별빛 배경 — 에세이 스프레드 3개 섹션(2, 3, 4페이지) */
+.sparkleBg {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  /* 은은한 실버 그러데이션 배경 */
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(255, 255, 255, 0.55), transparent 60%),
+    linear-gradient(135deg, #eef0f2 0%, #dde1e5 45%, #eef0f2 100%);
+}
+
+body.dark .sparkleBg {
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(180, 190, 205, 0.12), transparent 60%),
+    linear-gradient(135deg, #171a20 0%, #21252d 45%, #171a20 100%);
+}
+
+.sparkleBg::before,
+.sparkleBg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.sparkleBg::before {
+  background-image:
+    radial-gradient(3px 3px at 8% 15%, rgba(201, 162, 39, 1), rgba(201, 162, 39, 0.35) 45%, transparent 70%),
+    radial-gradient(2.4px 2.4px at 18% 55%, rgba(166, 52, 42, 1), rgba(166, 52, 42, 0.3) 45%, transparent 70%),
+    radial-gradient(3.4px 3.4px at 28% 25%, rgba(255, 255, 255, 1), rgba(201, 162, 39, 0.35) 45%, transparent 70%),
+    radial-gradient(2.6px 2.6px at 36% 70%, rgba(42, 77, 143, 1), rgba(42, 77, 143, 0.3) 45%, transparent 70%),
+    radial-gradient(3px 3px at 46% 12%, rgba(201, 162, 39, 1), rgba(201, 162, 39, 0.35) 45%, transparent 70%),
+    radial-gradient(2.4px 2.4px at 55% 48%, rgba(255, 255, 255, 1), rgba(166, 52, 42, 0.3) 45%, transparent 70%),
+    radial-gradient(3.2px 3.2px at 64% 80%, rgba(42, 77, 143, 1), rgba(42, 77, 143, 0.3) 45%, transparent 70%),
+    radial-gradient(2.6px 2.6px at 72% 30%, rgba(201, 162, 39, 1), rgba(201, 162, 39, 0.35) 45%, transparent 70%),
+    radial-gradient(3px 3px at 82% 62%, rgba(255, 255, 255, 1), rgba(28, 26, 22, 0.25) 45%, transparent 70%),
+    radial-gradient(2.4px 2.4px at 91% 20%, rgba(166, 52, 42, 1), rgba(166, 52, 42, 0.3) 45%, transparent 70%),
+    radial-gradient(3px 3px at 12% 88%, rgba(42, 77, 143, 1), rgba(42, 77, 143, 0.3) 45%, transparent 70%),
+    radial-gradient(2.6px 2.6px at 96% 78%, rgba(201, 162, 39, 1), rgba(201, 162, 39, 0.35) 45%, transparent 70%);
+  animation: sparkleTwinkleA 2.6s ease-in-out infinite;
+}
+
+.sparkleBg::after {
+  background-image:
+    radial-gradient(2.2px 2.2px at 14% 40%, rgba(255, 255, 255, 0.95), rgba(28, 26, 22, 0.2) 45%, transparent 70%),
+    radial-gradient(2.8px 2.8px at 24% 10%, rgba(42, 77, 143, 0.95), rgba(42, 77, 143, 0.25) 45%, transparent 70%),
+    radial-gradient(2px 2px at 33% 62%, rgba(166, 52, 42, 0.9), rgba(166, 52, 42, 0.2) 45%, transparent 70%),
+    radial-gradient(2.6px 2.6px at 42% 35%, rgba(201, 162, 39, 0.95), rgba(201, 162, 39, 0.25) 45%, transparent 70%),
+    radial-gradient(2.2px 2.2px at 51% 85%, rgba(255, 255, 255, 0.9), rgba(28, 26, 22, 0.2) 45%, transparent 70%),
+    radial-gradient(2.8px 2.8px at 60% 18%, rgba(42, 77, 143, 0.9), rgba(42, 77, 143, 0.2) 45%, transparent 70%),
+    radial-gradient(2px 2px at 69% 55%, rgba(166, 52, 42, 0.9), rgba(166, 52, 42, 0.2) 45%, transparent 70%),
+    radial-gradient(2.6px 2.6px at 78% 8%, rgba(201, 162, 39, 0.95), rgba(201, 162, 39, 0.25) 45%, transparent 70%),
+    radial-gradient(2.2px 2.2px at 87% 44%, rgba(255, 255, 255, 0.9), rgba(28, 26, 22, 0.2) 45%, transparent 70%),
+    radial-gradient(2.8px 2.8px at 94% 92%, rgba(42, 77, 143, 0.85), rgba(42, 77, 143, 0.2) 45%, transparent 70%),
+    radial-gradient(2px 2px at 5% 65%, rgba(201, 162, 39, 0.9), rgba(201, 162, 39, 0.2) 45%, transparent 70%),
+    radial-gradient(2.4px 2.4px at 62% 68%, rgba(255, 255, 255, 0.9), rgba(166, 52, 42, 0.2) 45%, transparent 70%);
+  animation: sparkleTwinkleB 3.4s ease-in-out infinite;
+  animation-delay: -1.7s;
+}
+
+@keyframes sparkleTwinkleA {
+  0%, 100% { opacity: 0.35; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+@keyframes sparkleTwinkleB {
+  0%, 100% { opacity: 1; transform: scale(1.1); }
+  50% { opacity: 0.3; transform: scale(0.9); }
+}
+
+/* 다크모드 — 은은한 백색/청백색 별빛 */
+body.dark .sparkleBg::before {
+  background-image:
+    radial-gradient(3px 3px at 8% 15%, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.35) 45%, transparent 70%),
+    radial-gradient(2.4px 2.4px at 18% 55%, rgba(220, 230, 255, 1), rgba(220, 230, 255, 0.3) 45%, transparent 70%),
+    radial-gradient(3.4px 3.4px at 28% 25%, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.35) 45%, transparent 70%),
+    radial-gradient(2.6px 2.6px at 36% 70%, rgba(220, 230, 255, 0.95), rgba(220, 230, 255, 0.3) 45%, transparent 70%),
+    radial-gradient(3px 3px at 46% 12%, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.35) 45%, transparent 70%),
+    radial-gradient(2.4px 2.4px at 55% 48%, rgba(220, 230, 255, 0.95), rgba(220, 230, 255, 0.3) 45%, transparent 70%),
+    radial-gradient(3.2px 3.2px at 64% 80%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.3) 45%, transparent 70%),
+    radial-gradient(2.6px 2.6px at 72% 30%, rgba(220, 230, 255, 0.95), rgba(220, 230, 255, 0.3) 45%, transparent 70%),
+    radial-gradient(3px 3px at 82% 62%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.3) 45%, transparent 70%),
+    radial-gradient(2.4px 2.4px at 91% 20%, rgba(220, 230, 255, 0.9), rgba(220, 230, 255, 0.3) 45%, transparent 70%),
+    radial-gradient(3px 3px at 12% 88%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.3) 45%, transparent 70%),
+    radial-gradient(2.6px 2.6px at 96% 78%, rgba(220, 230, 255, 0.9), rgba(220, 230, 255, 0.3) 45%, transparent 70%);
+}
+
+body.dark .sparkleBg::after {
+  background-image:
+    radial-gradient(2.2px 2.2px at 14% 40%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.2) 45%, transparent 70%),
+    radial-gradient(2.8px 2.8px at 24% 10%, rgba(220, 230, 255, 0.85), rgba(220, 230, 255, 0.2) 45%, transparent 70%),
+    radial-gradient(2px 2px at 33% 62%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2) 45%, transparent 70%),
+    radial-gradient(2.6px 2.6px at 42% 35%, rgba(220, 230, 255, 0.85), rgba(220, 230, 255, 0.2) 45%, transparent 70%),
+    radial-gradient(2.2px 2.2px at 51% 85%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2) 45%, transparent 70%),
+    radial-gradient(2.8px 2.8px at 60% 18%, rgba(220, 230, 255, 0.8), rgba(220, 230, 255, 0.2) 45%, transparent 70%),
+    radial-gradient(2px 2px at 69% 55%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2) 45%, transparent 70%),
+    radial-gradient(2.6px 2.6px at 78% 8%, rgba(220, 230, 255, 0.85), rgba(220, 230, 255, 0.2) 45%, transparent 70%),
+    radial-gradient(2.2px 2.2px at 87% 44%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2) 45%, transparent 70%),
+    radial-gradient(2.8px 2.8px at 94% 92%, rgba(220, 230, 255, 0.75), rgba(220, 230, 255, 0.2) 45%, transparent 70%),
+    radial-gradient(2px 2px at 5% 65%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2) 45%, transparent 70%),
+    radial-gradient(2.4px 2.4px at 62% 68%, rgba(220, 230, 255, 0.8), rgba(220, 230, 255, 0.2) 45%, transparent 70%);
+}

@@ -1,7 +1,6 @@
 import "./DoorIntro.css";
 import { useEffect, useMemo, useState } from "react";
-import JipdaumLogoColor from "../../assets/logo/Jipdaum-logo-Light-transparent.png";
-import JipdaumLogoMono from "../../assets/logo/Jipdaum-logo-Dark-transparent.png";
+import JDLogo from "../../assets/J.D 로고.svg";
 
 function DoorIntro() {
   const [darkMode, setDarkMode] = useState(
@@ -62,7 +61,7 @@ function DoorIntro() {
       </div>
 
       <div className="introLogo">
-        <img src={darkMode ? JipdaumLogoMono : JipdaumLogoColor} alt="집다움" />
+        <img src={JDLogo} alt="집다움" />
       </div>
     </div>
   );

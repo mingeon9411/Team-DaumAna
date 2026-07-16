@@ -1,7 +1,8 @@
 import "./Sidebar.css";
 import { useEffect, useRef, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
+  LuHouse,
   LuStore,
   LuMegaphone,
   LuSearch,
@@ -20,6 +21,7 @@ import { useAuthModal } from "../../context/AuthModalContext";
 import { useCartModal } from "../../context/CartModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import { useSearchModal } from "../../context/SearchModalContext";
+import { useNoticeModal } from "../../context/NoticeModalContext";
 
 function Sidebar() {
   const [cartCount, setCartCount] = useState(0);
@@ -39,8 +41,9 @@ function Sidebar() {
   const { openCart } = useCartModal();
   const { openMyPage } = useMyPageModal();
   const { openSearch } = useSearchModal();
+  const { openNotice } = useNoticeModal();
   const isHome = location.pathname === "/";
-  const pendingProductScrollRef = useRef(false);
+  const pendingPanelRef = useRef(null);
 
   const getHomeCartTotal = () => {
     try {
@@ -96,13 +99,14 @@ function Sidebar() {
     }
   }, [isHome]);
 
-  // 다른 페이지에서 "상품" 버튼을 눌러 홈으로 이동한 경우 — ScrollToTop이 스크롤을
-  // 0으로 되돌리고 패널을 재등록하는 처리가 끝난 뒤에 6번째 패널(전체 상품)로 이동한다.
+  // 다른 페이지에서 "홈"/"상품" 버튼을 눌러 홈으로 이동한 경우 — ScrollToTop이 스크롤을
+  // 0으로 되돌리고 패널을 재등록하는 처리가 끝난 뒤에 지정된 패널로 이동한다.
   useEffect(() => {
-    if (isHome && pendingProductScrollRef.current) {
-      pendingProductScrollRef.current = false;
+    if (isHome && pendingPanelRef.current !== null) {
+      const index = pendingPanelRef.current;
+      pendingPanelRef.current = null;
       // Home이 실제로 마운트되고 레이아웃/Lenis 콘텐츠 크기가 갱신될 시간을 준 뒤 이동
-      const timer = setTimeout(() => scrollToProductsPanel(), 200);
+      const timer = setTimeout(() => scrollToPanel(index), 200);
       return () => clearTimeout(timer);
     }
   }, [isHome]);
@@ -128,9 +132,9 @@ function Sidebar() {
     el.classList.add("railPop");
   };
 
-  // 전체 상품이 나열된 6번째 패널(data-hsnap 6번째 섹션)로 바로 이동
-  const scrollToProductsPanel = () => {
-    const target = document.querySelectorAll("[data-hsnap]")[5];
+  // data-hsnap 패널 목록 중 index번째 패널로 바로 이동 (0-based)
+  const scrollToPanel = (index) => {
+    const target = document.querySelectorAll("[data-hsnap]")[index];
     if (!target) return;
     if (window.lenis) {
       // 방금 마운트된 페이지의 콘텐츠 폭을 Lenis가 아직 반영하지 못했을 수 있어,
@@ -144,9 +148,10 @@ function Sidebar() {
 
   const goToProductsPage = () => {
     if (isHome) {
-      scrollToProductsPanel();
+      scrollToPanel(4);
     } else {
-      pendingProductScrollRef.current = true;
+      pendingPanelRef.current = 4;
+      sessionStorage.setItem("skipHomeDefaultPanel", "1");
       navigate("/");
     }
   };
@@ -154,6 +159,17 @@ function Sidebar() {
   const scrollToTop = () => {
     if (window.lenis) window.lenis.scrollTo(0);
     else window.scrollTo({ left: 0, behavior: "smooth" });
+  };
+
+  // "홈" 아이콘은 2번째 패널(에세이)로 이동 — 메인 페이지 기본 진입 위치(5페이지)와는 별개
+  const goHome = () => {
+    if (isHome) {
+      scrollToPanel(1);
+    } else {
+      pendingPanelRef.current = 1;
+      sessionStorage.setItem("skipHomeDefaultPanel", "1");
+      navigate("/");
+    }
   };
 
   const scrollToBottom = () => {
@@ -187,6 +203,16 @@ function Sidebar() {
         <button
           type="button"
           className="railBtn"
+          aria-label="홈"
+          data-tooltip="홈"
+          onClick={(e) => { triggerPop(e); goHome(); }}
+        >
+          <LuHouse />
+        </button>
+
+        <button
+          type="button"
+          className="railBtn"
           aria-label="상품"
           data-tooltip="상품"
           onClick={(e) => { triggerPop(e); goToProductsPage(); }}
@@ -194,9 +220,15 @@ function Sidebar() {
           <LuStore />
         </button>
 
-        <Link to="/" className="railBtn" aria-label="공지사항" data-tooltip="공지사항" onClick={triggerPop}>
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="공지사항"
+          data-tooltip="공지사항"
+          onClick={(e) => { triggerPop(e); openNotice(); }}
+        >
           <LuMegaphone />
-        </Link>
+        </button>
 
         <button
           type="button"

@@ -50,10 +50,11 @@
   }
 
   .footerLogo {
-    height: 64px;
+    height: 88px;
     width: auto;
     display: block;
     margin-bottom: 16px;
+    filter: brightness(0) invert(1);
   }
 
   .footerBrand p {

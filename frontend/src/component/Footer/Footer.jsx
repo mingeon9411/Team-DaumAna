@@ -1,7 +1,7 @@
 import { FaInstagram, FaXTwitter } from "react-icons/fa6";
 import { FaThreads } from "react-icons/fa6";
 import "./Footer.css";
-import JipdaumLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent.png";
+import JDLogo from "../../assets/J.D 로고.svg";
 
 const CLOSING_QUOTE = "집이란 나의 공간에\n나만의 색을 더해가는 또다른 세상이다.";
 
@@ -14,7 +14,7 @@ function Footer() {
 
       <div className="footerTop">
         <div className="footerBrand">
-          <img src={JipdaumLogoDark} alt="집다움" className="footerLogo" />
+          <img src={JDLogo} alt="집다움" className="footerLogo" />
           <p>한국적인 감성과 일상의 취향을 담은 우리만의 집다움</p>
           <p className = "footerNum">
           02-123-4567

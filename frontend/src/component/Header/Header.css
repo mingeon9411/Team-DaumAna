@@ -18,13 +18,13 @@ body {
 }
 
 body.dark {
-  background: #060d1e;
+  background: #23262d;
 }
 
 /* 헤더 */
 .header {
   width: 100%;
-  height: 82px;
+  height: 100px;
 
   position: fixed;
   top: 0;
@@ -33,65 +33,21 @@ body.dark {
   z-index: 1000;
 
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
 
-  padding: 0 72px;
+  padding: 16px 72px;
 
-  transition:
-  background 0.4s ease,
-  backdrop-filter 0.4s ease,
-  border-bottom 0.4s ease;
+  transition: background 0.4s ease;
 
+  /* 모든 페이지에 동일하게 적용되는 투명 배너 */
   background: transparent;
 
-  border-bottom: 1px solid transparent;
-
-}
-
-/* 단청 오방색(청·백·적·흑·황) 포인트 라인 */
-.header::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 3px;
-  background: linear-gradient(
-    90deg,
-    #2a4d8f 0%,
-    #f5f1ea 25%,
-    #a6342a 50%,
-    #1c1a16 75%,
-    #c9a227 100%
-  );
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease;
-}
-
-.header.scrolled::after,
-.header.lightBg::after,
-.header.cartHeader::after {
-  opacity: 0.7;
-}
-
-.scrolled {
-  background: rgba(244, 240, 232, 0.88);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-}
-
-.header.lightBg {
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
 }
 
 .logo {
   z-index: 1001;
   position: relative;
-  top: -6px;
 
   display: flex;
   align-items: center;
@@ -106,40 +62,10 @@ body.dark {
 }
 
 .logoImg {
-  height: 50px;
+  height: 104px;
   width: auto;
   display: block;
-}
-
-.logoImg.logoImgPlain {
-  height: 34px;
   filter: brightness(0) invert(1);
-}
-
-.logoStack {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 50px;
-  min-width: 160px;
-}
-
-.logoLayer {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  max-width: none;
-  transform: translate(-50%, -50%) scale(0.92);
-  opacity: 0;
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  pointer-events: none;
-}
-
-.logoLayer.logoLayerActive {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-  pointer-events: auto;
 }
 
 /* ── 달빛 별밭 오버레이 ── */
@@ -231,6 +157,12 @@ body.dark .starField::after {
   animation-delay: -1.9s;
 }
 
+/* 해/달 장식 우선 숨김 */
+.headerMoon,
+.headerSun {
+  display: none;
+}
+
 /* 달 — 일월오봉도 왼쪽 두 봉우리 사이, 하늘에 떠있게 */
 .headerMoon {
   position: absolute;
@@ -299,26 +231,6 @@ body.dark .header.cartHeader .headerSun {
   opacity: 0;
 }
 
-/* 일월오봉도 — 로고를 감싸는 산·소나무·물결 프레임 */
-.headerIlwol {
-  position: absolute;
-  left: 50%;
-  bottom: 4px;
-  transform: translateX(-50%);
-  height: 58px;
-  width: auto;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-
-.header.scrolled .headerIlwol,
-.header.lightBg .headerIlwol,
-.header.cartHeader .headerIlwol {
-  opacity: 0.92;
-}
-
 @keyframes sunPulse {
   from {
     box-shadow:
@@ -366,68 +278,33 @@ body.dark .header.cartHeader .headerSun {
    ───────────────────────────────────────── */
 
 @media (max-width: 1400px) {
-  .header { padding: 0 48px; }
+  .header { padding: 16px 48px; }
 }
 
 @media (max-width: 1200px) {
-  .header { padding: 0 32px; }
+  .header { padding: 16px 32px; }
 }
 
 @media (max-width: 1024px) {
-  .header { padding: 0 20px; }
+  .header { padding: 16px 20px; }
 }
 
 @media (max-width: 768px) {
   .header {
-    padding: 0 16px;
+    padding: 12px 16px;
   }
 }
 
 /* 480px 이하: 아주 좁은 화면 */
 @media (max-width: 480px) {
-  .header { height: 64px; }
+  .header { height: 80px; }
 }
 
 /* ─────────────────────────────────────────
    다크모드 달빛 헤더
    ───────────────────────────────────────── */
 
-/* 홈 최상단: 라이트모드처럼 투명 */
+/* 다크모드에서도 모든 페이지에 동일하게 투명 배너 */
 body.dark .header {
   background: transparent;
-  border-bottom-color: transparent;
-}
-
-/* 단청 라인: 투명 배너에서는 숨기고 스크롤 시에만 표시 */
-body.dark .header::after {
-  opacity: 0;
-}
-
-body.dark .header.scrolled::after,
-body.dark .header.lightBg::after,
-body.dark .header.cartHeader::after {
-  opacity: 0.85;
-}
-
-body.dark .header.scrolled {
-  background: linear-gradient(
-    180deg,
-    rgba(6, 13, 30, 0.94) 0%,
-    rgba(6, 13, 30, 0.92) 100%
-  );
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(150, 185, 255, 0.14);
-}
-
-body.dark .header.lightBg,
-body.dark .header.cartHeader {
-  background: linear-gradient(
-    180deg,
-    rgba(6, 13, 30, 0.97) 0%,
-    rgba(6, 13, 30, 0.95) 100%
-  );
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(150, 185, 255, 0.14);
 }

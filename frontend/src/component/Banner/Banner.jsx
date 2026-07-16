@@ -19,9 +19,9 @@ function Banner() {
 
   return (
     <section
-      className="banner"
+      className={`banner${current === 1 ? " bannerTransparent" : ""}`}
       style={{
-        backgroundImage: `url(${slides[current].image})`,
+        backgroundImage: current === 1 ? "none" : `url(${slides[current].image})`,
       }}
     >
       <div className="bannerText">
