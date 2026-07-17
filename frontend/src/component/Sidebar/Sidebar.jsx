@@ -44,6 +44,7 @@ function Sidebar() {
   const { openSearch } = useSearchModal();
   const { openNotice } = useNoticeModal();
   const isHome = location.pathname === "/";
+  const isKoreanHall = location.pathname === "/korean-hall";
   const pendingPanelRef = useRef(null);
 
   const getHomeCartTotal = () => {
@@ -192,7 +193,7 @@ function Sidebar() {
   };
 
   return (
-    <aside className={`sidebarRail ${collapsed ? "collapsed" : ""}`}>
+    <aside className={`sidebarRail ${collapsed ? "collapsed" : ""} ${isKoreanHall ? "koreanHallRail" : ""}`}>
       <button
         type="button"
         className="railToggle"

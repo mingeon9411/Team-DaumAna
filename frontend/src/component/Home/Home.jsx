@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Heart, X, Search } from "lucide-react";
 import { FaInstagram } from "react-icons/fa6";
 import "./Home.css";
@@ -97,37 +97,6 @@ function Label({ children, className = "" }) {
   );
 }
 
-function ShootingStars() {
-  const stars = useMemo(
-    () =>
-      Array.from({ length: 4 }, (_, i) => ({
-        id: i,
-        top: `${5 + Math.random() * 35}%`,
-        left: `${50 + Math.random() * 45}%`,
-        duration: `${6 + Math.random() * 4}s`,
-        delay: `${-(Math.random() * 10).toFixed(2)}s`,
-      })),
-    []
-  );
-
-  return (
-    <div className="shootingStars" aria-hidden="true">
-      {stars.map((s) => (
-        <span
-          key={s.id}
-          className="shootingStar"
-          style={{
-            top: s.top,
-            left: s.left,
-            animationDuration: s.duration,
-            animationDelay: s.delay,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
 function Home() {
   const [wishlist, setWishlist] = useState([]);
   const [productSearchQuery, setProductSearchQuery] = useState("");
@@ -152,6 +121,7 @@ function Home() {
     let fadeTimer;
 
     function advance(index) {
+      const holdDuration = index === 0 ? 8400 : 4800;
       holdTimer = setTimeout(() => {
         if (index >= ESSAYS.length - 1) {
           const essayEl = document.getElementById("home-essay");
@@ -161,7 +131,7 @@ function Home() {
             if (target) {
               window.lenis.resize();
               window.lenis.scrollTo(target, {
-                duration: 2.4,
+                duration: 5.3,
                 easing: (t) => 1 - Math.pow(1 - t, 3),
               });
             }
@@ -175,7 +145,7 @@ function Home() {
           setEssayFading(false);
           advance(index + 1);
         }, 900);
-      }, 4800);
+      }, holdDuration);
     }
 
     advance(0);
@@ -246,7 +216,6 @@ function Home() {
 
       {/* ESSAY SPREAD — 세 개의 멘트가 한 페이지 안에서 순서대로 부드럽게 전환됨 */}
       <section id="home-essay" data-hide-header data-hsnap className="sparkleBg holoMesh w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center text-foreground py-20 px-8">
-        <ShootingStars />
         <div className="relative z-10 max-w-4xl mx-auto text-center">
           <p
             className={`text-3xl md:text-4xl font-light leading-[1.6] mb-10 whitespace-pre-line transition-all duration-[900ms] ease-in-out ${
@@ -281,7 +250,6 @@ function Home() {
 
       {/* PRODUCT GRID */}
       <section data-hsnap className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center py-20 px-8">
-        <ShootingStars />
         <div className="relative z-10 max-w-7xl mx-auto w-full mb-10 flex items-end justify-between gap-8 flex-wrap">
           <div>
             <Label className="block mb-3">전체 상품</Label>

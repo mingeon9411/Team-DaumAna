@@ -68,7 +68,13 @@ body.dark {
   filter: brightness(0) invert(1);
 }
 
-/* 한국관 — 일월오봉도 봉우리 사이에 얹히는 기와집 집다움 로고, 헤더 위쪽 여백 없이 맨 위로 붙임 */
+/* 한국관 — 일월오봉도 + 로고 + 해/달 전체를 왼쪽 상단에 배치.
+   기존에 헤더 가로 중앙(50%)을 기준으로 잡던 배치를 그대로 유지한 채,
+   기준점(--khAnchorX)만 왼쪽으로 옮겨서 모양은 그대로 이동시킨다. */
+.header.koreanHallHeader {
+  --khAnchorX: 185px;
+}
+
 .header.koreanHallHeader .headerIlwol {
   height: 50px;
   bottom: 40px;
@@ -76,7 +82,7 @@ body.dark {
 
 .header.koreanHallHeader .logo {
   position: absolute;
-  left: 50%;
+  left: var(--khAnchorX);
   bottom: 53px;
   transform: translateX(-50%);
   z-index: 2;
@@ -98,7 +104,7 @@ body.dark {
 }
 
 .header.koreanHallHeader .headerMoon {
-  left: calc(50% - 69px);
+  left: calc(var(--khAnchorX) - 69px);
 }
 
 body.dark .header.lightBg.koreanHallHeader .headerMoon {
@@ -106,7 +112,7 @@ body.dark .header.lightBg.koreanHallHeader .headerMoon {
 }
 
 .header.koreanHallHeader .headerSun {
-  left: calc(50% + 71px);
+  left: calc(var(--khAnchorX) + 71px);
   animation-name: sunPulseSmall;
 }
 
@@ -234,7 +240,7 @@ body.dark .starField::after {
 /* 달 — 일월오봉도 왼쪽 두 봉우리 사이, 하늘에 떠있게 */
 .headerMoon {
   position: absolute;
-  left: calc(50% - 73px);
+  left: calc(var(--khAnchorX, 50%) - 73px);
   top: 8px;
   transform: translateX(-50%);
   z-index: 1;
@@ -265,7 +271,7 @@ body.dark .header.cartHeader .headerMoon {
 /* 해 — 일월오봉도 오른쪽 두 봉우리 사이, 하늘에 떠있게 */
 .headerSun {
   position: absolute;
-  left: calc(50% + 76px);
+  left: calc(var(--khAnchorX, 50%) + 76px);
   top: 8px;
   transform: translateX(-50%);
   z-index: 1;
@@ -301,7 +307,7 @@ body.dark .header.cartHeader .headerSun {
 
 .headerIlwol {
   position: absolute;
-  left: 50%;
+  left: var(--khAnchorX, 50%);
   bottom: 4px;
   transform: translateX(-50%);
   height: 58px;
