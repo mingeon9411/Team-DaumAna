@@ -56,8 +56,8 @@ function SearchModal() {
   };
 
   return (
-    <div className="searchModalOverlay" onClick={closeSearch}>
-      <div className="searchModalInner" onClick={(e) => e.stopPropagation()}>
+    <div className="searchModalOverlay">
+      <div className="searchModalInner">
         <button
           type="button"
           className="searchModalClose"

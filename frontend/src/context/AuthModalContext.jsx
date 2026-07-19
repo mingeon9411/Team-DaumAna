@@ -3,10 +3,12 @@ import { createContext, useContext, useState, useCallback, useEffect } from "rea
 const AuthModalContext = createContext(null);
 
 export function AuthModalProvider({ children }) {
-  const [view, setView] = useState(null); // null | 'login' | 'register'
+  const [view, setView] = useState(null); // null | 'login' | 'register' | 'findId' | 'findPassword'
 
   const openLogin = useCallback(() => setView("login"), []);
   const openRegister = useCallback(() => setView("register"), []);
+  const openFindId = useCallback(() => setView("findId"), []);
+  const openFindPassword = useCallback(() => setView("findPassword"), []);
   const close = useCallback(() => setView(null), []);
 
   // 전체 페이지 리로드(예: axios 인터셉터의 토큰 만료 처리) 이후에도
@@ -19,7 +21,7 @@ export function AuthModalProvider({ children }) {
   }, []);
 
   return (
-    <AuthModalContext.Provider value={{ view, openLogin, openRegister, close }}>
+    <AuthModalContext.Provider value={{ view, openLogin, openRegister, openFindId, openFindPassword, close }}>
       {children}
     </AuthModalContext.Provider>
   );

@@ -2,10 +2,13 @@ import "./Login.css";
 import { useNavigate } from "react-router-dom";
 import { SiKakaotalk, SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { loginUser } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
+import JDLogo from "../../assets/J.D 로고.svg";
+import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent.png";
+import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent.png";
 
 const SPRING = "http://localhost:8081";
 const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
@@ -14,7 +17,16 @@ const IS_DEV = import.meta.env.DEV;
 function Login() {
   const navigate = useNavigate();
   const recaptchaRef = useRef(null);
-  const { close, openRegister } = useAuthModal();
+  const { close, openRegister, openFindId, openFindPassword } = useAuthModal();
+  const [darkMode, setDarkMode] = useState(
+    () => document.body.classList.contains("dark")
+  );
+
+  useEffect(() => {
+    const syncDarkMode = () => setDarkMode(document.body.classList.contains("dark"));
+    window.addEventListener("darkmodechange", syncDarkMode);
+    return () => window.removeEventListener("darkmodechange", syncDarkMode);
+  }, []);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -77,7 +89,15 @@ function Login() {
   return (
       <section className="loginBox">
         <button type="button" className="authModalClose" aria-label="닫기" onClick={close}>×</button>
-        <p className="loginLabel">JIPDAUM MEMBER</p>
+        <div className="loginLogoRow">
+          <img src={JDLogo} alt="J.D" className="loginLogoJD" />
+          <span className="loginLogoDivider" />
+          <img
+            src={darkMode ? JipdaumHanokLogoDark : JipdaumHanokLogo}
+            alt="집다움"
+            className="loginLogoHanok"
+          />
+        </div>
 
         <h1>로그인</h1>
         <p className="loginDesc">집다움의 감성을 내 공간에 담아보세요.</p>
@@ -127,9 +147,9 @@ function Login() {
         </form>
 
         <div className="loginLinks">
-          <a href="#">아이디 찾기</a>
+          <button type="button" className="linkBtn" onClick={openFindId}>아이디 찾기</button>
           <span></span>
-          <a href="#">비밀번호 찾기</a>
+          <button type="button" className="linkBtn" onClick={openFindPassword}>비밀번호 찾기</button>
           <span></span>
           <button type="button" className="linkBtn" onClick={openRegister}>회원가입</button>
         </div>

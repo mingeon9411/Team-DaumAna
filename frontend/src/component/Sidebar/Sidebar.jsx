@@ -14,6 +14,7 @@ import {
   LuMoon,
   LuLogOut,
   LuChevronLeft,
+  LuChevronRight,
   LuChevronsLeft,
   LuChevronsRight,
 } from "react-icons/lu";
@@ -181,6 +182,28 @@ function Sidebar() {
     else window.scrollTo({ left: document.body.scrollWidth, behavior: "smooth" });
   };
 
+  // 현재 뷰포트에 가장 가까운 [data-hsnap] 패널을 기준으로 한 칸 앞/뒤 패널로 이동
+  const scrollByPanel = (direction) => {
+    const panels = Array.from(document.querySelectorAll("[data-hsnap]"));
+    if (panels.length === 0) return;
+
+    let currentIndex = 0;
+    let minDist = Infinity;
+    panels.forEach((panel, i) => {
+      const dist = Math.abs(panel.getBoundingClientRect().left);
+      if (dist < minDist) {
+        minDist = dist;
+        currentIndex = i;
+      }
+    });
+
+    const nextIndex = Math.min(Math.max(currentIndex + direction, 0), panels.length - 1);
+    scrollToPanel(nextIndex);
+  };
+
+  const goToPrevPanel = () => scrollByPanel(-1);
+  const goToNextPanel = () => scrollByPanel(1);
+
   const handleLogout = async () => {
     const refresh = localStorage.getItem("refresh_token");
     try {
@@ -321,6 +344,26 @@ function Sidebar() {
           onClick={(e) => { triggerPop(e); scrollToTop(); }}
         >
           <LuChevronsLeft />
+        </button>
+
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="이전 페이지"
+          data-tooltip="이전 페이지"
+          onClick={(e) => { triggerPop(e); goToPrevPanel(); }}
+        >
+          <LuChevronLeft />
+        </button>
+
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="다음 페이지"
+          data-tooltip="다음 페이지"
+          onClick={(e) => { triggerPop(e); goToNextPanel(); }}
+        >
+          <LuChevronRight />
         </button>
 
         <button

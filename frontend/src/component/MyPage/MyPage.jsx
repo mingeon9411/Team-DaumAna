@@ -121,8 +121,8 @@ function MyPage() {
   if (!isOpen) return null;
 
   return (
-    <div className="mypageModalOverlay" onClick={closeMyPage}>
-    <main className="mypage" onClick={(e) => e.stopPropagation()}>
+    <div className="mypageModalOverlay">
+    <main className="mypage">
       <button type="button" className="mypageModalClose" onClick={closeMyPage} aria-label="닫기">
         ×
       </button>

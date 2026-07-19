@@ -123,8 +123,8 @@ function Cart() {
   if (!isOpen) return null;
 
   return (
-    <div className="cartModalOverlay" onClick={closeCart}>
-      <div className="cartInner" onClick={(e) => e.stopPropagation()}>
+    <div className="cartModalOverlay">
+      <div className="cartInner">
         <button type="button" className="cartModalClose" onClick={closeCart} aria-label="닫기">
           ×
         </button>

@@ -5,36 +5,55 @@
 
     padding: 42px 38px;
 
-    background: rgba(245, 241, 234, 0.76);
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    background: linear-gradient(
+      115deg,
+      #f4f5f6 0%,
+      #d9dbde 20%,
+      #c3c6cb 35%,
+      #eef0f2 50%,
+      #b7bac0 65%,
+      #dfe1e4 80%,
+      #f4f5f6 100%
+    );
+    background-size: 160% 160%;
+    animation: loginMetallicSheen 24s ease-in-out infinite;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    color: var(--foreground);
 
     border-radius: 26px;
 
     text-align: center;
 
-    backdrop-filter: blur(14px);
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+
+    font-family: "TwayFly", "Noto Sans KR", "Pretendard", sans-serif;
   }
-  
-  .registerLabel {
-    font-family: "DM Mono", monospace;
-    font-size: 12px;
-    letter-spacing: 4px;
-    color: var(--accent);
-    margin-bottom: 14px;
+
+  body.dark .registerBox {
+    background: linear-gradient(
+      115deg,
+      #2b2d31 0%,
+      #44474d 20%,
+      #5a5d64 35%,
+      #323438 50%,
+      #6b6e75 65%,
+      #3c3e43 80%,
+      #2b2d31 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.18);
   }
 
   .registerBox h1 {
-    font-family: "Noto Serif KR", serif;
+    font-family: "TwayFly", "Noto Serif KR", serif;
     font-size: 32px;
     font-weight: 500;
     margin-bottom: 12px;
     color: var(--foreground);
   }
-  
+
   .registerDesc {
     font-size: 14px;
-    color: #555;
+    color: var(--muted-foreground);
     margin-bottom: 28px;
   }
   
@@ -92,6 +111,7 @@
     margin-top: 8px;
 
     border: none;
+    border-radius: 14px;
     background: var(--primary);
     color: var(--primary-foreground);
 
@@ -99,6 +119,20 @@
     font-weight: 600;
 
     cursor: pointer;
+
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  }
+
+  .registerForm button:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
+  }
+
+  .registerForm button:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.14);
   }
 
   .registerLinks {

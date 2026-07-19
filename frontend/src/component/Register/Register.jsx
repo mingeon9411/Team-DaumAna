@@ -1,13 +1,26 @@
 // #회원가입 페이지
 import "./Register.css";
+import "../Login/Login.css";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { registerUser, checkNicknameAPI } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
+import JDLogo from "../../assets/J.D 로고.svg";
+import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent.png";
+import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent.png";
 
 function Register() {
   const navigate = useNavigate();
   const { close, openLogin } = useAuthModal();
+  const [darkMode, setDarkMode] = useState(
+    () => document.body.classList.contains("dark")
+  );
+
+  useEffect(() => {
+    const syncDarkMode = () => setDarkMode(document.body.classList.contains("dark"));
+    window.addEventListener("darkmodechange", syncDarkMode);
+    return () => window.removeEventListener("darkmodechange", syncDarkMode);
+  }, []);
 
   const [showTerms, setShowTerms] = useState(false);
 
@@ -125,7 +138,16 @@ function Register() {
   return (
       <section className="registerBox">
         <button type="button" className="authModalClose" aria-label="닫기" onClick={close}>×</button>
-        <p className="registerLabel">JOIN JIPDAUM</p>
+
+        <div className="loginLogoRow">
+          <img src={JDLogo} alt="J.D" className="loginLogoJD" />
+          <span className="loginLogoDivider" />
+          <img
+            src={darkMode ? JipdaumHanokLogoDark : JipdaumHanokLogo}
+            alt="집다움"
+            className="loginLogoHanok"
+          />
+        </div>
 
         <h1>회원가입</h1>
         <p className="registerDesc">

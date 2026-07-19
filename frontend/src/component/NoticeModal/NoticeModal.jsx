@@ -38,8 +38,8 @@ function NoticeModal() {
   if (!isOpen) return null;
 
   return (
-    <div className="noticeModalOverlay" onClick={closeNotice}>
-      <div className="noticeModalInner" onClick={(e) => e.stopPropagation()}>
+    <div className="noticeModalOverlay">
+      <div className="noticeModalInner">
         <button
           type="button"
           className="noticeModalClose"

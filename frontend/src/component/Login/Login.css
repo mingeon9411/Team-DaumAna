@@ -1,51 +1,115 @@
 .loginBox {
     position: relative;
     z-index: 2;
-  
+
     width: 420px;
     padding: 48px 40px;
-  
-    background: rgba(30, 30, 30, 0.42);
-    border: 1px solid rgba(255, 255, 255, 0.35);
-  
+
+    background: linear-gradient(
+      115deg,
+      #f4f5f6 0%,
+      #d9dbde 20%,
+      #c3c6cb 35%,
+      #eef0f2 50%,
+      #b7bac0 65%,
+      #dfe1e4 80%,
+      #f4f5f6 100%
+    );
+    background-size: 160% 160%;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    color: var(--foreground);
+
     text-align: center;
-  
+
     border-radius: 25px;
     box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
-  
-    backdrop-filter: blur(25px);
+
+    font-family: "TwayFly", "Noto Sans KR", "Pretendard", sans-serif;
+  }
+
+  body.dark .loginBox {
+    background: linear-gradient(
+      115deg,
+      #2b2d31 0%,
+      #44474d 20%,
+      #5a5d64 35%,
+      #323438 50%,
+      #6b6e75 65%,
+      #3c3e43 80%,
+      #2b2d31 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .loginLogoRow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin: 0 auto 24px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid rgba(120, 120, 120, 0.18);
+  }
+
+  .loginLogoJD {
+    height: 48px;
+    width: auto;
+    filter: brightness(0) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12));
+  }
+
+  body.dark .loginLogoJD {
+    filter: brightness(0) invert(1) drop-shadow(0 2px 5px rgba(0, 0, 0, 0.4));
+  }
+
+  .loginLogoDivider {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgba(120, 120, 120, 0.5) 20%,
+      rgba(120, 120, 120, 0.5) 80%,
+      transparent
+    );
+  }
+
+  .loginLogoHanok {
+    height: 48px;
+    width: auto;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18));
+  }
+
+  body.dark .loginLogoHanok {
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
   }
 
   .loginBox {
-    animation: fadeUp 1s ease;
+    animation: fadeUp 1s ease, loginMetallicSheen 24s ease-in-out infinite;
   }
-  
+
   @keyframes fadeUp {
     from {
       opacity: 0;
       transform: translateY(40px);
     }
-  
+
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
-  
-  .loginBox .authModalClose {
-    color: #f3f3f3;
+
+  @keyframes loginMetallicSheen {
+    0%, 100% { background-position: 0% 40%; }
+    50% { background-position: 100% 60%; }
   }
 
-  .loginLabel {
-    font-family: "DM Mono", monospace;
-    font-size: 12px;
-    letter-spacing: 4px;
-    color: #d0d0d0;
-    margin-bottom: 18px;
+  .loginBox .authModalClose {
+    color: var(--foreground);
   }
 
   .loginBox h1 {
-    font-family: "Noto Serif KR", serif;
+    font-family: "TwayFly", "Noto Serif KR", serif;
     font-size: 34px;
     font-weight: 500;
     margin-bottom: 14px;
@@ -53,7 +117,7 @@
   
   .loginDesc {
     font-size: 14px;
-    color: #d1cbcb;
+    color: var(--muted-foreground);
     margin-bottom: 34px;
   }
 
@@ -95,7 +159,8 @@
 .keepLogin {
     display: flex;
     align-items: center;
-  
+    gap: 24px;
+
     margin-top: 4px;
     margin-bottom: 8px;
   }
@@ -106,8 +171,8 @@
     gap: 10px;
   
     font-size: 14px;
-    color: #f3f3f3;
-  
+    color: var(--foreground);
+
     cursor: pointer;
   }
   
@@ -123,15 +188,34 @@
   
   .loginForm button {
     height: 56px;
-  
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     border: none;
+    border-radius: 14px;
     background: #913a22;
     color: #d1cbcb;
-  
+
     font-size: 18px;
     cursor: pointer;
-  
+
     margin-top: 10px;
+
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  }
+
+  .loginForm button:hover {
+    filter: brightness(1.08);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
+  }
+
+  .loginForm button:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.14);
   }
   .loginOptions {
     display: flex;
@@ -181,7 +265,7 @@
   
   .loginLinks a,
   .loginLinks button.linkBtn {
-    color: #dad7d7;
+    color: var(--muted-foreground);
     text-decoration: none;
   }
 
@@ -196,25 +280,18 @@
   .loginLinks span {
     width: 1px;
     height: 12px;
-    background: #bdbdbd;
+    background: rgba(120, 120, 120, 0.55);
   }
-
-  .snsLogin p {
-  font-size: 13px;
-  color: #ffd2d2;
-
-  margin-bottom: 18px;
-}
 
   /* SNS 로그인 영역 */
 .snsLogin {
     margin-top: 42px;
   }
-  
+
   .snsLogin p {
     font-size: 13px;
-    color: #888;
-  
+    color: var(--muted-foreground);
+
     margin-bottom: 18px;
   }
   
@@ -222,58 +299,97 @@
   .snsLogin button {
     width: 100%;
     height: 54px;
-  
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
     border: none;
-  
+    border-radius: 14px;
+
     margin-bottom: 12px;
-  
+
     font-size: 15px;
     font-weight: 500;
-  
+
     cursor: pointer;
-  
-    transition: 0.3s;
+
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
   }
-  
+
+  .snsLogin button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2);
+  }
+
+  .snsLogin button:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.14);
+  }
+
   /* 카카오 */
   .kakaoBtn {
-    background: #D9C300;
-    color: #111;
+    background: #FEE500;
+    color: #191600;
   }
-  
+
   .kakaoBtn:hover {
-    filter: brightness(0.96);
+    filter: brightness(0.97);
   }
-  
+
   /* 네이버 */
   .naverBtn {
-    background: #0E9B4B;
-    color: white;
+    background: #03C75A;
+    color: #ffffff;
   }
-  
+
   .naverBtn:hover {
-    filter: brightness(0.96);
+    filter: brightness(1.05);
   }
-  
+
   /* 구글 */
   .googleBtn {
-    background: #dbd6d6;
-    color: rgb(0, 0, 0);
+    background: #ffffff;
+    color: #3c4043;
   }
-  
+
+  .snsLogin button.googleBtn {
+    border: 1px solid rgba(0, 0, 0, 0.14);
+  }
+
   .googleBtn:hover {
-    opacity: 0.9;
+    filter: brightness(0.97);
   }
 
   .snsIcon {
-    width: 18px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
   }
   .errorText {
     margin: -8px 0 3px;
     color: #ff3e20;
     font-size: 15px;
     line-height: 1.4;
+  }
+
+  .findSuccessText {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--foreground);
+
+    padding: 20px;
+    margin-top: 4px;
+
+    background: rgba(43, 74, 63, 0.08);
+    border: 1px solid rgba(120, 120, 120, 0.2);
+    border-radius: 14px;
+  }
+
+  body.dark .findSuccessText {
+    background: rgba(150, 185, 255, 0.08);
   }
 
   /* SNS 버튼 비활성화 */
@@ -285,9 +401,13 @@
 
   .snsDisabledNotice {
     font-size: 12px;
-    color: #ffb3b3;
+    color: #c0392b;
     margin: -10px 0 12px;
     letter-spacing: 0.3px;
+  }
+
+  body.dark .snsDisabledNotice {
+    color: #ff9d9d;
   }
 
   /* reCAPTCHA */

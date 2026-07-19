@@ -83,13 +83,13 @@ main, section, article, aside, header,
 .placeCard, .thumbBox,
 .spaceAccordion, .ShowroomAccordion, .spaceInfo {
   transition:
-    background-color 0.8s ease,
-    background     0.8s ease,
-    border-color   0.6s ease;
+    background-color 2.8s ease,
+    background     2.8s ease,
+    border-color   2.1s ease;
 }
 
 h1, h2, h3, h4, h5, h6, p, span, a, strong, em, li {
-  transition: color 0.6s ease;
+  transition: color 2.1s ease;
 }
 
 /* 스크롤바 기본: 투명 */

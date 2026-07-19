@@ -37,6 +37,7 @@ const ESSAYS = [
   { title: "여러분이 생각하는 집다움은 \n 어떤 공간인가요?" },
   { title: "누군가에게는 편안함이고,\n누군가에게는 따뜻한 온기입니다." },
   { title: "하지만 정답은 없습니다.\n나를 표현한 공간이면 충분합니다." },
+  { title: "나만의 컬러, 취향, 공간을\n집다움에서 실현시켜보세요."},
 ];
 
 const LOOKBOOK_PHOTOS = [
@@ -144,7 +145,7 @@ function Home() {
           setEssayIndex(index + 1);
           setEssayFading(false);
           advance(index + 1);
-        }, 900);
+        }, 1400);
       }, holdDuration);
     }
 
@@ -218,8 +219,8 @@ function Home() {
       <section id="home-essay" data-hide-header data-hsnap className="sparkleBg holoMesh w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center text-foreground py-20 px-8">
         <div className="relative z-10 max-w-4xl mx-auto text-center">
           <p
-            className={`text-3xl md:text-4xl font-light leading-[1.6] mb-10 whitespace-pre-line transition-all duration-[900ms] ease-in-out ${
-              essayFading ? "opacity-0 blur-md scale-105" : "opacity-100 blur-none scale-100"
+            className={`text-3xl md:text-4xl font-light leading-[1.6] mb-10 whitespace-pre-line transition-all duration-[1400ms] ease-in-out ${
+              essayFading ? "opacity-0 blur-lg scale-105" : "opacity-100 blur-none scale-100"
             }`}
             style={SERIF}
           >
@@ -309,7 +310,7 @@ function Home() {
       </section>
 
       {/* LOOKBOOK */}
-      <section data-hsnap className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center">
+      <section data-hsnap className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center">
         <div className="max-w-7xl mx-auto px-8 py-10 w-full">
           <div className="flex items-baseline justify-between mb-4">
             <div>
@@ -385,11 +386,11 @@ function Home() {
 
       {quickViewProduct && (
         <div
-          className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/55 backdrop-blur-sm p-6"
+          className="quickViewOverlay fixed inset-0 z-[1000] flex items-center justify-center bg-black/55 backdrop-blur-sm p-6"
           onClick={() => setQuickViewProduct(null)}
         >
           <div
-            className="relative w-full max-w-3xl max-h-[calc(100vh-48px)] overflow-y-auto grid grid-cols-1 md:grid-cols-2 bg-background"
+            className="quickViewPanel relative w-full max-w-4xl max-h-[calc(100vh-48px)] overflow-y-auto grid grid-cols-1 md:grid-cols-2 quickViewMetallicBg"
             onClick={(e) => e.stopPropagation()}
           >
             <button

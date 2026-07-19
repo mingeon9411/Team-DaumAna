@@ -25,6 +25,7 @@
 
   padding: 24px;
   overflow-y: auto;
+  font-family: "TwayFly", "Noto Sans KR", sans-serif;
 }
 
 .mypage > .mypageModalClose {
@@ -60,16 +61,26 @@
   overflow-y: auto;
   display: grid;
   grid-template-columns: 200px 1fr;
-  background: linear-gradient(160deg, #fffdf5 0%, #fef5d8 45%, #faecc0 100%);
+  background: linear-gradient(
+    115deg,
+    #f4f5f6 0%,
+    #d9dbde 20%,
+    #c3c6cb 35%,
+    #eef0f2 50%,
+    #b7bac0 65%,
+    #dfe1e4 80%,
+    #f4f5f6 100%
+  );
+  background-size: 160% 160%;
+  animation: pageEnter 0.3s cubic-bezier(0.22, 1, 0.36, 1) both, loginMetallicSheen 24s ease-in-out infinite;
   color: #000;
   position: relative;
   overflow-x: clip;
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.18);
-  animation: pageEnter 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* 전체 페이지 대각선 사선 패턴 */
+/* 전체 페이지 대각선 광택 패턴 */
 .mypage::before {
   content: '';
   position: absolute;
@@ -80,17 +91,17 @@
     -55deg,
     transparent 0px,
     transparent 24px,
-    rgba(255, 225, 60, 0.07) 24px,
-    rgba(255, 225, 60, 0.07) 38px,
+    rgba(255, 255, 255, 0.3) 24px,
+    rgba(255, 255, 255, 0.3) 38px,
     transparent 38px,
     transparent 64px,
-    rgba(255, 200, 40, 0.04) 64px,
-    rgba(255, 200, 40, 0.04) 76px
+    rgba(255, 255, 255, 0.16) 64px,
+    rgba(255, 255, 255, 0.16) 76px
   );
   animation: sunBeamDrift 6s ease-in-out infinite;
 }
 
-/* 전체 태양 빛 번짐 (우상단) */
+/* 전체 은은한 빛 번짐 (우상단) */
 .mypage::after {
   content: '';
   position: absolute;
@@ -103,8 +114,8 @@
   z-index: 0;
   background: radial-gradient(
     circle at center,
-    rgba(255, 215, 50, 0.28) 0%,
-    rgba(255, 190, 30, 0.10) 45%,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.15) 45%,
     transparent 70%
   );
   animation: sunGlowRight 4s ease-in-out infinite;
@@ -120,7 +131,18 @@
 .mypageSide {
   padding: 64px 28px 60px;
   border-right: 1px solid var(--border);
-  background: linear-gradient(180deg, #fde8b8 0%, #f5d48e 50%, #edca7a 100%);
+  background: linear-gradient(
+    115deg,
+    #f4f5f6 0%,
+    #d9dbde 20%,
+    #c3c6cb 35%,
+    #eef0f2 50%,
+    #b7bac0 65%,
+    #dfe1e4 80%,
+    #f4f5f6 100%
+  );
+  background-size: 160% 160%;
+  animation: loginMetallicSheen 24s ease-in-out infinite;
   position: sticky;
   top: 0;
   height: 100%;
@@ -128,7 +150,7 @@
   overflow-x: hidden;
 }
 
-/* 대각선 햇살 줄기 */
+/* 대각선 광택 줄기 */
 .mypageSide::before {
   content: '';
   position: absolute;
@@ -139,17 +161,17 @@
     -55deg,
     transparent 0px,
     transparent 22px,
-    rgba(255, 225, 60, 0.11) 22px,
-    rgba(255, 225, 60, 0.11) 36px,
+    rgba(255, 255, 255, 0.4) 22px,
+    rgba(255, 255, 255, 0.4) 36px,
     transparent 36px,
     transparent 60px,
-    rgba(255, 200, 40, 0.07) 60px,
-    rgba(255, 200, 40, 0.07) 72px
+    rgba(255, 255, 255, 0.22) 60px,
+    rgba(255, 255, 255, 0.22) 72px
   );
   animation: sunBeamDrift 5s ease-in-out infinite;
 }
 
-/* 태양 빛 번짐 (상단 중앙) */
+/* 은은한 빛 번짐 (상단 중앙) */
 .mypageSide::after {
   content: '';
   position: absolute;
@@ -162,8 +184,8 @@
   z-index: 0;
   background: radial-gradient(
     circle at center,
-    rgba(255, 215, 50, 0.42) 0%,
-    rgba(255, 190, 30, 0.15) 45%,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.2) 45%,
     transparent 70%
   );
   animation: sunGlow 3.5s ease-in-out infinite;

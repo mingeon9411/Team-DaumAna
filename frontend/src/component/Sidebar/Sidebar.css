@@ -19,7 +19,7 @@
   border: 1px solid var(--border);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
 
-  transition: background-color 0.4s ease, border-color 0.4s ease;
+  transition: background-color 2.8s ease, border-color 2.1s ease;
 }
 
 @keyframes metallicShine {
@@ -124,8 +124,12 @@
 }
 
 .railBtn:hover {
-  background: var(--muted);
+  background: linear-gradient(120deg, #f4f4f6 0%, #d7d9dc 20%, #ececed 40%, #b8bcc2 55%, #e6e7e9 70%, #cfd1d4 85%, #f4f4f6 100%);
   transform: scale(1.08);
+}
+
+.sidebarRail.koreanHallRail .railBtn:hover {
+  background: var(--muted);
 }
 
 /* 호버 시 아이콘 위쪽에 뜨는 라벨 툴팁 */
@@ -141,7 +145,7 @@
   padding: 6px 12px;
   border-radius: 8px;
 
-  background: var(--card);
+  background: linear-gradient(120deg, #f4f4f6 0%, #d7d9dc 20%, #ececed 40%, #b8bcc2 55%, #e6e7e9 70%, #cfd1d4 85%, #f4f4f6 100%);
   border: 1px solid var(--border);
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   color: var(--foreground);
@@ -159,6 +163,10 @@
 .railBtn:hover::after {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
+}
+
+.sidebarRail.koreanHallRail .railBtn::after {
+  background: var(--card);
 }
 
 .railBtn.railPop {
@@ -217,6 +225,10 @@ body.dark .railBtn {
 }
 
 body.dark .railBtn:hover {
+  background: linear-gradient(120deg, #9ea3aa 0%, #6f7278 20%, #b7bbc1 40%, #55585e 55%, #a3a7ad 70%, #7b7e84 85%, #9ea3aa 100%);
+}
+
+body.dark .sidebarRail.koreanHallRail .railBtn:hover {
   background: rgba(150, 185, 255, 0.12);
 }
 
@@ -234,9 +246,13 @@ body.dark .railToggle:hover {
 }
 
 body.dark .railBtn::after {
-  background: rgba(6, 13, 30, 0.96);
+  background: linear-gradient(120deg, #9ea3aa 0%, #6f7278 20%, #b7bbc1 40%, #55585e 55%, #a3a7ad 70%, #7b7e84 85%, #9ea3aa 100%);
   border-color: rgba(150, 185, 255, 0.16);
   color: #c8d5f2;
+}
+
+body.dark .sidebarRail.koreanHallRail .railBtn::after {
+  background: rgba(6, 13, 30, 0.96);
 }
 
 
