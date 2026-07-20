@@ -45,6 +45,19 @@ body.dark {
 
 }
 
+/* 한국관 한정 — 맨 위에서는 투명, 스크롤이 내려가면 배너 배경이 생긴다 */
+.header.koreanHallHeader.scrolled {
+  background: rgba(244, 240, 232, 0.82);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+  transition: background 0.4s ease, box-shadow 0.4s ease, backdrop-filter 0.4s ease;
+}
+
+body.dark .header.koreanHallHeader.scrolled {
+  background: rgba(6, 13, 30, 0.82);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
 .logo {
   z-index: 1001;
   position: relative;
@@ -68,11 +81,10 @@ body.dark {
   filter: brightness(0) invert(1);
 }
 
-/* 한국관 — 일월오봉도 + 로고 + 해/달 전체를 왼쪽 상단에 배치.
-   기존에 헤더 가로 중앙(50%)을 기준으로 잡던 배치를 그대로 유지한 채,
-   기준점(--khAnchorX)만 왼쪽으로 옮겨서 모양은 그대로 이동시킨다. */
+/* 한국관 — 일월오봉도 + 로고 + 해/달 전체를 헤더 가로 중앙(50%)에 배치.
+   아래 각 규칙들은 모두 이 기준점(--khAnchorX)을 공유해서 위치를 맞춘다. */
 .header.koreanHallHeader {
-  --khAnchorX: 185px;
+  --khAnchorX: 50%;
 }
 
 .header.koreanHallHeader .headerIlwol {

@@ -39,7 +39,7 @@
 
   border: none;
   background: transparent;
-  color: #000;
+  color: var(--foreground);
 
   font-size: 26px;
   line-height: 1;
@@ -72,53 +72,27 @@
     #f4f5f6 100%
   );
   background-size: 160% 160%;
-  animation: pageEnter 0.3s cubic-bezier(0.22, 1, 0.36, 1) both, loginMetallicSheen 24s ease-in-out infinite;
-  color: #000;
+  animation: pageEnter 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+  color: var(--foreground);
   position: relative;
   overflow-x: clip;
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+  border: 1px solid rgba(0, 0, 0, 0.14);
 }
 
-/* 전체 페이지 대각선 광택 패턴 */
-.mypage::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background: repeating-linear-gradient(
-    -55deg,
-    transparent 0px,
-    transparent 24px,
-    rgba(255, 255, 255, 0.3) 24px,
-    rgba(255, 255, 255, 0.3) 38px,
-    transparent 38px,
-    transparent 64px,
-    rgba(255, 255, 255, 0.16) 64px,
-    rgba(255, 255, 255, 0.16) 76px
+body.dark .mypage {
+  background: linear-gradient(
+    115deg,
+    #060d1e 0%,
+    #0b1430 20%,
+    #0f1f3d 35%,
+    #060d1e 50%,
+    #0f1f3d 65%,
+    #0b1430 80%,
+    #060d1e 100%
   );
-  animation: sunBeamDrift 6s ease-in-out infinite;
-}
-
-/* 전체 은은한 빛 번짐 (우상단) */
-.mypage::after {
-  content: '';
-  position: absolute;
-  top: 40px;
-  right: 60px;
-  width: 340px;
-  height: 340px;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-  background: radial-gradient(
-    circle at center,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 45%,
-    transparent 70%
-  );
-  animation: sunGlowRight 4s ease-in-out infinite;
+  border: 1px solid rgba(150, 185, 255, 0.16);
 }
 
 /* 그리드 직속 자식이 pseudo-element 위로 */
@@ -129,7 +103,7 @@
 
 /* ── 사이드 메뉴 ── */
 .mypageSide {
-  padding: 64px 28px 60px;
+  padding: 40px 28px 60px;
   border-right: 1px solid var(--border);
   background: linear-gradient(
     115deg,
@@ -142,53 +116,25 @@
     #f4f5f6 100%
   );
   background-size: 160% 160%;
-  animation: loginMetallicSheen 24s ease-in-out infinite;
   position: sticky;
   top: 0;
   height: 100%;
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-/* 대각선 광택 줄기 */
-.mypageSide::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background: repeating-linear-gradient(
-    -55deg,
-    transparent 0px,
-    transparent 22px,
-    rgba(255, 255, 255, 0.4) 22px,
-    rgba(255, 255, 255, 0.4) 36px,
-    transparent 36px,
-    transparent 60px,
-    rgba(255, 255, 255, 0.22) 60px,
-    rgba(255, 255, 255, 0.22) 72px
+body.dark .mypageSide {
+  background: linear-gradient(
+    115deg,
+    #060d1e 0%,
+    #0b1430 20%,
+    #0f1f3d 35%,
+    #060d1e 50%,
+    #0f1f3d 65%,
+    #0b1430 80%,
+    #060d1e 100%
   );
-  animation: sunBeamDrift 5s ease-in-out infinite;
-}
-
-/* 은은한 빛 번짐 (상단 중앙) */
-.mypageSide::after {
-  content: '';
-  position: absolute;
-  top: 80px;
-  left: 50%;
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 0;
-  background: radial-gradient(
-    circle at center,
-    rgba(255, 255, 255, 0.55) 0%,
-    rgba(255, 255, 255, 0.2) 45%,
-    transparent 70%
-  );
-  animation: sunGlow 3.5s ease-in-out infinite;
 }
 
 /* 사이드바 텍스트가 애니메이션 위로 */
@@ -199,21 +145,47 @@
 }
 
 /* ── 사이드바 로고 ── */
-.mypageSide .logoAnim {
+.mypageLogoRow {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
   margin: 0 0 28px;
-  height: 48px;
-  min-width: 80px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(120, 120, 120, 0.18);
 }
 
-/* ── 여름 햇살 keyframes ── */
-@keyframes sunBeamDrift {
-  0%   { transform: translateX(-40px); opacity: 0.65; }
-  50%  { transform: translateX(40px);  opacity: 1; }
-  100% { transform: translateX(-40px); opacity: 0.65; }
+.mypageLogoJD {
+  height: 34px;
+  width: auto;
+  filter: brightness(0) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12));
 }
-@keyframes sunGlow {
-  0%, 100% { opacity: 0.5;  transform: translateX(-50%) scale(1); }
-  50%       { opacity: 0.95; transform: translateX(-50%) scale(1.18); }
+
+body.dark .mypageLogoJD {
+  filter: brightness(0) invert(1) drop-shadow(0 2px 5px rgba(0, 0, 0, 0.4));
+}
+
+.mypageLogoDivider {
+  width: 1px;
+  height: 28px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(120, 120, 120, 0.5) 20%,
+    rgba(120, 120, 120, 0.5) 80%,
+    transparent
+  );
+}
+
+.mypageLogoHanok {
+  height: 34px;
+  width: auto;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18));
+}
+
+body.dark .mypageLogoHanok {
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
 }
 
 .mypageSide nav {
@@ -245,17 +217,15 @@
 .mypageBox {
   padding: 0 60px 80px;
   position: relative;
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
 }
 
 /* 콘텐츠가 page pseudo-element 위로 */
 .mypageBox > * {
   position: relative;
   z-index: 1;
-}
-
-@keyframes sunGlowRight {
-  0%, 100% { opacity: 0.5;  transform: scale(1); }
-  50%       { opacity: 0.92; transform: scale(1.15); }
 }
 
 /* ── 히어로 헤더 ── */
@@ -281,7 +251,7 @@
   margin: 0 0 12px;
   font-size: 32px;
   font-weight: 900;
-  color: #2e1f10;
+  color: var(--foreground);
   letter-spacing: -0.01em;
   line-height: 1.1;
 }
@@ -290,11 +260,11 @@
   margin: 0;
   font-size: 14px;
   font-weight: 600;
-  color: rgba(46,31,16,0.5);
+  color: var(--muted-foreground);
 }
 
 .welcomeText strong {
-  color: #2e1f10;
+  color: var(--foreground);
   font-weight: 700;
 }
 
@@ -1413,6 +1383,36 @@
 .badgeCurrent  { color: #fff; }
 .badgeAchieved { background: #e8f5e9; color: #2e7d32; }
 .badgeLocked   { background: #f5f5f5; color: #ccc; }
+
+/* ── 다크모드 보정 ── */
+body.dark .couponCell:hover {
+  background: rgba(150, 185, 255, 0.08);
+}
+
+body.dark .orderCardHead,
+body.dark .orderCardFoot {
+  background: rgba(150, 185, 255, 0.05);
+}
+
+body.dark .myCouponCountBar,
+body.dark .myWishCountBar {
+  background: rgba(150, 185, 255, 0.08);
+}
+
+body.dark .cpCard {
+  background: #0b1430;
+  border-color: rgba(150, 185, 255, 0.12);
+}
+
+body.dark .cpCode {
+  background: rgba(150, 185, 255, 0.12);
+  color: #c8d5f2;
+}
+
+body.dark .wishPreviewImgBox,
+body.dark .myWishImgBox {
+  background: #0b1430;
+}
 
 /* ── 반응형 ── */
 @media (max-width: 900px) {

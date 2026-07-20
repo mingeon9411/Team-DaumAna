@@ -10,6 +10,7 @@ import { Link, useLocation } from "react-router-dom";
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const [isFooterPanel, setIsFooterPanel] = useState(false);
   const [darkMode, setDarkMode] = useState(
     () => document.body.classList.contains("dark")
   );
@@ -27,6 +28,13 @@ function Header() {
       } else {
         setScrolled(window.scrollX > 50);
       }
+
+      // 푸터 패널에 도달했는지 — 헤더 로고는 그 패널에서만 숨긴다.
+      // (한국관처럼 푸터 자체가 없는 라우트에서는 항상 false)
+      const footerPanel = document.querySelector(".footer");
+      setIsFooterPanel(
+        footerPanel ? footerPanel.getBoundingClientRect().left <= window.innerWidth / 2 : false
+      );
     };
 
     handleScroll();
@@ -59,17 +67,19 @@ function Header() {
         </>
       )}
 
-      <Link to={isKoreanHall ? "/korean-hall" : "/"} className="logo" aria-label="집다움 홈">
-        {isKoreanHall ? (
-          <img
-            src={darkMode ? JipdaumHanokLogoDark : JipdaumHanokLogo}
-            alt="집다움"
-            className="logoImg logoImgHanok"
-          />
-        ) : (
-          <img src={JDLogo} alt="J.D" className="logoImg" />
-        )}
-      </Link>
+      {!isFooterPanel && (
+        <Link to={isKoreanHall ? "/korean-hall" : "/"} className="logo" aria-label="집다움 홈">
+          {isKoreanHall ? (
+            <img
+              src={darkMode ? JipdaumHanokLogoDark : JipdaumHanokLogo}
+              alt="집다움"
+              className="logoImg logoImgHanok"
+            />
+          ) : (
+            <img src={JDLogo} alt="J.D" className="logoImg" />
+          )}
+        </Link>
+      )}
     </header>
   );
 }

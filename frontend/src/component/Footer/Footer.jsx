@@ -2,6 +2,7 @@ import { FaInstagram, FaXTwitter } from "react-icons/fa6";
 import { FaThreads } from "react-icons/fa6";
 import "./Footer.css";
 import JDLogo from "../../assets/J.D 로고.svg";
+import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Dark-transparent.png";
 
 const CLOSING_QUOTE = "집이란 나의 공간에\n나만의 색을 더해가는 또다른 세상이다.";
 
@@ -14,8 +15,11 @@ function Footer() {
 
       <div className="footerTop">
         <div className="footerBrand">
-          <img src={JDLogo} alt="집다움" className="footerLogo" />
-          <p>한국적인 감성과 일상의 취향을 담은 우리만의 집다움</p>
+          <div className="footerLogoRow">
+            <img src={JDLogo} alt="집다움" className="footerLogo" />
+            <img src={JipdaumHanokLogo} alt="" aria-hidden="true" className="footerHanokLogo" />
+          </div>
+          <p>서울특별시 강남구 테헤란로 123</p>
           <p className = "footerNum">
           02-123-4567
           </p>
@@ -30,30 +34,6 @@ function Footer() {
             <a href="https://x.com" target="_blank" rel="noreferrer">
               <FaXTwitter />
             </a>
-          </div>
-        </div>
-
-        <div className="footerMenu">
-          <div>
-            <h4>SHOP</h4>
-            <a href="/">가구</a>
-            <a href="/">조명</a>
-            <a href="/">소품</a>
-            <a href="/">패브릭</a>
-          </div>
-
-          <div>
-            <h4>ABOUT</h4>
-            <a href="/">브랜드 스토리</a>
-            <a href="/">쇼룸 안내</a>
-            <a href="/">공지사항</a>
-          </div>
-
-          <div>
-            <h4>HELP</h4>
-            <a href="/">고객센터</a>
-            <a href="/">배송/반품</a>
-            <a href="/">문의하기</a>
           </div>
         </div>
       </div>

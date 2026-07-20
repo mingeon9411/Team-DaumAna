@@ -2,7 +2,7 @@ import "./NewsTicker.css";
 
 function NewsTicker() {
   const newsList = [
-    "데브옵스 첫번째 팀프로젝트 <집다움> 시연",
+    "두번째 프로젝트",
     "집다움 여름맞이 컬렉션 오픈",
     "우드 오브제 기획전 진행 중",
     "회원가입 시 첫 구매 10% 쿠폰 증정",

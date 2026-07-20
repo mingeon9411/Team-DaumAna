@@ -14,10 +14,10 @@ import Withdraw from "./component/WithDraw/WithDraw";
 import Home from "./component/Home/Home";
 
 import Cart from "./component/Cart/Cart";
-import SearchModal from "./component/SearchModal/SearchModal";
 import NoticeModal from "./component/NoticeModal/NoticeModal";
 import Welcome from "./component/Welcome/Welcome";
 import ProductDetail from "./component/ProductDetail/ProductDetail";
+import ProductModal from "./component/ProductModal/ProductModal";
 import SocialCallback from "./component/SocialCallback/SocialCallback";
 import EmailVerify from "./component/EmailVerify/EmailVerify";
 import SearchResults from "./component/SearchResults/SearchResults";
@@ -29,8 +29,8 @@ import AuthModal from "./component/AuthModal/AuthModal";
 import { AuthModalProvider } from "./context/AuthModalContext";
 import { CartModalProvider } from "./context/CartModalContext";
 import { MyPageModalProvider } from "./context/MyPageModalContext";
-import { SearchModalProvider } from "./context/SearchModalContext";
 import { NoticeModalProvider } from "./context/NoticeModalContext";
+import { ProductModalProvider } from "./context/ProductModalContext";
 import { createPagingController } from "./utils/snapSetup";
 import "./App.css";
 
@@ -39,6 +39,12 @@ import "./App.css";
 // 매번 대문 애니메이션을 다시 보여준다. pathname만 보면 같은 경로로 다시 이동할 때
 // (예: 한국관에 있는 채로 "한국관" 버튼 재클릭) 값이 안 바뀌어 재실행되지 않으므로,
 // 매 네비게이션마다 고유하게 바뀌는 location.key를 기준으로 삼는다.
+function FooterGate() {
+  const { pathname } = useLocation();
+  if (pathname === "/korean-hall") return null;
+  return <Footer />;
+}
+
 function DoorIntroController() {
   const { pathname, key } = useLocation();
   const [showDoorIntro, setShowDoorIntro] = useState(false);
@@ -50,7 +56,10 @@ function DoorIntroController() {
       return;
     }
     setShowDoorIntro(true);
-    const timer = setTimeout(() => setShowDoorIntro(false), 7700);
+    const timer = setTimeout(() => {
+      setShowDoorIntro(false);
+      window.dispatchEvent(new Event("doorintroend"));
+    }, 7700);
     return () => clearTimeout(timer);
   }, [key, pathname, isKoreanHall]);
 
@@ -120,8 +129,8 @@ function App() {
     <AuthModalProvider>
     <CartModalProvider>
     <MyPageModalProvider>
-    <SearchModalProvider>
     <NoticeModalProvider>
+    <ProductModalProvider>
     <ScrollToTop lenis={lenisRef} controller={controllerRef} panelsUnsub={panelsUnsubRef} />
     <DoorIntroController />
     <Header />
@@ -129,8 +138,8 @@ function App() {
     <AuthModal />
     <Cart />
     <MyPage />
-    <SearchModal />
     <NoticeModal />
+    <ProductModal />
 
     <div className="hTrack">
       <Routes>
@@ -149,10 +158,10 @@ function App() {
         <Route path="/order-complete" element={<OrderComplete />} />
 
       </Routes>
-      <Footer />
+      <FooterGate />
     </div>
+    </ProductModalProvider>
     </NoticeModalProvider>
-    </SearchModalProvider>
     </MyPageModalProvider>
     </CartModalProvider>
     </AuthModalProvider>

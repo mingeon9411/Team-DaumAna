@@ -28,10 +28,59 @@
   100% { background-position: 0% 50%; }
 }
 
-/* 한국관 하단 기능바는 메탈릭 실버 애니메이션 적용 제외 — 기존 배경 유지 */
+/* 한국관 하단 기능바는 메탈릭 실버 애니메이션 대신 한지 톤의 따뜻한 배경 적용 */
 .sidebarRail.koreanHallRail {
-  background: var(--card);
+  background: linear-gradient(135deg, #f8f1e3 0%, #efe2c9 100%);
+  border-color: rgba(180, 132, 74, 0.28);
   animation: none;
+}
+
+/* 한국관 미니바 — 무궁화 꽃잎이 흩날리며 떨어지는 연출 */
+.khPetals {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.khPetal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 9px;
+  height: 11px;
+  background: radial-gradient(circle at 32% 30%, #ffe3f0, #e792bb 55%, #b8567f 100%);
+  border-radius: 0% 100% 0% 100%;
+  opacity: 0;
+  animation-name: khPetalFall;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+}
+
+@keyframes khPetalFall {
+  0% {
+    transform: translate(0, -6px) rotate(0deg) scale(var(--khPetalScale, 1));
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate(5px, 26px) rotate(180deg) scale(var(--khPetalScale, 1));
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(-4px, 58px) rotate(360deg) scale(var(--khPetalScale, 1));
+    opacity: 0;
+  }
+}
+
+body.dark .khPetal {
+  background: radial-gradient(circle at 32% 30%, #ffcfe6, #d472a3 55%, #8f3d63 100%);
 }
 
 .railToggle {
@@ -210,14 +259,15 @@
 
 /* 다크모드 */
 body.dark .sidebarRail {
-  background: linear-gradient(120deg, #9ea3aa 0%, #6f7278 20%, #b7bbc1 40%, #55585e 55%, #a3a7ad 70%, #7b7e84 85%, #9ea3aa 100%);
+  background: linear-gradient(120deg, #060d1e 0%, #0b1430 20%, #0f1f3d 40%, #060d1e 55%, #0f1f3d 70%, #0b1430 85%, #060d1e 100%);
   background-size: 300% 300%;
   border-color: rgba(150, 185, 255, 0.16);
 }
 
-/* 한국관은 다크모드에서도 기존 남색 배경 유지 */
+/* 한국관 미니바는 다크모드에서도 은은한 등불빛 톤 유지 */
 body.dark .sidebarRail.koreanHallRail {
-  background: rgba(6, 13, 30, 0.92);
+  background: linear-gradient(135deg, #2b2013 0%, #1a1309 100%);
+  border-color: rgba(214, 168, 106, 0.24);
 }
 
 body.dark .railBtn {
@@ -225,7 +275,7 @@ body.dark .railBtn {
 }
 
 body.dark .railBtn:hover {
-  background: linear-gradient(120deg, #9ea3aa 0%, #6f7278 20%, #b7bbc1 40%, #55585e 55%, #a3a7ad 70%, #7b7e84 85%, #9ea3aa 100%);
+  background: rgba(150, 185, 255, 0.12);
 }
 
 body.dark .sidebarRail.koreanHallRail .railBtn:hover {
@@ -246,7 +296,7 @@ body.dark .railToggle:hover {
 }
 
 body.dark .railBtn::after {
-  background: linear-gradient(120deg, #9ea3aa 0%, #6f7278 20%, #b7bbc1 40%, #55585e 55%, #a3a7ad 70%, #7b7e84 85%, #9ea3aa 100%);
+  background: rgba(6, 13, 30, 0.96);
   border-color: rgba(150, 185, 255, 0.16);
   color: #c8d5f2;
 }

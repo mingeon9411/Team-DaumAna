@@ -1,10 +1,30 @@
 import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Heart, X, Search } from "lucide-react";
-import { FaInstagram } from "react-icons/fa6";
+import { ChevronLeft, ChevronRight, Heart, X, Search, Camera } from "lucide-react";
 import "./Home.css";
-import storageCabinet from "../../assets/products/storage-cabinet.jpg";
 import moonJarLamp from "../../assets/달항아리 램프.png";
 import patchworkBedding from "../../assets/조각보 침구 세트.png";
+import koreanModernSofa from "../../assets/products/Korean Modern Sofa — Ivory Leather.png";
+import floorLoungeSofa from "../../assets/products/플로어 라운지 소파.png";
+import hanjiPendantLight from "../../assets/products/한지 펜던트 조명.png";
+import moonJarArmchair from "../../assets/products/달항아리 암체어.png";
+import hanokReading from "../../assets/Hanok Male — Reading on Floor.png";
+import hanokBedroomNight from "../../assets/scenes/hanok-bedroom-night.jpg";
+import hanokBedroomTea from "../../assets/scenes/hanok-bedroom-tea.jpg";
+import hanokBedroomDoorway from "../../assets/scenes/hanok-bedroom-doorway.jpg";
+
+const HERO_LEFT_IMAGES = [
+  { src: moonJarLamp, alt: "달항아리 램프 - 은은한 조명이 켜진 도자 램프" },
+  { src: hanokReading, alt: "한옥 방에서 책을 읽는 남성" },
+  { src: hanokBedroomNight, alt: "따뜻한 조명이 켜진 한옥 침실 야경" },
+];
+
+const HERO_RIGHT_IMAGES = [
+  { src: patchworkBedding, alt: "조각보 침구 세트 - 전통 조각보 패턴의 침구와 베개" },
+  { src: hanokBedroomTea, alt: "한옥 방에서 차를 우리는 모습" },
+  { src: hanokBedroomDoorway, alt: "한옥 침실 문 너머로 보이는 침구" },
+];
+
+const HERO_SLIDE_INTERVAL = 4800;
 
 const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
 const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
@@ -19,18 +39,26 @@ const PRODUCTS = [
     desc: "짙은 월넛 원목의 결을 살린 사이드 테이블. 소파 옆, 침대 곁 어디서나 조용히 제 역할을 합니다.",
     spec: "SIZE : W45 D45 H50 · MATERIAL : walnut",
     image: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=500&h=620&fit=crop&auto=format", alt: "월넛 사이드 테이블" },
-  { id: 3, no: "No.3", name: "세라믹 꽃병 세트", sub: "화이트 / 세이지", price: "89,000", label: "CURATED",
-    desc: "화이트와 세이지, 두 가지 톤으로 구성된 세라믹 꽃병 세트. 마른 가지 하나만 꽂아도 공간이 정돈됩니다.",
-    spec: "SIZE : H18 / H24 · MATERIAL : ceramic",
-    image: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=500&h=620&fit=crop&auto=format", alt: "세라믹 꽃병" },
-  { id: 4, no: "No.4", name: "대나무 트레이", sub: "내추럴", price: "54,000", label: "ECO",
+  { id: 3, no: "No.3", name: "대나무 트레이", sub: "내추럴", price: "54,000", label: "ECO",
     desc: "대나무를 엮어 만든 트레이. 차 한 잔, 작은 화분, 협탁 위 소품 정리에 두루 어울립니다.",
     spec: "SIZE : W38 D26 H4 · MATERIAL : bamboo",
     image: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=500&h=620&fit=crop&auto=format", alt: "대나무 트레이" },
-  { id: 5, no: "No.5", name: "한국 모던 나비 문양 수납장", sub: "월넛 / 브라스", price: "148,000", label: "NEW",
-    desc: "브라스 나비 손잡이가 포인트인 원목 수납장. 전통 문양을 현대적인 비례로 다시 그렸습니다.",
-    spec: "SIZE : W80 D40 H85 · MATERIAL : walnut, brass",
-    image: storageCabinet, alt: "한국 모던 나비 문양 수납장" },
+  { id: 4, no: "No.4", name: "한국 모던 소파", sub: "아이보리 레더", price: "398,000", label: "NEW",
+    desc: "아이보리 가죽과 완만한 곡선이 어우러진 2인용 소파. 어느 각도에서 봐도 매끈한 실루엣을 완성합니다.",
+    spec: "SIZE : W150 D80 H75 · MATERIAL : leather, steel",
+    image: koreanModernSofa, alt: "한국 모던 소파" },
+  { id: 5, no: "No.5", name: "플로어 라운지 소파", sub: "아이보리 부클", price: "328,000", label: "NEW",
+    desc: "낮은 좌면과 넉넉한 쿠션이 편안한 좌식형 라운지 소파. 바닥 생활에 어울리는 낮은 무게중심이 특징입니다.",
+    spec: "SIZE : W180 D95 H55 · MATERIAL : boucle, sponge",
+    image: floorLoungeSofa, alt: "플로어 라운지 소파" },
+  { id: 6, no: "No.6", name: "한지 펜던트 조명", sub: "블랙 프레임", price: "112,000", label: "NEW",
+    desc: "한지가 은은하게 빛을 머금는 프레임형 펜던트 조명. 은은한 조도로 공간에 온기를 더합니다.",
+    spec: "SIZE : W16 D16 H36 · MATERIAL : hanji, steel",
+    image: hanjiPendantLight, alt: "한지 펜던트 조명" },
+  { id: 7, no: "No.7", name: "달항아리 암체어", sub: "카멜 부클", price: "358,000", label: "NEW",
+    desc: "달항아리의 둥근 선을 닮은 부클 원단 윙백 암체어. 어느 자리에 두어도 공간의 중심이 됩니다.",
+    spec: "SIZE : W85 D90 H105 · MATERIAL : boucle, wood",
+    image: moonJarArmchair, alt: "달항아리 암체어" },
 ];
 
 const ESSAYS = [
@@ -43,7 +71,6 @@ const ESSAYS = [
 const LOOKBOOK_PHOTOS = [
   "photo-1484101403633-562f891dc89a",
   "photo-1493663284031-b7e3aefcae8e",
-  "photo-1507003211169-0a1dd7228f2d",
   "photo-1512918728675-ed5a9ecdebfd",
   "photo-1519710164239-da123dc03ef4",
   "photo-1522708323590-d24dbb6b0267",
@@ -58,7 +85,6 @@ const LOOKBOOK_PHOTOS = [
   "photo-1567016376408-0226e4d0c1ea",
   "photo-1567016432779-094069958ea5",
   "photo-1567538096630-e0c55bd6374c",
-  "photo-1573883431205-98b5f10aaedb",
   "photo-1583847268964-b28dc8f51f92",
   "photo-1586023492125-27b2c045efd7",
   "photo-1594026112284-02bb6f3352fe",
@@ -67,8 +93,6 @@ const LOOKBOOK_PHOTOS = [
   "photo-1600210492486-724fe5c67fb0",
   "photo-1600585154340-be6161a56a0c",
   "photo-1606760227091-3dd870d97f1d",
-  "photo-1615529182904-14819c35db37",
-  "photo-1616486338812-3dadae4b4ace",
   "photo-1616627561950-9f746e330187",
   "photo-1618220179428-22790b461013",
   "photo-1618221195710-dd6b41faaea6",
@@ -114,6 +138,16 @@ function Home() {
   // 통합된 에세이 섹션 — 일정 간격으로 다음 멘트로 부드럽게 전환
   const [essayIndex, setEssayIndex] = useState(0);
   const [essayFading, setEssayFading] = useState(false);
+
+  // 히어로 섹션 — 좌우 이미지를 일정 간격으로 크로스페이드하며 전환
+  const [heroSlide, setHeroSlide] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setHeroSlide((i) => (i + 1) % HERO_LEFT_IMAGES.length);
+    }, HERO_SLIDE_INTERVAL);
+    return () => clearInterval(timer);
+  }, []);
 
   // 마지막 멘트("하지만 정답은 없습니다...")에서 반복하지 않고 멈춘 뒤,
   // 사용자가 아직 에세이 페이지에 머물러 있으면 상품 페이지로 천천히 스크롤한다.
@@ -230,32 +264,38 @@ function Home() {
         </div>
       </section>
 
-      {/* HERO — 전체 상품(검색) 페이지 바로 앞에 배치 */}
+      {/* HERO — 전체 상품(검색) 페이지 바로 앞에 배치, 좌우 이미지가 크로스페이드로 순환 */}
       <section data-hsnap className="relative w-screen h-screen shrink-0 overflow-hidden bg-background flex flex-row">
         <div className="relative w-1/2 h-full overflow-hidden">
-          <img
-            src={moonJarLamp}
-            alt="달항아리 램프 - 은은한 조명이 켜진 도자 램프"
-            className="w-full h-full object-cover"
-          />
+          {HERO_LEFT_IMAGES.map((img, i) => (
+            <img
+              key={img.src}
+              src={img.src}
+              alt={img.alt}
+              className={`heroSlideImg absolute inset-0 w-full h-full object-cover transition-opacity duration-[1600ms] ease-in-out ${
+                i === heroSlide ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          ))}
         </div>
 
         <div className="relative w-1/2 h-full overflow-hidden">
-          <img
-            src={patchworkBedding}
-            alt="조각보 침구 세트 - 전통 조각보 패턴의 침구와 베개"
-            className="w-full h-full object-cover"
-          />
+          {HERO_RIGHT_IMAGES.map((img, i) => (
+            <img
+              key={img.src}
+              src={img.src}
+              alt={img.alt}
+              className={`heroSlideImg absolute inset-0 w-full h-full object-cover transition-opacity duration-[1600ms] ease-in-out ${
+                i === heroSlide ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          ))}
         </div>
       </section>
 
       {/* PRODUCT GRID */}
       <section data-hsnap className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center py-20 px-8">
-        <div className="relative z-10 max-w-7xl mx-auto w-full mb-10 flex items-end justify-between gap-8 flex-wrap">
-          <div>
-            <Label className="block mb-3">전체 상품</Label>
-            <h2 className="text-3xl font-light text-foreground" style={SERIF}>집다움의 모든 상품</h2>
-          </div>
+        <div className="relative z-10 max-w-7xl mx-auto w-full mb-10 flex items-end justify-end gap-8 flex-wrap">
           <div className="flex items-center gap-2 border-b border-foreground w-full sm:w-72 pb-2">
             <Search size={15} className="text-muted-foreground shrink-0" />
             <input
@@ -279,7 +319,6 @@ function Home() {
             )}
           </div>
         </div>
-        <Hairline className="relative z-10 max-w-7xl mx-auto w-full mb-10" />
         {filteredProducts.length === 0 ? (
           <p className="relative z-10 max-w-7xl mx-auto w-full text-center text-sm text-muted-foreground py-16" style={SANS}>
             "{productSearchQuery}"에 대한 검색 결과가 없습니다.
@@ -312,19 +351,12 @@ function Home() {
       {/* LOOKBOOK */}
       <section data-hsnap className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center">
         <div className="max-w-7xl mx-auto px-8 py-10 w-full">
-          <div className="flex items-baseline justify-between mb-4">
-            <div>
-              <Label className="block mb-2">@jipdaum.official</Label>
-              <h2 className="text-3xl font-light text-foreground" style={SERIF}>갤러리</h2>
-            </div>
-          </div>
-          <Hairline className="mb-4" />
           <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 gap-2">
             {lookbookPhotos.map((src, i) => (
               <div key={src} className="group overflow-hidden bg-muted aspect-square cursor-pointer relative">
                 <img src={src} alt={`리빙 갤러리 ${lookbookPage * LOOKBOOK_PAGE_SIZE + i + 1}`} className="w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-600" />
                 <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/15 transition-colors duration-300" />
-                <FaInstagram className="absolute top-2 right-2 text-white drop-shadow" size={14} />
+                <Camera className="absolute top-2 right-2 text-white drop-shadow" size={14} />
               </div>
             ))}
           </div>
@@ -367,20 +399,6 @@ function Home() {
               </button>
             </div>
           )}
-        </div>
-      </section>
-
-      {/* NEWSLETTER */}
-      <section data-hsnap className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center border-t border-border py-20 px-8 bg-secondary">
-        <div className="max-w-lg mx-auto text-center">
-          <Label className="block mb-5">LETTER FROM EDITOR</Label>
-          <h3 className="text-3xl font-light text-foreground mb-4" style={SERIF}>집다움만의 소식을 들어보세요.</h3>
-          <p className="text-sm text-muted-foreground font-light leading-relaxed mb-10">격주마다 공간 큐레이션, 인터뷰, 새로운 오브제 소식을 전해드립니다.</p>
-          <div className="flex border-b border-foreground">
-            <input type="email" placeholder="이메일 주소"
-              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none py-3 px-0" style={SANS} />
-            <button className="text-xs tracking-widest text-foreground hover:text-muted-foreground transition-colors py-3 pl-6 shrink-0" style={MONO}>SUBSCRIBE</button>
-          </div>
         </div>
       </section>
 

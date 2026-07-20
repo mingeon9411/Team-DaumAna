@@ -13,6 +13,9 @@ import Receipt from "./Receipt";
 import ChatBot from "./ChatBot";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
+import JDLogo from "../../assets/J.D 로고.svg";
+import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent.png";
+import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent.png";
 
 const STATUS_LABEL = {
   PENDING: "입금대기",
@@ -51,6 +54,15 @@ function MyPage() {
   const [myCoupons, setMyCoupons] = useState([]);
   const [wishlist, setWishlist] = useState(() => getWishlist());
   const [activeSection, setActiveSection] = useState("main");
+  const [darkMode, setDarkMode] = useState(
+    () => document.body.classList.contains("dark")
+  );
+
+  useEffect(() => {
+    const syncDarkMode = () => setDarkMode(document.body.classList.contains("dark"));
+    window.addEventListener("darkmodechange", syncDarkMode);
+    return () => window.removeEventListener("darkmodechange", syncDarkMode);
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -136,6 +148,15 @@ function MyPage() {
 
 
       <aside className="mypageSide">
+        <div className="mypageLogoRow">
+          <img src={JDLogo} alt="J.D" className="mypageLogoJD" />
+          <span className="mypageLogoDivider" />
+          <img
+            src={darkMode ? JipdaumHanokLogoDark : JipdaumHanokLogo}
+            alt="집다움"
+            className="mypageLogoHanok"
+          />
+        </div>
         <nav>
           <p className={activeSection === "main" ? "active" : ""} onClick={() => setActiveSection("main")}>마이페이지</p>
           <p className={activeSection === "orders" ? "active" : ""} onClick={() => setActiveSection("orders")}>주문내역 조회</p>

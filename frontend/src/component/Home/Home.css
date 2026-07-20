@@ -141,13 +141,13 @@ body.dark .sparkleBg {
 body.dark .metallicSilver {
   background: linear-gradient(
     115deg,
-    #2b2d31 0%,
-    #44474d 20%,
-    #5a5d64 35%,
-    #323438 50%,
-    #6b6e75 65%,
-    #3c3e43 80%,
-    #2b2d31 100%
+    #060d1e 0%,
+    #0b1430 20%,
+    #0f1f3d 35%,
+    #060d1e 50%,
+    #0f1f3d 65%,
+    #0b1430 80%,
+    #060d1e 100%
   );
   background-size: 160% 160%;
 }
@@ -155,6 +155,20 @@ body.dark .metallicSilver {
 @keyframes metallicSheenSubtle {
   0%, 100% { background-position: 0% 40%; }
   50% { background-position: 100% 60%; }
+}
+
+/* 히어로 슬라이드 — 보여지는 동안 아주 느리게 확대되는 켄 번즈 연출 */
+.heroSlideImg {
+  transform: scale(1);
+}
+
+.heroSlideImg.opacity-100 {
+  animation: heroKenBurns 6.4s ease-out forwards;
+}
+
+@keyframes heroKenBurns {
+  from { transform: scale(1); }
+  to   { transform: scale(1.06); }
 }
 
 /* 상품 퀵뷰 모달 — 메탈릭 실버 배경만 적용 (모달 자체의 스크롤/포지셔닝 유틸과 충돌하지 않도록

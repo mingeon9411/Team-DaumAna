@@ -22,8 +22,14 @@ import { logoutUser, getCartItems } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useCartModal } from "../../context/CartModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
-import { useSearchModal } from "../../context/SearchModalContext";
 import { useNoticeModal } from "../../context/NoticeModalContext";
+
+const KH_PETALS = Array.from({ length: 12 }, (_, i) => ({
+  left: (i * 8.7 + 3) % 100,
+  delay: (i * 0.63) % 6,
+  duration: 5 + ((i * 1.37) % 3.5),
+  scale: 0.7 + ((i * 0.53) % 0.6),
+}));
 
 function Sidebar() {
   const [cartCount, setCartCount] = useState(0);
@@ -42,11 +48,21 @@ function Sidebar() {
   const { openLogin } = useAuthModal();
   const { openCart } = useCartModal();
   const { openMyPage } = useMyPageModal();
-  const { openSearch } = useSearchModal();
   const { openNotice } = useNoticeModal();
   const isHome = location.pathname === "/";
   const isKoreanHall = location.pathname === "/korean-hall";
   const pendingPanelRef = useRef(null);
+  const [homeEntering, setHomeEntering] = useState(false);
+
+  // 메인 페이지로 넘어올 때마다 미니바를 접힌 상태로 뒀다가, 도어인트로가 끝나는
+  // 시점(App의 "doorintroend" 이벤트)에 맞춰 펼쳐지는 연출을 재생한다.
+  useEffect(() => {
+    if (!isHome) return;
+    setHomeEntering(true);
+    const playOpen = () => setHomeEntering(false);
+    window.addEventListener("doorintroend", playOpen);
+    return () => window.removeEventListener("doorintroend", playOpen);
+  }, [isHome, location.key]);
 
   const getHomeCartTotal = () => {
     try {
@@ -216,7 +232,23 @@ function Sidebar() {
   };
 
   return (
-    <aside className={`sidebarRail ${collapsed ? "collapsed" : ""} ${isKoreanHall ? "koreanHallRail" : ""}`}>
+    <aside className={`sidebarRail ${(collapsed || homeEntering) ? "collapsed" : ""} ${isKoreanHall ? "koreanHallRail" : ""}`}>
+      {isKoreanHall && (
+        <div className="khPetals" aria-hidden="true">
+          {KH_PETALS.map((p, i) => (
+            <span
+              key={i}
+              className="khPetal"
+              style={{
+                left: `${p.left}%`,
+                animationDelay: `${p.delay}s`,
+                animationDuration: `${p.duration}s`,
+                "--khPetalScale": p.scale,
+              }}
+            />
+          ))}
+        </div>
+      )}
       <button
         type="button"
         className="railToggle"
@@ -272,7 +304,7 @@ function Sidebar() {
           className="railBtn"
           aria-label="검색"
           data-tooltip="검색"
-          onClick={(e) => { triggerPop(e); openSearch(); }}
+          onClick={(e) => { triggerPop(e); goToProductsPage(); }}
         >
           <LuSearch />
         </button>
@@ -334,47 +366,51 @@ function Sidebar() {
           </button>
         )}
 
-        <span className="railDivider" />
+        {!isKoreanHall && (
+          <>
+            <span className="railDivider" />
 
-        <button
-          type="button"
-          className="railBtn"
-          aria-label="처음으로"
-          data-tooltip="처음으로"
-          onClick={(e) => { triggerPop(e); scrollToTop(); }}
-        >
-          <LuChevronsLeft />
-        </button>
+            <button
+              type="button"
+              className="railBtn"
+              aria-label="처음으로"
+              data-tooltip="처음으로"
+              onClick={(e) => { triggerPop(e); scrollToTop(); }}
+            >
+              <LuChevronsLeft />
+            </button>
 
-        <button
-          type="button"
-          className="railBtn"
-          aria-label="이전 페이지"
-          data-tooltip="이전 페이지"
-          onClick={(e) => { triggerPop(e); goToPrevPanel(); }}
-        >
-          <LuChevronLeft />
-        </button>
+            <button
+              type="button"
+              className="railBtn"
+              aria-label="이전 페이지"
+              data-tooltip="이전 페이지"
+              onClick={(e) => { triggerPop(e); goToPrevPanel(); }}
+            >
+              <LuChevronLeft />
+            </button>
 
-        <button
-          type="button"
-          className="railBtn"
-          aria-label="다음 페이지"
-          data-tooltip="다음 페이지"
-          onClick={(e) => { triggerPop(e); goToNextPanel(); }}
-        >
-          <LuChevronRight />
-        </button>
+            <button
+              type="button"
+              className="railBtn"
+              aria-label="다음 페이지"
+              data-tooltip="다음 페이지"
+              onClick={(e) => { triggerPop(e); goToNextPanel(); }}
+            >
+              <LuChevronRight />
+            </button>
 
-        <button
-          type="button"
-          className="railBtn"
-          aria-label="끝으로"
-          data-tooltip="끝으로"
-          onClick={(e) => { triggerPop(e); scrollToBottom(); }}
-        >
-          <LuChevronsRight />
-        </button>
+            <button
+              type="button"
+              className="railBtn"
+              aria-label="끝으로"
+              data-tooltip="끝으로"
+              onClick={(e) => { triggerPop(e); scrollToBottom(); }}
+            >
+              <LuChevronsRight />
+            </button>
+          </>
+        )}
       </div>
     </aside>
   );

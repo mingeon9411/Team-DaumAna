@@ -1,8 +1,10 @@
 import "./KoreanHall.css";
-import { Link } from "react-router-dom";
 import products from "../../data/products";
+import { useProductModal } from "../../context/ProductModalContext";
 
 function KoreanHall() {
+  const { openProduct } = useProductModal();
+
   return (
     <div className="khPage" data-hsnap data-lenis-prevent>
       <div className="khIntro">
@@ -18,7 +20,11 @@ function KoreanHall() {
       <ul className="khGrid">
         {products.map((product) => (
           <li key={product.id} className="khCard">
-            <Link to={`/product/${product.id}`} className="khCardLink">
+            <button
+              type="button"
+              className="khCardLink"
+              onClick={() => openProduct(product.id)}
+            >
               <div className="khImgWrap">
                 <img src={product.image} alt={product.name} className="khImg" />
               </div>
@@ -27,7 +33,7 @@ function KoreanHall() {
                 <p className="khProductDesc">{product.desc}</p>
                 <p className="khPrice">{product.price.toLocaleString()}원</p>
               </div>
-            </Link>
+            </button>
           </li>
         ))}
       </ul>

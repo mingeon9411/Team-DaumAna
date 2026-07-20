@@ -27,6 +27,12 @@ function Showroom() {
       desc: "공예와 라이프스타일 오브제를 큐레이션한 공간",
       image: table2,
     },
+    {
+      title: "모던 한옥 스튜디오",
+      location: "삼청동",
+      desc: "전통의 구조와 현대적 감각이 공존하는 공간",
+      image: showroom1,
+    },
   ];
 
   return (
