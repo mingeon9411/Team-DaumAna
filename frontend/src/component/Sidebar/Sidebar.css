@@ -282,54 +282,78 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
   justify-content: center;
 }
 
-/* 상품 검색 플라이아웃 */
-.railSearchWrap {
-  position: relative;
-}
-
+/* 상품 검색 플라이아웃 — 검색 아이콘이 아니라 하단 바 전체(.sidebarRail) 기준으로
+   가로 중앙에 뜨도록, 위치 기준을 sidebarRail(고정 배치)에 맡긴다. */
 .railSearchFlyout {
   position: absolute;
   left: 50%;
   bottom: calc(100% + 12px);
   transform: translateX(-50%);
 
-  width: 260px;
-  padding: 10px;
-  border-radius: 14px;
+  width: 440px;
+  padding: 16px;
+  border-radius: 18px;
 
   background: linear-gradient(120deg, #f4f4f6 0%, #d7d9dc 20%, #ececed 40%, #b8bcc2 55%, #e6e7e9 70%, #cfd1d4 85%, #f4f4f6 100%);
   border: 1px solid var(--border);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
   z-index: 25;
+
+  animation: railFlyoutIn 0.24s ease-out;
+}
+
+@keyframes railFlyoutIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.98); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
 }
 
 .railSearchInput {
   width: 100%;
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 12px 16px;
+  border-radius: 10px;
   border: 1px solid var(--border);
   background: var(--background);
   color: var(--foreground);
-  font-size: 13px;
+  font-size: 15px;
   font-family: "Noto Sans KR", sans-serif;
   outline: none;
 }
 
 .railSearchResults {
   list-style: none;
-  margin: 8px 0 0;
+  margin: 12px 0 0;
   padding: 0;
-  max-height: 280px;
+  max-height: 440px;
   overflow-y: auto;
 }
 
 .railSearchResults li + li {
-  margin-top: 4px;
+  margin-top: 6px;
+}
+
+/* 검색어를 바꿀 때마다 결과가 새로 마운트되며 부드럽게 나타나도록 —
+   항목마다 살짝 시차를 둬서 순서대로 뜨는 느낌을 준다 */
+.railSearchResults li {
+  animation: railResultIn 0.32s ease-out both;
+}
+
+.railSearchResults li:nth-child(1) { animation-delay: 0s; }
+.railSearchResults li:nth-child(2) { animation-delay: 0.03s; }
+.railSearchResults li:nth-child(3) { animation-delay: 0.06s; }
+.railSearchResults li:nth-child(4) { animation-delay: 0.09s; }
+.railSearchResults li:nth-child(5) { animation-delay: 0.12s; }
+.railSearchResults li:nth-child(6) { animation-delay: 0.15s; }
+.railSearchResults li:nth-child(7) { animation-delay: 0.18s; }
+.railSearchResults li:nth-child(8) { animation-delay: 0.21s; }
+
+@keyframes railResultIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .railSearchEmpty {
-  padding: 10px 6px;
-  font-size: 12px;
+  padding: 16px 6px;
+  font-size: 13px;
   color: var(--muted-foreground);
   text-align: center;
 }
@@ -338,11 +362,11 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 14px;
 
-  padding: 6px;
+  padding: 10px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   background: transparent;
   cursor: pointer;
   text-align: left;
@@ -354,9 +378,9 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
 }
 
 .railSearchResults img {
-  width: 38px;
-  height: 38px;
-  border-radius: 6px;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
   object-fit: cover;
   flex-shrink: 0;
 }
@@ -364,11 +388,12 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
 .railSearchResults span {
   display: flex;
   flex-direction: column;
+  gap: 2px;
   min-width: 0;
 }
 
 .railSearchResults strong {
-  font-size: 12px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--foreground);
   white-space: nowrap;
@@ -376,9 +401,17 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
   text-overflow: ellipsis;
 }
 
+.railSearchDesc {
+  font-size: 12.5px;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .railSearchResults em {
   font-style: normal;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--muted-foreground);
 }
 

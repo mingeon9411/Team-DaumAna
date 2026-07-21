@@ -13,6 +13,7 @@ import Receipt from "./Receipt";
 import ChatBot from "./ChatBot";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
+import { useWithdrawModal } from "../../context/WithdrawModalContext";
 import JDLogo from "../../assets/J.D 로고.svg";
 import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent.png";
 import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent.png";
@@ -46,6 +47,7 @@ function MyPage() {
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
   const { isOpen, closeMyPage } = useMyPageModal();
+  const { openWithdraw } = useWithdrawModal();
   const nickname = localStorage.getItem("nickname") || "회원";
 
   const [orders, setOrders] = useState([]);
@@ -328,7 +330,7 @@ function MyPage() {
                 <h2>내 계정 관리</h2>
                 <p>회원정보 수정, 비밀번호 변경, 회원탈퇴를 관리할 수 있습니다.</p>
               </div>
-              <button className="withdrawBtn" onClick={() => { closeMyPage(); navigate("/withdraw"); }}>
+              <button className="withdrawBtn" onClick={() => { closeMyPage(); openWithdraw(); }}>
                 회원탈퇴
               </button>
             </section>

@@ -10,7 +10,7 @@ import JipdaumHanokLogoDark from "./assets/logo/Jipdaum-logo-Dark-transparent.pn
 import Header from "./component/Header/Header";
 import Sidebar from "./component/Sidebar/Sidebar";
 import MyPage from "./component/MyPage/MyPage";
-import Withdraw from "./component/WithDraw/WithDraw";
+import WithdrawModal from "./component/WithDraw/WithdrawModal";
 import Home from "./component/Home/Home";
 
 import Cart from "./component/Cart/Cart";
@@ -31,6 +31,7 @@ import { CartModalProvider } from "./context/CartModalContext";
 import { MyPageModalProvider } from "./context/MyPageModalContext";
 import { NoticeModalProvider } from "./context/NoticeModalContext";
 import { ProductModalProvider } from "./context/ProductModalContext";
+import { WithdrawModalProvider } from "./context/WithdrawModalContext";
 import { createPagingController } from "./utils/snapSetup";
 import "./App.css";
 
@@ -144,6 +145,7 @@ function App() {
     <MyPageModalProvider>
     <NoticeModalProvider>
     <ProductModalProvider>
+    <WithdrawModalProvider>
     <ScrollToTop lenis={lenisRef} controller={controllerRef} panelsUnsub={panelsUnsubRef} />
     <FaviconController />
     <DoorIntroController />
@@ -154,6 +156,7 @@ function App() {
     <MyPage />
     <NoticeModal />
     <ProductModal />
+    <WithdrawModal />
 
     <div className="hTrack">
       <Routes>
@@ -161,7 +164,6 @@ function App() {
         <Route path="/" element={<Home />} />
 
         <Route path="/welcome" element={<Welcome />} />
-        <Route path="/withdraw" element={<Withdraw />} />
         <Route path="/social-callback" element={<SocialCallback />} />
         <Route path="/email-verify" element={<EmailVerify />} />
         <Route path="/search" element={<SearchResults />} />
@@ -174,6 +176,7 @@ function App() {
       </Routes>
       <FooterGate />
     </div>
+    </WithdrawModalProvider>
     </ProductModalProvider>
     </NoticeModalProvider>
     </MyPageModalProvider>

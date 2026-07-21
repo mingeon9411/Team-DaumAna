@@ -30,31 +30,31 @@ export const PRODUCTS = [
   { id: 1, no: "No.1", name: "린넨 암체어", sub: "내추럴 베이지", price: "328,000", label: "BESTSELLER",
     desc: "부드러운 린넨과 낮은 팔걸이로 온몸을 편안히 감싸는 체어. 거실 어디에 놓아도 공간의 무게중심이 됩니다.",
     spec: "SIZE : W68 D72 H76 · MATERIAL : linen, oak",
-    image: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=500&h=620&fit=crop&auto=format", alt: "린넨 암체어" },
+    image: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=500&h=620&fit=crop&auto=format", alt: "린넨 암체어", brand: "집다움" },
   { id: 2, no: "No.2", name: "월넛 사이드 테이블", sub: "블랙 월넛", price: "168,000", label: "NEW",
     desc: "짙은 월넛 원목의 결을 살린 사이드 테이블. 소파 옆, 침대 곁 어디서나 조용히 제 역할을 합니다.",
     spec: "SIZE : W45 D45 H50 · MATERIAL : walnut",
-    image: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=500&h=620&fit=crop&auto=format", alt: "월넛 사이드 테이블" },
+    image: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=500&h=620&fit=crop&auto=format", alt: "월넛 사이드 테이블", brand: "집다움" },
   { id: 3, no: "No.3", name: "대나무 트레이", sub: "내추럴", price: "54,000", label: "ECO",
     desc: "대나무를 엮어 만든 트레이. 차 한 잔, 작은 화분, 협탁 위 소품 정리에 두루 어울립니다.",
     spec: "SIZE : W38 D26 H4 · MATERIAL : bamboo",
-    image: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=500&h=620&fit=crop&auto=format", alt: "대나무 트레이" },
+    image: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=500&h=620&fit=crop&auto=format", alt: "대나무 트레이", brand: "집다움" },
   { id: 4, no: "No.4", name: "한국 모던 소파", sub: "아이보리 레더", price: "398,000", label: "NEW",
     desc: "아이보리 가죽과 완만한 곡선이 어우러진 2인용 소파. 어느 각도에서 봐도 매끈한 실루엣을 완성합니다.",
     spec: "SIZE : W150 D80 H75 · MATERIAL : leather, steel",
-    image: koreanModernSofa, alt: "한국 모던 소파" },
+    image: koreanModernSofa, alt: "한국 모던 소파", brand: "집다움" },
   { id: 5, no: "No.5", name: "플로어 라운지 소파", sub: "아이보리 부클", price: "328,000", label: "NEW",
     desc: "낮은 좌면과 넉넉한 쿠션이 편안한 좌식형 라운지 소파. 바닥 생활에 어울리는 낮은 무게중심이 특징입니다.",
     spec: "SIZE : W180 D95 H55 · MATERIAL : boucle, sponge",
-    image: floorLoungeSofa, alt: "플로어 라운지 소파" },
+    image: floorLoungeSofa, alt: "플로어 라운지 소파", brand: "집다움" },
   { id: 6, no: "No.6", name: "한지 펜던트 조명", sub: "블랙 프레임", price: "112,000", label: "NEW",
     desc: "한지가 은은하게 빛을 머금는 프레임형 펜던트 조명. 은은한 조도로 공간에 온기를 더합니다.",
     spec: "SIZE : W16 D16 H36 · MATERIAL : hanji, steel",
-    image: hanjiPendantLight, alt: "한지 펜던트 조명" },
+    image: hanjiPendantLight, alt: "한지 펜던트 조명", brand: "집다움" },
   { id: 7, no: "No.7", name: "달항아리 암체어", sub: "카멜 부클", price: "358,000", label: "NEW",
     desc: "달항아리의 둥근 선을 닮은 부클 원단 윙백 암체어. 어느 자리에 두어도 공간의 중심이 됩니다.",
     spec: "SIZE : W85 D90 H105 · MATERIAL : boucle, wood",
-    image: moonJarArmchair, alt: "달항아리 암체어" },
+    image: moonJarArmchair, alt: "달항아리 암체어", brand: "집다움" },
 ];
 
 const ESSAYS = [
@@ -228,7 +228,8 @@ function Home() {
       (p) =>
         p.name.toLowerCase().includes(q) ||
         p.sub.toLowerCase().includes(q) ||
-        p.label.toLowerCase().includes(q)
+        p.label.toLowerCase().includes(q) ||
+        p.brand.toLowerCase().includes(q)
     );
   })();
 

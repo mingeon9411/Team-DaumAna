@@ -251,7 +251,7 @@ function Sidebar() {
   const searchResults = searchQuery.trim()
     ? searchCatalog
         .filter((p) => p.name.toLowerCase().includes(searchQuery.trim().toLowerCase()))
-        .slice(0, 6)
+        .slice(0, 8)
     : [];
 
   const handleSearchSelect = (product) => {
@@ -361,6 +361,7 @@ function Sidebar() {
                           <img src={p.image} alt="" />
                           <span>
                             <strong>{p.name}</strong>
+                            {p.desc && <small className="railSearchDesc">{p.desc}</small>}
                             <em>{p.price.toLocaleString()}원</em>
                           </span>
                         </button>
