@@ -7,20 +7,16 @@ import koreanModernSofa from "../../assets/products/Korean Modern Sofa — Ivory
 import floorLoungeSofa from "../../assets/products/플로어 라운지 소파.png";
 import hanjiPendantLight from "../../assets/products/한지 펜던트 조명.png";
 import moonJarArmchair from "../../assets/products/달항아리 암체어.png";
-import hanokReading from "../../assets/Hanok Male — Reading on Floor.png";
 import hanokBedroomNight from "../../assets/scenes/hanok-bedroom-night.jpg";
-import hanokBedroomTea from "../../assets/scenes/hanok-bedroom-tea.jpg";
 import hanokBedroomDoorway from "../../assets/scenes/hanok-bedroom-doorway.jpg";
 
 const HERO_LEFT_IMAGES = [
   { src: moonJarLamp, alt: "달항아리 램프 - 은은한 조명이 켜진 도자 램프" },
-  { src: hanokReading, alt: "한옥 방에서 책을 읽는 남성" },
   { src: hanokBedroomNight, alt: "따뜻한 조명이 켜진 한옥 침실 야경" },
 ];
 
 const HERO_RIGHT_IMAGES = [
   { src: patchworkBedding, alt: "조각보 침구 세트 - 전통 조각보 패턴의 침구와 베개" },
-  { src: hanokBedroomTea, alt: "한옥 방에서 차를 우리는 모습" },
   { src: hanokBedroomDoorway, alt: "한옥 침실 문 너머로 보이는 침구" },
 ];
 
@@ -30,7 +26,7 @@ const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
 const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
 const MONO = { fontFamily: "'TwayFly', 'DM Mono', monospace" };
 
-const PRODUCTS = [
+export const PRODUCTS = [
   { id: 1, no: "No.1", name: "린넨 암체어", sub: "내추럴 베이지", price: "328,000", label: "BESTSELLER",
     desc: "부드러운 린넨과 낮은 팔걸이로 온몸을 편안히 감싸는 체어. 거실 어디에 놓아도 공간의 무게중심이 됩니다.",
     spec: "SIZE : W68 D72 H76 · MATERIAL : linen, oak",
@@ -147,6 +143,26 @@ function Home() {
       setHeroSlide((i) => (i + 1) % HERO_LEFT_IMAGES.length);
     }, HERO_SLIDE_INTERVAL);
     return () => clearInterval(timer);
+  }, []);
+
+  // 사이드바 검색 플라이아웃에서 선택한 상품을 퀵뷰로 연다.
+  // 같은 페이지에 있는 동안은 커스텀 이벤트로, 다른 페이지에서 넘어온 직후에는
+  // sessionStorage에 남겨둔 id를 마운트 시 확인해서 연다.
+  useEffect(() => {
+    const openById = (id) => {
+      const product = PRODUCTS.find((p) => p.id === id);
+      if (product) openQuickView(product);
+    };
+
+    const pendingId = sessionStorage.getItem("pendingHomeProductId");
+    if (pendingId) {
+      sessionStorage.removeItem("pendingHomeProductId");
+      setTimeout(() => openById(Number(pendingId)), 250);
+    }
+
+    const handler = (e) => openById(e.detail);
+    window.addEventListener("open-home-product", handler);
+    return () => window.removeEventListener("open-home-product", handler);
   }, []);
 
   // 마지막 멘트("하지만 정답은 없습니다...")에서 반복하지 않고 멈춘 뒤,

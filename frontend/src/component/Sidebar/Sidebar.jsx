@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   LuHouse,
-  LuStore,
   LuFlower,
   LuMegaphone,
   LuSearch,
@@ -23,6 +22,9 @@ import { useAuthModal } from "../../context/AuthModalContext";
 import { useCartModal } from "../../context/CartModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import { useNoticeModal } from "../../context/NoticeModalContext";
+import { useProductModal } from "../../context/ProductModalContext";
+import { PRODUCTS as HOME_PRODUCTS } from "../Home/Home";
+import { products as KOREAN_HALL_PRODUCTS } from "../../data/products";
 
 const KH_PETALS = Array.from({ length: 12 }, (_, i) => ({
   left: (i * 8.7 + 3) % 100,
@@ -49,9 +51,13 @@ function Sidebar() {
   const { openCart } = useCartModal();
   const { openMyPage } = useMyPageModal();
   const { openNotice } = useNoticeModal();
+  const { openProduct } = useProductModal();
   const isHome = location.pathname === "/";
   const isKoreanHall = location.pathname === "/korean-hall";
   const pendingPanelRef = useRef(null);
+  const searchWrapRef = useRef(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [homeEntering, setHomeEntering] = useState(false);
 
   // 메인 페이지로 넘어올 때마다 미니바를 접힌 상태로 뒀다가, 도어인트로가 끝나는
@@ -144,6 +150,24 @@ function Sidebar() {
     localStorage.setItem("sidebarCollapsed", collapsed ? "1" : "0");
   }, [collapsed]);
 
+  // 검색 플라이아웃 바깥을 클릭하면 닫기
+  useEffect(() => {
+    if (!searchOpen) return;
+    const handleClickOutside = (e) => {
+      if (searchWrapRef.current && !searchWrapRef.current.contains(e.target)) {
+        setSearchOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [searchOpen]);
+
+  // 페이지가 바뀌면 열려있던 검색창은 접어둔다
+  useEffect(() => {
+    setSearchOpen(false);
+    setSearchQuery("");
+  }, [location.pathname]);
+
   const triggerPop = (e) => {
     const el = e.currentTarget;
     el.classList.remove("railPop");
@@ -162,16 +186,6 @@ function Sidebar() {
       window.lenis.scrollTo(target);
     } else {
       target.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
-  const goToProductsPage = () => {
-    if (isHome) {
-      scrollToPanel(2);
-    } else {
-      pendingPanelRef.current = 2;
-      sessionStorage.setItem("skipHomeDefaultPanel", "1");
-      navigate("/");
     }
   };
 
@@ -231,6 +245,32 @@ function Sidebar() {
     window.location.replace("/");
   };
 
+  // 검색은 현재 있는 페이지에 맞는 상품 목록만 대상으로 한다 — 한국관이면 한국관
+  // 큐레이션, 그 외(메인 포함)에는 메인 상품 목록.
+  const searchCatalog = isKoreanHall ? KOREAN_HALL_PRODUCTS : HOME_PRODUCTS;
+  const searchResults = searchQuery.trim()
+    ? searchCatalog
+        .filter((p) => p.name.toLowerCase().includes(searchQuery.trim().toLowerCase()))
+        .slice(0, 6)
+    : [];
+
+  const handleSearchSelect = (product) => {
+    setSearchOpen(false);
+    setSearchQuery("");
+    if (isKoreanHall) {
+      openProduct(product.id);
+      return;
+    }
+    if (isHome) {
+      window.dispatchEvent(new CustomEvent("open-home-product", { detail: product.id }));
+      return;
+    }
+    sessionStorage.setItem("pendingHomeProductId", String(product.id));
+    pendingPanelRef.current = 2;
+    sessionStorage.setItem("skipHomeDefaultPanel", "1");
+    navigate("/");
+  };
+
   return (
     <aside className={`sidebarRail ${(collapsed || homeEntering) ? "collapsed" : ""} ${isKoreanHall ? "koreanHallRail" : ""}`}>
       {isKoreanHall && (
@@ -272,16 +312,6 @@ function Sidebar() {
         <button
           type="button"
           className="railBtn"
-          aria-label="상품"
-          data-tooltip="상품"
-          onClick={(e) => { triggerPop(e); goToProductsPage(); }}
-        >
-          <LuStore />
-        </button>
-
-        <button
-          type="button"
-          className="railBtn"
           aria-label="한국관"
           data-tooltip="한국관"
           onClick={(e) => { triggerPop(e); goToKoreanHall(); }}
@@ -299,15 +329,49 @@ function Sidebar() {
           <LuMegaphone />
         </button>
 
-        <button
-          type="button"
-          className="railBtn"
-          aria-label="검색"
-          data-tooltip="검색"
-          onClick={(e) => { triggerPop(e); goToProductsPage(); }}
-        >
-          <LuSearch />
-        </button>
+        <div className="railSearchWrap" ref={searchWrapRef}>
+          <button
+            type="button"
+            className="railBtn"
+            aria-label="검색"
+            data-tooltip="검색"
+            onClick={(e) => { triggerPop(e); setSearchOpen((v) => !v); }}
+          >
+            <LuSearch />
+          </button>
+
+          {searchOpen && (
+            <div className="railSearchFlyout">
+              <input
+                type="text"
+                autoFocus
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={isKoreanHall ? "한국관 상품 검색" : "상품 검색"}
+                className="railSearchInput"
+              />
+              {searchQuery.trim() && (
+                <ul className="railSearchResults">
+                  {searchResults.length === 0 ? (
+                    <li className="railSearchEmpty">검색 결과가 없습니다</li>
+                  ) : (
+                    searchResults.map((p) => (
+                      <li key={p.id}>
+                        <button type="button" onClick={() => handleSearchSelect(p)}>
+                          <img src={p.image} alt="" />
+                          <span>
+                            <strong>{p.name}</strong>
+                            <em>{p.price.toLocaleString()}원</em>
+                          </span>
+                        </button>
+                      </li>
+                    ))
+                  )}
+                </ul>
+              )}
+            </div>
+          )}
+        </div>
 
         <span className="railDivider" />
 
@@ -325,16 +389,6 @@ function Sidebar() {
         <button
           type="button"
           className="railBtn"
-          aria-label="마이페이지"
-          data-tooltip="마이페이지"
-          onClick={(e) => { triggerPop(e); openMyPage(); }}
-        >
-          <LuUserRound />
-        </button>
-
-        <button
-          type="button"
-          className="railBtn"
           aria-label={darkMode ? "라이트모드" : "다크모드"}
           data-tooltip={darkMode ? "라이트모드" : "다크모드"}
           onClick={(e) => { triggerPop(e); setDarkMode(!darkMode); }}
@@ -345,15 +399,27 @@ function Sidebar() {
         <span className="railDivider" />
 
         {isLoggedIn ? (
-          <button
-            type="button"
-            className="railBtn"
-            aria-label="로그아웃"
-            data-tooltip="로그아웃"
-            onClick={(e) => { triggerPop(e); handleLogout(); }}
-          >
-            <LuLogOut />
-          </button>
+          <>
+            <button
+              type="button"
+              className="railBtn"
+              aria-label="마이페이지"
+              data-tooltip="마이페이지"
+              onClick={(e) => { triggerPop(e); openMyPage(); }}
+            >
+              <LuUserRound />
+            </button>
+
+            <button
+              type="button"
+              className="railBtn"
+              aria-label="로그아웃"
+              data-tooltip="로그아웃"
+              onClick={(e) => { triggerPop(e); handleLogout(); }}
+            >
+              <LuLogOut />
+            </button>
+          </>
         ) : (
           <button
             type="button"

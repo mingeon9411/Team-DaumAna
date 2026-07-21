@@ -84,13 +84,13 @@
 body.dark .mypage {
   background: linear-gradient(
     115deg,
-    #060d1e 0%,
-    #0b1430 20%,
-    #0f1f3d 35%,
-    #060d1e 50%,
-    #0f1f3d 65%,
-    #0b1430 80%,
-    #060d1e 100%
+    #1f3a63 0%,
+    #2c4d7a 20%,
+    #375f91 35%,
+    #1f3a63 50%,
+    #375f91 65%,
+    #2c4d7a 80%,
+    #1f3a63 100%
   );
   border: 1px solid rgba(150, 185, 255, 0.16);
 }
@@ -127,13 +127,13 @@ body.dark .mypage {
 body.dark .mypageSide {
   background: linear-gradient(
     115deg,
-    #060d1e 0%,
-    #0b1430 20%,
-    #0f1f3d 35%,
-    #060d1e 50%,
-    #0f1f3d 65%,
-    #0b1430 80%,
-    #060d1e 100%
+    #1f3a63 0%,
+    #2c4d7a 20%,
+    #375f91 35%,
+    #1f3a63 50%,
+    #375f91 65%,
+    #2c4d7a 80%,
+    #1f3a63 100%
   );
 }
 
@@ -185,7 +185,7 @@ body.dark .mypageLogoJD {
 }
 
 body.dark .mypageLogoHanok {
-  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+  filter: grayscale(1) brightness(1.5) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
 }
 
 .mypageSide nav {
@@ -1413,6 +1413,65 @@ body.dark .wishPreviewImgBox,
 body.dark .myWishImgBox {
   background: #0b1430;
 }
+
+/* 브랜드 강조색(#913a22 rust)이 네이비와 부딪혀서, 다크모드에서는 옅은 골드 톤으로 대체 */
+body.dark .mypageSide nav p.active {
+  color: #f0dbb0;
+}
+
+body.dark .mypageHeroSub {
+  color: #f0dbb0;
+}
+
+body.dark .orderStatus {
+  background: linear-gradient(135deg, #16274a 0%, #0b1430 100%);
+  border: 1px solid rgba(227, 205, 160, 0.18);
+}
+body.dark .orderStatus strong {
+  color: #f0dbb0;
+}
+
+body.dark .myCouponCountBar strong,
+body.dark .myWishCountBar strong {
+  color: #f0dbb0;
+}
+
+body.dark .cpDesc {
+  color: #f0dbb0;
+}
+
+body.dark .wishPreviewPrice,
+body.dark .myWishPrice {
+  color: #f0dbb0;
+}
+
+body.dark .feedDate {
+  color: var(--muted-foreground);
+}
+
+body.dark .feedDot {
+  background: #c9b088;
+  border: 3px solid #0b1430;
+  box-shadow: 0 0 0 2px rgba(227, 205, 160, 0.35);
+}
+
+body.dark .feedReceipt {
+  color: #f0dbb0;
+  border-color: #f0dbb0;
+}
+body.dark .feedItem.clickable:hover .feedReceipt {
+  background: #f0dbb0;
+  color: #2a1f10;
+}
+
+body.dark .statusBadge.PENDING   { background: rgba(255, 152, 0, 0.18); color: #ffb74d; }
+body.dark .statusBadge.ORDERED   { background: rgba(76, 175, 80, 0.18); color: #81c784; }
+body.dark .statusBadge.SHIPPED   { background: rgba(33, 150, 243, 0.18); color: #64b5f6; }
+body.dark .statusBadge.DELIVERED { background: rgba(156, 39, 176, 0.18); color: #ba68c8; }
+body.dark .statusBadge.CANCELLED { background: rgba(244, 67, 54, 0.18); color: #e57373; }
+
+body.dark .badgeAchieved { background: rgba(76, 175, 80, 0.18); color: #81c784; }
+body.dark .badgeLocked   { background: rgba(255, 255, 255, 0.08); color: rgba(255, 255, 255, 0.4); }
 
 /* ── 반응형 ── */
 @media (max-width: 900px) {

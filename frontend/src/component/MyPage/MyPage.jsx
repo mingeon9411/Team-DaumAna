@@ -134,7 +134,7 @@ function MyPage() {
 
   return (
     <div className="mypageModalOverlay">
-    <main className="mypage">
+    <main className="mypage" data-lenis-prevent>
       <button type="button" className="mypageModalClose" onClick={closeMyPage} aria-label="닫기">
         ×
       </button>

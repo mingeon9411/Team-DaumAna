@@ -45,6 +45,19 @@ function FooterGate() {
   return <Footer />;
 }
 
+// 탭 파비콘 — 한국관("/korean-hall")에서는 집다움 한옥 로고, 그 외 페이지에서는 JD 로고를 사용한다.
+function FaviconController() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const link = document.querySelector('link[rel="icon"]');
+    if (!link) return;
+    link.href = pathname === "/korean-hall" ? "/jipdaum-logo-light.png" : "/favicon-jd.png";
+  }, [pathname]);
+
+  return null;
+}
+
 function DoorIntroController() {
   const { pathname, key } = useLocation();
   const [showDoorIntro, setShowDoorIntro] = useState(false);
@@ -132,6 +145,7 @@ function App() {
     <NoticeModalProvider>
     <ProductModalProvider>
     <ScrollToTop lenis={lenisRef} controller={controllerRef} panelsUnsub={panelsUnsubRef} />
+    <FaviconController />
     <DoorIntroController />
     <Header />
     <Sidebar />

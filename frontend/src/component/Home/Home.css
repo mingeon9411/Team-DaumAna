@@ -167,8 +167,8 @@ body.dark .metallicSilver {
 }
 
 @keyframes heroKenBurns {
-  from { transform: scale(1); }
-  to   { transform: scale(1.06); }
+  from { transform: scale(1) translate(0, 0); }
+  to   { transform: scale(1.08) translate(-1.4%, -1%); }
 }
 
 /* 상품 퀵뷰 모달 — 메탈릭 실버 배경만 적용 (모달 자체의 스크롤/포지셔닝 유틸과 충돌하지 않도록

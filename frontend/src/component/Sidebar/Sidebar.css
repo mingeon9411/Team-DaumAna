@@ -79,8 +79,33 @@
   }
 }
 
+/* 다크모드에서는 무궁화 꽃잎이 떨어지는 대신, 제자리에서 별빛이 반짝이는 연출로 대체 */
 body.dark .khPetal {
-  background: radial-gradient(circle at 32% 30%, #ffcfe6, #d472a3 55%, #8f3d63 100%);
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, #cfe0ff 60%, transparent 80%);
+  box-shadow: 0 0 2px 0.3px rgba(210, 225, 255, 0.9);
+  animation-name: khStarTwinkle;
+  animation-timing-function: ease-in-out;
+}
+
+body.dark .khPetal:nth-child(1)  { top: 15%; }
+body.dark .khPetal:nth-child(2)  { top: 65%; }
+body.dark .khPetal:nth-child(3)  { top: 30%; }
+body.dark .khPetal:nth-child(4)  { top: 80%; }
+body.dark .khPetal:nth-child(5)  { top: 10%; }
+body.dark .khPetal:nth-child(6)  { top: 50%; }
+body.dark .khPetal:nth-child(7)  { top: 72%; }
+body.dark .khPetal:nth-child(8)  { top: 25%; }
+body.dark .khPetal:nth-child(9)  { top: 88%; }
+body.dark .khPetal:nth-child(10) { top: 8%; }
+body.dark .khPetal:nth-child(11) { top: 58%; }
+body.dark .khPetal:nth-child(12) { top: 40%; }
+
+@keyframes khStarTwinkle {
+  0%, 100% { opacity: 0; transform: scale(calc(var(--khPetalScale, 1) * 0.5)); }
+  50%      { opacity: 1; transform: scale(calc(var(--khPetalScale, 1) * 1.2)); }
 }
 
 .railToggle {
@@ -101,7 +126,7 @@ body.dark .khPetal {
   margin-bottom: 0;
   margin-right: 8px;
 
-  transition: background 0.2s ease, color 0.2s ease, margin 0.6s ease, transform 0.6s ease;
+  transition: background 0.2s ease, color 0.2s ease, margin 1.4s ease, transform 1.4s ease;
 }
 
 .railToggle svg {
@@ -135,7 +160,7 @@ body.dark .khPetal {
      위쪽으로 튀어나가야 하므로, 접힘 처리는 opacity + pointer-events로만 */
   overflow: visible;
 
-  transition: max-width 0.6s ease, opacity 0.45s ease;
+  transition: max-width 1.4s ease, opacity 1s ease;
 }
 
 .sidebarRail.collapsed .railItems {
@@ -255,6 +280,115 @@ body.dark .khPetal {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* 상품 검색 플라이아웃 */
+.railSearchWrap {
+  position: relative;
+}
+
+.railSearchFlyout {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 12px);
+  transform: translateX(-50%);
+
+  width: 260px;
+  padding: 10px;
+  border-radius: 14px;
+
+  background: linear-gradient(120deg, #f4f4f6 0%, #d7d9dc 20%, #ececed 40%, #b8bcc2 55%, #e6e7e9 70%, #cfd1d4 85%, #f4f4f6 100%);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+  z-index: 25;
+}
+
+.railSearchInput {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 13px;
+  font-family: "Noto Sans KR", sans-serif;
+  outline: none;
+}
+
+.railSearchResults {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.railSearchResults li + li {
+  margin-top: 4px;
+}
+
+.railSearchEmpty {
+  padding: 10px 6px;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  text-align: center;
+}
+
+.railSearchResults button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 6px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.railSearchResults button:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.railSearchResults img {
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.railSearchResults span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.railSearchResults strong {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.railSearchResults em {
+  font-style: normal;
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+
+body.dark .railSearchFlyout {
+  background: linear-gradient(120deg, #060d1e 0%, #0b1430 20%, #0f1f3d 40%, #060d1e 55%, #0f1f3d 70%, #0b1430 85%, #060d1e 100%);
+  border-color: rgba(150, 185, 255, 0.16);
+}
+
+body.dark .railSearchResults button:hover {
+  background: rgba(150, 185, 255, 0.12);
 }
 
 /* 다크모드 */

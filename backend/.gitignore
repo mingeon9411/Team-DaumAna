@@ -6,7 +6,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Local SQLite (dev only; production uses Oracle)
+# Local SQLite (dev only; production uses MySQL)
 *.sqlite3
 db.sqlite3
 
