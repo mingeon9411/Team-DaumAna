@@ -4,7 +4,7 @@
     flex-shrink: 0;
     padding: 120px 24px;
     background: var(--background);
-    font-family: "Noto Sans KR", sans-serif;
+    font-family: "TwayFly", "Noto Sans KR", sans-serif;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -15,13 +15,39 @@
     width: 100%;
     max-width: 720px;
     padding: 64px 54px;
-    background: var(--card);
-    border: 1px solid var(--foreground);
+
+    background: linear-gradient(
+      115deg,
+      #f4f5f6 0%,
+      #d9dbde 20%,
+      #c3c6cb 35%,
+      #eef0f2 50%,
+      #b7bac0 65%,
+      #dfe1e4 80%,
+      #f4f5f6 100%
+    );
+    background-size: 160% 160%;
+    border: 1px solid rgba(0, 0, 0, 0.14);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.16);
     text-align: center;
   }
 
+  body.dark .welcomeBox {
+    background: linear-gradient(
+      115deg,
+      #2b2d31 0%,
+      #44474d 20%,
+      #5a5d64 35%,
+      #323438 50%,
+      #6b6e75 65%,
+      #3c3e43 80%,
+      #2b2d31 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
   .welcomeLabel {
-    font-family: "DM Mono", monospace;
+    font-family: "TwayFly", "DM Mono", monospace;
     margin: 0 0 24px;
     font-size: 13px;
     letter-spacing: 0.24em;
@@ -29,7 +55,7 @@
   }
 
   .welcomeBox h1 {
-    font-family: "Noto Serif KR", serif;
+    font-family: "TwayFly", "Noto Serif KR", serif;
     margin: 0;
     font-size: clamp(32px, 5vw, 43px);
     font-weight: 500;

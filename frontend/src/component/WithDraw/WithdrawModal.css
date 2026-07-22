@@ -11,7 +11,7 @@
   backdrop-filter: blur(4px);
 
   padding: 24px;
-  font-family: "Noto Sans KR", sans-serif;
+  font-family: "TwayFly", "Noto Sans KR", sans-serif;
 }
 
 @keyframes withdrawModalIn {
@@ -71,10 +71,30 @@
 }
 
 .withdrawModalInner h1 {
-  font-family: "Noto Serif KR", serif;
+  font-family: "TwayFly", "Noto Serif KR", serif;
   font-size: 26px;
   margin-bottom: 16px;
   padding-right: 24px;
+}
+
+.withdrawThanks {
+  padding: 24px 0 4px;
+  text-align: center;
+}
+
+.withdrawThanks h1 {
+  padding-right: 0;
+}
+
+.withdrawThanks p {
+  color: var(--muted-foreground);
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+.withdrawThanks .withdrawBtns {
+  max-width: 220px;
+  margin: 0 auto;
 }
 
 .withdrawModalInner > p {
@@ -131,6 +151,7 @@
   border-radius: 10px;
   background: var(--background);
   color: var(--foreground);
+  font-family: "TwayFly", "Noto Sans KR", sans-serif;
   font-size: 14px;
   cursor: pointer;
   margin-bottom: 28px;
@@ -198,3 +219,4 @@ body.dark .cancelBtn {
   background: rgba(150, 185, 255, 0.12);
   color: #bfcbec;
 }
+

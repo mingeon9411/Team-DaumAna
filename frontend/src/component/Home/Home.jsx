@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, Heart, X, Search, Camera } from "lucide-react";
 import "./Home.css";
+import ChatBot from "../MyPage/ChatBot";
 import moonJarLamp from "../../assets/달항아리 램프.png";
 import patchworkBedding from "../../assets/조각보 침구 세트.png";
 import koreanModernSofa from "../../assets/products/Korean Modern Sofa — Ivory Leather.png";
@@ -55,6 +56,7 @@ export const PRODUCTS = [
     desc: "달항아리의 둥근 선을 닮은 부클 원단 윙백 암체어. 어느 자리에 두어도 공간의 중심이 됩니다.",
     spec: "SIZE : W85 D90 H105 · MATERIAL : boucle, wood",
     image: moonJarArmchair, alt: "달항아리 암체어", brand: "집다움" },
+  
 ];
 
 const ESSAYS = [
@@ -504,6 +506,8 @@ function Home() {
           </div>
         </div>
       )}
+
+      <ChatBot />
     </div>
   );
 }

@@ -125,6 +125,13 @@
   letter-spacing: 0.04em;
 }
 
+.chatBotAvatarImg {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
 .chatBotName {
   margin: 0;
   font-size: 13px;
@@ -192,6 +199,13 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.chatMsgAvatarImg {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
 }
 
 .chatBubble {

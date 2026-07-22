@@ -2,13 +2,14 @@ import "./WithdrawModal.css";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useWithdrawModal } from "../../context/WithdrawModalContext";
-import { logoutUser } from "../../api";
+import { withdrawUser } from "../../api";
 
 function WithdrawModal() {
   const { isOpen, closeWithdraw } = useWithdrawModal();
   const navigate = useNavigate();
   const [reason, setReason] = useState("");
   const [agreed, setAgreed] = useState(false);
+  const [done, setDone] = useState(false);
 
   if (!isOpen) return null;
 
@@ -22,13 +23,22 @@ function WithdrawModal() {
     if (!agreed) return;
     const refresh = localStorage.getItem("refresh_token");
     try {
-      if (refresh) await logoutUser({ refresh });
-    } catch (e) {}
+      await withdrawUser({ refresh: refresh || null });
+    } catch (e) {
+      alert("탈퇴 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      return;
+    }
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("nickname");
+    window.dispatchEvent(new Event("authchange"));
+    setDone(true);
+  };
+
+  const handleFinish = () => {
     setReason("");
     setAgreed(false);
+    setDone(false);
     closeWithdraw();
     navigate("/");
   };
@@ -39,63 +49,79 @@ function WithdrawModal() {
         <button
           type="button"
           className="withdrawModalClose"
-          onClick={handleCancel}
+          onClick={done ? handleFinish : handleCancel}
           aria-label="닫기"
         >
           ×
         </button>
 
-        <h1>회원 탈퇴</h1>
-        <p>
-          탈퇴 시 회원 정보와 주문 내역이 삭제되며,
-          복구할 수 없습니다.
-        </p>
+        {done ? (
+          <div className="withdrawThanks">
+            <h1>이용해주셔서 감사합니다</h1>
+            <p>
+              그동안 집다움을 이용해주셔서 진심으로 감사드립니다.
+              <br />
+              더 나은 모습으로 다시 찾아뵙겠습니다.
+            </p>
+            <div className="withdrawBtns">
+              <button type="button" className="deleteBtn" onClick={handleFinish}>확인</button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <h1>회원 탈퇴</h1>
+            <p>
+              탈퇴 시 회원 정보와 주문 내역이 삭제되며,
+              복구할 수 없습니다.
+            </p>
 
-        <div className="noticeBox">
-          <strong>탈퇴 전 확인해주세요.</strong>
-          <ul>
-            <li>보유 쿠폰 및 적립금은 모두 소멸됩니다.</li>
-            <li>진행 중인 주문이 있다면 탈퇴가 제한될 수 있습니다.</li>
-            <li>탈퇴 후 동일 계정으로 재가입이 어려울 수 있습니다.</li>
-          </ul>
-        </div>
+            <div className="noticeBox">
+              <strong>탈퇴 전 확인해주세요.</strong>
+              <ul>
+                <li>보유 쿠폰 및 적립금은 모두 소멸됩니다.</li>
+                <li>진행 중인 주문이 있다면 탈퇴가 제한될 수 있습니다.</li>
+                <li>탈퇴 후 동일 계정으로 재가입이 어려울 수 있습니다.</li>
+              </ul>
+            </div>
 
-        <div className="withdrawField">
-          <h2 className="withdrawTitle">
-            집다움을 떠나시는 이유를 알려주세요.
-          </h2>
-          <p className="withdrawDesc">
-            (더 나은 경험을 만들기 위한 소중한 의견으로 활용하겠습니다.)
-          </p>
+            <div className="withdrawField">
+              <h2 className="withdrawTitle">
+                집다움을 떠나시는 이유를 알려주세요.
+              </h2>
+              <p className="withdrawDesc">
+                (더 나은 경험을 만들기 위한 소중한 의견으로 활용하겠습니다.)
+              </p>
 
-          <select
-            className="reasonSelect"
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-          >
-            <option value="">탈퇴 사유를 선택해주세요.</option>
-            <option value="product">원하는 상품이나 콘텐츠가 부족해요</option>
-            <option value="benefit">가격이나 혜택이 아쉬워요</option>
-            <option value="service">사이트 이용이 불편해요</option>
-            <option value="otherService">다른 서비스를 주로 이용해요</option>
-            <option value="privacy">개인정보 및 보안이 걱정돼요</option>
-            <option value="etc">기타</option>
-          </select>
-        </div>
+              <select
+                className="reasonSelect"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+              >
+                <option value="">탈퇴 사유를 선택해주세요.</option>
+                <option value="product">원하는 상품이나 콘텐츠가 부족해요</option>
+                <option value="benefit">가격이나 혜택이 아쉬워요</option>
+                <option value="service">사이트 이용이 불편해요</option>
+                <option value="otherService">다른 서비스를 주로 이용해요</option>
+                <option value="privacy">개인정보 및 보안이 걱정돼요</option>
+                <option value="etc">기타</option>
+              </select>
+            </div>
 
-        <label className="checkArea">
-          <input
-            type="checkbox"
-            checked={agreed}
-            onChange={(e) => setAgreed(e.target.checked)}
-          />
-          위 안내사항을 모두 확인했으며 회원탈퇴에 동의합니다.
-        </label>
+            <label className="checkArea">
+              <input
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+              />
+              위 안내사항을 모두 확인했으며 회원탈퇴에 동의합니다.
+            </label>
 
-        <div className="withdrawBtns">
-          <button type="button" className="cancelBtn" onClick={handleCancel}>취소</button>
-          <button type="button" className="deleteBtn" disabled={!agreed} onClick={handleDelete}>탈퇴하기</button>
-        </div>
+            <div className="withdrawBtns">
+              <button type="button" className="cancelBtn" onClick={handleCancel}>취소</button>
+              <button type="button" className="deleteBtn" disabled={!agreed} onClick={handleDelete}>탈퇴하기</button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

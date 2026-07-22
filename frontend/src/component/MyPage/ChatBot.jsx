@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import "./ChatBot.css";
 import { sendChatMessage } from "../../api";
+import JDLogo from "../../assets/J.D 로고.svg";
 
 const GREETING = {
   id: 0,
@@ -109,9 +110,11 @@ function ChatBot() {
       {/* 채팅 패널 */}
       <div className={"chatBotPanel" + (open ? " chatBotPanelOpen" : "")}>
         <div className="chatBotHeader">
-          <div className="chatBotAvatar">AI</div>
+          <div className="chatBotAvatar">
+            <img src={JDLogo} alt="J.D" className="chatBotAvatarImg" />
+          </div>
           <div style={{ flex: 1 }}>
-            <p className="chatBotName">집다움 AI</p>
+            <p className="chatBotName">집다움 도우미</p>
             <p className="chatBotStatus">온라인</p>
           </div>
           <button className="chatBotClose" onClick={() => setOpen(false)}>✕</button>
@@ -120,7 +123,11 @@ function ChatBot() {
         <div className="chatBotMessages" ref={messagesRef}>
           {messages.map((msg) => (
             <div key={msg.id} className={"chatMsg " + msg.role}>
-              {msg.role === "bot" && <span className="chatMsgAvatar">AI</span>}
+              {msg.role === "bot" && (
+                <span className="chatMsgAvatar">
+                  <img src={JDLogo} alt="J.D" className="chatMsgAvatarImg" />
+                </span>
+              )}
               <div className="chatBubble">
                 {msg.text.split("\n").map((line, i) => (
                   <span key={i}>{line}{i < msg.text.split("\n").length - 1 && <br />}</span>
@@ -130,7 +137,9 @@ function ChatBot() {
           ))}
           {loading && (
             <div className="chatMsg bot">
-              <span className="chatMsgAvatar">AI</span>
+              <span className="chatMsgAvatar">
+                <img src={JDLogo} alt="J.D" className="chatMsgAvatarImg" />
+              </span>
               <div className="chatBubble chatTyping"><span /><span /><span /></div>
             </div>
           )}

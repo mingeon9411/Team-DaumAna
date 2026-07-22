@@ -1,7 +1,7 @@
 import "./MyPage.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { logoutUser, getOrderHistory, getMyCoupons, cancelOrder } from "../../api";
+import { logoutUser, getOrderHistory, getMyCoupons, cancelOrder, getMe } from "../../api";
 import { getWishlist, removeWish } from "../../utils/wishlist";
 import korfurni from "../../assets/products/korfurni.png";
 import bird2 from "../../assets/decor/bird2.png";
@@ -10,7 +10,6 @@ import flowers from "../../assets/decor/flowers.png";
 import orientCloud from "../../assets/decor/orient_cloud.png";
 import flower2Img from "../../assets/decor/flower2.png";
 import Receipt from "./Receipt";
-import ChatBot from "./ChatBot";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import { useWithdrawModal } from "../../context/WithdrawModalContext";
@@ -54,6 +53,7 @@ function MyPage() {
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [myCoupons, setMyCoupons] = useState([]);
+  const [profile, setProfile] = useState(null);
   const [wishlist, setWishlist] = useState(() => getWishlist());
   const [activeSection, setActiveSection] = useState("main");
   const [darkMode, setDarkMode] = useState(
@@ -75,6 +75,9 @@ function MyPage() {
     getMyCoupons()
       .then((res) => setMyCoupons(res.data))
       .catch(() => {});
+    getMe()
+      .then((res) => setProfile(res.data))
+      .catch(() => setProfile(null));
   }, [isOpen]);
 
   useEffect(() => {
@@ -620,9 +623,42 @@ function MyPage() {
             )}
           </section>
         )}
-      </section>
 
-      <ChatBot />
+        {/* ── 회원 정보 섹션 ── */}
+        {activeSection === "profile" && (
+          <section className="myProfileSection">
+            <div className="profileInfoCard">
+              <div className="profileInfoRow">
+                <span>닉네임</span>
+                <strong>{profile?.nickname || nickname}</strong>
+              </div>
+              <div className="profileInfoRow">
+                <span>아이디</span>
+                <strong>{profile?.username || "-"}</strong>
+              </div>
+              <div className="profileInfoRow">
+                <span>이메일</span>
+                <strong>
+                  {profile?.email || "-"}
+                  {profile?.is_email_verified && (
+                    <em className="profileVerifiedBadge">인증완료</em>
+                  )}
+                </strong>
+              </div>
+            </div>
+
+            <section className="accountSection">
+              <div>
+                <h2>내 계정 관리</h2>
+                <p>회원탈퇴 시 회원 정보와 주문 내역이 삭제됩니다.</p>
+              </div>
+              <button className="withdrawBtn" onClick={() => { closeMyPage(); openWithdraw(); }}>
+                회원탈퇴
+              </button>
+            </section>
+          </section>
+        )}
+      </section>
     </main>
     </div>
   );

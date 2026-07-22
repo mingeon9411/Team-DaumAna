@@ -131,6 +131,7 @@ export const socialExchange = (code) =>
 // [인증 API]
 export const loginUser = (data) => AUTH_API.post('/login', data);
 export const logoutUser = (data) => AUTH_API.post('/logout', data);
+export const withdrawUser = (data) => AUTH_API.post('/withdraw', data);
 export const registerUser = (data) => AUTH_API.post('/register', data);
 export const checkNicknameAPI = (nickname) =>
   AUTH_API.get(`/nickname-check?nickname=${encodeURIComponent(nickname)}`);

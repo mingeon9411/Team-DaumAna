@@ -887,6 +887,54 @@ body.dark .mypageLogoHanok {
   color: #913a22;
 }
 
+/* ── 회원 정보 섹션 ── */
+.myProfileSection {
+  padding-bottom: 40px;
+}
+
+.profileInfoCard {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.profileInfoRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px;
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(4px);
+}
+
+.profileInfoRow + .profileInfoRow {
+  border-top: 1px solid var(--border);
+}
+
+.profileInfoRow span {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  font-weight: 600;
+}
+
+.profileInfoRow strong {
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profileVerifiedBadge {
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 700;
+  color: #2b4a3f;
+  background: rgba(43, 74, 63, 0.12);
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+
 /* ── 위시리스트 전체 섹션 ── */
 .myWishSection {
   padding-bottom: 40px;
@@ -1397,6 +1445,15 @@ body.dark .orderCardFoot {
 body.dark .myCouponCountBar,
 body.dark .myWishCountBar {
   background: rgba(150, 185, 255, 0.08);
+}
+
+body.dark .profileInfoRow {
+  background: rgba(150, 185, 255, 0.05);
+}
+
+body.dark .profileVerifiedBadge {
+  color: #f0dbb0;
+  background: rgba(227, 205, 160, 0.14);
 }
 
 body.dark .cpCard {

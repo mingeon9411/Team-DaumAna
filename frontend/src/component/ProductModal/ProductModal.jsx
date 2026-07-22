@@ -196,8 +196,8 @@ function ProductModal() {
               </div>
 
               <div className="buyBtns">
-                <button className="buyNow" onClick={handleKakaoPay}>BUY IT NOW</button>
-                <button className="addCart" onClick={handleAddToCart}>ADD TO CART</button>
+                <button className="buyNow" onClick={handleKakaoPay}>바로 구매하기</button>
+                <button className="addCart" onClick={handleAddToCart}>장바구니에 담기</button>
               </div>
             </div>
           </aside>

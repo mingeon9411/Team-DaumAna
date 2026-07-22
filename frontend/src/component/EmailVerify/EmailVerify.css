@@ -6,18 +6,43 @@
     align-items: center;
     justify-content: center;
     background: var(--background);
-    font-family: "Noto Sans KR", sans-serif;
+    font-family: "TwayFly", "Noto Sans KR", sans-serif;
     padding: 20px;
 }
 
 .evBox {
-    background: var(--card);
+    background: linear-gradient(
+        115deg,
+        #f4f5f6 0%,
+        #d9dbde 20%,
+        #c3c6cb 35%,
+        #eef0f2 50%,
+        #b7bac0 65%,
+        #dfe1e4 80%,
+        #f4f5f6 100%
+    );
+    background-size: 160% 160%;
+    border: 1px solid rgba(0, 0, 0, 0.14);
     border-radius: 16px;
     padding: 52px 44px 44px;
     width: 100%;
     max-width: 440px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.16);
     text-align: center;
+}
+
+body.dark .evBox {
+    background: linear-gradient(
+        115deg,
+        #2b2d31 0%,
+        #44474d 20%,
+        #5a5d64 35%,
+        #323438 50%,
+        #6b6e75 65%,
+        #3c3e43 80%,
+        #2b2d31 100%
+    );
+    border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .evIcon {
@@ -27,7 +52,7 @@
 }
 
 .evTitle {
-    font-family: "Noto Serif KR", serif;
+    font-family: "TwayFly", "Noto Serif KR", serif;
     font-size: 22px;
     font-weight: 500;
     color: var(--foreground);
