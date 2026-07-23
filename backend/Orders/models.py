@@ -48,6 +48,8 @@ class Order(models.Model):
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='ORDERED')
     shipping_addr = models.CharField(max_length=500)
     order_date = models.DateTimeField(auto_now_add=True)
+    carrier = models.CharField(max_length=50, blank=True, default='', verbose_name='택배사')
+    tracking_number = models.CharField(max_length=50, blank=True, default='', verbose_name='운송장 번호')
 
     class Meta:
         db_table = 'JIPDAUM_ORDER'

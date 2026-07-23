@@ -1,6 +1,6 @@
 import "./Cart.css";
 import { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getCartItems, updateCartItem, deleteCartItem } from "../../api";
 import products from "../../data/products";
 import { useAuthModal } from "../../context/AuthModalContext";
@@ -8,6 +8,8 @@ import { useCartModal } from "../../context/CartModalContext";
 
 function Cart() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isKoreanHall = location.pathname === "/korean-hall";
   const { openLogin } = useAuthModal();
   const { isOpen, closeCart } = useCartModal();
   const [cartItems, setCartItems] = useState([]);
@@ -104,7 +106,7 @@ function Cart() {
 
   const goToCheckout = (items) => {
     closeCart();
-    navigate("/checkout", { state: { cartItems: items } });
+    navigate(isKoreanHall ? "/korean-hall/checkout" : "/checkout", { state: { cartItems: items } });
   };
 
   const handleBuySelected = () => {
@@ -124,51 +126,48 @@ function Cart() {
 
   return (
     <div className="cartModalOverlay">
-      <div className="cartInner">
+      <div className="cartInner" data-lenis-prevent>
         <button type="button" className="cartModalClose" onClick={closeCart} aria-label="닫기">
           ×
         </button>
 
         <div className="cartHeader">
+          <p className="cartEyebrow">SHOPPING BAG</p>
           <h1>장바구니</h1>
-          <p>로그인 후, JIPDAUM에서 혜택을 확인하세요.</p>
+          <p className="cartHeaderSub">로그인 후, 집다움에서 혜택을 확인하세요.</p>
         </div>
 
         <div className="cartTabs">
           <button className="active">일반배송</button>
         </div>
 
-        <div className="cartTable">
-          <div className="cartTableHead">
-            <label>
-              <input
-                type="checkbox"
-                checked={allChecked}
-                onChange={handleAllCheck}
-                disabled={cartItems.length === 0}
-              />
-              전체선택
+        {!loading && cartItems.length > 0 && (
+          <div className="cartToolbar">
+            <label className="cartAllCheck">
+              <input type="checkbox" checked={allChecked} onChange={handleAllCheck} />
+              전체선택 <span className="cartAllCheckCount">({cartItems.length})</span>
             </label>
-            <span>상품정보</span>
-            <span>판매금액</span>
-            <span>수량</span>
-            <span>배송정보</span>
-            <span>선택</span>
+            <button type="button" className="cartDeleteSelectedLink" onClick={handleDeleteSelected}>
+              선택삭제
+            </button>
           </div>
+        )}
 
+        <div className="cartList">
           {loading ? (
             <div className="emptyCart">
               <p>불러오는 중...</p>
             </div>
           ) : cartItems.length === 0 ? (
             <div className="emptyCart">
+              <span className="emptyCartIcon">🛍</span>
               <p>장바구니에 담긴 상품이 없습니다.</p>
               <button onClick={closeCart}>쇼핑 계속하기</button>
             </div>
           ) : (
             cartItems.map((item) => (
-              <div className="cartRow" key={item.id}>
-                <label>
+              <div className="cartItemRow" key={item.id}>
+                <label className="cartItemCheck">
                   <input
                     type="checkbox"
                     checked={item.checked}
@@ -176,93 +175,94 @@ function Cart() {
                   />
                 </label>
 
-                <div className="productInfo">
-                  <div className="productImg">
-                    <img
-                      src={item.image || products.find((p) => p.id === item.product_id)?.image}
-                      alt={item.product_name}
-                      className="cartThumb"
-                      onError={(e) => {
-                        const local = products.find((p) => p.id === item.product_id);
-                        if (local?.image) e.target.src = local.image;
-                      }}
-                    />
-                  </div>
-                  <div>
-                    <h3>{item.product_name}</h3>
-                    {item.option_name && (
-                      <p className="option">{item.option_name}</p>
-                    )}
-                    <button className="optionBtn">옵션변경</button>
-                  </div>
-                </div>
-
-                <strong>{(item.price * item.quantity).toLocaleString()}원</strong>
-
-                <div className="qty">
-                  <button
-                    onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                  >
-                    −
-                  </button>
-                  <span>{item.quantity}</span>
-                  <button
-                    onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                  >
-                    +
-                  </button>
-                </div>
-
-                <div className="delivery">
-                  <strong>무료배송</strong>
-                  <p>일반</p>
-                </div>
-
-                <div className="rowBtns">
-                  <button
-                    className="blackBtn"
-                    onClick={() => {
-                      if (!localStorage.getItem("access_token")) {
-                        setShowLoginModal(true);
-                        return;
-                      }
-                      goToCheckout([toCheckoutItem(item)]);
+                <div className="cartItemThumb">
+                  <img
+                    src={item.image || products.find((p) => p.id === item.product_id)?.image}
+                    alt={item.product_name}
+                    onError={(e) => {
+                      const local = products.find((p) => p.id === item.product_id);
+                      if (local?.image) e.target.src = local.image;
                     }}
-                  >
-                    바로구매
-                  </button>
-                  <button onClick={() => handleDelete(item.id)}>삭제하기</button>
+                  />
+                </div>
+
+                <div className="cartItemBody">
+                  <h3>{item.product_name}</h3>
+                  {item.option_name && <p className="cartItemOption">{item.option_name}</p>}
+
+                  <div className="cartItemBottomRow">
+                    <div className="cartQty">
+                      <button onClick={() => handleQuantityChange(item.id, item.quantity - 1)}>
+                        −
+                      </button>
+                      <span>{item.quantity}</span>
+                      <button onClick={() => handleQuantityChange(item.id, item.quantity + 1)}>
+                        +
+                      </button>
+                    </div>
+                    <span className="cartItemShipBadge">무료배송</span>
+                  </div>
+                </div>
+
+                <div className="cartItemRight">
+                  <strong className="cartItemPrice">
+                    ₩{(item.price * item.quantity).toLocaleString()}
+                  </strong>
+                  <div className="cartItemActions">
+                    <button
+                      className="cartBuyNowBtn"
+                      onClick={() => {
+                        if (!localStorage.getItem("access_token")) {
+                          setShowLoginModal(true);
+                          return;
+                        }
+                        goToCheckout([toCheckoutItem(item)]);
+                      }}
+                    >
+                      바로구매
+                    </button>
+                    <button className="cartRemoveBtn" onClick={() => handleDelete(item.id)}>
+                      삭제
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
           )}
         </div>
 
-        <div className="cartTotal">
-          <span>
-            총 상품금액 <strong>{displayTotal.toLocaleString()}원</strong>
-          </span>
-          <b>+</b>
-          <span>
-            배송비 <strong>0원</strong>
-          </span>
-          <b>-</b>
-          <span>
-            할인금액 <strong>0원</strong>
-          </span>
-          <b>=</b>
-          <span className="finalPrice">
-            총 주문금액 <strong>{displayTotal.toLocaleString()}원</strong>
-          </span>
-        </div>
+        {!loading && cartItems.length > 0 && (
+          <>
+            <div className="cartSummaryReceipt">
+              <div className="cartSummaryRow">
+                <span>총 상품금액</span>
+                <span>{displayTotal.toLocaleString()}원</span>
+              </div>
+              <div className="cartSummaryRow">
+                <span>배송비</span>
+                <span className="cartFree">0원</span>
+              </div>
+              <div className="cartSummaryRow">
+                <span>할인금액</span>
+                <span>0원</span>
+              </div>
+              <div className="cartSummaryDivider" />
+              <div className="cartSummaryTotal">
+                <span>총 주문금액</span>
+                <strong>{displayTotal.toLocaleString()}원</strong>
+              </div>
+            </div>
 
-        <div className="cartActions">
-          <button onClick={handleDeleteSelected}>선택상품 삭제</button>
-          <button onClick={closeCart}>쇼핑계속하기</button>
-          <button className="orderBtn" onClick={handleBuySelected}>
-            선택상품 주문
-          </button>
-        </div>
+            <div className="cartActions">
+              <button className="cartSecondaryBtn" onClick={closeCart}>
+                쇼핑계속하기
+              </button>
+              <button className="cartOrderBtn" onClick={handleBuySelected}>
+                선택상품 주문
+              </button>
+            </div>
+          </>
+        )}
 
         {showLoginModal && (
           <div

@@ -1,0 +1,171 @@
+.trackingOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px 16px;
+  animation: trackingOverlayIn 0.2s ease both;
+}
+
+@keyframes trackingOverlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes trackingModalIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.trackingModal {
+  background: var(--card);
+  color: var(--foreground);
+  font-family: "Noto Sans KR", sans-serif;
+  width: 100%;
+  max-width: 380px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 16px;
+  padding: 32px 28px 28px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.22);
+  position: relative;
+  animation: trackingModalIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.trackingHeader {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.trackingSub {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--muted-foreground);
+  text-transform: uppercase;
+  margin: 0 0 6px;
+}
+
+.trackingOrderNo {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.trackingState {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--muted-foreground);
+  font-size: 14px;
+}
+.trackingError { color: #c0392b; }
+
+.trackingCarrierRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  background: var(--secondary);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: 24px;
+}
+
+.trackingNumber {
+  font-family: "DM Mono", monospace;
+  color: var(--muted-foreground);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.trackingSteps {
+  display: flex;
+  flex-direction: column;
+}
+
+.trackingStep {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding-bottom: 26px;
+}
+.trackingStep:last-child { padding-bottom: 0; }
+
+.trackingStepDot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--card);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 1;
+}
+.trackingStepDot svg { width: 12px; height: 12px; }
+
+.trackingStep.done .trackingStepDot {
+  border-color: #2e7d46;
+  background: #2e7d46;
+}
+
+.trackingStepLine {
+  position: absolute;
+  left: 10px;
+  top: 22px;
+  width: 2px;
+  height: calc(100% - 22px);
+  background: var(--border);
+}
+.trackingStepLine.done { background: #2e7d46; }
+
+.trackingStepBody {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-top: 2px;
+}
+
+.trackingStepLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+.trackingStep.done .trackingStepLabel { color: var(--foreground); }
+
+.trackingStepTime {
+  font-size: 11.5px;
+  color: var(--muted-foreground);
+  font-family: "DM Mono", monospace;
+}
+
+.trackingMockNotice {
+  margin: 18px 0 0;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  text-align: center;
+}
+
+.trackingCloseBtn {
+  display: block;
+  width: 100%;
+  margin-top: 22px;
+  height: 44px;
+  background: var(--foreground);
+  color: var(--background);
+  font-size: 14px;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.trackingCloseBtn:hover { opacity: 0.85; }
+
+.trackingModal::-webkit-scrollbar { width: 0; }

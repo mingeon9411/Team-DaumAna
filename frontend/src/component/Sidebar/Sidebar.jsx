@@ -70,27 +70,19 @@ function Sidebar() {
     return () => window.removeEventListener("doorintroend", playOpen);
   }, [isHome, location.key]);
 
-  const getHomeCartTotal = () => {
-    try {
-      const counts = JSON.parse(localStorage.getItem("homeCartCounts")) || {};
-      return Object.values(counts).reduce((sum, n) => sum + n, 0);
-    } catch {
-      return 0;
-    }
-  };
-
   const fetchCartCount = () => {
-    const homeTotal = getHomeCartTotal();
+    // 장바구니 개수는 로그인 계정의 백엔드 장바구니만 기준으로 한다.
+    // (예전 localStorage "homeCartCounts"는 계정과 무관하게 남아 다른 계정에도 이월되던 버그의 원인이라 제거)
     if (!localStorage.getItem("access_token")) {
-      setCartCount(homeTotal);
+      setCartCount(0);
       return;
     }
     getCartItems()
       .then((res) => {
         const total = res.data.reduce((sum, item) => sum + (item.quantity || 1), 0);
-        setCartCount(total + homeTotal);
+        setCartCount(total);
       })
-      .catch(() => setCartCount(homeTotal));
+      .catch(() => setCartCount(0));
   };
 
   const syncLoginState = () => setIsLoggedIn(!!localStorage.getItem("access_token"));

@@ -22,9 +22,26 @@
     filter: blur(0);
   }
 }
+@keyframes coStepPanelIn {
+  from { opacity: 0; transform: translateX(14px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes coCirclePop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.16); }
+  100% { transform: scale(1); }
+}
+@keyframes coStampIn {
+  from { opacity: 0; transform: scale(0.5) rotate(-8deg); }
+  to   { opacity: 1; transform: scale(1) rotate(0); }
+}
 
 /* ── 페이지 ── */
 .checkoutPage {
+  --co-accent: #a8783a;
+  --co-accent-2: #7a4f22;
+  --co-accent-soft: rgba(168, 120, 58, 0.14);
+
   width: 100vw;
   height: 100vh;
   flex-shrink: 0;
@@ -35,18 +52,47 @@
   padding: 108px 20px 80px; /* 헤더 82px + 여백 26px */
 }
 
+body.dark .checkoutPage {
+  --co-accent: #d9b06b;
+  --co-accent-2: #a8783a;
+  --co-accent-soft: rgba(217, 176, 107, 0.12);
+}
+
 .checkoutInner {
   max-width: 920px;
   margin: 0 auto;
 }
 
-.checkoutTitle {
-  font-size: 20px;
+.coEyebrow {
+  font-size: 10.5px;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--co-accent);
+  margin: 0 0 8px;
+  animation: coTitleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.checkoutTitle {
+  font-family: "TwayFly", "Noto Serif KR", serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   color: var(--foreground);
-  margin: 0 0 28px;
+  margin: 0 0 36px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
   animation: coTitleIn 0.52s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.checkoutTitle::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 54px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--co-accent), var(--co-accent-2));
 }
 
 .checkoutError {
@@ -54,6 +100,82 @@
   margin-top: 80px;
   color: var(--muted-foreground);
   font-size: 14px;
+}
+
+/* ── 진행 단계 스테퍼 ── */
+.coStepper {
+  display: flex;
+  align-items: flex-start;
+  max-width: 480px;
+  margin: 0 auto 40px;
+}
+
+.coStepperItem {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.coStepLine {
+  position: absolute;
+  top: 17px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--border);
+  z-index: 0;
+  transition: background 0.3s ease;
+}
+.coStepLine.done {
+  background: linear-gradient(90deg, var(--co-accent), var(--co-accent-2));
+}
+
+.coStepCircle {
+  position: relative;
+  z-index: 1;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  color: var(--muted-foreground);
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  transition: border-color 0.25s, background 0.25s, color 0.25s, box-shadow 0.25s;
+}
+.coStepCircle svg { width: 15px; height: 15px; }
+
+.coStepCircle.active {
+  border-color: transparent;
+  color: #fdf6e8;
+  background: linear-gradient(135deg, var(--co-accent), var(--co-accent-2));
+  box-shadow: 0 4px 16px var(--co-accent-soft);
+  animation: coCirclePop 0.32s ease;
+}
+.coStepCircle.done {
+  border-color: var(--co-accent);
+  color: var(--co-accent);
+  background: var(--card);
+  cursor: pointer;
+}
+
+.coStepLabel {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--muted-foreground);
+  transition: color 0.25s;
+}
+.coStepLabel.active {
+  color: var(--foreground);
+  font-weight: 800;
 }
 
 /* ── 2-컬럼 그리드 ── */
@@ -64,20 +186,31 @@
   align-items: start;
 }
 
+.coStepPanel {
+  animation: coStepPanelIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 /* ── 카드 ── */
 .checkoutCard {
   background: var(--card);
-  border-radius: 12px;
-  padding: 24px 28px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 26px 28px;
   margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
   box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 12px rgba(0,0,0,0.06);
   opacity: 0;
-  animation: coFadeUp 0.56s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: coFadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
-
-.checkoutLeft .checkoutCard:nth-child(1) { animation-delay: 0.08s; }
-.checkoutLeft .checkoutCard:nth-child(2) { animation-delay: 0.20s; }
-.checkoutRight .checkoutCard             { animation-delay: 0.14s; }
+.checkoutCard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--co-accent), transparent);
+  opacity: 0.75;
+}
 
 .checkoutCardTitle {
   font-size: 11px;
@@ -234,12 +367,60 @@
 }
 
 .checkoutForm input:focus {
-  border-color: var(--foreground);
+  border-color: var(--co-accent);
   background: var(--card);
 }
 
 .checkoutForm input::placeholder {
   color: var(--muted-foreground);
+}
+
+/* ── 최종 확인 리캡 ── */
+.coRecapRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px dashed var(--border);
+}
+.coRecapRow:last-child { border-bottom: none; }
+
+.coRecapLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.coRecapLabel {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.coRecapValue {
+  font-size: 13.5px;
+  color: var(--foreground);
+  line-height: 1.5;
+}
+
+.coRecapEdit {
+  flex-shrink: 0;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.coRecapEdit:hover {
+  border-color: var(--co-accent);
+  color: var(--co-accent);
 }
 
 /* ── 쿠폰 할인 행 ── */
@@ -249,8 +430,6 @@
 }
 
 /* ── 쿠폰 섹션 ── */
-.couponCard { animation-delay: 0.25s !important; }
-
 .couponList {
   display: flex;
   flex-direction: column;
@@ -265,14 +444,14 @@
   gap: 12px;
   padding: 12px 14px;
   border: 1.5px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   background: var(--secondary);
   transition: border-color 0.16s, background 0.16s;
 }
 
 .couponItem:hover { border-color: var(--muted-foreground); background: var(--muted); }
-.couponItem.active { border-color: var(--foreground); background: var(--card); }
+.couponItem.active { border-color: var(--co-accent); background: var(--co-accent-soft); }
 
 .couponItemLeft {
   display: flex;
@@ -299,7 +478,7 @@
   transition: border-color 0.16s;
 }
 
-.couponInput:focus { border-color: var(--foreground); background: var(--card); }
+.couponInput:focus { border-color: var(--co-accent); background: var(--card); }
 .couponInput::placeholder { color: var(--muted-foreground); }
 
 .couponApplyBtn {
@@ -346,22 +525,39 @@
 .couponApplied button:hover { color: var(--muted-foreground); }
 
 body.dark .couponItem { background: #0a1228; border-color: #1e2d4e; }
-body.dark .couponItem.active { border-color: #5a7acc; }
+body.dark .couponItem.active { border-color: var(--co-accent); background: var(--co-accent-soft); }
 body.dark .couponName { color: #c0ccee; }
 body.dark .couponInput { background: #060d1e; border-color: #1e2d4e; color: #c0ccee; }
 body.dark .couponApplyBtn { background: #2a3a5e; }
 body.dark .couponApplied { background: #0a1e14; border-color: #1e5a35; }
 
-/* ── 결제 요약 카드 ── */
+/* ── 결제 요약 카드 (영수증 모티프) ── */
 .checkoutSummaryCard {
   background: var(--card);
-  border-radius: 12px;
-  padding: 22px 24px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 12px rgba(0,0,0,0.06);
+  border-radius: 4px;
+  padding: 26px 24px 22px;
+  box-shadow: 0 8px 34px rgba(0,0,0,0.1);
   position: sticky;
   top: 24px;
   opacity: 0;
-  animation: coFadeUp 0.56s cubic-bezier(0.22, 1, 0.36, 1) 0.22s forwards;
+  animation: coFadeUp 0.56s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+
+  mask-image:
+    radial-gradient(circle at 0 100%, transparent 9px, #000 9px),
+    radial-gradient(circle at 100% 100%, transparent 9px, #000 9px);
+  -webkit-mask-image:
+    radial-gradient(circle at 0 100%, transparent 9px, #000 9px),
+    radial-gradient(circle at 100% 100%, transparent 9px, #000 9px);
+}
+
+.coSummaryItemLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 14px;
+  padding-bottom: 14px;
+  border-bottom: 1.5px dashed var(--border);
+  word-break: keep-all;
 }
 
 .checkoutSummaryRow {
@@ -380,8 +576,7 @@ body.dark .couponApplied { background: #0a1e14; border-color: #1e5a35; }
 }
 
 .checkoutSummaryDivider {
-  height: 1px;
-  background: var(--border);
+  border-top: 1.5px dashed var(--border);
   margin: 14px 0 16px;
 }
 
@@ -389,7 +584,7 @@ body.dark .couponApplied { background: #0a1e14; border-color: #1e5a35; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .checkoutSummaryTotal span {
@@ -399,28 +594,50 @@ body.dark .couponApplied { background: #0a1e14; border-color: #1e5a35; }
 }
 
 .checkoutSummaryTotal strong {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--foreground);
   letter-spacing: -0.01em;
 }
 
+.coActionRow {
+  display: flex;
+  gap: 8px;
+}
+
+.coBackBtn {
+  flex-shrink: 0;
+  width: 76px;
+  height: 52px;
+  background: var(--secondary);
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.16s;
+}
+.coBackBtn:hover { background: var(--muted); }
+
 .checkoutPayBtn {
+  flex: 1;
   width: 100%;
   height: 52px;
-  background: var(--foreground);
-  color: var(--primary-foreground);
+  background: linear-gradient(135deg, var(--co-accent), var(--co-accent-2));
+  color: #fdf6e8;
   font-size: 15px;
   font-weight: 700;
   border: none;
   border-radius: 10px;
   cursor: pointer;
   letter-spacing: 0.03em;
-  transition: background 0.16s, transform 0.1s;
+  transition: box-shadow 0.16s, transform 0.1s, opacity 0.16s;
+  box-shadow: 0 6px 18px var(--co-accent-soft);
 }
 
 .checkoutPayBtn:hover:not(:disabled) {
-  background: #2e2e2e;
+  box-shadow: 0 8px 22px var(--co-accent-soft);
 }
 
 .checkoutPayBtn:active:not(:disabled) {
@@ -437,6 +654,8 @@ body.dark .couponApplied { background: #0a1e14; border-color: #1e5a35; }
   .checkoutPage { padding: 96px 16px 60px; }
   .checkoutBody { grid-template-columns: 1fr; }
   .checkoutSummaryCard { position: static; }
+  .coStepper { max-width: 360px; }
+  .coStepLabel { font-size: 10.5px; }
 }
 
 /* ── 다크 모드 ── */
@@ -447,8 +666,14 @@ body.dark .checkoutSummaryCard {
   background: #0c1432;
   box-shadow: 0 2px 14px rgba(0,0,0,0.28);
 }
+body.dark .checkoutCard { border-color: #182648; }
 
-body.dark .checkoutTitle { color: #c0ccee; }
+body.dark .checkoutTitle { color: #c0ccee; border-bottom-color: #182648; }
+
+body.dark .coStepCircle { background: #0c1432; border-color: #182648; color: #3e5888; }
+body.dark .coStepLine { background: #182648; }
+body.dark .coStepLabel { color: #3e5888; }
+body.dark .coStepLabel.active { color: #c0ccee; }
 
 body.dark .checkoutCardTitle { color: #2e4070; border-bottom-color: #182648; }
 
@@ -466,18 +691,22 @@ body.dark .checkoutForm input {
 }
 
 body.dark .checkoutForm input:focus {
-  border-color: #4e72cc;
+  border-color: var(--co-accent);
   background: #0c1432;
 }
 
 body.dark .checkoutForm input::placeholder { color: #1c2e54; }
 
+body.dark .coRecapRow { border-bottom-color: #182648; }
+body.dark .coRecapValue { color: #c0ccee; }
+body.dark .coRecapEdit { border-color: #1c2e54; color: #3e5888; }
+
+body.dark .coSummaryItemLabel { color: #c0ccee; border-bottom-color: #182648; }
+body.dark .checkoutSummaryDivider { border-top-color: #182648; }
 body.dark .checkoutSummaryRow { color: #3e5888; }
 
 body.dark .checkoutSummaryTotal span { color: #6080a8; }
 body.dark .checkoutSummaryTotal strong { color: #c0ccee; }
 
-body.dark .checkoutSummaryDivider { background: #182648; }
-
-body.dark .checkoutPayBtn { background: #243a6a; }
-body.dark .checkoutPayBtn:hover:not(:disabled) { background: #344a7e; }
+body.dark .coBackBtn { background: #0a1228; border-color: #1c2e54; color: #c0ccee; }
+body.dark .coBackBtn:hover { background: #10193a; }

@@ -115,7 +115,7 @@ function ProductModal() {
       return;
     }
     closeProduct();
-    navigate("/checkout", {
+    navigate("/korean-hall/checkout", {
       state: {
         cartItems: [{
           id: product.id,

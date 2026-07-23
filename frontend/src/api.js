@@ -111,6 +111,7 @@ export const createReview = (productId, data) => API.post(`/products/${productId
 export const createOrder = (data) => API.post('/orders/create', data);
 export const cancelOrder = (orderId) => API.post(`/orders/${orderId}/cancel`);
 export const getOrderHistory = () => API.get('/orders/history');
+export const getOrderTracking = (orderId) => API.get(`/orders/${orderId}/tracking`);
 
 // [결제 API] → Spring Boot (8081) - Django JWT 인증 이슈 우회
 export const readyPayment = (data) => API.post('/orders/payment-ready', data);

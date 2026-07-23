@@ -4,14 +4,21 @@ import * as PortOne from "@portone/browser-sdk/v2";
 import { createOrder, readyPayment, verifyPayment, getMyCoupons, validateCoupon } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useCartModal } from "../../context/CartModalContext";
-import "./Checkout.css";
+import "./CheckoutKoreanHall.css";
 
 const PAYMENT_METHODS = [
   { key: "KAKAO", label: "카카오페이", provider: "KAKAOPAY" },
   { key: "NAVER", label: "네이버페이", provider: "NAVERPAY" },
 ];
 
-function Checkout() {
+const KH_PETALS = Array.from({ length: 10 }, (_, i) => ({
+  left: (i * 9.7 + 4) % 100,
+  delay: (i * 0.71) % 6,
+  duration: 6 + ((i * 1.29) % 4),
+  scale: 0.7 + ((i * 0.47) % 0.6),
+}));
+
+function CheckoutKoreanHall() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
@@ -39,10 +46,10 @@ function Checkout() {
       .catch(() => {});
   }, []);
 
-  // 상품 없이 직접 접근 또는 새로고침 시 홈으로 보내고 장바구니 모달을 띄운다
+  // 상품 없이 직접 접근 또는 새로고침 시 한국관으로 보내고 장바구니 모달을 띄운다
   useEffect(() => {
     if (!items || items.length === 0) {
-      navigate("/", { replace: true });
+      navigate("/korean-hall", { replace: true });
       openCart();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -199,18 +206,33 @@ function Checkout() {
   const selectedPayLabel = PAYMENT_METHODS.find((m) => m.key === payMethod)?.label;
 
   return (
-    <main className="checkoutPage" data-lenis-prevent data-hsnap>
-      <div className="checkoutInner">
-        <p className="coEyebrow">SECURE CHECKOUT</p>
-        <h1 className="checkoutTitle">주문 / 결제</h1>
+    <main className="khcoPage" data-lenis-prevent data-hsnap>
+      <div className="khcoPetals" aria-hidden="true">
+        {KH_PETALS.map((p, i) => (
+          <span
+            key={i}
+            className="khcoPetal"
+            style={{
+              left: `${p.left}%`,
+              animationDelay: `${p.delay}s`,
+              animationDuration: `${p.duration}s`,
+              "--khcoPetalScale": p.scale,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="khcoInner">
+        <p className="khcoEyebrow">KOREAN HALL CHECKOUT</p>
+        <h1 className="khcoTitle">한국관 주문 / 결제</h1>
 
         {/* ── 진행 단계 ── */}
-        <div className="coStepper">
+        <div className="khcoStepper">
           {STEPS.map((label, i) => (
-            <div className="coStepperItem" key={label}>
+            <div className="khcoStepperItem" key={label}>
               <button
                 type="button"
-                className={"coStepCircle" + (i === step ? " active" : "") + (i < step ? " done" : "")}
+                className={"khcoStepCircle" + (i === step ? " active" : "") + (i < step ? " done" : "")}
                 onClick={() => i < step && setStep(i)}
                 disabled={i >= step}
               >
@@ -222,20 +244,20 @@ function Checkout() {
                   i + 1
                 )}
               </button>
-              <span className={"coStepLabel" + (i === step ? " active" : "")}>{label}</span>
-              {i < STEPS.length - 1 && <div className={"coStepLine" + (i < step ? " done" : "")} />}
+              <span className={"khcoStepLabel" + (i === step ? " active" : "")}>{label}</span>
+              {i < STEPS.length - 1 && <div className={"khcoStepLine" + (i < step ? " done" : "")} />}
             </div>
           ))}
         </div>
 
-        <div className="checkoutBody">
+        <div className="khcoBody">
           {/* ── 왼쪽: 단계별 패널 ── */}
-          <div className="checkoutLeft">
-            <div className="coStepPanel" key={step}>
+          <div className="khcoLeft">
+            <div className="khcoStepPanel" key={step}>
               {step === 0 && (
-                <section className="checkoutCard">
-                  <h2 className="checkoutCardTitle">배송 정보</h2>
-                  <div className="checkoutForm">
+                <section className="khcoCard">
+                  <h2 className="khcoCardTitle">배송 정보</h2>
+                  <div className="khcoForm">
                     <label>
                       수령인
                       <input name="recipient" value={form.recipient} onChange={handleChange} placeholder="홍길동" />
@@ -258,13 +280,13 @@ function Checkout() {
 
               {step === 1 && (
                 <>
-                  <section className="checkoutCard">
-                    <h2 className="checkoutCardTitle">결제 수단</h2>
-                    <div className="payMethodGroup">
+                  <section className="khcoCard">
+                    <h2 className="khcoCardTitle">결제 수단</h2>
+                    <div className="khcoPayMethodGroup">
                       {PAYMENT_METHODS.map((m) => (
                         <button
                           key={m.key}
-                          className={`payMethodBtn ${m.key.toLowerCase()}${payMethod === m.key ? " active" : ""}`}
+                          className={`khcoPayMethodBtn ${m.key.toLowerCase()}${payMethod === m.key ? " active" : ""}`}
                           onClick={() => setPayMethod(m.key)}
                           type="button"
                         >
@@ -274,27 +296,27 @@ function Checkout() {
                     </div>
                   </section>
 
-                  <section className="checkoutCard couponCard">
-                    <h2 className="checkoutCardTitle">쿠폰</h2>
+                  <section className="khcoCard khcoCouponCard">
+                    <h2 className="khcoCardTitle">쿠폰</h2>
 
                     {myCoupons.length > 0 && (
-                      <div className="couponList">
+                      <div className="khcoCouponList">
                         {myCoupons.map((c) => (
                           <div
                             key={c.id}
-                            className={"couponItem" + (appliedCoupon?.code === c.code ? " active" : "")}
+                            className={"khcoCouponItem" + (appliedCoupon?.code === c.code ? " active" : "")}
                             onClick={() => handleSelectCoupon(c)}
                           >
-                            <div className="couponItemLeft">
-                              <span className="couponName">{c.name}</span>
-                              <span className="couponCond">
+                            <div className="khcoCouponItemLeft">
+                              <span className="khcoCouponName">{c.name}</span>
+                              <span className="khcoCouponCond">
                                 {c.min_order_amount > 0
                                   ? `${c.min_order_amount.toLocaleString()}원 이상 구매 시`
                                   : "금액 제한 없음"}
                                 {c.expiry_date && ` · ~${c.expiry_date}`}
                               </span>
                             </div>
-                            <span className="couponValue">
+                            <span className="khcoCouponValue">
                               {c.discount_type === "FIXED"
                                 ? `${c.discount_value.toLocaleString()}원 할인`
                                 : `${c.discount_value}% 할인`}
@@ -304,23 +326,23 @@ function Checkout() {
                       </div>
                     )}
 
-                    <div className="couponInputRow">
+                    <div className="khcoCouponInputRow">
                       <input
-                        className="couponInput"
+                        className="khcoCouponInput"
                         value={couponInput}
                         onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
                         placeholder="쿠폰 코드 입력"
                         onKeyDown={(e) => e.key === "Enter" && handleApplyCouponCode()}
                       />
-                      <button className="couponApplyBtn" onClick={handleApplyCouponCode}>
+                      <button className="khcoCouponApplyBtn" onClick={handleApplyCouponCode}>
                         적용
                       </button>
                     </div>
 
-                    {couponError && <p className="couponError">{couponError}</p>}
+                    {couponError && <p className="khcoCouponError">{couponError}</p>}
 
                     {appliedCoupon && (
-                      <div className="couponApplied">
+                      <div className="khcoCouponApplied">
                         <span>"{appliedCoupon.name}" 적용 — {discountAmount.toLocaleString()}원 할인</span>
                         <button onClick={handleRemoveCoupon}>취소</button>
                       </div>
@@ -331,19 +353,19 @@ function Checkout() {
 
               {step === 2 && (
                 <>
-                  <section className="checkoutCard">
-                    <h2 className="checkoutCardTitle">주문 상품</h2>
-                    <div className="checkoutProductList">
+                  <section className="khcoCard">
+                    <h2 className="khcoCardTitle">주문 상품</h2>
+                    <div className="khcoProductList">
                       {items.map((item, idx) => (
-                        <div className="checkoutProduct" key={idx}>
-                          <img src={item.image} alt={item.name} className="checkoutThumb" />
-                          <div className="checkoutProductInfo">
-                            <p className="checkoutProductName">{item.name}</p>
-                            <p className="checkoutProductQty">
+                        <div className="khcoProduct" key={idx}>
+                          <img src={item.image} alt={item.name} className="khcoThumb" />
+                          <div className="khcoProductInfo">
+                            <p className="khcoProductName">{item.name}</p>
+                            <p className="khcoProductQty">
                               {item.price.toLocaleString()}원 × {item.quantity}개
                             </p>
                           </div>
-                          <p className="checkoutProductAmt">
+                          <p className="khcoProductAmt">
                             {(item.price * item.quantity).toLocaleString()}원
                           </p>
                         </div>
@@ -351,32 +373,32 @@ function Checkout() {
                     </div>
                   </section>
 
-                  <section className="checkoutCard">
-                    <h2 className="checkoutCardTitle">최종 확인</h2>
-                    <div className="coRecapRow">
-                      <div className="coRecapLeft">
-                        <span className="coRecapLabel">배송지</span>
-                        <span className="coRecapValue">
+                  <section className="khcoCard">
+                    <h2 className="khcoCardTitle">최종 확인</h2>
+                    <div className="khcoRecapRow">
+                      <div className="khcoRecapLeft">
+                        <span className="khcoRecapLabel">배송지</span>
+                        <span className="khcoRecapValue">
                           {form.recipient} · {form.phone}<br />
                           {[form.address, form.detail].filter(Boolean).join(" ")}
                         </span>
                       </div>
-                      <button type="button" className="coRecapEdit" onClick={() => setStep(0)}>수정</button>
+                      <button type="button" className="khcoRecapEdit" onClick={() => setStep(0)}>수정</button>
                     </div>
-                    <div className="coRecapRow">
-                      <div className="coRecapLeft">
-                        <span className="coRecapLabel">결제 수단</span>
-                        <span className="coRecapValue">{selectedPayLabel}</span>
+                    <div className="khcoRecapRow">
+                      <div className="khcoRecapLeft">
+                        <span className="khcoRecapLabel">결제 수단</span>
+                        <span className="khcoRecapValue">{selectedPayLabel}</span>
                       </div>
-                      <button type="button" className="coRecapEdit" onClick={() => setStep(1)}>수정</button>
+                      <button type="button" className="khcoRecapEdit" onClick={() => setStep(1)}>수정</button>
                     </div>
                     {appliedCoupon && (
-                      <div className="coRecapRow">
-                        <div className="coRecapLeft">
-                          <span className="coRecapLabel">쿠폰</span>
-                          <span className="coRecapValue">{appliedCoupon.name}</span>
+                      <div className="khcoRecapRow">
+                        <div className="khcoRecapLeft">
+                          <span className="khcoRecapLabel">쿠폰</span>
+                          <span className="khcoRecapValue">{appliedCoupon.name}</span>
                         </div>
-                        <button type="button" className="coRecapEdit" onClick={() => setStep(1)}>수정</button>
+                        <button type="button" className="khcoRecapEdit" onClick={() => setStep(1)}>수정</button>
                       </div>
                     )}
                   </section>
@@ -386,37 +408,37 @@ function Checkout() {
           </div>
 
           {/* ── 오른쪽: 결제 요약 (항상 노출) ── */}
-          <div className="checkoutRight">
-            <div className="checkoutSummaryCard">
-              <p className="coSummaryItemLabel">{itemSummaryLabel}</p>
-              <div className="checkoutSummaryRow">
+          <div className="khcoRight">
+            <div className="khcoSummaryCard">
+              <p className="khcoSummaryItemLabel">{itemSummaryLabel}</p>
+              <div className="khcoSummaryRow">
                 <span>상품 금액</span>
                 <span>{totalAmount.toLocaleString()}원</span>
               </div>
               {discountAmount > 0 && (
-                <div className="checkoutSummaryRow couponDiscount">
+                <div className="khcoSummaryRow khcoCouponDiscount">
                   <span>쿠폰 할인</span>
                   <span>-{discountAmount.toLocaleString()}원</span>
                 </div>
               )}
-              <div className="checkoutSummaryRow">
+              <div className="khcoSummaryRow">
                 <span>배송비</span>
-                <span className="checkoutFree">무료</span>
+                <span className="khcoFree">무료</span>
               </div>
-              <div className="checkoutSummaryDivider" />
-              <div className="checkoutSummaryTotal">
+              <div className="khcoSummaryDivider" />
+              <div className="khcoSummaryTotal">
                 <span>최종 결제 금액</span>
                 <strong>{finalAmount.toLocaleString()}원</strong>
               </div>
 
-              <div className="coActionRow">
+              <div className="khcoActionRow">
                 {step > 0 && (
-                  <button type="button" className="coBackBtn" onClick={goPrev}>
+                  <button type="button" className="khcoBackBtn" onClick={goPrev}>
                     이전
                   </button>
                 )}
                 <button
-                  className="checkoutPayBtn"
+                  className="khcoPayBtn"
                   onClick={handlePrimaryAction}
                   disabled={isPaying}
                 >
@@ -435,4 +457,4 @@ function Checkout() {
   );
 }
 
-export default Checkout;
+export default CheckoutKoreanHall;

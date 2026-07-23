@@ -23,6 +23,7 @@ import EmailVerify from "./component/EmailVerify/EmailVerify";
 import SearchResults from "./component/SearchResults/SearchResults";
 import KoreanHall from "./component/KoreanHall/KoreanHall";
 import Checkout from "./component/Checkout/Checkout";
+import CheckoutKoreanHall from "./component/Checkout/CheckoutKoreanHall";
 import OrderComplete from "./component/OrderComplete/OrderComplete";
 import Footer from "./component/Footer/Footer";
 import AuthModal from "./component/AuthModal/AuthModal";
@@ -171,6 +172,7 @@ function App() {
 
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/korean-hall/checkout" element={<CheckoutKoreanHall />} />
         <Route path="/order-complete" element={<OrderComplete />} />
 
       </Routes>

@@ -97,7 +97,7 @@ function ProductDetail() {
       alert("수량을 선택해주세요.");
       return;
     }
-    navigate("/checkout", {
+    navigate("/korean-hall/checkout", {
       state: {
         cartItems: [{
           id: product.id,

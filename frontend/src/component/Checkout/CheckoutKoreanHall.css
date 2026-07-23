@@ -1,0 +1,710 @@
+@keyframes khcoFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.985);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+@keyframes khcoTitleIn {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
+}
+@keyframes khcoStepPanelIn {
+  from { opacity: 0; transform: translateX(14px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes khcoCirclePop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.16); }
+  100% { transform: scale(1); }
+}
+@keyframes khcoPetalFall {
+  0% {
+    transform: translate(0, -6px) rotate(0deg) scale(var(--khcoPetalScale, 1));
+    opacity: 0;
+  }
+  15% { opacity: 0.85; }
+  50% { transform: translate(6px, 46vh) rotate(180deg) scale(var(--khcoPetalScale, 1)); }
+  85% { opacity: 0.8; }
+  100% {
+    transform: translate(-5px, 92vh) rotate(360deg) scale(var(--khcoPetalScale, 1));
+    opacity: 0;
+  }
+}
+@keyframes khcoStarTwinkle {
+  0%, 100% { opacity: 0; transform: scale(calc(var(--khcoPetalScale, 1) * 0.5)); }
+  50%      { opacity: 1; transform: scale(calc(var(--khcoPetalScale, 1) * 1.2)); }
+}
+
+/* ── 페이지 ── */
+.khcoPage {
+  --khco-accent: #b8567f;
+  --khco-accent-2: #8f3f60;
+  --khco-accent-soft: rgba(184, 86, 127, 0.14);
+
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  flex-shrink: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  isolation: isolate;
+
+  background: linear-gradient(135deg, #f8f1e3 0%, #efe2c9 100%);
+  color: var(--foreground);
+  font-family: "Noto Sans KR", sans-serif;
+  padding: 108px 20px 80px; /* 헤더 82px + 여백 26px */
+}
+
+body.dark .khcoPage {
+  background: #060d1e;
+  --khco-accent: #e792bb;
+  --khco-accent-2: #b8567f;
+  --khco-accent-soft: rgba(231, 146, 187, 0.14);
+}
+
+/* 무궁화 꽃잎 — 다크모드에서는 별빛으로 대체 */
+.khcoPetals {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.khcoPetal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 12px;
+  background: radial-gradient(circle at 32% 30%, #ffe3f0, #e792bb 55%, #b8567f 100%);
+  border-radius: 0% 100% 0% 100%;
+  opacity: 0;
+  animation-name: khcoPetalFall;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+}
+body.dark .khcoPetal {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, #cfe0ff 60%, transparent 80%);
+  box-shadow: 0 0 2px 0.3px rgba(210, 225, 255, 0.9);
+  animation-name: khcoStarTwinkle;
+  animation-timing-function: ease-in-out;
+}
+
+.khcoInner {
+  position: relative;
+  z-index: 1;
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.khcoEyebrow {
+  font-family: "DM Mono", monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--khco-accent);
+  margin: 0 0 10px;
+  animation: khcoTitleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.khcoTitle {
+  font-family: "Noto Serif KR", serif;
+  font-size: 27px;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  color: var(--foreground);
+  margin: 0 0 36px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(184, 132, 74, 0.28);
+  position: relative;
+  animation: khcoTitleIn 0.52s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.khcoTitle::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 54px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--khco-accent), var(--khco-accent-2));
+}
+
+/* ── 진행 단계 스테퍼 ── */
+.khcoStepper {
+  display: flex;
+  align-items: flex-start;
+  max-width: 480px;
+  margin: 0 auto 40px;
+}
+
+.khcoStepperItem {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.khcoStepLine {
+  position: absolute;
+  top: 17px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: rgba(184, 132, 74, 0.28);
+  z-index: 0;
+  transition: background 0.3s ease;
+}
+.khcoStepLine.done {
+  background: linear-gradient(90deg, var(--khco-accent), var(--khco-accent-2));
+}
+
+.khcoStepCircle {
+  position: relative;
+  z-index: 1;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(184, 132, 74, 0.28);
+  background: var(--card);
+  color: var(--muted-foreground);
+  font-size: 13px;
+  font-weight: 700;
+  font-family: "DM Mono", monospace;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  transition: border-color 0.25s, background 0.25s, color 0.25s, box-shadow 0.25s;
+}
+.khcoStepCircle svg { width: 15px; height: 15px; }
+
+.khcoStepCircle.active {
+  border-color: transparent;
+  color: #fff6fa;
+  background: linear-gradient(135deg, var(--khco-accent), var(--khco-accent-2));
+  box-shadow: 0 4px 16px var(--khco-accent-soft);
+  animation: khcoCirclePop 0.32s ease;
+}
+.khcoStepCircle.done {
+  border-color: var(--khco-accent);
+  color: var(--khco-accent);
+  background: var(--card);
+  cursor: pointer;
+}
+
+.khcoStepLabel {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--muted-foreground);
+  transition: color 0.25s;
+}
+.khcoStepLabel.active {
+  color: var(--foreground);
+  font-weight: 700;
+}
+
+/* ── 2-컬럼 그리드 ── */
+.khcoBody {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 16px;
+  align-items: start;
+}
+
+.khcoStepPanel {
+  animation: khcoStepPanelIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── 카드 ── */
+.khcoCard {
+  background: var(--card);
+  border: 1px solid rgba(184, 132, 74, 0.22);
+  border-radius: 6px;
+  padding: 26px 28px;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 12px rgba(0,0,0,0.06);
+  opacity: 0;
+  animation: khcoFadeUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.khcoCard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--khco-accent), transparent);
+  opacity: 0.7;
+}
+
+.khcoCardTitle {
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  margin: 0 0 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(184, 132, 74, 0.2);
+}
+
+/* ── 주문 상품 ── */
+.khcoProductList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.khcoProduct {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.khcoThumb {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid rgba(184, 132, 74, 0.22);
+  flex-shrink: 0;
+  background: var(--secondary);
+}
+
+.khcoProductInfo { flex: 1; }
+
+.khcoProductName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 4px;
+  line-height: 1.4;
+}
+
+.khcoProductQty {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin: 0;
+}
+
+.khcoProductAmt {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--foreground);
+  white-space: nowrap;
+  margin: 0;
+}
+
+/* ── 결제 수단 ── */
+.khcoPayMethodGroup {
+  display: flex;
+  gap: 10px;
+}
+
+.khcoPayMethodBtn {
+  flex: 1;
+  height: 48px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 2px solid transparent;
+  outline: none;
+  letter-spacing: 0.03em;
+  transition: box-shadow 0.16s, border-color 0.16s, opacity 0.16s;
+}
+
+.khcoPayMethodBtn:not(.active) { opacity: 0.55; }
+
+.khcoPayMethodBtn.kakao {
+  background: #fee500;
+  color: #3c1e1e;
+  border-color: #fee500;
+}
+.khcoPayMethodBtn.kakao.active {
+  opacity: 1;
+  border-color: #d4b800;
+  box-shadow: 0 0 0 3px rgba(254,229,0,0.28);
+}
+
+.khcoPayMethodBtn.naver {
+  background: #03c75a;
+  color: #fff;
+  border-color: #03c75a;
+}
+.khcoPayMethodBtn.naver.active {
+  opacity: 1;
+  border-color: #02a04a;
+  box-shadow: 0 0 0 3px rgba(3,199,90,0.22);
+}
+
+/* ── 배송 폼 ── */
+.khcoForm {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.khcoForm label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--muted-foreground);
+}
+
+.khcoForm input {
+  height: 44px;
+  padding: 0 14px;
+  border: 1.5px solid rgba(184, 132, 74, 0.25);
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--foreground);
+  background: var(--secondary);
+  outline: none;
+  transition: border-color 0.16s, background 0.16s;
+}
+.khcoForm input:focus {
+  border-color: var(--khco-accent);
+  background: var(--card);
+}
+.khcoForm input::placeholder { color: var(--muted-foreground); }
+
+/* ── 최종 확인 리캡 ── */
+.khcoRecapRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px dashed rgba(184, 132, 74, 0.28);
+}
+.khcoRecapRow:last-child { border-bottom: none; }
+
+.khcoRecapLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.khcoRecapLabel {
+  font-family: "DM Mono", monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+.khcoRecapValue {
+  font-size: 13.5px;
+  color: var(--foreground);
+  line-height: 1.5;
+}
+
+.khcoRecapEdit {
+  flex-shrink: 0;
+  background: none;
+  border: 1px solid rgba(184, 132, 74, 0.3);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.khcoRecapEdit:hover {
+  border-color: var(--khco-accent);
+  color: var(--khco-accent);
+}
+
+/* ── 쿠폰 할인 행 ── */
+.khcoCouponDiscount span:last-child {
+  color: var(--khco-accent-2);
+  font-weight: 700;
+}
+
+/* ── 쿠폰 섹션 ── */
+.khcoCouponList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.khcoCouponItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1.5px solid rgba(184, 132, 74, 0.25);
+  border-radius: 6px;
+  cursor: pointer;
+  background: var(--secondary);
+  transition: border-color 0.16s, background 0.16s;
+}
+.khcoCouponItem:hover { border-color: var(--muted-foreground); background: var(--muted); }
+.khcoCouponItem.active { border-color: var(--khco-accent); background: var(--khco-accent-soft); }
+
+.khcoCouponItemLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.khcoCouponName { font-size: 13px; font-weight: 600; color: var(--foreground); }
+.khcoCouponCond { font-size: 11px; color: var(--muted-foreground); }
+.khcoCouponValue { font-size: 13px; font-weight: 700; color: var(--khco-accent-2); white-space: nowrap; }
+
+.khcoCouponInputRow { display: flex; gap: 8px; }
+
+.khcoCouponInput {
+  flex: 1;
+  height: 42px;
+  padding: 0 12px;
+  border: 1.5px solid rgba(184, 132, 74, 0.25);
+  border-radius: 4px;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  outline: none;
+  background: var(--secondary);
+  transition: border-color 0.16s;
+}
+.khcoCouponInput:focus { border-color: var(--khco-accent); background: var(--card); }
+.khcoCouponInput::placeholder { color: var(--muted-foreground); }
+
+.khcoCouponApplyBtn {
+  height: 42px;
+  padding: 0 16px;
+  background: var(--foreground);
+  color: var(--primary-foreground);
+  font-size: 13px;
+  font-weight: 700;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.16s;
+}
+.khcoCouponApplyBtn:hover { background: var(--foreground); }
+
+.khcoCouponError { font-size: 12px; color: #c0392b; margin: 8px 0 0; }
+
+.khcoCouponApplied {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #f0faf4;
+  border: 1px solid #a8d8b9;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #2e7d46;
+  font-weight: 600;
+}
+.khcoCouponApplied button {
+  background: none;
+  border: none;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+}
+.khcoCouponApplied button:hover { color: var(--muted-foreground); }
+
+body.dark .khcoCouponItem { background: #0a1228; border-color: rgba(231, 146, 187, 0.2); }
+body.dark .khcoCouponItem.active { border-color: var(--khco-accent); background: var(--khco-accent-soft); }
+body.dark .khcoCouponName { color: #c0ccee; }
+body.dark .khcoCouponInput { background: #060d1e; border-color: rgba(231, 146, 187, 0.2); color: #c0ccee; }
+body.dark .khcoCouponApplyBtn { background: #2a3a5e; }
+body.dark .khcoCouponApplied { background: #0a1e14; border-color: #1e5a35; }
+
+/* ── 결제 요약 카드 ── */
+.khcoSummaryCard {
+  background: var(--card);
+  border-radius: 4px;
+  padding: 26px 24px 22px;
+  box-shadow: 0 8px 34px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 24px;
+  opacity: 0;
+  animation: khcoFadeUp 0.56s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+
+  mask-image:
+    radial-gradient(circle at 0 100%, transparent 9px, #000 9px),
+    radial-gradient(circle at 100% 100%, transparent 9px, #000 9px);
+  -webkit-mask-image:
+    radial-gradient(circle at 0 100%, transparent 9px, #000 9px),
+    radial-gradient(circle at 100% 100%, transparent 9px, #000 9px);
+}
+
+.khcoSummaryItemLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0 0 14px;
+  padding-bottom: 14px;
+  border-bottom: 1.5px dashed rgba(184, 132, 74, 0.28);
+  word-break: keep-all;
+}
+
+.khcoSummaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin-bottom: 10px;
+}
+
+.khcoFree {
+  color: #2e7d46;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.khcoSummaryDivider {
+  border-top: 1.5px dashed rgba(184, 132, 74, 0.28);
+  margin: 14px 0 16px;
+}
+
+.khcoSummaryTotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.khcoSummaryTotal span {
+  font-size: 13px;
+  color: var(--foreground);
+  font-weight: 500;
+}
+.khcoSummaryTotal strong {
+  font-family: "Noto Serif KR", serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--foreground);
+  letter-spacing: -0.01em;
+}
+
+.khcoActionRow {
+  display: flex;
+  gap: 8px;
+}
+
+.khcoBackBtn {
+  flex-shrink: 0;
+  width: 76px;
+  height: 52px;
+  background: var(--secondary);
+  color: var(--foreground);
+  font-size: 13px;
+  font-weight: 700;
+  border: 1px solid rgba(184, 132, 74, 0.25);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.16s;
+}
+.khcoBackBtn:hover { background: var(--muted); }
+
+.khcoPayBtn {
+  flex: 1;
+  width: 100%;
+  height: 52px;
+  background: linear-gradient(135deg, var(--khco-accent), var(--khco-accent-2));
+  color: #fff6fa;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  transition: box-shadow 0.16s, transform 0.1s, opacity 0.16s;
+  box-shadow: 0 6px 18px var(--khco-accent-soft);
+}
+.khcoPayBtn:hover:not(:disabled) { box-shadow: 0 8px 22px var(--khco-accent-soft); }
+.khcoPayBtn:active:not(:disabled) { transform: scale(0.985); }
+.khcoPayBtn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ── 반응형 ── */
+@media (max-width: 760px) {
+  .khcoPage { padding: 96px 16px 60px; }
+  .khcoBody { grid-template-columns: 1fr; }
+  .khcoSummaryCard { position: static; }
+  .khcoStepper { max-width: 360px; }
+  .khcoStepLabel { font-size: 10.5px; }
+}
+
+/* ── 다크 모드 ── */
+body.dark .khcoCard,
+body.dark .khcoSummaryCard {
+  background: #0c1432;
+  box-shadow: 0 2px 14px rgba(0,0,0,0.28);
+}
+body.dark .khcoCard { border-color: rgba(231, 146, 187, 0.2); }
+
+body.dark .khcoTitle { color: #c0ccee; border-bottom-color: rgba(231, 146, 187, 0.2); }
+
+body.dark .khcoStepCircle { background: #0c1432; border-color: rgba(231, 146, 187, 0.2); color: #3e5888; }
+body.dark .khcoStepLine { background: rgba(231, 146, 187, 0.2); }
+body.dark .khcoStepLabel { color: #3e5888; }
+body.dark .khcoStepLabel.active { color: #c0ccee; }
+
+body.dark .khcoCardTitle { color: #2e4070; border-bottom-color: rgba(231, 146, 187, 0.15); }
+
+body.dark .khcoProductName,
+body.dark .khcoProductAmt { color: #c0ccee; }
+
+body.dark .khcoForm label { color: #2e4070; }
+
+body.dark .khcoForm input {
+  background: #070e20;
+  border-color: rgba(231, 146, 187, 0.2);
+  color: #c0ccee;
+}
+body.dark .khcoForm input:focus {
+  border-color: var(--khco-accent);
+  background: #0c1432;
+}
+body.dark .khcoForm input::placeholder { color: #1c2e54; }
+
+body.dark .khcoRecapRow { border-bottom-color: rgba(231, 146, 187, 0.2); }
+body.dark .khcoRecapValue { color: #c0ccee; }
+body.dark .khcoRecapEdit { border-color: rgba(231, 146, 187, 0.2); color: #3e5888; }
+
+body.dark .khcoSummaryItemLabel { color: #c0ccee; border-bottom-color: rgba(231, 146, 187, 0.2); }
+body.dark .khcoSummaryDivider { border-top-color: rgba(231, 146, 187, 0.2); }
+body.dark .khcoSummaryRow { color: #3e5888; }
+
+body.dark .khcoSummaryTotal span { color: #6080a8; }
+body.dark .khcoSummaryTotal strong { color: #c0ccee; }
+
+body.dark .khcoBackBtn { background: #0a1228; border-color: rgba(231, 146, 187, 0.2); color: #c0ccee; }
+body.dark .khcoBackBtn:hover { background: #10193a; }

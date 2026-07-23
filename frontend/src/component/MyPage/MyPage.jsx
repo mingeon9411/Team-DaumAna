@@ -10,6 +10,7 @@ import flowers from "../../assets/decor/flowers.png";
 import orientCloud from "../../assets/decor/orient_cloud.png";
 import flower2Img from "../../assets/decor/flower2.png";
 import Receipt from "./Receipt";
+import TrackingModal from "./TrackingModal";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import { useWithdrawModal } from "../../context/WithdrawModalContext";
@@ -52,6 +53,7 @@ function MyPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [trackingOrder, setTrackingOrder] = useState(null);
   const [myCoupons, setMyCoupons] = useState([]);
   const [profile, setProfile] = useState(null);
   const [wishlist, setWishlist] = useState(() => getWishlist());
@@ -135,6 +137,11 @@ function MyPage() {
     }
   };
 
+  const handleShowTracking = (e, order) => {
+    e.stopPropagation();
+    setTrackingOrder(order);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -143,6 +150,13 @@ function MyPage() {
       <button type="button" className="mypageModalClose" onClick={closeMyPage} aria-label="닫기">
         ×
       </button>
+
+      {trackingOrder && (
+        <TrackingModal
+          order={trackingOrder}
+          onClose={() => setTrackingOrder(null)}
+        />
+      )}
 
       {selectedOrder && (
         <Receipt
@@ -288,6 +302,14 @@ function MyPage() {
                             onClick={(e) => handleCancelOrder(e, order.id)}
                           >
                             주문 취소
+                          </button>
+                        )}
+                        {order.payment_status === "SUCCESS" && (
+                          <button
+                            className="orderTrackingBtn"
+                            onClick={(e) => handleShowTracking(e, order)}
+                          >
+                            배송조회
                           </button>
                         )}
                       </div>
@@ -479,6 +501,14 @@ function MyPage() {
                             onClick={(e) => handleCancelOrder(e, order.id)}
                           >
                             주문 취소
+                          </button>
+                        )}
+                        {order.payment_status === "SUCCESS" && (
+                          <button
+                            className="orderTrackingBtn"
+                            onClick={(e) => handleShowTracking(e, order)}
+                          >
+                            배송조회
                           </button>
                         )}
                         {order.payment_status === "SUCCESS" && (
