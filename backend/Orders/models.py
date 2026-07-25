@@ -48,8 +48,11 @@ class Order(models.Model):
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='ORDERED')
     shipping_addr = models.CharField(max_length=500)
     order_date = models.DateTimeField(auto_now_add=True)
-    carrier = models.CharField(max_length=50, blank=True, default='', verbose_name='택배사')
-    tracking_number = models.CharField(max_length=50, blank=True, default='', verbose_name='운송장 번호')
+    # null=True — Spring Boot 서버도 같은 JIPDAUM_ORDER 테이블에 주문을 insert하는데,
+    # 그쪽 엔티티는 이 컬럼들을 모르고 값을 안 채워서 NOT NULL 제약에 걸려 500이 났었음.
+    # DB 레벨에서 NULL을 허용해 어느 백엔드가 insert하든 실패하지 않게 한다.
+    carrier = models.CharField(max_length=50, null=True, blank=True, default='', verbose_name='택배사')
+    tracking_number = models.CharField(max_length=50, null=True, blank=True, default='', verbose_name='운송장 번호')
 
     class Meta:
         db_table = 'JIPDAUM_ORDER'

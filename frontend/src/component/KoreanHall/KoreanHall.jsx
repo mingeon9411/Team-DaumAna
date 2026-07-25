@@ -1,15 +1,18 @@
 import "./KoreanHall.css";
 import products from "../../data/products";
 import { useProductModal } from "../../context/ProductModalContext";
+import irworobongdo from "../../assets/decor/irworobongdo.svg";
 
 function KoreanHall() {
   const { openProduct } = useProductModal();
 
   return (
     <div className="khPage" data-hsnap data-lenis-prevent>
+      <img src={irworobongdo} alt="" aria-hidden="true" className="khWatermark" />
       <div className="khIntro">
         <span className="khLabel">KOREAN HALL</span>
         <h2 className="khTitle">한국관</h2>
+        <span className="khHairline" />
         <p className="khDesc">
           한국 전통의 결과 멋을 담은 집다움의 큐레이션.
           <br />

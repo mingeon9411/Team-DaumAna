@@ -2,7 +2,8 @@ import "./Cart.css";
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getCartItems, updateCartItem, deleteCartItem } from "../../api";
-import products from "../../data/products";
+import koreanHallProducts from "../../data/products";
+import { PRODUCTS as homeProducts } from "../Home/Home";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useCartModal } from "../../context/CartModalContext";
 
@@ -10,6 +11,8 @@ function Cart() {
   const navigate = useNavigate();
   const location = useLocation();
   const isKoreanHall = location.pathname === "/korean-hall";
+  // 한국관/메인은 상품 id가 겹쳐도 서로 다른 상품이므로, 현재 페이지에 맞는 목록에서만 대체 이미지를 찾는다.
+  const products = isKoreanHall ? koreanHallProducts : homeProducts;
   const { openLogin } = useAuthModal();
   const { isOpen, closeCart } = useCartModal();
   const [cartItems, setCartItems] = useState([]);

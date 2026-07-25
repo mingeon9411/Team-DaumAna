@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag } from "lucide-react";
 import "./Home.css";
 import ChatBot from "../MyPage/ChatBot";
 import LookbookViewer from "./LookbookViewer";
-import AnimatedPrice from "./AnimatedPrice";
 import moonJarLamp from "../../assets/달항아리 램프.png";
 import patchworkBedding from "../../assets/조각보 침구 세트.png";
 import koreanModernSofa from "../../assets/products/Korean Modern Sofa — Ivory Leather.png";
@@ -30,36 +29,62 @@ export const PRODUCTS = [
   { id: 1, no: "No.1", name: "린넨 암체어", sub: "내추럴 베이지", price: "328,000", originalPrice: "398,000", label: "BESTSELLER",
     desc: "부드러운 린넨과 낮은 팔걸이로 온몸을 편안히 감싸는 체어. 거실 어디에 놓아도 공간의 무게중심이 됩니다.",
     spec: "SIZE : W68 D72 H76 · MATERIAL : linen, oak",
-    image: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=500&h=620&fit=crop&auto=format", alt: "린넨 암체어", brand: "집다움" },
+    image: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=500&h=620&fit=crop&auto=format", alt: "린넨 암체어", brand: "집다움", category: "의자" },
   { id: 2, no: "No.2", name: "월넛 사이드 테이블", sub: "블랙 월넛", price: "168,000", originalPrice: "198,000", label: "NEW",
     desc: "짙은 월넛 원목의 결을 살린 사이드 테이블. 소파 옆, 침대 곁 어디서나 조용히 제 역할을 합니다.",
     spec: "SIZE : W45 D45 H50 · MATERIAL : walnut",
-    image: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=500&h=620&fit=crop&auto=format", alt: "월넛 사이드 테이블", brand: "집다움" },
-  { id: 3, no: "No.3", name: "대나무 트레이", sub: "내추럴", price: "54,000", originalPrice: "68,000", label: "ECO",
+    image: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?w=500&h=620&fit=crop&auto=format", alt: "월넛 사이드 테이블", brand: "집다움", category: "테이블" },
+  { id: 3, no: "No.3", name: "대나무 트레이", sub: "내추럴", price: "54,000", label: "ECO",
     desc: "대나무를 엮어 만든 트레이. 차 한 잔, 작은 화분, 협탁 위 소품 정리에 두루 어울립니다.",
     spec: "SIZE : W38 D26 H4 · MATERIAL : bamboo",
-    image: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=500&h=620&fit=crop&auto=format", alt: "대나무 트레이", brand: "집다움" },
+    image: "https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=500&h=620&fit=crop&auto=format", alt: "대나무 트레이", brand: "집다움", category: "소품" },
   { id: 4, no: "No.4", name: "한국 모던 소파", sub: "아이보리 레더", price: "398,000", originalPrice: "460,000", label: "NEW",
     desc: "아이보리 가죽과 완만한 곡선이 어우러진 2인용 소파. 어느 각도에서 봐도 매끈한 실루엣을 완성합니다.",
     spec: "SIZE : W150 D80 H75 · MATERIAL : leather, steel",
-    image: koreanModernSofa, alt: "한국 모던 소파", brand: "집다움" },
+    image: koreanModernSofa, alt: "한국 모던 소파", brand: "집다움", category: "소파" },
   { id: 5, no: "No.5", name: "플로어 라운지 소파", sub: "아이보리 부클", price: "328,000", originalPrice: "398,000", label: "NEW",
     desc: "낮은 좌면과 넉넉한 쿠션이 편안한 좌식형 라운지 소파. 바닥 생활에 어울리는 낮은 무게중심이 특징입니다.",
     spec: "SIZE : W180 D95 H55 · MATERIAL : boucle, sponge",
-    image: floorLoungeSofa, alt: "플로어 라운지 소파", brand: "집다움" },
-  { id: 7, no: "No.6", name: "달항아리 암체어", sub: "카멜 부클", price: "358,000", originalPrice: "420,000", label: "NEW",
+    image: floorLoungeSofa, alt: "플로어 라운지 소파", brand: "집다움", category: "소파" },
+  { id: 7, no: "No.6", name: "달항아리 암체어", sub: "카멜 부클", price: "358,000", label: "NEW",
     desc: "달항아리의 둥근 선을 닮은 부클 원단 윙백 암체어. 어느 자리에 두어도 공간의 중심이 됩니다.",
     spec: "SIZE : W85 D90 H105 · MATERIAL : boucle, wood",
-    image: moonJarArmchair, alt: "달항아리 암체어", brand: "집다움" },
-
+    image: moonJarArmchair, alt: "달항아리 암체어", brand: "집다움", category: "의자" },
+  { id: 8, no: "No.7", name: "한지 그림자 조명", sub: "블랙 스틸", price: "98,000", originalPrice: "128,000", label: "NEW",
+    desc: "얇은 스틸 프레임 위에 한지를 발라, 켜졌을 때 은은한 그림자 무늬가 벽에 드리우는 스탠드 조명입니다. 침실 협탁이나 거실 코너에 두면 공간에 조용한 리듬감을 더합니다.",
+    spec: "SIZE : W24 D24 H48 · MATERIAL : hanji, steel",
+    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500&h=620&fit=crop&auto=format", alt: "한지 그림자 조명", brand: "집다움", category: "조명" },
+  { id: 9, no: "No.8", name: "자작나무 오픈 책장", sub: "화이트 오크", price: "248,000", label: "NEW",
+    desc: "자작나무 합판을 오크 톤으로 마감한 5단 오픈 책장. 칸막이 없이 뚫려있어 책과 소품을 자유롭게 배치할 수 있고, 거실이나 서재 어디에 두어도 무게감 없이 어울립니다.",
+    spec: "SIZE : W80 D32 H160 · MATERIAL : birch plywood, oak veneer",
+    image: "https://images.unsplash.com/photo-1550581190-9c1c48d21d6c?w=500&h=620&fit=crop&auto=format", alt: "자작나무 오픈 책장", brand: "집다움", category: "수납" },
+  { id: 10, no: "No.9", name: "백자 유약 접시 세트", sub: "순백 (4p)", price: "72,000", originalPrice: "89,000", label: "ECO",
+    desc: "전통 백자 유약 기법으로 구운 접시 4개 세트. 은은한 광택과 매끄러운 곡선이 어떤 음식을 담아도 자연스럽게 어우러지며, 식기세척기 사용도 가능해 관리가 편합니다.",
+    spec: "SIZE : Ø24 H2.5 (4p) · MATERIAL : porcelain",
+    image: "https://images.unsplash.com/photo-1594026112284-02bb6f3352fe?w=500&h=620&fit=crop&auto=format", alt: "백자 유약 접시 세트", brand: "집다움", category: "소품" },
+  { id: 11, no: "No.10", name: "황동 프레임 원형 거울", sub: "골드 브라스", price: "186,000", originalPrice: "220,000", label: "NEW",
+    desc: "가느다란 황동 프레임으로 두른 원형 거울. 현관이나 화장대 위에 걸면 공간에 은은한 광채를 더하고, 시간이 지날수록 자연스럽게 변하는 브라스의 색감이 멋을 더합니다.",
+    spec: "SIZE : Ø56 D3 · MATERIAL : brass, glass",
+    image: "https://images.unsplash.com/photo-1618220179428-22790b461013?w=500&h=620&fit=crop&auto=format", alt: "황동 프레임 원형 거울", brand: "집다움", category: "소품" },
+  { id: 12, no: "No.11", name: "리넨 누빔 침구 세트", sub: "오트밀 베이지", price: "156,000", originalPrice: "188,000", label: "BESTSELLER",
+    desc: "100% 순면 리넨을 누빔 방식으로 마감한 침구 세트. 사계절 내내 보송한 촉감을 유지하고, 세탁 후에도 뭉침 없이 오래 사용할 수 있습니다.",
+    spec: "SIZE : 이불 210x230 · MATERIAL : linen, cotton fill",
+    image: "https://images.unsplash.com/photo-1616627561950-9f746e330187?w=500&h=620&fit=crop&auto=format", alt: "리넨 누빔 침구 세트", brand: "집다움", category: "침구" },
+  { id: 13, no: "No.12", name: "무자기 오브제 화병", sub: "백자", price: "64,000", label: "NEW",
+    desc: "정갈한 여백을 살린 무자기 화병. 미니멀한 형태와 무광 마감으로 꽃 한 송이만 꽂아도, 비워두어도 그 자체로 공간의 포인트가 됩니다.",
+    spec: "SIZE : Ø14 H26 · MATERIAL : porcelain",
+    image: "https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=500&h=620&fit=crop&auto=format", alt: "무자기 오브제 화병", brand: "집다움", category: "소품" },
+  { id: 14, no: "No.13", name: "울 혼방 러그", sub: "그레이시 베이지", price: "138,000", originalPrice: "168,000", label: "NEW",
+    desc: "울과 면을 섞어 짠 러그로, 폭신한 두께감과 은은한 색감이 거실 바닥에 차분한 톤을 더합니다. 소파 앞이나 침실 협탁 곁에 깔면 공간이 한층 따뜻해집니다.",
+    spec: "SIZE : W200 D140 · MATERIAL : wool, cotton",
+    image: "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?w=500&h=620&fit=crop&auto=format", alt: "울 혼방 러그", brand: "집다움", category: "소품" },
+  { id: 15, no: "No.14", name: "원목 스툴", sub: "내추럴 애쉬", price: "88,000", originalPrice: "108,000", label: "ECO",
+    desc: "애쉬 원목을 통으로 깎아 만든 스툴. 보조 의자로도, 협탁 대용으로도 쓸 수 있는 다용도 가구로, 어느 공간에 두어도 무게감 없이 자연스럽게 스며듭니다.",
+    spec: "SIZE : W36 D36 H44 · MATERIAL : ash wood",
+    image: "https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?w=500&h=620&fit=crop&auto=format", alt: "원목 스툴", brand: "집다움", category: "의자" },
 ];
 
-const ESSAYS = [
-  { title: "여러분이 생각하는 집다움은 \n 어떤 공간인가요?" },
-  { title: "누군가에게는 편안함이고,\n누군가에게는 따뜻한 온기입니다." },
-  { title: "하지만 정답은 없습니다.\n나를 표현한 공간이면 충분합니다." },
-  { title: "나만의 컬러, 취향, 공간을\n집다움에서 실현시켜보세요."},
-];
+const PRODUCT_CATEGORIES = ["전체", "소파", "의자", "테이블", "침구", "조명", "수납", "소품"];
 
 const LOOKBOOK_PHOTOS = [
   "photo-1484101403633-562f891dc89a",
@@ -118,6 +143,7 @@ function Label({ children, className = "" }) {
 function Home() {
   const [wishlist, setWishlist] = useState([]);
   const [productSearchQuery, setProductSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("전체");
   const [lookbookPage, setLookbookPage] = useState(0);
   const [lookbookViewerIndex, setLookbookViewerIndex] = useState(null);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
@@ -153,9 +179,18 @@ function Home() {
       window.removeEventListener("authchange", fetchCartCounts);
     };
   }, []);
-  // 통합된 에세이 섹션 — 일정 간격으로 다음 멘트로 부드럽게 전환
-  const [essayIndex, setEssayIndex] = useState(0);
-  const [essayFading, setEssayFading] = useState(false);
+  // 인트로 영상 — 도어인트로가 끝나기 전엔 재생하지 않고, "doorintroend" 이벤트를 받은
+  // 뒤에야 재생을 시작한다. 한 번만 재생하고, 끝나면 소파 상품 사진으로 부드럽게 전환한다.
+  const introVideoRef = useRef(null);
+  const [introVideoEnded, setIntroVideoEnded] = useState(false);
+
+  useEffect(() => {
+    const startVideo = () => {
+      introVideoRef.current?.play().catch(() => {});
+    };
+    window.addEventListener("doorintroend", startVideo);
+    return () => window.removeEventListener("doorintroend", startVideo);
+  }, []);
 
   // 히어로 섹션 — 좌우 이미지를 일정 간격으로 크로스페이드하며 전환
   const [heroSlide, setHeroSlide] = useState(0);
@@ -187,47 +222,28 @@ function Home() {
     return () => window.removeEventListener("open-home-product", handler);
   }, []);
 
-  // 마지막 멘트("하지만 정답은 없습니다...")에서 반복하지 않고 멈춘 뒤,
-  // 사용자가 아직 에세이 페이지에 머물러 있으면 상품 페이지로 천천히 스크롤한다.
+  // 인트로 영상이 끝나 소파 사진으로 전환된 뒤 3초 있다가, 사용자가 아직 에세이
+  // 페이지에 머물러 있으면 상품 페이지로 천천히 스크롤한다.
   useEffect(() => {
-    let holdTimer;
-    let fadeTimer;
+    if (!introVideoEnded) return;
 
-    function advance(index) {
-      const holdDuration = index === 0 ? 8400 : 4800;
-      holdTimer = setTimeout(() => {
-        if (index >= ESSAYS.length - 1) {
-          const essayEl = document.getElementById("home-essay");
-          const stillOnEssay = essayEl && Math.abs(essayEl.getBoundingClientRect().left) < 50;
-          if (stillOnEssay && window.lenis) {
-            const target = document.querySelectorAll("[data-hsnap]")[2];
-            if (target) {
-              window.lenis.resize();
-              window.lenis.scrollTo(target, {
-                duration: 5.3,
-                easing: (t) => 1 - Math.pow(1 - t, 3),
-              });
-            }
-          }
-          return;
+    const holdTimer = setTimeout(() => {
+      const essayEl = document.getElementById("home-essay");
+      const stillOnEssay = essayEl && Math.abs(essayEl.getBoundingClientRect().left) < 50;
+      if (stillOnEssay && window.lenis) {
+        const target = document.querySelectorAll("[data-hsnap]")[2];
+        if (target) {
+          window.lenis.resize();
+          window.lenis.scrollTo(target, {
+            duration: 5.3,
+            easing: (t) => 1 - Math.pow(1 - t, 3),
+          });
         }
+      }
+    }, 3000);
 
-        setEssayFading(true);
-        fadeTimer = setTimeout(() => {
-          setEssayIndex(index + 1);
-          setEssayFading(false);
-          advance(index + 1);
-        }, 1400);
-      }, holdDuration);
-    }
-
-    advance(0);
-
-    return () => {
-      clearTimeout(holdTimer);
-      clearTimeout(fadeTimer);
-    };
-  }, []);
+    return () => clearTimeout(holdTimer);
+  }, [introVideoEnded]);
 
   const openQuickView = (product) => {
     setQuickViewProduct(product);
@@ -250,14 +266,16 @@ function Home() {
 
   const filteredProducts = (() => {
     const q = productSearchQuery.trim().toLowerCase();
-    if (!q) return PRODUCTS;
-    return PRODUCTS.filter(
-      (p) =>
+    return PRODUCTS.filter((p) => {
+      const matchesCategory = selectedCategory === "전체" || p.category === selectedCategory;
+      const matchesQuery =
+        !q ||
         p.name.toLowerCase().includes(q) ||
         p.sub.toLowerCase().includes(q) ||
         p.label.toLowerCase().includes(q) ||
-        p.brand.toLowerCase().includes(q)
-    );
+        p.brand.toLowerCase().includes(q);
+      return matchesCategory && matchesQuery;
+    });
   })();
 
   const lookbookPageCount = Math.ceil(LOOKBOOK_PHOTOS.length / LOOKBOOK_PAGE_SIZE);
@@ -268,6 +286,9 @@ function Home() {
 
   const toggleWish = (id) =>
     setWishlist((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+
+  // 인트로 영상 옆에 연결해 보여줄 상품 — 영상 속 거실 장면에 어울리는 플로어 라운지 소파
+  const featuredProduct = PRODUCTS.find((p) => p.id === 5);
 
   // 도어인트로를 지나 홈에 들어오면 기본적으로 1번째 패널(에세이)에서 시작한다.
   // (HERO가 전체 상품 페이지 앞으로 옮겨가면서 에세이가 첫 패널이 됨)
@@ -293,18 +314,51 @@ function Home() {
   return (
     <div className="home bg-background text-foreground flex flex-row" style={SANS}>
 
-      {/* ESSAY SPREAD — 세 개의 멘트가 한 페이지 안에서 순서대로 부드럽게 전환됨 */}
-      <section id="home-essay" data-hide-header data-hsnap className="sparkleBg holoMesh w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center text-foreground py-20 px-8">
-        <div className="relative z-10 max-w-4xl mx-auto text-center">
-          <p
-            className={`text-3xl md:text-4xl font-light leading-[1.6] mb-10 whitespace-pre-line transition-all duration-[1400ms] ease-in-out ${
-              essayFading ? "opacity-0 blur-lg scale-105" : "opacity-100 blur-none scale-100"
+      {/* ESSAY SPREAD — 영상 절반 + 영상 속 상품 구매 유도 절반으로 구성된 인트로 무대 */}
+      <section id="home-essay" data-hide-header data-hsnap className="w-screen h-screen shrink-0 overflow-hidden flex flex-row text-foreground">
+        <div className="relative w-1/2 h-full overflow-hidden">
+          <video
+            ref={introVideoRef}
+            className="w-full h-full object-cover"
+            src="/videos/jipdaum%20video(1).mp4"
+            muted
+            playsInline
+            preload="auto"
+            onEnded={() => setIntroVideoEnded(true)}
+          />
+          <img
+            src={floorLoungeSofa}
+            alt="플로어 라운지 소파"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1800ms] ease-in-out ${
+              introVideoEnded ? "opacity-100" : "opacity-0"
             }`}
-            style={SERIF}
-          >
-            {ESSAYS[essayIndex].title}
-          </p>
-          <Hairline className="border-foreground/20 mb-10 max-w-xs mx-auto" />
+          />
+        </div>
+
+        <div className="sparkleBg holoMesh relative w-1/2 h-full flex flex-col items-start justify-center px-16">
+          <div className="relative z-10">
+            <p className="text-xs tracking-[0.25em] uppercase text-muted-foreground mb-5" style={MONO}>
+              FEATURED IN THIS FILM
+            </p>
+            <h3 className="text-3xl md:text-4xl font-light leading-snug mb-6" style={SERIF}>
+              영상 속 공간에 놓인
+              <br />
+              {featuredProduct.name}
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mb-10">
+              영상에 등장한 상품을 지금 바로 만나보세요.
+              <br />
+              영상에 관련된 상품을 구매할 수 있습니다.
+            </p>
+            <button
+              type="button"
+              onClick={() => openQuickView(featuredProduct)}
+              className="px-8 py-3.5 bg-foreground text-background text-sm font-medium tracking-wide hover:opacity-85 transition-opacity"
+              style={SANS}
+            >
+              상품 보러가기 →
+            </button>
+          </div>
         </div>
       </section>
 
@@ -338,7 +392,7 @@ function Home() {
       </section>
 
       {/* PRODUCT GRID */}
-      <section data-hsnap className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center py-20 px-8">
+      <section data-hsnap data-lenis-prevent className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-start py-20 px-8">
         <div className="relative z-10 max-w-7xl mx-auto w-full mb-10 flex items-end justify-end gap-8 flex-wrap">
           <div className="flex items-center gap-2 border-b border-foreground w-full sm:w-72 pb-2">
             <Search size={15} className="text-muted-foreground shrink-0" />
@@ -346,7 +400,7 @@ function Home() {
               type="text"
               value={productSearchQuery}
               onChange={(e) => setProductSearchQuery(e.target.value)}
-              placeholder="상품명, 브랜드로 검색"
+              placeholder="상품명, 브랜드, 라벨 검색"
               aria-label="전체 상품 검색"
               className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
               style={SANS}
@@ -363,12 +417,33 @@ function Home() {
             )}
           </div>
         </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto w-full mb-8 flex items-center gap-2 flex-wrap">
+          {PRODUCT_CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setSelectedCategory(cat)}
+              className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                selectedCategory === cat
+                  ? "bg-foreground text-background border-foreground"
+                  : "bg-transparent text-muted-foreground border-border hover:border-foreground hover:text-foreground"
+              }`}
+              style={SANS}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
         {filteredProducts.length === 0 ? (
           <p className="relative z-10 max-w-7xl mx-auto w-full text-center text-sm text-muted-foreground py-16" style={SANS}>
-            "{productSearchQuery}"에 대한 검색 결과가 없습니다.
+            {productSearchQuery
+              ? `"${productSearchQuery}"에 대한 검색 결과가 없습니다.`
+              : `${selectedCategory} 카테고리에 상품이 없습니다.`}
           </p>
         ) : (
-        <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+        <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredProducts.map((p) => {
             const priceNum = Number(p.price.replace(/,/g, ""));
             const originalNum = p.originalPrice ? Number(p.originalPrice.replace(/,/g, "")) : 0;
@@ -397,15 +472,13 @@ function Home() {
                 <span className="text-[10px] text-muted-foreground block mb-1" style={MONO}>{p.no} · {p.label}</span>
                 <h4 className="text-sm font-medium text-foreground mb-0.5" style={SANS}>{p.name}</h4>
                 <div className="mt-1 flex flex-col items-end gap-1">
-                  {hasDiscount && (
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-bold text-white bg-[#c0392b] rounded px-1.5 py-0.5 tracking-wide" style={MONO}>
-                        {discountPct}% OFF
-                      </span>
-                      <span className="text-xs text-muted-foreground line-through" style={MONO}>₩{p.originalPrice}</span>
-                    </div>
-                  )}
-                  <span className="text-right text-2xl font-bold text-foreground" style={MONO}>₩<AnimatedPrice value={p.price} /></span>
+                  <div className={`flex items-center gap-1.5 ${hasDiscount ? "" : "invisible"}`}>
+                    <span className="text-[10px] font-bold text-white bg-[#c0392b] rounded px-1.5 py-0.5 tracking-wide" style={MONO}>
+                      {discountPct}% OFF
+                    </span>
+                    <span className="text-xs text-muted-foreground line-through" style={MONO}>₩{p.originalPrice || p.price}</span>
+                  </div>
+                  <span className="text-right text-2xl font-bold text-foreground" style={MONO}>₩{p.price}</span>
                 </div>
               </article>
             );
@@ -536,7 +609,7 @@ function Home() {
                 <button
                   onClick={() => toggleWish(quickViewProduct.id)}
                   className="w-11 h-11 shrink-0 border border-border flex items-center justify-center text-foreground hover:border-foreground transition-colors"
-                  aria-label="위시리스트"
+                  aria-label="찜 리스트에 담기"
                 >
                   <Heart size={16} className={wishlist.includes(quickViewProduct.id) ? "fill-foreground text-foreground" : "text-foreground"} />
                 </button>

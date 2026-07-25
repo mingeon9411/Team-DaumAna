@@ -48,10 +48,53 @@
   margin-bottom: 20px;
 }
 
-.receiptLogo {
-  height: 36px;
-  object-fit: contain;
-  margin-bottom: 6px;
+.receiptLogoRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.receiptLogoJD {
+  height: 26px;
+  width: auto;
+  filter: brightness(0) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12));
+}
+
+body.dark .receiptLogoJD {
+  filter: brightness(0) invert(1) drop-shadow(0 2px 5px rgba(0, 0, 0, 0.4));
+}
+
+.receiptLogoDivider {
+  width: 1px;
+  height: 22px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(120, 120, 120, 0.5) 20%,
+    rgba(120, 120, 120, 0.5) 80%,
+    transparent
+  );
+}
+
+.receiptLogoHanok {
+  height: 26px;
+  width: auto;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18));
+}
+
+body.dark .receiptLogoHanok {
+  filter: grayscale(1) brightness(1.5) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+}
+
+.receiptLogoAccent {
+  display: block;
+  width: 64px;
+  height: 2px;
+  margin: 0 auto 10px;
+  background: linear-gradient(90deg, #2a4d8f 0%, #f5f1ea 25%, #a6342a 50%, #1c1a16 75%, #c9a227 100%);
+  border-radius: 999px;
 }
 
 .receiptSub {

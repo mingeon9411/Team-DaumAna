@@ -11,6 +11,7 @@ import orientCloud from "../../assets/decor/orient_cloud.png";
 import flower2Img from "../../assets/decor/flower2.png";
 import Receipt from "./Receipt";
 import TrackingModal from "./TrackingModal";
+import AddressModal from "./AddressModal";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import { useWithdrawModal } from "../../context/WithdrawModalContext";
@@ -29,7 +30,7 @@ const STATUS_LABEL = {
 const GRADE_CONFIG = [
   { key: "VVIP",   rank: 1, min: 1500000, color1: "#0f0800", color2: "#3a1e00", accent: "#f5c842", img: bird2,       desc: "150만원 이상" },
   { key: "VIP",    rank: 2, min: 700000,  color1: "#120020", color2: "#2a0045", accent: "#c084fc", img: bird,        desc: "70만원 이상" },
-  { key: "GOLD",   rank: 3, min: 300000,  color1: "#3d1a00", color2: "#6b2e00", accent: "#f59e0b", img: flowers,     desc: "30만원 이상" },
+  { key: "GOLD",   rank: 3, min: 300000,  color1: "#222222", color2: "#6b2e00", accent: "#f59e0b", img: flowers,     desc: "30만원 이상" },
   { key: "SILVER", rank: 4, min: 100000,  color1: "#1c2830", color2: "#2c3e50", accent: "#94a3b8", img: orientCloud, desc: "10만원 이상" },
   { key: "BRONZE", rank: 5, min: 0,       color1: "#2e1508", color2: "#4a2010", accent: "#b87333", img: flower2Img,  desc: "기본 등급" },
 ];
@@ -48,7 +49,9 @@ function MyPage() {
   const { openLogin } = useAuthModal();
   const { isOpen, closeMyPage } = useMyPageModal();
   const { openWithdraw } = useWithdrawModal();
-  const nickname = localStorage.getItem("nickname") || "회원";
+  const [nickname, setNickname] = useState(() => localStorage.getItem("nickname") || "회원");
+  const [nicknameDraft, setNicknameDraft] = useState(nickname);
+  const [profileImage, setProfileImage] = useState(() => localStorage.getItem("profileImage") || "");
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -61,6 +64,99 @@ function MyPage() {
   const [darkMode, setDarkMode] = useState(
     () => document.body.classList.contains("dark")
   );
+
+  // 배송지 관리 — 별도 백엔드 모델이 없어 위시리스트/리뷰와 같은 방식으로 로컬에 저장한다.
+  const [addresses, setAddresses] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("savedAddresses")) || [];
+    } catch {
+      return [];
+    }
+  });
+  const [addressModalOpen, setAddressModalOpen] = useState(false);
+  const [editingAddress, setEditingAddress] = useState(null);
+
+  const updateAddresses = (next) => {
+    setAddresses(next);
+    localStorage.setItem("savedAddresses", JSON.stringify(next));
+  };
+
+  const handleSaveAddress = (data) => {
+    if (editingAddress) {
+      updateAddresses(
+        addresses.map((a) =>
+          a.id === editingAddress.id
+            ? { ...a, ...data, isDefault: data.isDefault ? true : a.isDefault }
+            : data.isDefault ? { ...a, isDefault: false } : a
+        )
+      );
+    } else {
+      const newAddress = { ...data, id: Date.now() };
+      updateAddresses(
+        data.isDefault
+          ? [...addresses.map((a) => ({ ...a, isDefault: false })), newAddress]
+          : [...addresses, newAddress]
+      );
+    }
+    setAddressModalOpen(false);
+    setEditingAddress(null);
+  };
+
+  const handleDeleteAddress = (id) => {
+    if (!window.confirm("이 배송지를 삭제하시겠습니까?")) return;
+    updateAddresses(addresses.filter((a) => a.id !== id));
+  };
+
+  const handleSetDefaultAddress = (id) => {
+    updateAddresses(addresses.map((a) => ({ ...a, isDefault: a.id === id })));
+  };
+
+  // 닉네임/프로필 사진 — 별도 백엔드 저장 API가 없어(실제 계정 서비스는 별개인 Spring 서버가
+  // 담당) 사이트 전체가 표시용으로 참조하는 localStorage의 nickname 키에 맞춰 로컬로 저장한다.
+  const handleNicknameSave = () => {
+    const trimmed = nicknameDraft.trim();
+    if (!trimmed) {
+      alert("닉네임을 입력해주세요.");
+      return;
+    }
+    setNickname(trimmed);
+    localStorage.setItem("nickname", trimmed);
+    alert("닉네임이 저장되었습니다.");
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      alert("이미지 파일만 업로드할 수 있습니다.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        // localStorage 용량을 아끼기 위해 작은 정사각형으로 리사이즈해서 저장한다.
+        const size = 240;
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext("2d");
+        const scale = Math.max(size / img.width, size / img.height);
+        const sw = size / scale;
+        const sh = size / scale;
+        const sx = (img.width - sw) / 2;
+        const sy = (img.height - sh) / 2;
+        ctx.drawImage(img, sx, sy, sw, sh, 0, 0, size, size);
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+        setProfileImage(dataUrl);
+        localStorage.setItem("profileImage", dataUrl);
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
 
   useEffect(() => {
     const syncDarkMode = () => setDarkMode(document.body.classList.contains("dark"));
@@ -164,6 +260,13 @@ function MyPage() {
           onClose={() => setSelectedOrder(null)}
         />
       )}
+
+      <AddressModal
+        isOpen={addressModalOpen}
+        onClose={() => { setAddressModalOpen(false); setEditingAddress(null); }}
+        onSave={handleSaveAddress}
+        initialData={editingAddress}
+      />
 
 
       <aside className="mypageSide">
@@ -278,7 +381,7 @@ function MyPage() {
                             )}
                             <div className="orderItemInfo">
                               <p className="orderItemName">{item.product_name}</p>
-                              <p className="orderItemDetail">
+                              <p className="orderItemPrice">
                                 {item.ordered_price.toLocaleString()}원 x {item.quantity}개
                               </p>
                             </div>
@@ -406,7 +509,7 @@ function MyPage() {
                             ? `${c.discount_value}%`
                             : `${c.discount_value.toLocaleString()}원`}
                         </span>
-                        <span className="cpValueLabel">쿠폰 할인</span>
+                        <span className="cpValueLabel">쿠폰 할인카드</span>
                       </div>
                       <div className="cpCardRight">
                         <img
@@ -426,7 +529,7 @@ function MyPage() {
                           {c.expiry_date ? (
                             <span className="cpExpiry">~ {c.expiry_date}</span>
                           ) : (
-                            <span className="cpExpiry noExpiry">기간 제한 없음</span>
+                            <span className="cpExpiry noExpiry">제한 없음</span>
                           )}
                         </div>
                       </div>
@@ -436,7 +539,7 @@ function MyPage() {
               </div>
             )}
 
-            <p className="myCouponFootNote">쿠폰은 결제 페이지에서 적용할 수 있습니다</p>
+            <p className="myCouponFootNote">쿠폰은 결제에서 사용가능 합니다.</p>
           </section>
         )}
 
@@ -543,7 +646,7 @@ function MyPage() {
                 {nextGradeInfo ? (
                   <div className="gradeHeroProgress">
                     <div className="gradeHeroProgressLabel">
-                      <span>다음 등급까지</span>
+                      <span>다음 등급은?</span>
                       <span style={{ color: currentGradeInfo.accent }}>
                         {(nextGradeInfo.min - totalSpent).toLocaleString()}원
                       </span>
@@ -551,7 +654,7 @@ function MyPage() {
                     <div className="gradeProgressBarBg">
                       <div
                         className="gradeProgressBarFill"
-                        style={{ width: `${progressToNext}%`, background: currentGradeInfo.accent }}
+                        style={{ width: `${progressToNext}%`, background: currentGradeInfo.accent, color: currentGradeInfo.accent }}
                       />
                     </div>
                   </div>
@@ -598,10 +701,10 @@ function MyPage() {
                         </span>
                       )}
                       {!isCurrent && isAchieved && (
-                        <span className="gradeTierBadge badgeAchieved">✓ 달성</span>
+                        <span className="gradeTierBadge badgeAchieved">✓등급 달성</span>
                       )}
                       {!isAchieved && (
-                        <span className="gradeTierBadge badgeLocked">잠김</span>
+                        <span className="gradeTierBadge badgeLocked">잠금</span>
                       )}
                     </div>
                   </div>
@@ -654,13 +757,89 @@ function MyPage() {
           </section>
         )}
 
+        {/* ── 배송지 관리 섹션 ── */}
+        {activeSection === "address" && (
+          <section className="myAddressSection">
+            <div className="addressSectionHead">
+              <div>
+                <h2>배송지 관리</h2>
+                <p>자주 쓰는 배송지를 등록해두면 결제 시 빠르게 선택할 수 있습니다.</p>
+              </div>
+              <button
+                type="button"
+                className="addressAddBtn"
+                onClick={() => { setEditingAddress(null); setAddressModalOpen(true); }}
+              >
+                + 새 배송지 추가
+              </button>
+            </div>
+
+            {addresses.length === 0 ? (
+              <p className="addressEmptyText">등록된 배송지가 없습니다.</p>
+            ) : (
+              <div className="addressCardList">
+                {addresses.map((a) => (
+                  <div className={"addressCard" + (a.isDefault ? " default" : "")} key={a.id}>
+                    <div className="addressCardHead">
+                      <span className="addressCardLabel">{a.label}</span>
+                      {a.isDefault && <span className="addressDefaultBadge">기본 배송지</span>}
+                    </div>
+                    <p className="addressCardRecipient">{a.recipient} · {a.phone}</p>
+                    <p className="addressCardLine">{a.address} {a.detail}</p>
+                    <div className="addressCardBtns">
+                      {!a.isDefault && (
+                        <button type="button" onClick={() => handleSetDefaultAddress(a.id)}>기본으로 설정</button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => { setEditingAddress(a); setAddressModalOpen(true); }}
+                      >
+                        수정
+                      </button>
+                      <button type="button" onClick={() => handleDeleteAddress(a.id)}>삭제</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
         {/* ── 회원 정보 섹션 ── */}
         {activeSection === "profile" && (
           <section className="myProfileSection">
+            <div className="profileEditCard">
+              <label className="profileAvatarUpload">
+                {profileImage ? (
+                  <img src={profileImage} alt="프로필 사진" className="profileAvatarImg" />
+                ) : (
+                  <span className="profileAvatarPlaceholder">{(profile?.nickname || nickname).slice(0, 1)}</span>
+                )}
+                <span className="profileAvatarEditBadge">사진 변경</span>
+                <input type="file" accept="image/*" onChange={handleAvatarChange} hidden />
+              </label>
+
+              <div className="profileNicknameEdit">
+                <label htmlFor="nicknameInput">닉네임</label>
+                <div className="profileNicknameRow">
+                  <input
+                    id="nicknameInput"
+                    type="text"
+                    value={nicknameDraft}
+                    onChange={(e) => setNicknameDraft(e.target.value)}
+                    placeholder="닉네임을 입력해주세요"
+                  />
+                  <button type="button" onClick={handleNicknameSave} disabled={nicknameDraft.trim() === nickname}>
+                    저장
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <div className="profileInfoCard">
               <div className="profileInfoRow">
                 <span>닉네임</span>
-                <strong>{profile?.nickname || nickname}</strong>
+                <strong>{nickname}</strong>
               </div>
               <div className="profileInfoRow">
                 <span>아이디</span>

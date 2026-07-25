@@ -2,10 +2,10 @@ import "./NewsTicker.css";
 
 function NewsTicker() {
   const newsList = [
-    "두번째 프로젝트",
+    "프로젝트 2차",
     "집다움 여름맞이 컬렉션 오픈",
     "우드 오브제 기획전 진행 중",
-    "회원가입 시 첫 구매 10% 쿠폰 증정",
+    "회원가입 시 첫 구매 15% 쿠폰 증정",
   ];
 
   return (

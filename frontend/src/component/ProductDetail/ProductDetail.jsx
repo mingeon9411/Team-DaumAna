@@ -170,8 +170,8 @@ function ProductDetail() {
             </div>
 
             <div className="buyBtns">
-              <button className="buyNow" onClick={handleKakaoPay}>BUY IT NOW</button>
-              <button className="addCart" onClick={handleAddToCart}>ADD TO CART</button>
+              <button className="buyNow" onClick={handleKakaoPay}>지금 구매하기</button>
+              <button className="addCart" onClick={handleAddToCart}>장바구니에 추가</button>
             </div>
           </div>
         </aside>
@@ -201,11 +201,11 @@ function ProductDetail() {
           onChange={(e) => setReviewText(e.target.value)}
         />
 
-        <button onClick={handleReviewSubmit}>리뷰 등록</button>
+        <button onClick={handleReviewSubmit}>리뷰 등록하기</button>
 
         <div className="reviewList">
           {reviews.length === 0 ? (
-            <p className="emptyReview">아직 작성된 리뷰가 없습니다.</p>
+            <p className="emptyReview">작성된 리뷰가 없습니다.</p>
           ) : (
             reviews.map((review) => (
               <div className="reviewItem" key={review.id}>

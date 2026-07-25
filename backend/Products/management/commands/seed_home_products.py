@@ -48,7 +48,7 @@ PRODUCTS = [
         'brand': '집다움',
         'base_price': 398000,
         'description': '아이보리 가죽과 완만한 곡선이 어우러진 2인용 소파. 어느 각도에서 봐도 매끈한 실루엣을 완성합니다.',
-        'thumbnail_url': 'frontend/src/assets/products/Korean Modern Sofa — Ivory Leather.png',
+        'thumbnail_url': 'https://images.unsplash.com/photo-1567016432779-094069958ea5?w=500&h=620&fit=crop&auto=format',
         'options': [{'option_name': '색상', 'option_value': '아이보리 레더', 'extra_price': 0, 'stock_count': 10}],
     },
     {
@@ -57,7 +57,7 @@ PRODUCTS = [
         'brand': '집다움',
         'base_price': 328000,
         'description': '낮은 좌면과 넉넉한 쿠션이 편안한 좌식형 라운지 소파. 바닥 생활에 어울리는 낮은 무게중심이 특징입니다.',
-        'thumbnail_url': 'frontend/src/assets/products/플로어 라운지 소파.png',
+        'thumbnail_url': 'https://images.unsplash.com/photo-1540932239986-30128078f3c5?w=500&h=620&fit=crop&auto=format',
         'options': [{'option_name': '색상', 'option_value': '아이보리 부클', 'extra_price': 0, 'stock_count': 10}],
     },
     {
@@ -66,7 +66,7 @@ PRODUCTS = [
         'brand': '집다움',
         'base_price': 112000,
         'description': '한지가 은은하게 빛을 머금는 프레임형 펜던트 조명. 은은한 조도로 공간에 온기를 더합니다.',
-        'thumbnail_url': 'frontend/src/assets/products/한지 펜던트 조명.png',
+        'thumbnail_url': 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=500&h=620&fit=crop&auto=format',
         'options': [{'option_name': '색상', 'option_value': '블랙 프레임', 'extra_price': 0, 'stock_count': 10}],
     },
     {
@@ -75,7 +75,7 @@ PRODUCTS = [
         'brand': '집다움',
         'base_price': 358000,
         'description': '달항아리의 둥근 선을 닮은 부클 원단 윙백 암체어. 어느 자리에 두어도 공간의 중심이 됩니다.',
-        'thumbnail_url': 'frontend/src/assets/products/달항아리 암체어.png',
+        'thumbnail_url': 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500&h=620&fit=crop&auto=format',
         'options': [{'option_name': '색상', 'option_value': '카멜 부클', 'extra_price': 0, 'stock_count': 10}],
     },
 ]

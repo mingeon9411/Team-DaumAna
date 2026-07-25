@@ -1,5 +1,8 @@
 import "./Receipt.css";
-import KorLogo from "../../assets/logo/Kor_logo.png";
+import { useEffect, useState } from "react";
+import JDLogo from "../../assets/J.D 로고.svg";
+import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent.png";
+import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent.png";
 
 function formatDate(isoStr) {
   if (!isoStr) return "-";
@@ -11,6 +14,16 @@ function formatDate(isoStr) {
 }
 
 function Receipt({ order, onClose }) {
+  const [darkMode, setDarkMode] = useState(
+    () => document.body.classList.contains("dark")
+  );
+
+  useEffect(() => {
+    const syncDarkMode = () => setDarkMode(document.body.classList.contains("dark"));
+    window.addEventListener("darkmodechange", syncDarkMode);
+    return () => window.removeEventListener("darkmodechange", syncDarkMode);
+  }, []);
+
   if (!order) return null;
 
   const itemTotal = order.items.reduce(
@@ -21,10 +34,19 @@ function Receipt({ order, onClose }) {
     <div className="receiptOverlay" onClick={onClose}>
       <div className="receiptModal" onClick={(e) => e.stopPropagation()}>
 
-        {/* 상단 헤더 */}
+        {/* 상단 헤더 — J.D + 집다움 한옥 로고 조합 */}
         <div className="receiptHeader">
-          <img src={KorLogo} alt="집다움" className="receiptLogo" />
-          <p className="receiptSub">주문 영수증</p>
+          <div className="receiptLogoRow">
+            <img src={JDLogo} alt="J.D" className="receiptLogoJD" />
+            <span className="receiptLogoDivider" />
+            <img
+              src={darkMode ? JipdaumHanokLogoDark : JipdaumHanokLogo}
+              alt="집다움"
+              className="receiptLogoHanok"
+            />
+          </div>
+          <span className="receiptLogoAccent" />
+          <p className="receiptSub">영수증</p>
         </div>
 
         <div className="receiptDash" />
@@ -32,15 +54,15 @@ function Receipt({ order, onClose }) {
         {/* 주문 기본 정보 */}
         <div className="receiptSection">
           <div className="receiptRow">
-            <span>주문번호</span>
+            <span>주문 번호</span>
             <span>#{order.id}</span>
           </div>
           <div className="receiptRow">
-            <span>주문일시</span>
+            <span>주문 일시</span>
             <span>{formatDate(order.order_date)}</span>
           </div>
           <div className="receiptRow">
-            <span>배송지</span>
+            <span>배송지역</span>
             <span className="receiptAddr">{order.shipping_addr}</span>
           </div>
         </div>

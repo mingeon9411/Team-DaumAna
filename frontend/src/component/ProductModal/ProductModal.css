@@ -48,12 +48,8 @@
   min-height: 0;
   border-top: none;
   box-shadow: none;
-  border-radius: 20px 20px 0 0;
+  border-radius: 20px;
   overflow: hidden;
-}
-
-.productModal .reviewSection {
-  border-radius: 0 0 20px 20px;
 }
 
 .productModalClose {
@@ -77,6 +73,68 @@
 
 .productModalClose:hover {
   opacity: 1;
+}
+
+/* ── 한국관 상세 — 목록 페이지와 통일된 한국풍 톤 ── */
+.productModal .detailLabel {
+  display: block;
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  margin-bottom: 10px;
+}
+
+.productModal .detailTitleRow h1 {
+  font-family: "Song Myung", "Noto Serif KR", serif;
+  font-size: 30px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.productModal .detailHairline {
+  display: block;
+  width: 72px;
+  height: 2px;
+  margin: 4px 0 18px;
+  background: linear-gradient(90deg, #2a4d8f 0%, #f5f1ea 25%, #a6342a 50%, #1c1a16 75%, #c9a227 100%);
+  border-radius: 999px;
+}
+
+.productModal .detailDesc {
+  font-family: "Noto Serif KR", serif;
+  font-weight: 300;
+  line-height: 1.8;
+}
+
+.productModal .detailInfoBox strong {
+  font-family: "DM Mono", monospace;
+  color: #a6342a;
+  font-size: 24px;
+}
+
+.productModal .buyNow {
+  background: #a6342a;
+  box-shadow: 0 4px 12px rgba(166, 52, 42, 0.28);
+}
+
+.productModal .optionArea button:hover {
+  border-color: #a6342a;
+  box-shadow: 0 2px 8px rgba(166, 52, 42, 0.12);
+}
+
+.productModal .star.active,
+.productModal .reviewStars {
+  color: #a6342a;
+}
+
+body.dark .productModal .detailInfoBox strong {
+  color: #d98a7a;
+}
+
+body.dark .productModal .buyNow {
+  background: #8a3226;
 }
 
 @media (max-width: 768px) {

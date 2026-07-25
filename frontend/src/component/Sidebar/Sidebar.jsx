@@ -242,7 +242,10 @@ function Sidebar() {
   const searchCatalog = isKoreanHall ? KOREAN_HALL_PRODUCTS : HOME_PRODUCTS;
   const searchResults = searchQuery.trim()
     ? searchCatalog
-        .filter((p) => p.name.toLowerCase().includes(searchQuery.trim().toLowerCase()))
+        .filter((p) => {
+          const q = searchQuery.trim().toLowerCase();
+          return p.name.toLowerCase().includes(q) || (p.brand || "").toLowerCase().includes(q);
+        })
         .slice(0, 8)
     : [];
 

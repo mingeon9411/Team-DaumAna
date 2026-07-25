@@ -5,9 +5,52 @@
     flex-shrink: 0;
     overflow-y: auto;
     overflow-x: hidden;
-    background: var(--background);
+    background:
+      radial-gradient(120% 60% at 15% 0%, rgba(201, 162, 39, 0.06), transparent 60%),
+      var(--background);
     font-family: "Noto Sans KR", sans-serif;
     animation: khFadeIn 0.8s ease-out forwards;
+}
+
+/* 은은한 완자문(전통 격자) 텍스처 — 전체 배경에 아주 옅게 깔아 종이 결처럼 보이게 */
+.khPage::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(120, 90, 40, 0.035) 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(-45deg, rgba(120, 90, 40, 0.035) 0 1px, transparent 1px 26px);
+}
+
+body.dark .khPage::before {
+    opacity: 0.4;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(150, 185, 255, 0.04) 0 1px, transparent 1px 26px),
+      repeating-linear-gradient(-45deg, rgba(150, 185, 255, 0.04) 0 1px, transparent 1px 26px);
+}
+
+/* 일월오봉도 — 인트로 배경에 은은하게 얹히는 워터마크 */
+.khWatermark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 460px;
+    object-fit: cover;
+    object-position: center 30%;
+    opacity: 0.1;
+    filter: saturate(0.7);
+    pointer-events: none;
+    z-index: 0;
+}
+
+body.dark .khWatermark {
+    opacity: 0.16;
+    filter: saturate(0.5) brightness(0.9);
+    mix-blend-mode: screen;
 }
 
 @keyframes khFadeIn {
@@ -62,48 +105,61 @@
 .khLabel {
     font-family: "DM Mono", monospace;
     font-size: 11px;
-    letter-spacing: 0.25em;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
     color: var(--muted-foreground);
-    margin-bottom: 16px;
+    margin-bottom: 18px;
 }
 
 .khTitle {
-    font-family: "Noto Serif KR", serif;
-    font-size: 40px;
-    font-weight: 500;
+    font-family: "Song Myung", "Noto Serif KR", serif;
+    font-size: 56px;
+    font-weight: 400;
     color: var(--foreground);
-    letter-spacing: -0.3px;
-    margin-bottom: 24px;
+    letter-spacing: 0.06em;
+    margin-bottom: 22px;
+}
+
+.khHairline {
+    display: block;
+    width: 96px;
+    height: 2px;
+    margin-bottom: 26px;
+    background: linear-gradient(90deg, #2a4d8f 0%, #f5f1ea 25%, #a6342a 50%, #1c1a16 75%, #c9a227 100%);
+    border-radius: 999px;
 }
 
 .khDesc {
-    font-size: 14px;
-    line-height: 1.8;
+    font-family: "Noto Serif KR", serif;
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.9;
     color: var(--muted-foreground);
     max-width: 480px;
 }
 
 .khGrid {
+    position: relative;
+    z-index: 2;
     list-style: none;
     margin: 0;
-    padding: 20px 60px 100px;
+    padding: 20px 60px 120px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 40px 32px;
+    gap: 48px 32px;
 }
 
 @media (max-width: 768px) {
     .khIntro { padding: 120px 20px 40px; }
-    .khGrid { padding: 20px 20px 60px; gap: 24px 16px; }
+    .khGrid { padding: 20px 20px 60px; gap: 32px 16px; }
 }
 
 .khCard {
-    transition: transform 0.2s ease;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .khCard:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
 }
 
 .khCardLink {
@@ -120,45 +176,73 @@
 }
 
 .khImgWrap {
+    position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
     overflow: hidden;
     background: var(--muted);
-    border-radius: 4px;
-    margin-bottom: 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 28px rgba(30, 20, 10, 0.1);
+}
+
+/* 카드 상단에 살짝 얹히는 오방색 포인트 — 호버 시 은은하게 드러남 */
+.khImgWrap::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #2a4d8f 0%, #f5f1ea 25%, #a6342a 50%, #1c1a16 75%, #c9a227 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.khCard:hover .khImgWrap::after {
+    opacity: 0.85;
 }
 
 .khImg {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.4s ease;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .khCard:hover .khImg {
-    transform: scale(1.04);
+    transform: scale(1.05);
 }
 
 .khName {
-    font-size: 16px;
-    font-weight: 500;
+    font-family: "Song Myung", "Noto Serif KR", serif;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
     color: var(--foreground);
-    margin: 0 0 6px;
+    margin: 0 0 8px;
     line-height: 1.4;
 }
 
 .khProductDesc {
-    font-size: 13px;
+    font-size: 12.5px;
     color: var(--muted-foreground);
-    margin: 0 0 8px;
-    line-height: 1.5;
+    margin: 0 0 10px;
+    line-height: 1.6;
 }
 
 .khPrice {
+    font-family: "DM Mono", monospace;
     font-size: 15px;
     font-weight: 600;
-    color: var(--foreground);
+    letter-spacing: 0.01em;
+    color: #a6342a;
     margin: 0;
+}
+
+body.dark .khPrice {
+    color: #d98a7a;
 }
 
 /* ── 다크모드 ── */

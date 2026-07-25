@@ -2,7 +2,7 @@ import "./ProductModal.css";
 import "../ProductDetail/ProductDetail.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getProductDetail, addToCart } from "../../api";
+import { addToCart } from "../../api";
 import products from "../../data/products";
 import { isWished, toggleWish } from "../../utils/wishlist";
 import { useAuthModal } from "../../context/AuthModalContext";
@@ -11,25 +11,10 @@ import { useProductModal } from "../../context/ProductModalContext";
 
 function ProductModal() {
   const { isOpen, productId, closeProduct } = useProductModal();
-  const [apiProduct, setApiProduct] = useState(null);
-  const localProduct = products.find((item) => item.id === productId);
-
-  useEffect(() => {
-    if (!isOpen || productId == null) return;
-    setApiProduct(null);
-    getProductDetail(productId)
-      .then((res) => setApiProduct(res.data))
-      .catch(() => setApiProduct(null));
-  }, [isOpen, productId]);
-
-  const product = localProduct
-    ? {
-        ...localProduct,
-        name: apiProduct?.name || localProduct.name,
-        desc: apiProduct?.description || localProduct.desc,
-        price: apiProduct?.base_price || localProduct.price,
-      }
-    : null;
+  // 한국관은 자체 로컬 카탈로그(data/products.js)만 사용한다 — 백엔드 상품 마스터(MySQL)에는
+  // 별개인 홈 화면 상품이 들어있어서, id가 우연히 겹치면 엉뚱한 이름/가격으로 덮어써지는
+  // 버그가 있었다. 백엔드 조회 없이 로컬 데이터만 신뢰한다.
+  const product = products.find((item) => item.id === productId);
 
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
@@ -45,20 +30,6 @@ function ProductModal() {
     setQuantity(0);
   }, [productId]);
 
-  const [reviewText, setReviewText] = useState("");
-  const [rating, setRating] = useState(5);
-  const [reviews, setReviews] = useState([]);
-
-  useEffect(() => {
-    if (productId == null) return;
-    setReviews(JSON.parse(localStorage.getItem(`reviews-${productId}`)) || []);
-  }, [productId]);
-
-  useEffect(() => {
-    if (productId == null) return;
-    localStorage.setItem(`reviews-${productId}`, JSON.stringify(reviews));
-  }, [reviews, productId]);
-
   if (!isOpen || !product) return null;
 
   const handleWish = () => {
@@ -71,23 +42,6 @@ function ProductModal() {
       review: product.review || 0,
     });
     setWished(isWished(product.id));
-  };
-
-  const handleReviewSubmit = () => {
-    if (!reviewText.trim()) {
-      alert("리뷰를 입력해주세요.");
-      return;
-    }
-
-    const newReview = {
-      id: Date.now(),
-      content: reviewText,
-      rating: rating,
-      date: new Date().toLocaleDateString(),
-    };
-
-    setReviews([newReview, ...reviews]);
-    setReviewText("");
   };
 
   const handleAddToCart = async () => {
@@ -148,7 +102,7 @@ function ProductModal() {
 
           <aside className="detailRight">
             <div className="detailInfoBox">
-              <p className="detailDesc">{product.desc}</p>
+              <span className="detailLabel">KOREAN HALL</span>
               <div className="detailTitleRow">
                 <h1>{product.name}</h1>
                 <button
@@ -160,21 +114,9 @@ function ProductModal() {
                   {wished ? "♥" : "♡"}
                 </button>
               </div>
+              <span className="detailHairline" />
+              <p className="detailDesc">{product.longDesc || product.desc}</p>
               <strong>{product.price.toLocaleString()}원</strong>
-
-              <div className="detailSpec">
-                <p>SIZE : W 25 H 13 D 102</p>
-                <p>MATERIAL : ceramic / wood</p>
-              </div>
-
-              <div className="optionArea">
-                <span>type</span>
-                <div className="optionBtns">
-                  <button>basic</button>
-                  <button>premium</button>
-                  <button>set</button>
-                </div>
-              </div>
 
               <div className="quantityArea">
                 <span>수량</span>
@@ -201,46 +143,6 @@ function ProductModal() {
               </div>
             </div>
           </aside>
-        </section>
-
-        <section className="reviewSection">
-          <h2>REVIEW</h2>
-          <div className="ratingBox">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <button
-                key={star}
-                type="button"
-                className={star <= rating ? "star active" : "star"}
-                onClick={() => setRating(star)}
-              >
-                ★
-              </button>
-            ))}
-          </div>
-
-          <textarea
-            placeholder="리뷰를 작성해주세요."
-            value={reviewText}
-            onChange={(e) => setReviewText(e.target.value)}
-          />
-
-          <button onClick={handleReviewSubmit}>리뷰 등록</button>
-
-          <div className="reviewList">
-            {reviews.length === 0 ? (
-              <p className="emptyReview">아직 작성된 리뷰가 없습니다.</p>
-            ) : (
-              reviews.map((review) => (
-                <div className="reviewItem" key={review.id}>
-                  <div className="reviewStars">
-                    {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
-                  </div>
-                  <p>{review.content}</p>
-                  <span>{review.date}</span>
-                </div>
-              ))
-            )}
-          </div>
         </section>
       </div>
     </div>
