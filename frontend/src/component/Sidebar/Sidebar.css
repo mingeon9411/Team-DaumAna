@@ -13,10 +13,14 @@
   padding: 8px 10px;
   border-radius: 999px;
 
-  background: linear-gradient(120deg, #f4f4f6 0%, #d7d9dc 20%, #ececed 40%, #b8bcc2 55%, #e6e7e9 70%, #cfd1d4 85%, #f4f4f6 100%);
-  background-size: 300% 300%;
+  /* 안쪽(padding-box)은 기존 메탈릭 그러데이션, 테두리(border-box)는 에세이
+     페이지 배경(홀로 메쉬)과 같은 톤의 파스텔 그러데이션으로 띠를 두른다 */
+  border: 6px solid transparent;
+  background:
+    linear-gradient(120deg, #f4f4f6 0%, #d7d9dc 20%, #ececed 40%, #b8bcc2 55%, #e6e7e9 70%, #cfd1d4 85%, #f4f4f6 100%) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  background-size: 300% 300%, 100% 100%;
   animation: metallicShine 11s ease-in-out infinite;
-  border: 1px solid var(--border);
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
 
   transition: background-color 2.8s ease, border-color 2.1s ease;
@@ -432,9 +436,10 @@ body.dark .railSearchResults button:hover {
 
 /* 다크모드 */
 body.dark .sidebarRail {
-  background: linear-gradient(120deg, #060d1e 0%, #0b1430 20%, #0f1f3d 40%, #060d1e 55%, #0f1f3d 70%, #0b1430 85%, #060d1e 100%);
-  background-size: 300% 300%;
-  border-color: rgba(150, 185, 255, 0.16);
+  background:
+    linear-gradient(120deg, #060d1e 0%, #0b1430 20%, #0f1f3d 40%, #060d1e 55%, #0f1f3d 70%, #0b1430 85%, #060d1e 100%) padding-box,
+    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
+  background-size: 300% 300%, 100% 100%;
 }
 
 /* 한국관 미니바는 다크모드에서도 은은한 등불빛 톤 유지 */

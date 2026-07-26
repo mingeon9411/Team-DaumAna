@@ -1,25 +1,15 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag } from "lucide-react";
 import "./Home.css";
 import ChatBot from "../MyPage/ChatBot";
 import LookbookViewer from "./LookbookViewer";
-import moonJarLamp from "../../assets/달항아리 램프.png";
-import patchworkBedding from "../../assets/조각보 침구 세트.png";
 import koreanModernSofa from "../../assets/products/Korean Modern Sofa — Ivory Leather.png";
 import floorLoungeSofa from "../../assets/products/플로어 라운지 소파.png";
 import moonJarArmchair from "../../assets/products/달항아리 암체어.png";
 import { addToCart, getCartItems } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 
-const HERO_LEFT_IMAGES = [
-  { src: moonJarLamp, alt: "달항아리 램프 - 은은한 조명이 켜진 도자 램프" },
-];
-
-const HERO_RIGHT_IMAGES = [
-  { src: patchworkBedding, alt: "조각보 침구 세트 - 전통 조각보 패턴의 침구와 베개" },
-];
-
-const HERO_SLIDE_INTERVAL = 4800;
 
 const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
 const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
@@ -150,6 +140,7 @@ function Home() {
   const [quickViewQty, setQuickViewQty] = useState(1);
   const [cartCounts, setCartCounts] = useState({});
   const { openLogin } = useAuthModal();
+  const navigate = useNavigate();
 
   // 상품 카드 배지는 로그인 계정의 실제 백엔드 장바구니만 기준으로 한다.
   // (localStorage 기반 카운터는 계정과 무관하게 남아 실제로 담지 않아도 표시되는 버그가 있어 제거)
@@ -179,43 +170,75 @@ function Home() {
       window.removeEventListener("authchange", fetchCartCounts);
     };
   }, []);
-  // 인트로 영상 — 도어인트로가 끝나기 전엔 재생하지 않고, "doorintroend" 이벤트를 받은
-  // 뒤에야 재생을 시작한다. 한 번만 재생하고, 끝나면 소파 상품 사진으로 부드럽게 전환한다.
+  // 인트로 영상 — 도어인트로가 끝나기 전엔 재생하지 않는다. 그 뒤로는 이 페이지에
+  // 들어올 때마다(스크롤로 다시 돌아와도) 처음부터 재생하고, 끝나면 소파 사진으로 전환한다.
   const introVideoRef = useRef(null);
   const [introVideoEnded, setIntroVideoEnded] = useState(false);
+  const [doorIntroDone, setDoorIntroDone] = useState(false);
 
   useEffect(() => {
-    const startVideo = () => {
-      introVideoRef.current?.play().catch(() => {});
-    };
-    window.addEventListener("doorintroend", startVideo);
-    return () => window.removeEventListener("doorintroend", startVideo);
+    const onDoorIntroEnd = () => setDoorIntroDone(true);
+    window.addEventListener("doorintroend", onDoorIntroEnd);
+    return () => window.removeEventListener("doorintroend", onDoorIntroEnd);
   }, []);
 
-  // 두 번째(복제) 인트로 영상 — 페이지가 실제로 화면에 들어올 때 한 번만 재생을 시작한다.
-  const introVideo2Ref = useRef(null);
-  const [introVideo2Ended, setIntroVideo2Ended] = useState(false);
-  const introVideo2Started = useRef(false);
-
   useEffect(() => {
-    const el = document.getElementById("home-essay-2");
+    const el = document.getElementById("home-essay");
     if (!el) return;
 
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (!entry.isIntersecting || introVideo2Started.current) return;
-        introVideo2Started.current = true;
-        introVideo2Ref.current?.play().catch(() => {});
-        io.disconnect();
+        if (entry.isIntersecting) {
+          if (!doorIntroDone) return;
+          setIntroVideoEnded(false);
+          const v = introVideoRef.current;
+          if (v) {
+            v.currentTime = 0;
+            v.play().catch(() => {});
+          }
+        } else {
+          setIntroVideoEnded(false);
+        }
       },
       { threshold: 0.5 }
     );
 
     io.observe(el);
     return () => io.disconnect();
+  }, [doorIntroDone]);
+
+  // 두 번째(복제) 페이지 — 영상 없이 소파 사진에 켄 번즈 확대 연출만 준다. 페이지에
+  // 들어올 때마다 연출을 처음부터 다시 보여준 뒤, 눈에 들어올 시간이 지나면 에세이를 펼친다.
+  const [introVideo2Ended, setIntroVideo2Ended] = useState(false);
+  const [essay2PlayKey, setEssay2PlayKey] = useState(0);
+
+  useEffect(() => {
+    const el = document.getElementById("home-essay-2");
+    if (!el) return;
+
+    let revealTimer;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        clearTimeout(revealTimer);
+        if (entry.isIntersecting) {
+          setIntroVideo2Ended(false);
+          setEssay2PlayKey((k) => k + 1);
+          revealTimer = setTimeout(() => setIntroVideo2Ended(true), 3000);
+        } else {
+          setIntroVideo2Ended(false);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    io.observe(el);
+    return () => {
+      io.disconnect();
+      clearTimeout(revealTimer);
+    };
   }, []);
 
-  // 세 번째 인트로 영상("집다움.mp4") — 역시 화면에 처음 들어올 때 재생을 시작한다.
+  // 세 번째 인트로 영상("집다움.mp4") — 이 페이지에 처음 들어올 때 딱 한 번만 재생한다.
   const introVideo3Ref = useRef(null);
   const [introVideo3Ended, setIntroVideo3Ended] = useState(false);
   const introVideo3Started = useRef(false);
@@ -238,14 +261,28 @@ function Home() {
     return () => io.disconnect();
   }, []);
 
-  // 히어로 섹션 — 좌우 이미지를 일정 간격으로 크로스페이드하며 전환
-  const [heroSlide, setHeroSlide] = useState(0);
+  // 네 번째(한국관 배너) 영상("jipdaum-hanok.mp4") — 이 페이지에 처음 들어올 때 딱
+  // 한 번만 재생하고, 끝나면 왼쪽에 한국관으로 초대하는 에세이가 펼쳐진다.
+  const introVideo4Ref = useRef(null);
+  const [introVideo4Ended, setIntroVideo4Ended] = useState(false);
+  const introVideo4Started = useRef(false);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setHeroSlide((i) => (i + 1) % HERO_LEFT_IMAGES.length);
-    }, HERO_SLIDE_INTERVAL);
-    return () => clearInterval(timer);
+    const el = document.getElementById("home-essay-4");
+    if (!el) return;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || introVideo4Started.current) return;
+        introVideo4Started.current = true;
+        introVideo4Ref.current?.play().catch(() => {});
+        io.disconnect();
+      },
+      { threshold: 0.5 }
+    );
+
+    io.observe(el);
+    return () => io.disconnect();
   }, []);
 
   // 사이드바 검색 플라이아웃에서 선택한 상품을 퀵뷰로 연다.
@@ -268,7 +305,7 @@ function Home() {
     return () => window.removeEventListener("open-home-product", handler);
   }, []);
 
-  // 첫 번째 인트로 영상이 끝나 소파 사진으로 전환된 뒤 3초 있다가, 사용자가 아직
+  // 첫 번째 인트로 영상이 끝나 에세이가 펼쳐진 뒤 7초 있다가, 사용자가 아직
   // 그 페이지에 머물러 있으면 (복제된) 두 번째 인트로 페이지로 스크롤한다.
   useEffect(() => {
     if (!introVideoEnded) return;
@@ -286,12 +323,12 @@ function Home() {
           });
         }
       }
-    }, 3000);
+    }, 7000);
 
     return () => clearTimeout(holdTimer);
   }, [introVideoEnded]);
 
-  // 두 번째(복제) 인트로 영상도 끝나고 3초 있다가, 사용자가 아직 그 페이지에
+  // 두 번째(복제) 페이지의 에세이가 펼쳐진 뒤 7초 있다가, 사용자가 아직 그 페이지에
   // 머물러 있으면 세 번째 인트로 페이지로 스크롤한다.
   useEffect(() => {
     if (!introVideo2Ended) return;
@@ -306,21 +343,56 @@ function Home() {
           window.lenis.scrollTo(target, {
             duration: 5.3,
             easing: (t) => 1 - Math.pow(1 - t, 3),
+            onComplete: () => {
+              // 세 번째 영상은 한 번만 재생하므로, 이미 재생을 시작했다면 다시 되돌리지 않는다.
+              if (introVideo3Started.current) return;
+              introVideo3Started.current = true;
+              introVideo3Ref.current?.play().catch(() => {});
+            },
           });
         }
       }
-    }, 3000);
+    }, 7000);
 
     return () => clearTimeout(holdTimer);
   }, [introVideo2Ended]);
 
-  // 세 번째 인트로 영상도 끝나고 8초 있다가, 사용자가 아직 그 페이지에
-  // 머물러 있으면 상품 페이지로 천천히 스크롤한다.
+  // 세 번째 인트로 영상도 끝나고 7초 있다가, 사용자가 아직 그 페이지에
+  // 머물러 있으면 네 번째(한국관 배너) 페이지로 스크롤한다.
   useEffect(() => {
     if (!introVideo3Ended) return;
 
     const holdTimer = setTimeout(() => {
       const essayEl = document.getElementById("home-essay-3");
+      const stillOnEssay = essayEl && Math.abs(essayEl.getBoundingClientRect().left) < 50;
+      if (stillOnEssay && window.lenis) {
+        const target = document.querySelectorAll("[data-hsnap]")[3];
+        if (target) {
+          window.lenis.resize();
+          window.lenis.scrollTo(target, {
+            duration: 5.3,
+            easing: (t) => 1 - Math.pow(1 - t, 3),
+            onComplete: () => {
+              // 네 번째 영상도 한 번만 재생하므로, 이미 재생을 시작했다면 다시 되돌리지 않는다.
+              if (introVideo4Started.current) return;
+              introVideo4Started.current = true;
+              introVideo4Ref.current?.play().catch(() => {});
+            },
+          });
+        }
+      }
+    }, 7000);
+
+    return () => clearTimeout(holdTimer);
+  }, [introVideo3Ended]);
+
+  // 네 번째(한국관 배너) 영상도 끝나고 에세이가 펼쳐진 뒤 7초 있다가, 사용자가 아직
+  // 그 페이지에 머물러 있으면 상품 페이지로 스크롤한다.
+  useEffect(() => {
+    if (!introVideo4Ended) return;
+
+    const holdTimer = setTimeout(() => {
+      const essayEl = document.getElementById("home-essay-4");
       const stillOnEssay = essayEl && Math.abs(essayEl.getBoundingClientRect().left) < 50;
       if (stillOnEssay && window.lenis) {
         const target = document.querySelectorAll("[data-hsnap]")[4];
@@ -332,10 +404,10 @@ function Home() {
           });
         }
       }
-    }, 8000);
+    }, 7000);
 
     return () => clearTimeout(holdTimer);
-  }, [introVideo3Ended]);
+  }, [introVideo4Ended]);
 
   const openQuickView = (product) => {
     setQuickViewProduct(product);
@@ -406,8 +478,8 @@ function Home() {
   return (
     <div className="home bg-background text-foreground flex flex-row" style={SANS}>
 
-      {/* ESSAY SPREAD — 처음엔 영상이 화면 전체를 채우고, 영상이 끝나면 절반은 소파
-          사진으로, 나머지 절반은 에세이(상품 구매 유도) 페이지가 자연스럽게 펼쳐진다 */}
+      {/* ESSAY SPREAD — 처음엔 영상이 화면 전체를 채우고, 영상이 끝나면 마지막 장면
+          그대로 절반으로 줄어들고, 나머지 절반은 에세이(상품 구매 유도) 페이지가 자연스럽게 펼쳐진다 */}
       <section id="home-essay" data-hide-header data-hsnap className="w-screen h-screen shrink-0 overflow-hidden flex flex-row text-foreground">
         <div
           className="relative h-full overflow-hidden"
@@ -424,13 +496,6 @@ function Home() {
             playsInline
             preload="auto"
             onEnded={() => setIntroVideoEnded(true)}
-          />
-          <img
-            src={floorLoungeSofa}
-            alt="플로어 라운지 소파"
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1800ms] ease-in-out ${
-              introVideoEnded ? "opacity-100" : "opacity-0"
-            }`}
           />
         </div>
 
@@ -468,34 +533,9 @@ function Home() {
         </div>
       </section>
 
-      {/* ESSAY SPREAD (복제) — 위 페이지와 동일한 구성의 두 번째 페이지. 화면에 처음
-          들어올 때 영상이 재생을 시작한다 */}
+      {/* ESSAY SPREAD (복제) — 위 페이지와 좌우가 뒤바뀐 두 번째 페이지. 영상 없이 소파
+          사진에 켄 번즈 확대 연출만 주고, 화면에 들어와 잠시 지나면 에세이가 왼쪽에 펼쳐진다 */}
       <section id="home-essay-2" data-hide-header data-hsnap className="w-screen h-screen shrink-0 overflow-hidden flex flex-row text-foreground">
-        <div
-          className="relative h-full overflow-hidden"
-          style={{
-            width: introVideo2Ended ? "50%" : "100%",
-            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1)",
-          }}
-        >
-          <video
-            ref={introVideo2Ref}
-            className="w-full h-full object-cover"
-            src="/videos/main-video.mp4"
-            muted
-            playsInline
-            preload="auto"
-            onEnded={() => setIntroVideo2Ended(true)}
-          />
-          <img
-            src={floorLoungeSofa}
-            alt="플로어 라운지 소파"
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1800ms] ease-in-out ${
-              introVideo2Ended ? "opacity-100" : "opacity-0"
-            }`}
-          />
-        </div>
-
         <div
           className="sparkleBg holoMesh relative h-full flex flex-col items-start justify-center overflow-hidden"
           style={{
@@ -506,17 +546,17 @@ function Home() {
         >
           <div className="relative z-10 w-full max-w-md px-16">
             <p className="text-xs tracking-[0.25em] uppercase text-muted-foreground mb-5 whitespace-nowrap" style={MONO}>
-              FEATURED IN THIS FILM
+              FEATURED IN THIS SCENE
             </p>
             <h3 className="text-3xl md:text-4xl font-light leading-snug mb-6 whitespace-nowrap" style={SERIF}>
-              영상 속 공간에 놓인
+              사진 속 공간에 놓인
               <br />
               {featuredProduct.name}
             </h3>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mb-10 whitespace-nowrap">
-              영상에 등장한 상품을 지금 바로 만나보세요.
+              사진에 등장한 상품을 지금 바로 만나보세요.
               <br />
-              영상에 관련된 상품을 구매할 수 있습니다.
+              사진에 관련된 상품을 구매할 수 있습니다.
             </p>
             <button
               type="button"
@@ -527,6 +567,21 @@ function Home() {
               상품 보러가기 →
             </button>
           </div>
+        </div>
+
+        <div
+          className="relative h-full overflow-hidden"
+          style={{
+            width: introVideo2Ended ? "50%" : "100%",
+            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1)",
+          }}
+        >
+          <img
+            key={essay2PlayKey}
+            src={floorLoungeSofa}
+            alt="플로어 라운지 소파"
+            className="essaySofaKenBurns w-full h-full object-cover"
+          />
         </div>
       </section>
 
@@ -571,32 +626,58 @@ function Home() {
         </div>
       </section>
 
-      {/* HERO — 전체 상품(검색) 페이지 바로 앞에 배치, 좌우 이미지가 크로스페이드로 순환 */}
-      <section data-hsnap className="relative w-screen h-screen shrink-0 overflow-hidden bg-background flex flex-row">
-        <div className="relative w-1/2 h-full overflow-hidden">
-          {HERO_LEFT_IMAGES.map((img, i) => (
-            <img
-              key={img.src}
-              src={img.src}
-              alt={img.alt}
-              className={`heroSlideImg absolute inset-0 w-full h-full object-cover transition-opacity duration-[1600ms] ease-in-out ${
-                i === heroSlide ? "opacity-100" : "opacity-0"
-              }`}
-            />
-          ))}
+      {/* KOREAN HALL BANNER — 전체 상품(검색) 페이지 바로 앞에 배치. 처음엔 한옥 영상이
+          화면 전체를 채우고, 영상이 끝나면 왼쪽에 한국관으로 초대하는 에세이가 펼쳐진다 */}
+      <section id="home-essay-4" data-hide-header data-hsnap className="w-screen h-screen shrink-0 overflow-hidden flex flex-row text-foreground">
+        <div
+          className="sparkleBg holoMesh relative h-full flex flex-col items-start justify-center overflow-hidden"
+          style={{
+            width: introVideo4Ended ? "50%" : "0%",
+            opacity: introVideo4Ended ? 1 : 0,
+            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s ease-in-out 0.5s",
+          }}
+        >
+          <div className="relative z-10 w-full max-w-md px-16">
+            <p className="text-xs tracking-[0.25em] uppercase text-muted-foreground mb-5 whitespace-nowrap" style={MONO}>
+              THE KOREAN HALL
+            </p>
+            <h3 className="text-3xl md:text-4xl font-light leading-snug mb-6 whitespace-nowrap" style={SERIF}>
+              집다움 한국관으로
+              <br />
+              오세요
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mb-10 whitespace-nowrap">
+              한지, 나전, 도자의 결을 담은 한국 전통의 미감.
+              <br />
+              한국관에서 집다움만의 공간을 만나보세요.
+            </p>
+            <button
+              type="button"
+              onClick={() => navigate("/korean-hall")}
+              className="px-8 py-3.5 bg-foreground text-background text-sm font-medium tracking-wide hover:opacity-85 transition-opacity whitespace-nowrap"
+              style={SANS}
+            >
+              한국관 바로가기 →
+            </button>
+          </div>
         </div>
 
-        <div className="relative w-1/2 h-full overflow-hidden">
-          {HERO_RIGHT_IMAGES.map((img, i) => (
-            <img
-              key={img.src}
-              src={img.src}
-              alt={img.alt}
-              className={`heroSlideImg absolute inset-0 w-full h-full object-cover transition-opacity duration-[1600ms] ease-in-out ${
-                i === heroSlide ? "opacity-100" : "opacity-0"
-              }`}
-            />
-          ))}
+        <div
+          className="relative h-full overflow-hidden"
+          style={{
+            width: introVideo4Ended ? "50%" : "100%",
+            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1)",
+          }}
+        >
+          <video
+            ref={introVideo4Ref}
+            className="w-full h-full object-cover"
+            src="/videos/jipdaum-hanok.mp4"
+            muted
+            playsInline
+            preload="auto"
+            onEnded={() => setIntroVideo4Ended(true)}
+          />
         </div>
       </section>
 

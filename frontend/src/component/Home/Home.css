@@ -195,18 +195,14 @@ body.dark .metallicSilver {
   transform: translateX(-50%) translateY(0) scale(1);
 }
 
-/* 히어로 슬라이드 — 보여지는 동안 아주 느리게 확대되는 켄 번즈 연출 */
-.heroSlideImg {
-  transform: scale(1);
-}
-
-.heroSlideImg.opacity-100 {
-  animation: heroKenBurns 6.4s ease-out forwards;
-}
-
 @keyframes heroKenBurns {
   from { transform: scale(1) translate(0, 0); }
   to   { transform: scale(1.08) translate(-1.4%, -1%); }
+}
+
+/* 두 번째 에세이 페이지 — 영상 대신 소파 사진에 느린 켄 번즈 확대 연출 */
+.essaySofaKenBurns {
+  animation: heroKenBurns 5s ease-out forwards;
 }
 
 /* 상품 퀵뷰 모달 — 메탈릭 실버 배경만 적용 (모달 자체의 스크롤/포지셔닝 유틸과 충돌하지 않도록

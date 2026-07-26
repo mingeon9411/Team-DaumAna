@@ -4,27 +4,26 @@ import products from "../../data/products";
 import { useProductModal } from "../../context/ProductModalContext";
 import irworobongdo from "../../assets/decor/irworobongdo.svg";
 
+const FILM_SOURCES = ["/videos/jipdaum-hanok.mp4", "/videos/jipdaum-kor.mp4"];
+
 function KoreanHall() {
   const { openProduct } = useProductModal();
   const filmVideoRef = useRef(null);
-  const filmStarted = useRef(false);
+  const [filmIndex, setFilmIndex] = useState(0);
   const [filmEnded, setFilmEnded] = useState(false);
 
   useEffect(() => {
-    const el = filmVideoRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting || filmStarted.current) return;
-        filmStarted.current = true;
-        el.play().catch(() => {});
-        io.disconnect();
-      },
-      { threshold: 0.35 }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+    if (filmIndex === 0) return;
+    filmVideoRef.current?.play().catch(() => {});
+  }, [filmIndex]);
+
+  const handleFilmEnded = () => {
+    if (filmIndex < FILM_SOURCES.length - 1) {
+      setFilmIndex((i) => i + 1);
+    } else {
+      setFilmEnded(true);
+    }
+  };
 
   return (
     <div className="khPage" data-hsnap data-lenis-prevent>
@@ -44,11 +43,12 @@ function KoreanHall() {
         <video
           ref={filmVideoRef}
           className="khFilmVideo"
-          src="/videos/jipdaum-kor.mp4"
+          src={FILM_SOURCES[filmIndex]}
+          autoPlay
           muted
           playsInline
           preload="auto"
-          onEnded={() => setFilmEnded(true)}
+          onEnded={handleFilmEnded}
         />
         <div className="khFilmOverlay" />
         <div className="khFilmCaption">
