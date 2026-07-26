@@ -192,6 +192,52 @@ function Home() {
     return () => window.removeEventListener("doorintroend", startVideo);
   }, []);
 
+  // 두 번째(복제) 인트로 영상 — 페이지가 실제로 화면에 들어올 때 한 번만 재생을 시작한다.
+  const introVideo2Ref = useRef(null);
+  const [introVideo2Ended, setIntroVideo2Ended] = useState(false);
+  const introVideo2Started = useRef(false);
+
+  useEffect(() => {
+    const el = document.getElementById("home-essay-2");
+    if (!el) return;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || introVideo2Started.current) return;
+        introVideo2Started.current = true;
+        introVideo2Ref.current?.play().catch(() => {});
+        io.disconnect();
+      },
+      { threshold: 0.5 }
+    );
+
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // 세 번째 인트로 영상("집다움.mp4") — 역시 화면에 처음 들어올 때 재생을 시작한다.
+  const introVideo3Ref = useRef(null);
+  const [introVideo3Ended, setIntroVideo3Ended] = useState(false);
+  const introVideo3Started = useRef(false);
+
+  useEffect(() => {
+    const el = document.getElementById("home-essay-3");
+    if (!el) return;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || introVideo3Started.current) return;
+        introVideo3Started.current = true;
+        introVideo3Ref.current?.play().catch(() => {});
+        io.disconnect();
+      },
+      { threshold: 0.5 }
+    );
+
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   // 히어로 섹션 — 좌우 이미지를 일정 간격으로 크로스페이드하며 전환
   const [heroSlide, setHeroSlide] = useState(0);
 
@@ -222,13 +268,36 @@ function Home() {
     return () => window.removeEventListener("open-home-product", handler);
   }, []);
 
-  // 인트로 영상이 끝나 소파 사진으로 전환된 뒤 3초 있다가, 사용자가 아직 에세이
-  // 페이지에 머물러 있으면 상품 페이지로 천천히 스크롤한다.
+  // 첫 번째 인트로 영상이 끝나 소파 사진으로 전환된 뒤 3초 있다가, 사용자가 아직
+  // 그 페이지에 머물러 있으면 (복제된) 두 번째 인트로 페이지로 스크롤한다.
   useEffect(() => {
     if (!introVideoEnded) return;
 
     const holdTimer = setTimeout(() => {
       const essayEl = document.getElementById("home-essay");
+      const stillOnEssay = essayEl && Math.abs(essayEl.getBoundingClientRect().left) < 50;
+      if (stillOnEssay && window.lenis) {
+        const target = document.querySelectorAll("[data-hsnap]")[1];
+        if (target) {
+          window.lenis.resize();
+          window.lenis.scrollTo(target, {
+            duration: 5.3,
+            easing: (t) => 1 - Math.pow(1 - t, 3),
+          });
+        }
+      }
+    }, 3000);
+
+    return () => clearTimeout(holdTimer);
+  }, [introVideoEnded]);
+
+  // 두 번째(복제) 인트로 영상도 끝나고 3초 있다가, 사용자가 아직 그 페이지에
+  // 머물러 있으면 세 번째 인트로 페이지로 스크롤한다.
+  useEffect(() => {
+    if (!introVideo2Ended) return;
+
+    const holdTimer = setTimeout(() => {
+      const essayEl = document.getElementById("home-essay-2");
       const stillOnEssay = essayEl && Math.abs(essayEl.getBoundingClientRect().left) < 50;
       if (stillOnEssay && window.lenis) {
         const target = document.querySelectorAll("[data-hsnap]")[2];
@@ -243,7 +312,30 @@ function Home() {
     }, 3000);
 
     return () => clearTimeout(holdTimer);
-  }, [introVideoEnded]);
+  }, [introVideo2Ended]);
+
+  // 세 번째 인트로 영상도 끝나고 8초 있다가, 사용자가 아직 그 페이지에
+  // 머물러 있으면 상품 페이지로 천천히 스크롤한다.
+  useEffect(() => {
+    if (!introVideo3Ended) return;
+
+    const holdTimer = setTimeout(() => {
+      const essayEl = document.getElementById("home-essay-3");
+      const stillOnEssay = essayEl && Math.abs(essayEl.getBoundingClientRect().left) < 50;
+      if (stillOnEssay && window.lenis) {
+        const target = document.querySelectorAll("[data-hsnap]")[4];
+        if (target) {
+          window.lenis.resize();
+          window.lenis.scrollTo(target, {
+            duration: 5.3,
+            easing: (t) => 1 - Math.pow(1 - t, 3),
+          });
+        }
+      }
+    }, 8000);
+
+    return () => clearTimeout(holdTimer);
+  }, [introVideo3Ended]);
 
   const openQuickView = (product) => {
     setQuickViewProduct(product);
@@ -314,9 +406,16 @@ function Home() {
   return (
     <div className="home bg-background text-foreground flex flex-row" style={SANS}>
 
-      {/* ESSAY SPREAD — 영상 절반 + 영상 속 상품 구매 유도 절반으로 구성된 인트로 무대 */}
+      {/* ESSAY SPREAD — 처음엔 영상이 화면 전체를 채우고, 영상이 끝나면 절반은 소파
+          사진으로, 나머지 절반은 에세이(상품 구매 유도) 페이지가 자연스럽게 펼쳐진다 */}
       <section id="home-essay" data-hide-header data-hsnap className="w-screen h-screen shrink-0 overflow-hidden flex flex-row text-foreground">
-        <div className="relative w-1/2 h-full overflow-hidden">
+        <div
+          className="relative h-full overflow-hidden"
+          style={{
+            width: introVideoEnded ? "50%" : "100%",
+            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1)",
+          }}
+        >
           <video
             ref={introVideoRef}
             className="w-full h-full object-cover"
@@ -335,17 +434,24 @@ function Home() {
           />
         </div>
 
-        <div className="sparkleBg holoMesh relative w-1/2 h-full flex flex-col items-start justify-center px-16">
-          <div className="relative z-10">
-            <p className="text-xs tracking-[0.25em] uppercase text-muted-foreground mb-5" style={MONO}>
+        <div
+          className="sparkleBg holoMesh relative h-full flex flex-col items-start justify-center overflow-hidden"
+          style={{
+            width: introVideoEnded ? "50%" : "0%",
+            opacity: introVideoEnded ? 1 : 0,
+            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s ease-in-out 0.5s",
+          }}
+        >
+          <div className="relative z-10 w-full max-w-md px-16">
+            <p className="text-xs tracking-[0.25em] uppercase text-muted-foreground mb-5 whitespace-nowrap" style={MONO}>
               FEATURED IN THIS FILM
             </p>
-            <h3 className="text-3xl md:text-4xl font-light leading-snug mb-6" style={SERIF}>
+            <h3 className="text-3xl md:text-4xl font-light leading-snug mb-6 whitespace-nowrap" style={SERIF}>
               영상 속 공간에 놓인
               <br />
               {featuredProduct.name}
             </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mb-10">
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mb-10 whitespace-nowrap">
               영상에 등장한 상품을 지금 바로 만나보세요.
               <br />
               영상에 관련된 상품을 구매할 수 있습니다.
@@ -353,11 +459,114 @@ function Home() {
             <button
               type="button"
               onClick={() => openQuickView(featuredProduct)}
-              className="px-8 py-3.5 bg-foreground text-background text-sm font-medium tracking-wide hover:opacity-85 transition-opacity"
+              className="px-8 py-3.5 bg-foreground text-background text-sm font-medium tracking-wide hover:opacity-85 transition-opacity whitespace-nowrap"
               style={SANS}
             >
               상품 보러가기 →
             </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ESSAY SPREAD (복제) — 위 페이지와 동일한 구성의 두 번째 페이지. 화면에 처음
+          들어올 때 영상이 재생을 시작한다 */}
+      <section id="home-essay-2" data-hide-header data-hsnap className="w-screen h-screen shrink-0 overflow-hidden flex flex-row text-foreground">
+        <div
+          className="relative h-full overflow-hidden"
+          style={{
+            width: introVideo2Ended ? "50%" : "100%",
+            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1)",
+          }}
+        >
+          <video
+            ref={introVideo2Ref}
+            className="w-full h-full object-cover"
+            src="/videos/main-video.mp4"
+            muted
+            playsInline
+            preload="auto"
+            onEnded={() => setIntroVideo2Ended(true)}
+          />
+          <img
+            src={floorLoungeSofa}
+            alt="플로어 라운지 소파"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1800ms] ease-in-out ${
+              introVideo2Ended ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        </div>
+
+        <div
+          className="sparkleBg holoMesh relative h-full flex flex-col items-start justify-center overflow-hidden"
+          style={{
+            width: introVideo2Ended ? "50%" : "0%",
+            opacity: introVideo2Ended ? 1 : 0,
+            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s ease-in-out 0.5s",
+          }}
+        >
+          <div className="relative z-10 w-full max-w-md px-16">
+            <p className="text-xs tracking-[0.25em] uppercase text-muted-foreground mb-5 whitespace-nowrap" style={MONO}>
+              FEATURED IN THIS FILM
+            </p>
+            <h3 className="text-3xl md:text-4xl font-light leading-snug mb-6 whitespace-nowrap" style={SERIF}>
+              영상 속 공간에 놓인
+              <br />
+              {featuredProduct.name}
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mb-10 whitespace-nowrap">
+              영상에 등장한 상품을 지금 바로 만나보세요.
+              <br />
+              영상에 관련된 상품을 구매할 수 있습니다.
+            </p>
+            <button
+              type="button"
+              onClick={() => openQuickView(featuredProduct)}
+              className="px-8 py-3.5 bg-foreground text-background text-sm font-medium tracking-wide hover:opacity-85 transition-opacity whitespace-nowrap"
+              style={SANS}
+            >
+              상품 보러가기 →
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ESSAY SPREAD 3 — 집다움.mp4, 끝나면 오른쪽 절반에 브랜드 무드 문구가 펼쳐진다 */}
+      <section id="home-essay-3" data-hide-header data-hsnap className="w-screen h-screen shrink-0 overflow-hidden flex flex-row text-foreground">
+        <div
+          className="relative h-full overflow-hidden"
+          style={{
+            width: introVideo3Ended ? "50%" : "100%",
+            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1)",
+          }}
+        >
+          <video
+            ref={introVideo3Ref}
+            className="w-full h-full object-cover"
+            src="/videos/jipdaum-brand.mp4"
+            muted
+            playsInline
+            preload="auto"
+            onEnded={() => setIntroVideo3Ended(true)}
+          />
+        </div>
+
+        <div
+          className="sparkleBg holoMesh relative h-full flex flex-col items-start justify-center overflow-hidden"
+          style={{
+            width: introVideo3Ended ? "50%" : "0%",
+            opacity: introVideo3Ended ? 1 : 0,
+            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s ease-in-out 0.5s",
+          }}
+        >
+          <div className="relative z-10 w-full max-w-md px-16">
+            <p className="text-xs tracking-[0.25em] uppercase text-muted-foreground mb-5 whitespace-nowrap" style={MONO}>
+              WELCOME TO JIPDAUM
+            </p>
+            <h3 className="text-3xl md:text-4xl font-light leading-snug whitespace-nowrap" style={SERIF}>
+              아늑한 공간, 편안한 느낌
+              <br />
+              집다움으로 오세요
+            </h3>
           </div>
         </div>
       </section>

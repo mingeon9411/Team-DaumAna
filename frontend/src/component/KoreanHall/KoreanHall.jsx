@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import "./KoreanHall.css";
 import products from "../../data/products";
 import { useProductModal } from "../../context/ProductModalContext";
@@ -5,6 +6,25 @@ import irworobongdo from "../../assets/decor/irworobongdo.svg";
 
 function KoreanHall() {
   const { openProduct } = useProductModal();
+  const filmVideoRef = useRef(null);
+  const filmStarted = useRef(false);
+  const [filmEnded, setFilmEnded] = useState(false);
+
+  useEffect(() => {
+    const el = filmVideoRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || filmStarted.current) return;
+        filmStarted.current = true;
+        el.play().catch(() => {});
+        io.disconnect();
+      },
+      { threshold: 0.35 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   return (
     <div className="khPage" data-hsnap data-lenis-prevent>
@@ -18,6 +38,28 @@ function KoreanHall() {
           <br />
           한지, 나전, 도자의 미감을 현대의 공간에 맞게 다시 그렸습니다.
         </p>
+      </div>
+
+      <div className={`khFilm${filmEnded ? " khFilmClosed" : ""}`}>
+        <video
+          ref={filmVideoRef}
+          className="khFilmVideo"
+          src="/videos/jipdaum-kor.mp4"
+          muted
+          playsInline
+          preload="auto"
+          onEnded={() => setFilmEnded(true)}
+        />
+        <div className="khFilmOverlay" />
+        <div className="khFilmCaption">
+          <span className="khLabel">A MOMENT IN HANOK</span>
+          <p className="khFilmText">
+            처마 끝에 머무는 볕과 결,
+            <br />
+            한국관이 담은 공간의 온도.
+          </p>
+          <span className="khHairline" />
+        </div>
       </div>
 
       <ul className="khGrid">

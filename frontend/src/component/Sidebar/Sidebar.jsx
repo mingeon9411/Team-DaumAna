@@ -261,7 +261,7 @@ function Sidebar() {
       return;
     }
     sessionStorage.setItem("pendingHomeProductId", String(product.id));
-    pendingPanelRef.current = 2;
+    pendingPanelRef.current = 4;
     sessionStorage.setItem("skipHomeDefaultPanel", "1");
     navigate("/");
   };
