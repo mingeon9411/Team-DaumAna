@@ -113,9 +113,7 @@
   <code>React</code> &nbsp;·&nbsp;
   <code>Django</code> &nbsp;·&nbsp;
   <code>Spring Boot</code> &nbsp;·&nbsp;
-  <code>Oracle DB</code> &nbsp;·&nbsp;
-  <code>MySQL</code> &nbsp;·&nbsp;
-  <code>PostgreSQL</code>
+  <code>MySQL</code>
 </p>
 
 <p>
@@ -161,11 +159,9 @@
 
 **🗄 Database**
 
-[![](https://skillicons.dev/icons?i=mysql,postgres)](https://skillicons.dev)
+[![](https://skillicons.dev/icons?i=mysql)](https://skillicons.dev)
 <br/>
-![Oracle DB](https://img.shields.io/badge/Oracle_DB-F80000?style=flat-square&logo=oracle&logoColor=white)
-<br/>
-<sub>Oracle DB — Django 운영 DB (oracledb Thin Mode) &nbsp;·&nbsp; MySQL · PostgreSQL — Spring Boot 및 팀원 로컬 개발 환경</sub>
+<sub>MySQL — Django(v1) · Spring Boot(v2) 공용 데이터베이스로 통합</sub>
 
 <br/>
 
