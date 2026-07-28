@@ -249,11 +249,15 @@
 
 ### 🛠 Backend
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/tables/django-dark.png"/>
-  <source media="(prefers-color-scheme: light)" srcset="assets/tables/django-light.png"/>
-  <img src="assets/tables/django-light.png" alt="Django REST Framework" width="860"/>
-</picture>
+**Django REST Framework** &nbsp;`Port 8000`
+
+| | |
+|---|---|
+| 🔑 **JWT 인증** | 액세스 2시간 / 리프레시 7일, 로테이션 + 블랙리스트 자동 처리 |
+| 🔗 **인증 연동** | `CustomJWTAuthentication`이 Django·Spring Boot 발급 JWT를 모두 해석 — 단일 토큰으로 양쪽 서버 호출 |
+| 📦 **데이터 API** | 상품 · 카테고리 · 리뷰 (장바구니 · 주문은 Spring Boot 전담) |
+| 🗄 **데이터베이스** | MySQL (Docker) · `test` 실행 시 SQLite 인메모리 자동 전환 |
+| 📧 **이메일** | 개발: 콘솔 출력 / 운영: Naver SMTP (`DEBUG` 플래그 기반 자동 분기) |
 
 <br/>
 
