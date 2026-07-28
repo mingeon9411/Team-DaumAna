@@ -8,7 +8,6 @@ import "./Checkout.css";
 
 const PAYMENT_METHODS = [
   { key: "KAKAO", label: "카카오페이", provider: "KAKAOPAY" },
-  { key: "NAVER", label: "네이버페이", provider: "NAVERPAY" },
 ];
 
 function Checkout() {

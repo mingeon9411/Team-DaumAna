@@ -8,7 +8,6 @@ import "./CheckoutKoreanHall.css";
 
 const PAYMENT_METHODS = [
   { key: "KAKAO", label: "카카오페이", provider: "KAKAOPAY" },
-  { key: "NAVER", label: "네이버페이", provider: "NAVERPAY" },
 ];
 
 const KH_PETALS = Array.from({ length: 10 }, (_, i) => ({
