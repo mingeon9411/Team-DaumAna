@@ -83,6 +83,10 @@
   .registerForm input:focus {
     border-color: var(--foreground);
   }
+
+  body.dark .registerForm input {
+    background: rgba(50, 52, 56, 0.92);
+  }
   
   .agreeCheck {
     display: flex;

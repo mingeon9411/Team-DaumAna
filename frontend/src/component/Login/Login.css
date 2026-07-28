@@ -121,39 +121,35 @@
     margin-bottom: 34px;
   }
 
-  .loginForm input {
-    height: 54px;
-    padding: 0 18px;
-  
-    border: 1px solid var(--border);
-    background: #fffaf3;
-
-    font-size: 15px;
-
-    color: var(--foreground);   /* 추가 */
-
-    outline: none;
-  }
-  
   .loginForm {
     display: flex;
     flex-direction: column;
     gap: 14px;
   }
-  
+
   .loginForm input {
     height: 54px;
     padding: 0 18px;
-  
+
     border: 1px solid #ffffff;
     background: #f3f3f3;
-  
+    color: var(--foreground);
+
     font-size: 15px;
     outline: none;
   }
-  
+
+  body.dark .loginForm input {
+    background: #3a3d42;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
   .loginForm input:focus {
     border-color: #070707;
+  }
+
+  body.dark .loginForm input:focus {
+    border-color: #bfcbec;
   }
   /* 로그인 유지 */
 .keepLogin {

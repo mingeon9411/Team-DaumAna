@@ -5,13 +5,13 @@ import FindAccount from "../FindAccount/FindAccount";
 import "./AuthModal.css";
 
 function AuthModal() {
-  const { view, close } = useAuthModal();
+  const { view } = useAuthModal();
 
   if (!view) return null;
 
   return (
-    <div className="authModalOverlay" onClick={close}>
-      <div className="authModalPanel" onClick={(e) => e.stopPropagation()}>
+    <div className="authModalOverlay">
+      <div className="authModalPanel">
         {view === "login" ? <Login />
           : view === "register" ? <Register />
           : view === "findId" ? <FindAccount mode="id" />

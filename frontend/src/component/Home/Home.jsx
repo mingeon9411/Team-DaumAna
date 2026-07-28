@@ -414,6 +414,17 @@ function Home() {
     setQuickViewQty(1);
   };
 
+  const scrollToProductGrid = () => {
+    const target = document.querySelectorAll("[data-hsnap]")[4];
+    if (!target) return;
+    if (window.lenis) {
+      window.lenis.resize();
+      window.lenis.scrollTo(target, { duration: 1.6, easing: (t) => 1 - Math.pow(1 - t, 3) });
+    } else {
+      target.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   const addToHomeCart = async (id, qty) => {
     if (!localStorage.getItem("access_token")) {
       alert("로그인이 필요합니다.");
@@ -509,21 +520,19 @@ function Home() {
         >
           <div className="relative z-10 w-full max-w-md px-16">
             <p className="text-xs tracking-[0.25em] uppercase text-muted-foreground mb-5 whitespace-nowrap" style={MONO}>
-              FEATURED IN THIS FILM
+              WELCOME TO JIPDAUM
             </p>
             <h3 className="text-3xl md:text-4xl font-light leading-snug mb-6 whitespace-nowrap" style={SERIF}>
-              영상 속 공간에 놓인
-              <br />
-              {featuredProduct.name}
+              집다움에 오신 것을 환영합니다
             </h3>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mb-10 whitespace-nowrap">
-              영상에 등장한 상품을 지금 바로 만나보세요.
+              따뜻한 나만의 집다움을 느낄 수 있도록
               <br />
-              영상에 관련된 상품을 구매할 수 있습니다.
+              바로 집다움의 상품을 확인하세요
             </p>
             <button
               type="button"
-              onClick={() => openQuickView(featuredProduct)}
+              onClick={scrollToProductGrid}
               className="px-8 py-3.5 bg-foreground text-background text-sm font-medium tracking-wide hover:opacity-85 transition-opacity whitespace-nowrap"
               style={SANS}
             >
