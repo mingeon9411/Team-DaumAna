@@ -178,42 +178,48 @@ function ProductDetail() {
       </section>
 
       <section className="reviewSection">
-        <h2>REVIEW</h2>
-        <div className="ratingBox">
-          {[1, 2, 3, 4, 5].map((star) => (
-            <button
-              key={star}
-              type="button"
-              className={star <= rating ? "star active" : "star"}
-              onClick={() => setRating(star)}
-            >
-              ★
-            </button>
-          ))}
+        <div className="reviewHeader">
+          <h2>REVIEW</h2>
+          <span className="reviewCount">{reviews.length}개의 리뷰</span>
         </div>
 
-        <div className="reviewStars">
-          {"★".repeat(reviews.rating)}{"☆".repeat(5 - reviews.rating)}
+        <div className="reviewForm">
+          <div className="ratingBox">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                type="button"
+                className={star <= rating ? "star active" : "star"}
+                onClick={() => setRating(star)}
+              >
+                ★
+              </button>
+            ))}
+          </div>
+          <textarea
+            placeholder="리뷰를 작성해주세요."
+            value={reviewText}
+            onChange={(e) => setReviewText(e.target.value)}
+          />
+          <button className="reviewSubmit" onClick={handleReviewSubmit}>리뷰 등록하기</button>
         </div>
-        <textarea
-          placeholder="리뷰를 작성해주세요."
-          value={reviewText}
-          onChange={(e) => setReviewText(e.target.value)}
-        />
-
-        <button onClick={handleReviewSubmit}>리뷰 등록하기</button>
 
         <div className="reviewList">
           {reviews.length === 0 ? (
-            <p className="emptyReview">작성된 리뷰가 없습니다.</p>
+            <p className="emptyReview">
+              아직 작성된 리뷰가 없습니다.
+              <br />첫 번째 리뷰를 남겨보세요!
+            </p>
           ) : (
             reviews.map((review) => (
               <div className="reviewItem" key={review.id}>
-                <div className="reviewStars">
-                  {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
+                <div className="reviewItemTop">
+                  <span className="reviewStars">
+                    {"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}
+                  </span>
+                  <span className="reviewDate">{review.date}</span>
                 </div>
                 <p>{review.content}</p>
-                <span>{review.date}</span>
               </div>
             ))
           )}
