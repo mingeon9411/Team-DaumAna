@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag, Star } from "lucide-react";
 import "./Home.css";
 import ChatBot from "../MyPage/ChatBot";
 import LookbookViewer from "./LookbookViewer";
 import koreanModernSofa from "../../assets/products/Korean Modern Sofa — Ivory Leather.png";
 import floorLoungeSofa from "../../assets/products/플로어 라운지 소파.png";
 import moonJarArmchair from "../../assets/products/달항아리 암체어.png";
-import { addToCart, getCartItems } from "../../api";
+import { addToCart, getCartItems, getReviews, createReview } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 
 
@@ -139,6 +139,11 @@ function Home() {
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [quickViewQty, setQuickViewQty] = useState(1);
   const [cartCounts, setCartCounts] = useState({});
+  const [reviews, setReviews] = useState([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const { openLogin } = useAuthModal();
   const navigate = useNavigate();
 
@@ -412,6 +417,46 @@ function Home() {
   const openQuickView = (product) => {
     setQuickViewProduct(product);
     setQuickViewQty(1);
+    setReviewRating(5);
+    setReviewComment("");
+  };
+
+  useEffect(() => {
+    if (!quickViewProduct) {
+      setReviews([]);
+      return;
+    }
+    setReviewsLoading(true);
+    getReviews(quickViewProduct.id)
+      .then((res) => setReviews(res.data))
+      .catch(() => setReviews([]))
+      .finally(() => setReviewsLoading(false));
+  }, [quickViewProduct]);
+
+  const submitReview = async () => {
+    if (!localStorage.getItem("access_token")) {
+      alert("로그인이 필요합니다.");
+      openLogin();
+      return;
+    }
+    if (!reviewComment.trim()) {
+      alert("리뷰 내용을 입력해주세요.");
+      return;
+    }
+    setReviewSubmitting(true);
+    try {
+      const res = await createReview(quickViewProduct.id, {
+        rating: reviewRating,
+        comment: reviewComment.trim(),
+      });
+      setReviews((prev) => [res.data, ...prev]);
+      setReviewRating(5);
+      setReviewComment("");
+    } catch {
+      alert("리뷰 등록에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setReviewSubmitting(false);
+    }
   };
 
   const scrollToProductGrid = () => {
@@ -925,6 +970,79 @@ function Home() {
                   장바구니에 {cartCounts[quickViewProduct.id]}개 담겨있어요
                 </p>
               )}
+
+              <Hairline className="mt-8 mb-6 w-16" />
+
+              <div className="reviewSection">
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>
+                    REVIEW ({reviews.length})
+                  </span>
+                  {reviews.length > 0 && (
+                    <span className="flex items-center gap-1 text-xs text-muted-foreground" style={MONO}>
+                      <Star size={11} className="fill-foreground text-foreground" />
+                      {(reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)}
+                    </span>
+                  )}
+                </div>
+
+                {reviewsLoading ? (
+                  <p className="text-xs text-muted-foreground mb-6">리뷰를 불러오는 중...</p>
+                ) : reviews.length === 0 ? (
+                  <p className="text-xs text-muted-foreground mb-6">아직 작성된 리뷰가 없습니다. 첫 리뷰를 남겨보세요.</p>
+                ) : (
+                  <div className="flex flex-col gap-4 mb-6 max-h-52 overflow-y-auto pr-1" data-lenis-prevent>
+                    {reviews.map((r) => (
+                      <div key={r.id} className="border-b border-border pb-3">
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <div className="flex gap-0.5">
+                            {[1, 2, 3, 4, 5].map((n) => (
+                              <Star
+                                key={n}
+                                size={10}
+                                className={n <= r.rating ? "fill-foreground text-foreground" : "text-border"}
+                              />
+                            ))}
+                          </div>
+                          <span className="text-xs text-muted-foreground" style={MONO}>{r.user_nickname}</span>
+                        </div>
+                        <p className="text-xs text-foreground/80 leading-relaxed">{r.comment}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="flex gap-1 mb-2">
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => setReviewRating(n)}
+                      aria-label={`${n}점`}
+                      className="hover:opacity-70 transition-opacity"
+                    >
+                      <Star size={16} className={n <= reviewRating ? "fill-foreground text-foreground" : "text-border"} />
+                    </button>
+                  ))}
+                </div>
+                <textarea
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  placeholder="상품에 대한 리뷰를 남겨주세요"
+                  rows={2}
+                  className="w-full border border-border bg-transparent text-xs text-foreground placeholder:text-muted-foreground p-2.5 mb-2 resize-none outline-none focus:border-foreground transition-colors"
+                  style={SANS}
+                />
+                <button
+                  type="button"
+                  onClick={submitReview}
+                  disabled={reviewSubmitting}
+                  className="w-full border border-foreground text-foreground text-xs tracking-widest py-2.5 hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
+                  style={SANS}
+                >
+                  {reviewSubmitting ? "등록 중..." : "리뷰 등록"}
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -139,6 +139,12 @@
     outline: none;
   }
 
+  /* TwayFly 폰트가 -webkit-text-security(비밀번호 마스킹 점)를 렌더링하지 못해
+     비밀번호 입력 시 아무것도 안 보이는 문제가 있어, 이 필드만 폰트를 제외한다 */
+  .loginForm input[type="password"] {
+    font-family: "Noto Sans KR", "Pretendard", sans-serif;
+  }
+
   body.dark .loginForm input {
     background: #3a3d42;
     border: 1px solid rgba(255, 255, 255, 0.18);
