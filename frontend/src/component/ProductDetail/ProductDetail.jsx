@@ -98,6 +98,11 @@ function ProductDetail() {
       alert("수량을 선택해주세요.");
       return;
     }
+    if (!localStorage.getItem("access_token")) {
+      alert("로그인이 필요합니다.");
+      openLogin();
+      return;
+    }
     navigate("/korean-hall/checkout", {
       state: {
         cartItems: [{

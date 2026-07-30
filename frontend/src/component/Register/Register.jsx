@@ -229,7 +229,7 @@ function Register() {
           </button>
 
           {showTerms && (
-            <div className="termsBox">
+            <div className="termsBox" data-lenis-prevent>
               <h4>이용약관</h4>
               <p>
                 집다움은 회원에게 한국적인 라이프스타일 큐레이션 서비스를

@@ -193,9 +193,14 @@
   
   .nicknameRow button {
     width: 96px;
+    height: 52px;
+    margin-top: 0;
     border: none;
+    border-radius: 0;
     background: var(--primary);
     color: var(--primary-foreground);
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
   }
   .termsBtn {
