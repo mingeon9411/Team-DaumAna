@@ -76,6 +76,14 @@
 
 <sub>한옥 지붕과 무궁화를 모티프로 한 심볼형 로고 &nbsp;·&nbsp; 라이트/다크 버전과 심볼 없는 워드마크 버전</sub>
 
+<br/><br/>
+
+<img src="frontend/src/assets/J.D%20로고.svg" alt="J.D 로고" width="160"/>
+
+<br/>
+
+<sub>헤더·로그인 화면 등에 함께 쓰이는 이니셜 심볼 &nbsp;·&nbsp; "J.D"(Jipdaum)</sub>
+
 </div>
 
 <br/><br/><br/>
