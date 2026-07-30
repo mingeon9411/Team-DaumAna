@@ -57,6 +57,7 @@ function ProductModal() {
     try {
       await addToCart({ product: product.id, quantity, option: null });
       window.dispatchEvent(new Event("cartchange"));
+      alert("장바구니에 담았습니다.");
       openCart();
     } catch {
       alert("장바구니 추가에 실패했습니다. 다시 시도해주세요.");
@@ -85,7 +86,12 @@ function ProductModal() {
 
   return (
     <div className="productModalOverlay" onClick={closeProduct}>
-      <div className="productModal" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="productModal"
+        data-lenis-prevent
+        onClick={(e) => e.stopPropagation()}
+        onWheel={(e) => e.stopPropagation()}
+      >
         <button
           type="button"
           className="productModalClose"

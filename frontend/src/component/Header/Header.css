@@ -43,6 +43,8 @@ body.dark {
   /* 모든 페이지에 동일하게 적용되는 투명 배너 */
   background: transparent;
 
+  /* 로고 외의 빈 영역은 클릭을 그대로 아래 콘텐츠(예: 상품 검색창)로 통과시킨다 */
+  pointer-events: none;
 }
 
 /* 한국관 한정 — 맨 위에서는 투명, 스크롤이 내려가면 배너 배경이 생긴다 */
@@ -61,6 +63,7 @@ body.dark .header.koreanHallHeader.scrolled {
 .logo {
   z-index: 1001;
   position: relative;
+  pointer-events: auto;
 
   display: flex;
   align-items: center;

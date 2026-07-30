@@ -122,6 +122,7 @@ function ChatBot() {
     <div
       className={"chatBotRoot" + (onRightHalf ? "" : " chatBotRootLeft")}
       style={rootStyle}
+      onWheel={(e) => e.stopPropagation()}
     >
       {/* 채팅 패널 */}
       <div className={"chatBotPanel" + (open ? " chatBotPanelOpen" : "")}>

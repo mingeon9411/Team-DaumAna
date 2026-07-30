@@ -736,7 +736,12 @@ function Home() {
       </section>
 
       {/* PRODUCT GRID */}
-      <section data-hsnap data-lenis-prevent className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-start py-20 px-8">
+      <section
+        data-hsnap
+        data-lenis-prevent
+        onWheel={(e) => e.stopPropagation()}
+        className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto overscroll-contain flex flex-col justify-start py-20 px-8"
+      >
         <div className="relative z-10 max-w-7xl mx-auto w-full mb-10 flex items-end justify-end gap-8 flex-wrap">
           <div className="flex items-center gap-2 border-b border-foreground w-full sm:w-72 pb-2">
             <Search size={15} className="text-muted-foreground shrink-0" />
@@ -895,8 +900,10 @@ function Home() {
           onClick={() => setQuickViewProduct(null)}
         >
           <div
-            className="quickViewPanel relative w-full max-w-4xl max-h-[calc(100vh-48px)] overflow-y-auto grid grid-cols-1 md:grid-cols-2 quickViewMetallicBg"
+            data-lenis-prevent
+            className="quickViewPanel relative w-full max-w-4xl max-h-[calc(100vh-48px)] overflow-y-auto overscroll-contain grid grid-cols-1 md:grid-cols-2 quickViewMetallicBg"
             onClick={(e) => e.stopPropagation()}
+            onWheel={(e) => e.stopPropagation()}
           >
             <button
               type="button"

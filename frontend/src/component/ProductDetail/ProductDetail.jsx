@@ -86,6 +86,7 @@ function ProductDetail() {
     try {
       await addToCart({ product: product.id, quantity, option: null });
       window.dispatchEvent(new Event("cartchange"));
+      alert("장바구니에 담았습니다.");
       openCart();
     } catch {
       alert("장바구니 추가에 실패했습니다. 다시 시도해주세요.");

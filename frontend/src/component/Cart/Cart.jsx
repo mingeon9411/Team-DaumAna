@@ -98,11 +98,15 @@ function Cart() {
     checkedItems.length > 0 ? checkedItems : cartItems
   ).reduce((sum, i) => sum + i.price * i.quantity, 0);
 
+  // 한국관 상품은 백엔드 Product 데이터를 신뢰하지 않는다(id 충돌 + 로컬 파일 경로가
+  // 그대로 저장돼 있어 이미지 URL로 못 씀) — 항상 로컬 카탈로그 이미지를 우선한다.
   const toCheckoutItem = (item) => ({
     id: item.product_id,
     name: item.product_name,
     price: item.price,
-    image: item.image,
+    image: isKoreanHall
+      ? products.find((p) => p.id === item.product_id)?.image
+      : item.image,
     quantity: item.quantity,
     option_id: item.option_id || null,
   });
@@ -180,7 +184,11 @@ function Cart() {
 
                 <div className="cartItemThumb">
                   <img
-                    src={item.image || products.find((p) => p.id === item.product_id)?.image}
+                    src={
+                      isKoreanHall
+                        ? products.find((p) => p.id === item.product_id)?.image
+                        : item.image
+                    }
                     alt={item.product_name}
                     onError={(e) => {
                       const local = products.find((p) => p.id === item.product_id);
