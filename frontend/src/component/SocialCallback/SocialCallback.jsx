@@ -10,6 +10,14 @@ function SocialCallback() {
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
+        const error = params.get('error');
+
+        if (error === 'withdrawn') {
+            alert('탈퇴한 계정입니다. 새로 가입해주세요.');
+            navigate('/', { replace: true });
+            openLogin();
+            return;
+        }
 
         if (!code) {
             navigate('/', { replace: true });
