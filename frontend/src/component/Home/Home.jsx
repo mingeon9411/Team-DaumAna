@@ -109,6 +109,14 @@ const LOOKBOOK_PHOTOS = [
 
 const LOOKBOOK_PAGE_SIZE = 21;
 
+// 한국관 에세이(4페이지) 배경 위에 흩날리는 무궁화 꽃잎
+const ESSAY_PETALS = Array.from({ length: 16 }, (_, i) => ({
+  left: (i * 6.3 + 2) % 100,
+  delay: (i * 0.78) % 9,
+  duration: 9 + ((i * 1.63) % 5),
+  scale: 0.7 + ((i * 0.47) % 0.7),
+}));
+
 function Hairline({ className = "" }) {
   return (
     <div
@@ -596,13 +604,28 @@ function Home() {
           화면 전체를 채우고, 영상이 끝나면 왼쪽에 한국관으로 초대하는 에세이가 펼쳐진다 */}
       <section id="home-essay-4" data-hide-header data-hsnap className="w-screen h-screen shrink-0 overflow-hidden flex flex-row text-foreground">
         <div
-          className="sparkleBg holoMesh relative h-full flex flex-col items-start justify-center overflow-hidden"
+          className="sparkleBg hanjiMesh relative h-full flex flex-col items-start justify-center overflow-hidden"
           style={{
             width: introVideo4Ended ? "50%" : "0%",
             opacity: introVideo4Ended ? 1 : 0,
             transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s ease-in-out 0.5s",
           }}
         >
+          <div className="essayPetals" aria-hidden="true">
+            {ESSAY_PETALS.map((p, i) => (
+              <span
+                key={i}
+                className="essayPetal"
+                style={{
+                  left: `${p.left}%`,
+                  animationDelay: `${p.delay}s`,
+                  animationDuration: `${p.duration}s`,
+                  "--petalScale": p.scale,
+                }}
+              />
+            ))}
+          </div>
+
           <div className="relative z-10 w-full max-w-md px-16">
             <p className="text-xs tracking-[0.25em] uppercase text-muted-foreground mb-5 whitespace-nowrap" style={MONO}>
               THE KOREAN HALL

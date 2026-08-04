@@ -5,9 +5,13 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding-top: 130px;
-  background: var(--background);
+  background: #ffffff;
   color: var(--foreground);
   animation: homeDetailPageIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+body.dark .homeDetailPage {
+  background: var(--background);
 }
 
 @keyframes homeDetailPageIn {
@@ -18,5 +22,33 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* 상품(이미지+정보) 영역을 감싸는 프로스티드 글래스 카드 — 사이드바/피드와
+   같은 레시피: 평평한 반투명 화이트 한 겹 + 블러, 얇은 파스텔 테두리 */
+.homeDetailGlassCard {
+  border: 1.5px solid transparent;
+  border-radius: 24px;
+  padding: 32px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)) padding-box,
+    linear-gradient(135deg, #f5c6e0 0%, #c9d9f7 50%, #bdeed0 100%) border-box;
+  backdrop-filter: blur(30px) saturate(115%);
+  -webkit-backdrop-filter: blur(30px) saturate(115%);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+body.dark .homeDetailGlassCard {
+  background:
+    linear-gradient(rgba(6, 13, 30, 0.45), rgba(6, 13, 30, 0.45)) padding-box,
+    linear-gradient(135deg, #f5c6e0 0%, #c9d9f7 50%, #bdeed0 100%) border-box;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(150, 185, 255, 0.16);
+}
+
+@media (max-width: 640px) {
+  .homeDetailGlassCard {
+    padding: 20px;
+    border-radius: 18px;
   }
 }

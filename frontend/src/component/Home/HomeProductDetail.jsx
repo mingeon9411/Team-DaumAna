@@ -128,14 +128,20 @@ function HomeProductDetail() {
       <div className="max-w-6xl mx-auto w-full px-6 md:px-10">
         <button
           type="button"
-          onClick={() => navigate(-1)}
+          onClick={() => {
+            // 홈의 인트로 시퀀스(0~3번 패널)를 다시 재생하지 않고, 상품 그리드
+            // 패널(4번)로 바로 이동하도록 Sidebar에 세션스토리지로 신호를 남긴다.
+            sessionStorage.setItem("skipHomeDefaultPanel", "1");
+            sessionStorage.setItem("pendingHomePanelIndex", "4");
+            navigate("/");
+          }}
           className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors mb-8"
           style={MONO}
         >
           <ChevronLeft size={14} /> 목록으로
         </button>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 mb-20">
+        <div className="homeDetailGlassCard grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 mb-20">
           <div className="overflow-hidden bg-muted aspect-[5/6]">
             <img src={product.image} alt={product.alt} className="w-full h-full object-cover" />
           </div>

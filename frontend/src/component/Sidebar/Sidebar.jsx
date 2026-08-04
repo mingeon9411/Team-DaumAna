@@ -11,7 +11,7 @@ import {
   LuUserRoundPlus,
   LuSun,
   LuMoon,
-  LuPalette,
+  LuLayers,
   LuLogOut,
   LuChevronLeft,
   LuChevronRight,
@@ -61,6 +61,9 @@ function Sidebar() {
   const { openProduct } = useProductModal();
   const isHome = location.pathname === "/";
   const isKoreanHall = location.pathname === "/korean-hall";
+  // 상품 상세 페이지는 Home의 가로 패널 흐름에 속하지 않는 독립된 페이지라,
+  // 한국관과 마찬가지로 "다음/이전 페이지" 같은 패널 이동 버튼이 의미가 없다.
+  const isProductDetail = location.pathname.startsWith("/item/");
   const pendingPanelRef = useRef(null);
   const searchWrapRef = useRef(null);
   const styleWrapRef = useRef(null);
@@ -146,14 +149,23 @@ function Sidebar() {
 
   // 다른 페이지에서 "홈"/"상품" 버튼을 눌러 홈으로 이동한 경우 — ScrollToTop이 스크롤을
   // 0으로 되돌리고 패널을 재등록하는 처리가 끝난 뒤에 지정된 패널로 이동한다.
+  // pendingPanelRef는 Sidebar가 살아있는 동안(같은 페이지 안)만 쓸 수 있어서, 다른
+  // 라우트 컴포넌트(예: 상품 상세 페이지)에서 지정한 경우엔 sessionStorage로 받는다.
   useEffect(() => {
-    if (isHome && pendingPanelRef.current !== null) {
-      const index = pendingPanelRef.current;
-      pendingPanelRef.current = null;
-      // Home이 실제로 마운트되고 레이아웃/Lenis 콘텐츠 크기가 갱신될 시간을 준 뒤 이동
-      const timer = setTimeout(() => scrollToPanel(index), 200);
-      return () => clearTimeout(timer);
+    if (!isHome) return;
+    let index = pendingPanelRef.current;
+    pendingPanelRef.current = null;
+    if (index === null) {
+      const stored = sessionStorage.getItem("pendingHomePanelIndex");
+      if (stored !== null) {
+        sessionStorage.removeItem("pendingHomePanelIndex");
+        index = Number(stored);
+      }
     }
+    if (index === null) return;
+    // Home이 실제로 마운트되고 레이아웃/Lenis 콘텐츠 크기가 갱신될 시간을 준 뒤 이동
+    const timer = setTimeout(() => scrollToPanel(index), 200);
+    return () => clearTimeout(timer);
   }, [isHome]);
 
   useEffect(() => {
@@ -435,7 +447,7 @@ function Sidebar() {
               data-tooltip="사이드바 스타일"
               onClick={(e) => { triggerPop(e); setStyleOpen((v) => !v); }}
             >
-              <LuPalette />
+              <LuLayers />
             </button>
 
             {styleOpen && (
@@ -492,7 +504,7 @@ function Sidebar() {
           </button>
         )}
 
-        {!isKoreanHall && (
+        {!isKoreanHall && !isProductDetail && (
           <>
             <span className="railDivider" />
 
