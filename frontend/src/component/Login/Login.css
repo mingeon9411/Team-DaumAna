@@ -1,3 +1,10 @@
+/* 로그인 뷰일 때는 상위 오버레이 패널(.authModalPanel)의 위→아래 페이드도
+   .loginBox의 좌우 슬라이드와 같은 방향으로 맞춰, 사이드바처럼 옆에서
+   깔끔하게 열리는 느낌을 준다 */
+.authModalPanel:has(> .loginBox) {
+  animation: loginSlideIn 2.6s ease;
+}
+
 .loginBox {
     position: relative;
     z-index: 2;
@@ -5,18 +12,22 @@
     width: 420px;
     padding: 48px 40px;
 
-    background: linear-gradient(
-      115deg,
-      #f4f5f6 0%,
-      #d9dbde 20%,
-      #c3c6cb 35%,
-      #eef0f2 50%,
-      #b7bac0 65%,
-      #dfe1e4 80%,
-      #f4f5f6 100%
-    );
-    background-size: 160% 160%;
-    border: 1px solid rgba(0, 0, 0, 0.14);
+    /* 사이드바 하단바와 동일한 방식: 안쪽은 메탈릭 그러데이션(padding-box),
+       테두리는 무지개 톤 그러데이션 띠(border-box)로 두른다 */
+    border: 8px solid transparent;
+    background:
+      linear-gradient(
+        115deg,
+        #f4f5f6 0%,
+        #d9dbde 20%,
+        #c3c6cb 35%,
+        #eef0f2 50%,
+        #b7bac0 65%,
+        #dfe1e4 80%,
+        #f4f5f6 100%
+      ) padding-box,
+      linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+    background-size: 160% 160%, 100% 100%;
     color: var(--foreground);
 
     text-align: center;
@@ -28,17 +39,19 @@
   }
 
   body.dark .loginBox {
-    background: linear-gradient(
-      115deg,
-      #2b2d31 0%,
-      #44474d 20%,
-      #5a5d64 35%,
-      #323438 50%,
-      #6b6e75 65%,
-      #3c3e43 80%,
-      #2b2d31 100%
-    );
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    background:
+      linear-gradient(
+        115deg,
+        #2b2d31 0%,
+        #44474d 20%,
+        #5a5d64 35%,
+        #323438 50%,
+        #6b6e75 65%,
+        #3c3e43 80%,
+        #2b2d31 100%
+      ) padding-box,
+      linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
+    background-size: 160% 160%, 100% 100%;
   }
 
   .loginLogoRow {
@@ -84,18 +97,31 @@
   }
 
   .loginBox {
-    animation: fadeUp 1s ease, loginMetallicSheen 24s ease-in-out infinite;
+    /* transform-origin을 정중앙에 둬서, 가운데를 기준으로 위/아래
+       양쪽으로 동시에 천천히 펼쳐지는 것처럼 보이게 한다 */
+    transform-origin: center center;
+    animation: loginSlideIn 2.6s ease, loginMetallicSheen 24s ease-in-out infinite;
   }
 
-  @keyframes fadeUp {
-    from {
+  /* 가로가 아니라 세로로 천천히 펼쳐지는 연출 — clip-path로 위아래에서
+     동시에 폭(높이)이 드러나게 하고, scaleY로 완전히 접힌 상태에서
+     시작해 은은하게 펼쳐지는 리듬을 더한다 */
+  @keyframes loginSlideIn {
+    0% {
       opacity: 0;
-      transform: translateY(40px);
+      clip-path: inset(50% 0 50% 0 round 25px);
+      transform: scaleY(0.85);
     }
 
-    to {
+    55% {
       opacity: 1;
-      transform: translateY(0);
+      transform: scaleY(1.01);
+    }
+
+    100% {
+      opacity: 1;
+      clip-path: inset(0 0 0 0 round 25px);
+      transform: scaleY(1);
     }
   }
 
@@ -195,9 +221,10 @@
     align-items: center;
     justify-content: center;
 
-    border: none;
+    border: 3px solid transparent;
     border-radius: 14px;
-    background: #913a22;
+    background: linear-gradient(#913a22, #913a22) padding-box,
+      linear-gradient(135deg, #f5c6e0 0%, #c9d9f7 50%, #bdeed0 100%) border-box;
     color: #d1cbcb;
 
     font-size: 18px;
@@ -307,7 +334,7 @@
     justify-content: center;
     gap: 10px;
 
-    border: none;
+    border: 3px solid transparent;
     border-radius: 14px;
 
     margin-bottom: 12px;
@@ -333,7 +360,8 @@
 
   /* 카카오 */
   .kakaoBtn {
-    background: #FEE500;
+    background: linear-gradient(#FEE500, #FEE500) padding-box,
+      linear-gradient(135deg, #f5c6e0 0%, #c9d9f7 50%, #bdeed0 100%) border-box;
     color: #191600;
   }
 
@@ -343,7 +371,8 @@
 
   /* 네이버 */
   .naverBtn {
-    background: #03C75A;
+    background: linear-gradient(#03C75A, #03C75A) padding-box,
+      linear-gradient(135deg, #f5c6e0 0%, #c9d9f7 50%, #bdeed0 100%) border-box;
     color: #ffffff;
   }
 
@@ -353,12 +382,9 @@
 
   /* 구글 */
   .googleBtn {
-    background: #ffffff;
+    background: linear-gradient(#ffffff, #ffffff) padding-box,
+      linear-gradient(135deg, #f5c6e0 0%, #c9d9f7 50%, #bdeed0 100%) border-box;
     color: #3c4043;
-  }
-
-  .snsLogin button.googleBtn {
-    border: 1px solid rgba(0, 0, 0, 0.14);
   }
 
   .googleBtn:hover {

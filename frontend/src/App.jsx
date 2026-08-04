@@ -17,6 +17,7 @@ import Cart from "./component/Cart/Cart";
 import NoticeModal from "./component/NoticeModal/NoticeModal";
 import Welcome from "./component/Welcome/Welcome";
 import ProductDetail from "./component/ProductDetail/ProductDetail";
+import HomeProductDetail from "./component/Home/HomeProductDetail";
 import ProductModal from "./component/ProductModal/ProductModal";
 import SocialCallback from "./component/SocialCallback/SocialCallback";
 import EmailVerify from "./component/EmailVerify/EmailVerify";
@@ -171,6 +172,7 @@ function App() {
         <Route path="/korean-hall" element={<KoreanHall />} />
 
         <Route path="/product/:id" element={<ProductDetail />} />
+        <Route path="/item/:id" element={<HomeProductDetail />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/korean-hall/checkout" element={<CheckoutKoreanHall />} />
         <Route path="/order-complete" element={<OrderComplete />} />

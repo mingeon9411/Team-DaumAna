@@ -13,17 +13,60 @@
   padding: 8px 10px;
   border-radius: 999px;
 
-  /* 안쪽(padding-box)은 기존 메탈릭 그러데이션, 테두리(border-box)는 에세이
-     페이지 배경(홀로 메쉬)과 같은 톤의 파스텔 그러데이션으로 띠를 두른다 */
-  border: 6px solid transparent;
+  /* 애플 컨트롤 센터/독처럼 — 안쪽은 얇고 평평한 반투명 화이트 한 겹
+     (그러데이션·애니메이션 없이 정적으로 둬야 "빛나는 금속"이 아니라
+     "블러된 유리"로 읽힌다), 테두리는 얇은 파스텔 라인만 살짝 */
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.32)) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  backdrop-filter: blur(30px) saturate(115%);
+  -webkit-backdrop-filter: blur(30px) saturate(115%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+
+  transition: background-color 2.8s ease, border-color 2.1s ease;
+}
+
+/* 스타일 프리셋을 바꾸는 순간 — 그러데이션 배경은 transition으로 자연스럽게
+   섞이지 않으므로, 대신 짧게 페이드-스케일을 태워 전환이 뚝 끊기지 않게 한다.
+   translateX(-50%)는 가로 중앙 고정용이라 매 프레임에 그대로 유지해야 한다. */
+.sidebarRail.styleSwitching {
+  animation: railStyleSwap 2s ease;
+}
+
+@keyframes railStyleSwap {
+  0%   { opacity: 1;    transform: translateX(-50%) scale(1); }
+  40%  { opacity: 0.45; transform: translateX(-50%) scale(0.97); }
+  100% { opacity: 1;    transform: translateX(-50%) scale(1); }
+}
+
+/* 한국관 하단 기능바는 유리 대신 한지 톤의 따뜻한 배경 적용 */
+.sidebarRail.koreanHallRail {
+  background: linear-gradient(135deg, #f8f1e3 0%, #efe2c9 100%);
+  border-color: rgba(180, 132, 74, 0.28);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+/* ── 사이드바 스타일 프리셋 (팔레트 아이콘으로 선택) ──────────────── */
+
+/* 메탈릭 — 원래 있던, 반짝임이 흐르는 실버 그러데이션 */
+.sidebarRail.railStyle-metallic {
+  border-width: 6px;
   background:
     linear-gradient(120deg, #f4f4f6 0%, #d7d9dc 20%, #ececed 40%, #b8bcc2 55%, #e6e7e9 70%, #cfd1d4 85%, #f4f4f6 100%) padding-box,
     linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
   background-size: 300% 300%, 100% 100%;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   animation: metallicShine 11s ease-in-out infinite;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+}
 
-  transition: background-color 2.8s ease, border-color 2.1s ease;
+/* 메탈릭 스타일에서 전환 애니메이션이 재생 중일 땐 반짝임 애니메이션과
+   페이드-스케일 애니메이션을 함께(동시에) 재생한다 — animation 속성은
+   합쳐 쓰지 않으면 뒤에 선언된 쪽이 통째로 덮어써버리기 때문 */
+.sidebarRail.railStyle-metallic.styleSwitching {
+  animation: metallicShine 11s ease-in-out infinite, railStyleSwap 2s ease;
 }
 
 @keyframes metallicShine {
@@ -32,11 +75,121 @@
   100% { background-position: 0% 50%; }
 }
 
-/* 한국관 하단 기능바는 메탈릭 실버 애니메이션 대신 한지 톤의 따뜻한 배경 적용 */
-.sidebarRail.koreanHallRail {
-  background: linear-gradient(135deg, #f8f1e3 0%, #efe2c9 100%);
-  border-color: rgba(180, 132, 74, 0.28);
-  animation: none;
+body.dark .sidebarRail.railStyle-metallic {
+  background:
+    linear-gradient(120deg, #060d1e 0%, #0b1430 20%, #0f1f3d 40%, #060d1e 55%, #0f1f3d 70%, #0b1430 85%, #060d1e 100%) padding-box,
+    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
+  background-size: 300% 300%, 100% 100%;
+}
+
+/* 파스텔 — 로그인창/버튼과 같은 톤의 정적인 파스텔 채움 */
+.sidebarRail.railStyle-pastel {
+  border-width: 4px;
+  background:
+    linear-gradient(120deg, #ffe4f0 0%, #e4ecff 50%, #d9fbea 100%) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+body.dark .sidebarRail.railStyle-pastel {
+  background:
+    linear-gradient(120deg, #3a2f4a 0%, #2a3550 50%, #223d38 100%) padding-box,
+    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
+}
+
+/* 스타일 선택 플라이아웃 */
+.railStyleWrap {
+  position: relative;
+}
+
+.railStyleFlyout {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 12px);
+  transform: translateX(-50%);
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  width: 160px;
+  padding: 8px;
+  border-radius: 14px;
+
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  border: 1.5px solid transparent;
+  backdrop-filter: blur(30px) saturate(115%);
+  -webkit-backdrop-filter: blur(30px) saturate(115%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  z-index: 25;
+
+  animation: railFlyoutIn 0.24s ease-out;
+}
+
+.railStyleOption {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 8px 10px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--foreground);
+
+  font-size: 13px;
+  font-family: "Noto Sans KR", sans-serif;
+  cursor: pointer;
+  text-align: left;
+
+  transition: background 0.15s ease;
+}
+
+.railStyleOption:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.railStyleOption.active {
+  font-weight: 700;
+}
+
+.railStyleSwatch {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.railStyleSwatch-glass {
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+}
+
+.railStyleSwatch-metallic {
+  background: linear-gradient(120deg, #f4f4f6 0%, #b8bcc2 55%, #f4f4f6 100%);
+}
+
+.railStyleSwatch-pastel {
+  background: linear-gradient(120deg, #ffe4f0 0%, #e4ecff 50%, #d9fbea 100%);
+}
+
+body.dark .railStyleFlyout {
+  background:
+    linear-gradient(rgba(6, 13, 30, 0.9), rgba(6, 13, 30, 0.9)) padding-box,
+    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(150, 185, 255, 0.16);
+}
+
+body.dark .railStyleOption {
+  color: #c8d5f2;
+}
+
+body.dark .railStyleOption:hover {
+  background: rgba(150, 185, 255, 0.12);
 }
 
 /* 한국관 미니바 — 무궁화 꽃잎이 흩날리며 떨어지는 연출 */
@@ -202,7 +355,7 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
 }
 
 .railBtn:hover {
-  background: linear-gradient(120deg, #f4f4f6 0%, #d7d9dc 20%, #ececed 40%, #b8bcc2 55%, #e6e7e9 70%, #cfd1d4 85%, #f4f4f6 100%);
+  background: rgba(255, 255, 255, 0.4);
   transform: scale(1.08);
 }
 
@@ -298,9 +451,14 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
   padding: 16px;
   border-radius: 18px;
 
-  background: linear-gradient(120deg, #f4f4f6 0%, #d7d9dc 20%, #ececed 40%, #b8bcc2 55%, #e6e7e9 70%, #cfd1d4 85%, #f4f4f6 100%);
-  border: 1px solid var(--border);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+  /* 사이드바 본체와 같은 톤의 프로스티드 글래스 */
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  border: 1.5px solid transparent;
+  backdrop-filter: blur(30px) saturate(115%);
+  -webkit-backdrop-filter: blur(30px) saturate(115%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.55);
   z-index: 25;
 
   animation: railFlyoutIn 0.24s ease-out;
@@ -426,26 +584,30 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
 }
 
 body.dark .railSearchFlyout {
-  background: linear-gradient(120deg, #060d1e 0%, #0b1430 20%, #0f1f3d 40%, #060d1e 55%, #0f1f3d 70%, #0b1430 85%, #060d1e 100%);
-  border-color: rgba(150, 185, 255, 0.16);
+  background:
+    linear-gradient(rgba(6, 13, 30, 0.68), rgba(6, 13, 30, 0.68)) padding-box,
+    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(150, 185, 255, 0.16);
 }
 
 body.dark .railSearchResults button:hover {
   background: rgba(150, 185, 255, 0.12);
 }
 
-/* 다크모드 */
+/* 다크모드 — 같은 글래스 느낌을 어두운 톤으로 */
 body.dark .sidebarRail {
   background:
-    linear-gradient(120deg, #060d1e 0%, #0b1430 20%, #0f1f3d 40%, #060d1e 55%, #0f1f3d 70%, #0b1430 85%, #060d1e 100%) padding-box,
+    linear-gradient(rgba(6, 13, 30, 0.38), rgba(6, 13, 30, 0.38)) padding-box,
     linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
-  background-size: 300% 300%, 100% 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(150, 185, 255, 0.16);
 }
 
 /* 한국관 미니바는 다크모드에서도 은은한 등불빛 톤 유지 */
 body.dark .sidebarRail.koreanHallRail {
   background: linear-gradient(135deg, #2b2013 0%, #1a1309 100%);
   border-color: rgba(214, 168, 106, 0.24);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 body.dark .railBtn {

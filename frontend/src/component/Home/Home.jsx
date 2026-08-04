@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag, Star } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag } from "lucide-react";
 import "./Home.css";
 import ChatBot from "../MyPage/ChatBot";
 import LookbookViewer from "./LookbookViewer";
 import koreanModernSofa from "../../assets/products/Korean Modern Sofa — Ivory Leather.png";
 import floorLoungeSofa from "../../assets/products/플로어 라운지 소파.png";
 import moonJarArmchair from "../../assets/products/달항아리 암체어.png";
-import { addToCart, getCartItems, getReviews, createReview } from "../../api";
-import { useAuthModal } from "../../context/AuthModalContext";
+import { getCartItems } from "../../api";
 
 
 const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
@@ -136,15 +135,7 @@ function Home() {
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [lookbookPage, setLookbookPage] = useState(0);
   const [lookbookViewerIndex, setLookbookViewerIndex] = useState(null);
-  const [quickViewProduct, setQuickViewProduct] = useState(null);
-  const [quickViewQty, setQuickViewQty] = useState(1);
   const [cartCounts, setCartCounts] = useState({});
-  const [reviews, setReviews] = useState([]);
-  const [reviewsLoading, setReviewsLoading] = useState(false);
-  const [reviewRating, setReviewRating] = useState(5);
-  const [reviewComment, setReviewComment] = useState("");
-  const [reviewSubmitting, setReviewSubmitting] = useState(false);
-  const { openLogin } = useAuthModal();
   const navigate = useNavigate();
 
   // 상품 카드 배지는 로그인 계정의 실제 백엔드 장바구니만 기준으로 한다.
@@ -290,26 +281,6 @@ function Home() {
     return () => io.disconnect();
   }, []);
 
-  // 사이드바 검색 플라이아웃에서 선택한 상품을 퀵뷰로 연다.
-  // 같은 페이지에 있는 동안은 커스텀 이벤트로, 다른 페이지에서 넘어온 직후에는
-  // sessionStorage에 남겨둔 id를 마운트 시 확인해서 연다.
-  useEffect(() => {
-    const openById = (id) => {
-      const product = PRODUCTS.find((p) => p.id === id);
-      if (product) openQuickView(product);
-    };
-
-    const pendingId = sessionStorage.getItem("pendingHomeProductId");
-    if (pendingId) {
-      sessionStorage.removeItem("pendingHomeProductId");
-      setTimeout(() => openById(Number(pendingId)), 250);
-    }
-
-    const handler = (e) => openById(e.detail);
-    window.addEventListener("open-home-product", handler);
-    return () => window.removeEventListener("open-home-product", handler);
-  }, []);
-
   // 첫 번째 인트로 영상이 끝나 에세이가 펼쳐진 뒤 7초 있다가, 사용자가 아직
   // 그 페이지에 머물러 있으면 (복제된) 두 번째 인트로 페이지로 스크롤한다.
   useEffect(() => {
@@ -414,51 +385,6 @@ function Home() {
     return () => clearTimeout(holdTimer);
   }, [introVideo4Ended]);
 
-  const openQuickView = (product) => {
-    setQuickViewProduct(product);
-    setQuickViewQty(1);
-    setReviewRating(5);
-    setReviewComment("");
-  };
-
-  useEffect(() => {
-    if (!quickViewProduct) {
-      setReviews([]);
-      return;
-    }
-    setReviewsLoading(true);
-    getReviews(quickViewProduct.id)
-      .then((res) => setReviews(res.data))
-      .catch(() => setReviews([]))
-      .finally(() => setReviewsLoading(false));
-  }, [quickViewProduct]);
-
-  const submitReview = async () => {
-    if (!localStorage.getItem("access_token")) {
-      alert("로그인이 필요합니다.");
-      openLogin();
-      return;
-    }
-    if (!reviewComment.trim()) {
-      alert("리뷰 내용을 입력해주세요.");
-      return;
-    }
-    setReviewSubmitting(true);
-    try {
-      const res = await createReview(quickViewProduct.id, {
-        rating: reviewRating,
-        comment: reviewComment.trim(),
-      });
-      setReviews((prev) => [res.data, ...prev]);
-      setReviewRating(5);
-      setReviewComment("");
-    } catch {
-      alert("리뷰 등록에 실패했습니다. 다시 시도해주세요.");
-    } finally {
-      setReviewSubmitting(false);
-    }
-  };
-
   const scrollToProductGrid = () => {
     const target = document.querySelectorAll("[data-hsnap]")[4];
     if (!target) return;
@@ -467,20 +393,6 @@ function Home() {
       window.lenis.scrollTo(target, { duration: 1.6, easing: (t) => 1 - Math.pow(1 - t, 3) });
     } else {
       target.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
-  const addToHomeCart = async (id, qty) => {
-    if (!localStorage.getItem("access_token")) {
-      alert("로그인이 필요합니다.");
-      openLogin();
-      return;
-    }
-    try {
-      await addToCart({ product: id, quantity: qty, option: null });
-      window.dispatchEvent(new Event("cartchange"));
-    } catch {
-      alert("장바구니 추가에 실패했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -614,7 +526,7 @@ function Home() {
             </p>
             <button
               type="button"
-              onClick={() => openQuickView(featuredProduct)}
+              onClick={() => navigate(`/item/${featuredProduct.id}`)}
               className="px-8 py-3.5 bg-foreground text-background text-sm font-medium tracking-wide hover:opacity-85 transition-opacity whitespace-nowrap"
               style={SANS}
             >
@@ -642,7 +554,7 @@ function Home() {
       {/* ESSAY SPREAD 3 — 집다움.mp4, 끝나면 오른쪽 절반에 브랜드 무드 문구가 펼쳐진다 */}
       <section id="home-essay-3" data-hide-header data-hsnap className="w-screen h-screen shrink-0 overflow-hidden flex flex-row text-foreground">
         <div
-          className="relative h-full overflow-hidden"
+          clasName="relative h-full overflow-hidden"
           style={{
             width: introVideo3Ended ? "50%" : "100%",
             transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1)",
@@ -773,7 +685,7 @@ function Home() {
               key={cat}
               type="button"
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+              className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
                 selectedCategory === cat
                   ? "bg-foreground text-background border-foreground"
                   : "bg-transparent text-muted-foreground border-border hover:border-foreground hover:text-foreground"
@@ -800,7 +712,7 @@ function Home() {
             const discountPct = hasDiscount ? Math.round((1 - priceNum / originalNum) * 100) : 0;
 
             return (
-              <article key={p.id} className="group cursor-pointer" onClick={() => openQuickView(p)}>
+              <article key={p.id} className="group cursor-pointer" onClick={() => navigate(`/item/${p.id}`)}>
                 <div className="relative overflow-hidden bg-muted mb-3 aspect-[5/6]">
                   <img src={p.image} alt={p.alt} className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
                   <button onClick={(e) => { e.stopPropagation(); toggleWish(p.id); }}
@@ -893,167 +805,6 @@ function Home() {
           )}
         </div>
       </section>
-
-      {quickViewProduct && (
-        <div
-          className="quickViewOverlay fixed inset-0 z-[1000] flex items-center justify-center bg-black/55 backdrop-blur-sm p-6"
-          onClick={() => setQuickViewProduct(null)}
-        >
-          <div
-            data-lenis-prevent
-            className="quickViewPanel relative w-full max-w-4xl max-h-[calc(100vh-48px)] overflow-y-auto overscroll-contain grid grid-cols-1 md:grid-cols-2 quickViewMetallicBg"
-            onClick={(e) => e.stopPropagation()}
-            onWheel={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              aria-label="닫기"
-              onClick={() => setQuickViewProduct(null)}
-              className="absolute top-4 right-4 z-10 w-9 h-9 flex items-center justify-center bg-background/80 backdrop-blur-sm text-foreground hover:opacity-70 transition-opacity"
-            >
-              <X size={18} />
-            </button>
-
-            <div className="overflow-hidden bg-muted aspect-[5/6] md:aspect-auto">
-              <img src={quickViewProduct.image} alt={quickViewProduct.alt} className="w-full h-full object-cover" />
-            </div>
-
-            <div className="flex flex-col justify-center px-8 py-10 md:px-10">
-              <span className="text-[10px] text-muted-foreground block mb-3" style={MONO}>{quickViewProduct.no} · {quickViewProduct.label}</span>
-              <h3 className="text-2xl font-light text-foreground mb-2" style={SERIF}>{quickViewProduct.name}</h3>
-              <p className="text-sm text-muted-foreground font-light mb-4">{quickViewProduct.sub}</p>
-              <p className="text-sm text-foreground/80 font-light leading-relaxed mb-4">{quickViewProduct.desc}</p>
-              <p className="text-xs text-muted-foreground mb-6" style={MONO}>{quickViewProduct.spec}</p>
-              <Hairline className="mb-6 w-16" />
-
-              <div className="flex items-center justify-between mb-8">
-                <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>수량</span>
-                <div className="flex items-center gap-4 border border-border px-3 py-1.5">
-                  <button
-                    type="button"
-                    onClick={() => setQuickViewQty((q) => Math.max(1, q - 1))}
-                    className="text-foreground hover:opacity-60 transition-opacity"
-                    aria-label="수량 감소"
-                  >
-                    −
-                  </button>
-                  <span className="text-sm text-foreground w-4 text-center" style={MONO}>{quickViewQty}</span>
-                  <button
-                    type="button"
-                    onClick={() => setQuickViewQty((q) => q + 1)}
-                    className="text-foreground hover:opacity-60 transition-opacity"
-                    aria-label="수량 증가"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-baseline justify-between mb-8">
-                <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>TOTAL</span>
-                <span className="text-3xl font-semibold text-foreground" style={MONO}>
-                  ₩{(Number(quickViewProduct.price.replace(/,/g, "")) * quickViewQty).toLocaleString()}
-                </span>
-              </div>
-
-              <div className="flex gap-3 mb-3">
-                <button
-                  onClick={() => toggleWish(quickViewProduct.id)}
-                  className="w-11 h-11 shrink-0 border border-border flex items-center justify-center text-foreground hover:border-foreground transition-colors"
-                  aria-label="찜 리스트에 담기"
-                >
-                  <Heart size={16} className={wishlist.includes(quickViewProduct.id) ? "fill-foreground text-foreground" : "text-foreground"} />
-                </button>
-                <button
-                  onClick={() => addToHomeCart(quickViewProduct.id, quickViewQty)}
-                  className="flex-1 bg-foreground text-background text-xs tracking-widest hover:opacity-85 transition-opacity"
-                  style={SANS}
-                >
-                  담기
-                </button>
-              </div>
-              {cartCounts[quickViewProduct.id] > 0 && (
-                <p className="text-xs text-muted-foreground" style={MONO}>
-                  장바구니에 {cartCounts[quickViewProduct.id]}개 담겨있어요
-                </p>
-              )}
-
-              <Hairline className="mt-8 mb-6 w-16" />
-
-              <div className="reviewSection">
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>
-                    REVIEW ({reviews.length})
-                  </span>
-                  {reviews.length > 0 && (
-                    <span className="flex items-center gap-1 text-xs text-muted-foreground" style={MONO}>
-                      <Star size={11} className="fill-foreground text-foreground" />
-                      {(reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)}
-                    </span>
-                  )}
-                </div>
-
-                {reviewsLoading ? (
-                  <p className="text-xs text-muted-foreground mb-6">리뷰를 불러오는 중...</p>
-                ) : reviews.length === 0 ? (
-                  <p className="text-xs text-muted-foreground mb-6">아직 작성된 리뷰가 없습니다. 첫 리뷰를 남겨보세요.</p>
-                ) : (
-                  <div className="flex flex-col gap-4 mb-6 max-h-52 overflow-y-auto pr-1" data-lenis-prevent>
-                    {reviews.map((r) => (
-                      <div key={r.id} className="border-b border-border pb-3">
-                        <div className="flex items-center gap-2 mb-1.5">
-                          <div className="flex gap-0.5">
-                            {[1, 2, 3, 4, 5].map((n) => (
-                              <Star
-                                key={n}
-                                size={10}
-                                className={n <= r.rating ? "fill-foreground text-foreground" : "text-border"}
-                              />
-                            ))}
-                          </div>
-                          <span className="text-xs text-muted-foreground" style={MONO}>{r.user_nickname}</span>
-                        </div>
-                        <p className="text-xs text-foreground/80 leading-relaxed">{r.comment}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <div className="flex gap-1 mb-2">
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <button
-                      key={n}
-                      type="button"
-                      onClick={() => setReviewRating(n)}
-                      aria-label={`${n}점`}
-                      className="hover:opacity-70 transition-opacity"
-                    >
-                      <Star size={16} className={n <= reviewRating ? "fill-foreground text-foreground" : "text-border"} />
-                    </button>
-                  ))}
-                </div>
-                <textarea
-                  value={reviewComment}
-                  onChange={(e) => setReviewComment(e.target.value)}
-                  placeholder="상품에 대한 리뷰를 남겨주세요"
-                  rows={2}
-                  className="w-full border border-border bg-transparent text-xs text-foreground placeholder:text-muted-foreground p-2.5 mb-2 resize-none outline-none focus:border-foreground transition-colors"
-                  style={SANS}
-                />
-                <button
-                  type="button"
-                  onClick={submitReview}
-                  disabled={reviewSubmitting}
-                  className="w-full border border-foreground text-foreground text-xs tracking-widest py-2.5 hover:bg-foreground hover:text-background transition-colors disabled:opacity-50"
-                  style={SANS}
-                >
-                  {reviewSubmitting ? "등록 중..." : "리뷰 등록"}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {lookbookViewerIndex !== null && (
         <LookbookViewer

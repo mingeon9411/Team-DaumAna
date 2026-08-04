@@ -116,11 +116,40 @@ body.dark .igNavBtn:hover { background: rgba(191, 203, 236, 0.18); }
   width: 100%;
   max-width: 1140px;
   max-height: min(760px, 92vh);
-  background: var(--card);
+  border: 10px solid transparent;
+  background:
+    linear-gradient(
+      115deg,
+      #f4f5f6 0%,
+      #d9dbde 20%,
+      #c3c6cb 35%,
+      #eef0f2 50%,
+      #b7bac0 65%,
+      #dfe1e4 80%,
+      #f4f5f6 100%
+    ) padding-box,
+    linear-gradient(135deg, #f5c6e0 0%, #c9d9f7 50%, #bdeed0 100%) border-box;
+  background-size: 160% 160%, 100% 100%;
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-  animation: igCardIn 0.22s cubic-bezier(0.22,1,0.36,1) both;
+  animation: igCardIn 0.22s cubic-bezier(0.22,1,0.36,1) both, igSheen 24s ease-in-out infinite;
+}
+
+body.dark .igCard {
+  background:
+    linear-gradient(
+      115deg,
+      #060d1e 0%,
+      #0b1430 20%,
+      #0f1f3d 35%,
+      #060d1e 50%,
+      #0f1f3d 65%,
+      #0b1430 80%,
+      #060d1e 100%
+    ) padding-box,
+    linear-gradient(135deg, #f5c6e0 0%, #c9d9f7 50%, #bdeed0 100%) border-box;
+  background-size: 160% 160%, 100% 100%;
 }
 
 .igImageSide {

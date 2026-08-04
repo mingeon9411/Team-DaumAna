@@ -11,6 +11,7 @@ import {
   LuUserRoundPlus,
   LuSun,
   LuMoon,
+  LuPalette,
   LuLogOut,
   LuChevronLeft,
   LuChevronRight,
@@ -25,6 +26,12 @@ import { useNoticeModal } from "../../context/NoticeModalContext";
 import { useProductModal } from "../../context/ProductModalContext";
 import { PRODUCTS as HOME_PRODUCTS } from "../Home/Home";
 import { products as KOREAN_HALL_PRODUCTS } from "../../data/products";
+
+const RAIL_STYLES = [
+  { id: "glass", label: "글래스" },
+  { id: "metallic", label: "메탈릭" },
+  { id: "pastel", label: "파스텔" },
+];
 
 const KH_PETALS = Array.from({ length: 12 }, (_, i) => ({
   left: (i * 8.7 + 3) % 100,
@@ -56,9 +63,30 @@ function Sidebar() {
   const isKoreanHall = location.pathname === "/korean-hall";
   const pendingPanelRef = useRef(null);
   const searchWrapRef = useRef(null);
+  const styleWrapRef = useRef(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [homeEntering, setHomeEntering] = useState(false);
+  const [styleOpen, setStyleOpen] = useState(false);
+  const [railStyle, setRailStyle] = useState(
+    () => localStorage.getItem("railStyle") || "glass"
+  );
+  const [styleSwitching, setStyleSwitching] = useState(false);
+  const railStyleMounted = useRef(false);
+
+  useEffect(() => {
+    localStorage.setItem("railStyle", railStyle);
+    // 배경 그러데이션은 CSS transition으로 부드럽게 넘어가지 않으므로,
+    // 스타일이 바뀌는 순간에는 대신 짧게 페이드-스케일 애니메이션을 태워
+    // 전환이 뚝 끊기지 않고 매끄러워 보이게 한다. (첫 마운트 시엔 재생 안 함)
+    if (!railStyleMounted.current) {
+      railStyleMounted.current = true;
+      return;
+    }
+    setStyleSwitching(true);
+    const timer = setTimeout(() => setStyleSwitching(false), 2000);
+    return () => clearTimeout(timer);
+  }, [railStyle]);
 
   // 메인 페이지로 넘어올 때마다 미니바를 접힌 상태로 뒀다가, 도어인트로가 끝나는
   // 시점(App의 "doorintroend" 이벤트)에 맞춰 펼쳐지는 연출을 재생한다.
@@ -154,10 +182,23 @@ function Sidebar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [searchOpen]);
 
-  // 페이지가 바뀌면 열려있던 검색창은 접어둔다
+  // 스타일 선택 플라이아웃 바깥을 클릭하면 닫기
+  useEffect(() => {
+    if (!styleOpen) return;
+    const handleClickOutside = (e) => {
+      if (styleWrapRef.current && !styleWrapRef.current.contains(e.target)) {
+        setStyleOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [styleOpen]);
+
+  // 페이지가 바뀌면 열려있던 검색창/스타일 선택창은 접어둔다
   useEffect(() => {
     setSearchOpen(false);
     setSearchQuery("");
+    setStyleOpen(false);
   }, [location.pathname]);
 
   const triggerPop = (e) => {
@@ -256,18 +297,11 @@ function Sidebar() {
       openProduct(product.id);
       return;
     }
-    if (isHome) {
-      window.dispatchEvent(new CustomEvent("open-home-product", { detail: product.id }));
-      return;
-    }
-    sessionStorage.setItem("pendingHomeProductId", String(product.id));
-    pendingPanelRef.current = 4;
-    sessionStorage.setItem("skipHomeDefaultPanel", "1");
-    navigate("/");
+    navigate(`/item/${product.id}`);
   };
 
   return (
-    <aside className={`sidebarRail ${(collapsed || homeEntering) ? "collapsed" : ""} ${isKoreanHall ? "koreanHallRail" : ""}`}>
+    <aside className={`sidebarRail ${(collapsed || homeEntering) ? "collapsed" : ""} ${isKoreanHall ? "koreanHallRail" : `railStyle-${railStyle}`} ${styleSwitching ? "styleSwitching" : ""}`}>
       {isKoreanHall && (
         <div className="khPetals" aria-hidden="true">
           {KH_PETALS.map((p, i) => (
@@ -391,6 +425,36 @@ function Sidebar() {
         >
           {darkMode ? <LuSun /> : <LuMoon />}
         </button>
+
+        {!isKoreanHall && (
+          <div className="railStyleWrap" ref={styleWrapRef}>
+            <button
+              type="button"
+              className="railBtn"
+              aria-label="사이드바 스타일"
+              data-tooltip="사이드바 스타일"
+              onClick={(e) => { triggerPop(e); setStyleOpen((v) => !v); }}
+            >
+              <LuPalette />
+            </button>
+
+            {styleOpen && (
+              <div className="railStyleFlyout">
+                {RAIL_STYLES.map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    className={`railStyleOption${railStyle === s.id ? " active" : ""}`}
+                    onClick={() => { setRailStyle(s.id); setStyleOpen(false); }}
+                  >
+                    <span className={`railStyleSwatch railStyleSwatch-${s.id}`} />
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         <span className="railDivider" />
 
