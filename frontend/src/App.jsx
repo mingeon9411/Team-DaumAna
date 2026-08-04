@@ -44,7 +44,10 @@ import "./App.css";
 // 매 네비게이션마다 고유하게 바뀌는 location.key를 기준으로 삼는다.
 function FooterGate() {
   const { pathname } = useLocation();
-  if (pathname === "/korean-hall") return null;
+  // 상품 상세 페이지(/item/:id)는 Home과 같은 .hTrack 안에 단일 패널로 떠 있어서,
+  // Footer가 바로 뒤에 붙어있으면 가로 스냅 스크롤이 그대로 넘어가버린다. 한국관과
+  // 마찬가지로 여기서도 Footer를 붙이지 않는다.
+  if (pathname === "/korean-hall" || pathname.startsWith("/item/")) return null;
   return <Footer />;
 }
 
