@@ -2,7 +2,7 @@ import "./Home.css";
 import "./HomeProductDetail.css";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronLeft, Heart, Star } from "lucide-react";
+import { ChevronLeft, Heart, Star, Sparkles, Ruler, ShieldCheck } from "lucide-react";
 import { PRODUCTS } from "./Home";
 import { addToCart, getReviews, createReview } from "../../api";
 import { isWished, toggleWish } from "../../utils/wishlist";
@@ -76,6 +76,38 @@ function HomeProductDetail() {
 
   const priceNum = Number(product.price.replace(/,/g, ""));
 
+  // 실제 촬영 이미지가 한 장뿐이라 상세페이지 구간마다 같은 사진을 다른 비율/포커스로
+  // 재사용한다 — 상품별 추가 사진을 받으면 여기 image 값만 교체하면 됨.
+  const materialText = product.spec.split("MATERIAL :")[1]?.trim() || product.spec;
+  const sizeText = product.spec.split("·")[0]?.replace("SIZE :", "").trim() || product.spec;
+
+  const highlights = [
+    { icon: Sparkles, title: "고급스러운 소재감", text: `${materialText} 소재를 사용해 은은한 광택과 촉감, 내구성을 함께 잡았습니다.` },
+    { icon: Ruler, title: "정확한 사이즈", text: `${sizeText}. 공간에 배치하기 전 사이즈를 꼭 확인해주세요.` },
+    { icon: ShieldCheck, title: "꼼꼼한 품질 검수", text: "출고 전 모든 제품을 하나하나 검수해 안심하고 사용하실 수 있습니다." },
+  ];
+
+  const detailBlocks = [
+    {
+      title: `${product.sub}, 공간에 자연스럽게 스며드는 컬러`,
+      text: `${product.desc} 은은한 ${product.sub} 톤은 화이트, 우드, 그레이 등 어떤 인테리어 베이스와도 무리 없이 어우러져 공간의 톤을 해치지 않습니다.`,
+      pos: "center 15%",
+    },
+    {
+      title: "매일 마주해도 질리지 않는 디테일",
+      text: `매일 눈에 닿는 자리이기에 마감 하나하나에 신경 썼습니다. ${product.category} 본연의 기능과 완성도 높은 디테일을 함께 담아, 오래 두고 써도 자연스럽게 곁을 지키는 가구가 되도록 만들었습니다.`,
+      pos: "center 85%",
+    },
+  ];
+
+  const specRows = [
+    ["브랜드", product.brand],
+    ["카테고리", product.category],
+    ["컬러", product.sub],
+    ["사이즈", sizeText],
+    ["소재", materialText],
+  ];
+
   const handleWish = () => {
     toggleWish({
       id: product.id,
@@ -136,8 +168,9 @@ function HomeProductDetail() {
         <button
           type="button"
           onClick={() => {
-            // 홈의 인트로 시퀀스(0~3번 패널)를 다시 재생하지 않고, 상품 그리드
-            // 패널(4번)로 바로 이동하도록 Sidebar에 세션스토리지로 신호를 남긴다.
+            // 대문 애니메이션과 홈의 인트로 시퀀스(0~3번 패널)를 다시 재생하지
+            // 않고, 상품 그리드 패널(4번)로 바로 이동하도록 신호를 남긴다.
+            sessionStorage.setItem("skipDoorIntro", "1");
             sessionStorage.setItem("skipHomeDefaultPanel", "1");
             sessionStorage.setItem("pendingHomePanelIndex", "4");
             navigate("/");
@@ -211,6 +244,99 @@ function HomeProductDetail() {
             </div>
           </div>
         </div>
+
+        <section className="border-t border-border pt-16 pb-16">
+          <div className="text-center mb-14">
+            <span className="text-[10px] text-muted-foreground tracking-widest block mb-2" style={MONO}>
+              PRODUCT DETAIL
+            </span>
+            <h2 className="text-2xl font-light text-foreground" style={SERIF}>상세정보</h2>
+          </div>
+
+          {/* 히어로 배너 */}
+          <div className="relative overflow-hidden rounded-3xl mb-16 aspect-[16/9] max-w-4xl mx-auto">
+            <img
+              src={product.image}
+              alt={product.alt}
+              className="w-full h-full object-cover"
+              style={{ objectPosition: "center 30%" }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+            <div className="absolute bottom-8 left-8 right-8 text-white">
+              <span className="text-[10px] tracking-widest opacity-80 block mb-2" style={MONO}>
+                {product.no} · {product.label}
+              </span>
+              <h3 className="text-3xl font-light" style={SERIF}>{product.name}</h3>
+              <p className="text-sm opacity-90 mt-2 font-light max-w-md">{product.desc}</p>
+            </div>
+          </div>
+
+          {/* 특징 3가지 */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto mb-20">
+            {highlights.map((h) => (
+              <div
+                key={h.title}
+                className="flex flex-col items-center text-center gap-3 p-6 rounded-2xl border border-border bg-card/40"
+              >
+                <h.icon size={22} className="text-foreground" />
+                <h4 className="text-sm font-medium text-foreground" style={SANS}>{h.title}</h4>
+                <p className="text-xs text-muted-foreground leading-relaxed font-light">{h.text}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* 이미지+텍스트 교차 블록 */}
+          {detailBlocks.map((b, i) => (
+            <div
+              key={b.title}
+              className={`flex flex-col ${i % 2 ? "md:flex-row-reverse" : "md:flex-row"} items-center gap-10 max-w-4xl mx-auto mb-20`}
+            >
+              <div className="w-full md:w-1/2 overflow-hidden rounded-2xl aspect-[4/3] shrink-0">
+                <img
+                  src={product.image}
+                  alt=""
+                  className="w-full h-full object-cover"
+                  style={{ objectPosition: b.pos }}
+                />
+              </div>
+              <div className="w-full md:w-1/2">
+                <span className="text-[10px] text-muted-foreground tracking-widest block mb-2" style={MONO}>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h4 className="text-xl font-light text-foreground mb-3" style={SERIF}>{b.title}</h4>
+                <p className="text-sm text-foreground/80 leading-loose font-light">{b.text}</p>
+              </div>
+            </div>
+          ))}
+
+          {/* 제품 사양표 */}
+          <div className="max-w-2xl mx-auto mb-20">
+            <h4 className="text-lg font-light text-foreground mb-5" style={SERIF}>제품 사양</h4>
+            <div className="rounded-2xl border border-border overflow-hidden">
+              {specRows.map((row, i) => (
+                <div key={row[0]} className={`flex text-sm ${i ? "border-t border-border" : ""}`}>
+                  <span className="w-28 shrink-0 px-5 py-4 bg-card/60 text-muted-foreground" style={MONO}>
+                    {row[0]}
+                  </span>
+                  <span className="flex-1 px-5 py-4 text-foreground/80 font-light">{row[1]}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 클로징 배너 */}
+          <div
+            className="max-w-4xl mx-auto rounded-3xl p-10 text-center"
+            style={{ background: "linear-gradient(135deg, #f5c6e0 0%, #c9d9f7 50%, #bdeed0 100%)" }}
+          >
+            <p className="text-xs text-black/60 font-light mb-3 tracking-widest" style={MONO}>JIPDAUM PROMISE</p>
+            <p className="text-lg text-black/85 font-light leading-relaxed" style={SERIF}>
+              집다움은 공간을 채우는 모든 순간에 정성을 담습니다.
+              <br />
+              {product.name}, 오늘의 집에 어울리는 선택이 되기를 바랍니다.
+            </p>
+          </div>
+        </section>
 
         <section className="border-t border-border pt-12 pb-24">
           <div className="flex items-end justify-between mb-8">

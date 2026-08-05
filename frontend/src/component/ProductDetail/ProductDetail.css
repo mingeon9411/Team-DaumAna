@@ -1,465 +1,92 @@
-.detailPage {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: "Noto Sans KR", sans-serif;
-  width: 100vw;
-  height: 100vh;
-  flex-shrink: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding-top: 130px;
-  animation: detailPageIn 3.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+/* 한국관 상품 상세페이지 전용 배경 장식 — CheckoutKoreanHall.jsx의 떨어지는
+   무궁화 꽃잎 연출을 이 페이지 크기에 맞춰 그대로 재사용한다. */
+/* 한지 섬유질감 — DoorIntro.jsx의 한국관 대문(.doorIntro.hanji)과 같은 레시피:
+   교차하는 결 무늬 + 따뜻한 아이보리 톤. Home 쪽 상품 상세(/item/:id)는
+   homeDetailPage의 기본 흰 배경을 그대로 쓴다 */
+.pdPage {
+  position: relative;
+  isolation: isolate;
+  background:
+    repeating-linear-gradient(115deg, rgba(120, 90, 50, 0.06) 0px, rgba(120, 90, 50, 0.06) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(25deg, rgba(120, 90, 50, 0.05) 0px, rgba(120, 90, 50, 0.05) 1px, transparent 1px, transparent 4px),
+    linear-gradient(160deg, #f6efdc 0%, #ecdfbd 55%, #e3d2a4 100%);
 }
 
-@keyframes detailPageIn {
-  from {
-    opacity: 0;
-    transform: translateY(32px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.detailLayout {
-  display: grid;
-  grid-template-columns: 68% 32%;
-  min-height: 100vh;
-  border-top: 1px solid var(--border);
-  box-shadow: 0 2px 24px rgba(0,0,0,0.07);
-}
-
-.detailLeft {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 90px;
-  background: var(--card);
-  border-right: 1px solid var(--border);
-}
-
-.detailLeft img {
-  width: 80%;
-  max-height: 760px;
-  object-fit: contain;
-  filter: drop-shadow(0 12px 32px rgba(0,0,0,0.13));
-  transition: transform 0.4s ease, filter 0.4s ease;
-}
-
-.detailLeft img:hover {
-  transform: scale(1.02);
-  filter: drop-shadow(0 20px 48px rgba(0,0,0,0.18));
-}
-
-.detailRight {
-  display: flex;
-  flex-direction: column;
-  background: var(--card);
-  box-shadow: -4px 0 20px rgba(0,0,0,0.04);
-}
-
-.detailInfoBox {
-  padding: 42px 38px;
-  cursor: default;
-  user-select: none;
-}
-
-.detailDesc {
-  color: var(--muted-foreground);
-  font-size: 15px;
-  margin-bottom: 14px;
-}
-
-.detailTitleRow {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.detailTitleRow h1 {
-  font-family: "Noto Serif KR", serif;
-  font-size: 24px;
-  font-weight: 500;
-  margin: 0;
-  flex: 1;
-}
-
-.detailWishBtn {
-  flex-shrink: 0;
-  background: none;
-  border: none;
-  font-size: 24px;
-  color: #ccc;
-  cursor: pointer;
-  padding: 2px 4px;
-  line-height: 1;
-  transition: color 0.18s, transform 0.18s;
-}
-.detailWishBtn:hover { color: #e05; transform: scale(1.15); }
-.detailWishBtn.active { color: #e05; }
-
-.detailInfoBox strong {
-  display: block;
-  font-size: 22px;
-  margin-bottom: 28px;
-}
-
-.detailSpec {
-  font-size: 16px;
-  line-height: 1.8;
-  margin-bottom: 42px;
-  padding: 16px 18px;
-  background: var(--card);
-  border-left: 3px solid var(--border);
-  color: var(--muted-foreground);
-}
-
-.optionArea {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  margin-bottom: 20px;
-}
-
-.optionArea > span {
-  width: 80px;
-  font-size: 15px;
-  color: var(--muted-foreground);
-  flex-shrink: 0;
-}
-
-.optionBtns {
-  display: flex;
-  gap: 8px;
-}
-
-.optionArea button {
-  border: 1px solid var(--border);
-  background: var(--card);
-  padding: 7px 16px;
-  font-size: 15px;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: 0.2s;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-}
-
-.optionArea button:hover {
-  border-color: #913a22;
-  background: var(--background);
-  box-shadow: 0 2px 8px rgba(145,58,34,0.12);
-}
-
-.quantityArea {
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.quantityArea > span {
-  width: 80px;
-  font-size: 15px;
-  color: var(--muted-foreground);
-  flex-shrink: 0;
-}
-
-.quantityControl {
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--border);
-}
-
-.quantityControl button {
-  width: 34px;
-  height: 34px;
-  border: none;
-  background: var(--secondary);
-  font-size: 16px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.quantityControl button:hover {
-  background: var(--muted);
-}
-
-.quantityControl > span {
-  width: 44px;
-  text-align: center;
-  font-size: 15px;
-  border-left: 1px solid var(--border);
-  border-right: 1px solid var(--border);
-  line-height: 34px;
-}
-
-.buyBox {
-  border-top: 1px solid var(--border);
-  padding: 28px 38px;
-  margin-top: auto;
-  background: var(--card);
-  box-shadow: inset 0 4px 12px rgba(0,0,0,0.03);
-}
-
-.totalLine {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 20px;
-  font-size: 15px;
-  cursor: default;
-  user-select: none;
-}
-
-.totalLine strong {
-  font-size: 18px;
-}
-
-.totalLine em {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--muted-foreground);
-  font-style: normal;
-  margin-left: 4px;
-}
-
-.buyBtns {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-.buyBtns button {
-  height: 54px;
-  border: none;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  transition: filter 0.2s, transform 0.15s;
-}
-
-.buyBtns button:hover {
-  filter: brightness(1.12);
-  transform: translateY(-1px);
-}
-
-.buyBtns button:active {
-  transform: translateY(0);
-  filter: brightness(0.95);
-}
-
-.buyNow {
-  background: #913a22;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(145,58,34,0.28);
-}
-
-.addCart {
-  background: var(--primary);
-  color: var(--primary-foreground);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.22);
-}
-
-.naverPay {
-  width: 100%;
-  height: 42px;
-  margin-top: 10px;
-  border: none;
-  background: #03c75a;
-  color: #fff;
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(3,199,90,0.25);
-  transition: filter 0.2s, transform 0.15s;
-}
-
-.naverPay:hover {
-  filter: brightness(1.08);
-  transform: translateY(-1px);
-}
-
-.reviewSection {
-  padding: 80px 10%;
-  background: var(--secondary);
-}
-
-.reviewHeader {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  margin-bottom: 32px;
-}
-
-.reviewHeader h2 {
-  font-size: 26px;
-  letter-spacing: 2px;
-}
-
-.reviewCount {
-  font-size: 14px;
-  color: var(--muted-foreground);
-}
-
-.reviewForm {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 28px 32px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  margin-bottom: 40px;
-}
-
-.reviewForm textarea {
-  width: 100%;
-  height: 100px;
-  resize: vertical;
-  background: var(--background);
-  color: var(--foreground);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 14px 16px;
-  font-family: inherit;
-  font-size: 14px;
-  line-height: 1.6;
-  transition: border-color 0.2s;
-}
-
-.reviewForm textarea:focus {
-  outline: none;
-  border-color: #913a22;
-}
-
-.reviewSubmit {
-  margin-top: 14px;
-  padding: 12px 28px;
-  border: none;
-  border-radius: 8px;
-  background: #913a22;
-  color: #fff;
-  font-weight: 600;
-  font-size: 13px;
-  letter-spacing: 1px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(145, 58, 34, 0.28);
-  transition: filter 0.2s, transform 0.15s;
-}
-
-.reviewSubmit:hover {
-  filter: brightness(1.1);
-  transform: translateY(-1px);
-}
-
-.reviewSubmit:active {
-  transform: translateY(0);
-  filter: brightness(0.95);
-}
-
-.reviewList {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.reviewItem {
-  padding: 22px 26px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--card);
-  transition: box-shadow 0.2s, transform 0.2s;
-}
-
-.reviewItem:hover {
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  transform: translateY(-2px);
-}
-
-.reviewItemTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.reviewItem p {
-  line-height: 1.7;
-}
-
-.reviewDate {
-  font-size: 13px;
-  color: var(--muted-foreground);
-}
-
-.emptyReview {
-  margin-top: 20px;
-  padding: 60px 20px;
-  text-align: center;
-  line-height: 1.8;
-  color: var(--muted-foreground);
-  border: 1px dashed var(--border);
-  border-radius: 10px;
-}
-
-.ratingBox {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 16px;
-}
-
-.star {
-  border: none;
-  background: transparent;
-  font-size: 26px;
-  color: #c9c1b8;
-  cursor: pointer;
-  transition: transform 0.15s, color 0.15s;
-}
-
-.star:hover {
-  transform: scale(1.15);
-}
-
-.star.active {
-  color: #b0301f;
-}
-
-.reviewStars {
-  color: #b0301f;
-  font-size: 15px;
-  letter-spacing: 1px;
-}
-
-/* ── 다크모드 ── */
-body.dark .detailPage {
-  background-color: #060d1e;
-  color: #bfcbec;
-}
-
-body.dark .reviewForm {
-  background: #0b1430;
-  border-color: rgba(150, 185, 255, 0.15);
-}
-
-body.dark .reviewForm textarea {
+body.dark .pdPage {
   background: #060d1e;
-  color: #bfcbec;
-  border-color: rgba(150, 185, 255, 0.15);
 }
 
-body.dark .reviewItem {
-  background: #0b1430;
-  border-color: rgba(150, 185, 255, 0.1);
+.pdContent {
+  position: relative;
+  z-index: 1;
 }
 
-body.dark .reviewDate {
-  color: #5a6d9a;
+/* 카드도 유리 질감 대신 한지 종이 질감으로 — 무지개 파스텔 테두리 대신
+   먹색 얇은 테두리 + 섬유질 아이보리 지면 */
+.pdPage .homeDetailGlassCard {
+  border: 1.5px solid rgba(120, 74, 30, 0.28);
+  background:
+    repeating-linear-gradient(115deg, rgba(120, 90, 50, 0.05) 0px, rgba(120, 90, 50, 0.05) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(25deg, rgba(120, 90, 50, 0.04) 0px, rgba(120, 90, 50, 0.04) 1px, transparent 1px, transparent 4px),
+    linear-gradient(rgba(250, 244, 227, 0.94), rgba(250, 244, 227, 0.94));
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: 0 20px 60px rgba(90, 60, 20, 0.16), inset 0 1px 0 rgba(255, 250, 235, 0.7);
 }
 
-body.dark .emptyReview {
-  border-color: rgba(150, 185, 255, 0.15);
+body.dark .pdPage .homeDetailGlassCard {
+  border-color: rgba(231, 146, 187, 0.25);
+  background: linear-gradient(rgba(6, 13, 30, 0.5), rgba(6, 13, 30, 0.5));
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(150, 185, 255, 0.16);
 }
 
+.pdPetals {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.pdPetal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 12px;
+  background: radial-gradient(circle at 32% 30%, #ffe3f0, #e792bb 55%, #b8567f 100%);
+  border-radius: 0% 100% 0% 100%;
+  opacity: 0;
+  animation-name: pdPetalFall;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+}
+
+body.dark .pdPetal {
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0%, #cfe0ff 60%, transparent 80%);
+  box-shadow: 0 0 2px 0.3px rgba(210, 225, 255, 0.9);
+  animation-name: pdStarTwinkle;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes pdPetalFall {
+  0% {
+    transform: translate(0, -6px) rotate(0deg) scale(var(--pdPetalScale, 1));
+    opacity: 0;
+  }
+  15% { opacity: 0.85; }
+  50% { transform: translate(6px, 46vh) rotate(180deg) scale(var(--pdPetalScale, 1)); }
+  85% { opacity: 0.8; }
+  100% {
+    transform: translate(-5px, 92vh) rotate(360deg) scale(var(--pdPetalScale, 1));
+    opacity: 0;
+  }
+}
+
+@keyframes pdStarTwinkle {
+  0%, 100% { opacity: 0; transform: scale(calc(var(--pdPetalScale, 1) * 0.5)); }
+  50%      { opacity: 1; transform: scale(calc(var(--pdPetalScale, 1) * 1.2)); }
+}

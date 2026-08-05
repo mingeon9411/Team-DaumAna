@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./KoreanHall.css";
 import products from "../../data/products";
-import { useProductModal } from "../../context/ProductModalContext";
 import irworobongdo from "../../assets/decor/irworobongdo.svg";
 
 const FILM_SOURCES = ["/videos/jipdaum-hanok.mp4", "/videos/jipdaum-kor.mp4"];
 
 function KoreanHall() {
-  const { openProduct } = useProductModal();
+  const navigate = useNavigate();
   const filmVideoRef = useRef(null);
+  const gridRef = useRef(null);
   const [filmIndex, setFilmIndex] = useState(0);
   const [filmEnded, setFilmEnded] = useState(false);
 
@@ -16,6 +17,17 @@ function KoreanHall() {
     if (filmIndex === 0) return;
     filmVideoRef.current?.play().catch(() => {});
   }, [filmIndex]);
+
+  // 상품 상세페이지의 "목록으로" 버튼으로 돌아온 경우, 대문·필름 인트로를 다시
+  // 보여주지 않고 상품 목록으로 바로 스크롤한다 (Home.jsx의 skipHomeDefaultPanel과 동일한 패턴).
+  useEffect(() => {
+    if (!sessionStorage.getItem("skipKoreanHallIntro")) return;
+    sessionStorage.removeItem("skipKoreanHallIntro");
+    const timer = setTimeout(() => {
+      gridRef.current?.scrollIntoView({ block: "start" });
+    }, 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleFilmEnded = () => {
     if (filmIndex < FILM_SOURCES.length - 1) {
@@ -62,13 +74,13 @@ function KoreanHall() {
         </div>
       </div>
 
-      <ul className="khGrid">
+      <ul className="khGrid" ref={gridRef}>
         {products.map((product) => (
           <li key={product.id} className="khCard">
             <button
               type="button"
               className="khCardLink"
-              onClick={() => openProduct(product.id)}
+              onClick={() => navigate(`/product/${product.id}`)}
             >
               <div className="khImgWrap">
                 <img src={product.image} alt={product.name} className="khImg" />

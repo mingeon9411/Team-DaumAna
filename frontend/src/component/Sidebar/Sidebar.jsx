@@ -17,13 +17,14 @@ import {
   LuChevronRight,
   LuChevronsLeft,
   LuChevronsRight,
+  LuInfo,
 } from "react-icons/lu";
 import { logoutUser, getCartItems } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useCartModal } from "../../context/CartModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import { useNoticeModal } from "../../context/NoticeModalContext";
-import { useProductModal } from "../../context/ProductModalContext";
+import { useCompanyInfoModal } from "../../context/CompanyInfoModalContext";
 import { PRODUCTS as HOME_PRODUCTS } from "../Home/Home";
 import { products as KOREAN_HALL_PRODUCTS } from "../../data/products";
 
@@ -58,12 +59,16 @@ function Sidebar() {
   const { openCart } = useCartModal();
   const { openMyPage } = useMyPageModal();
   const { openNotice } = useNoticeModal();
-  const { openProduct } = useProductModal();
+  const { openCompanyInfo } = useCompanyInfoModal();
   const isHome = location.pathname === "/";
   const isKoreanHall = location.pathname === "/korean-hall";
+  // 한국관 상품 상세(/product/:id)는 /korean-hall과 다른 라우트지만 한국관 전용
+  // 카탈로그라, 독의 룩(koreanHallRail)·꽃잎 장식·검색 카탈로그는 여기도 한국관
+  // 취급을 받아야 한다.
+  const isKoreanHallZone = isKoreanHall || location.pathname.startsWith("/product/");
   // 상품 상세 페이지는 Home의 가로 패널 흐름에 속하지 않는 독립된 페이지라,
   // 한국관과 마찬가지로 "다음/이전 페이지" 같은 패널 이동 버튼이 의미가 없다.
-  const isProductDetail = location.pathname.startsWith("/item/");
+  const isProductDetail = location.pathname.startsWith("/item/") || location.pathname.startsWith("/product/");
   const pendingPanelRef = useRef(null);
   const searchWrapRef = useRef(null);
   const styleWrapRef = useRef(null);
@@ -292,7 +297,7 @@ function Sidebar() {
 
   // 검색은 현재 있는 페이지에 맞는 상품 목록만 대상으로 한다 — 한국관이면 한국관
   // 큐레이션, 그 외(메인 포함)에는 메인 상품 목록.
-  const searchCatalog = isKoreanHall ? KOREAN_HALL_PRODUCTS : HOME_PRODUCTS;
+  const searchCatalog = isKoreanHallZone ? KOREAN_HALL_PRODUCTS : HOME_PRODUCTS;
   const searchResults = searchQuery.trim()
     ? searchCatalog
         .filter((p) => {
@@ -305,16 +310,16 @@ function Sidebar() {
   const handleSearchSelect = (product) => {
     setSearchOpen(false);
     setSearchQuery("");
-    if (isKoreanHall) {
-      openProduct(product.id);
+    if (isKoreanHallZone) {
+      navigate(`/product/${product.id}`);
       return;
     }
     navigate(`/item/${product.id}`);
   };
 
   return (
-    <aside className={`sidebarRail ${(collapsed || homeEntering) ? "collapsed" : ""} ${isKoreanHall ? "koreanHallRail" : `railStyle-${railStyle}`} ${styleSwitching ? "styleSwitching" : ""}`}>
-      {isKoreanHall && (
+    <aside className={`sidebarRail ${(collapsed || homeEntering) ? "collapsed" : ""} ${isKoreanHallZone ? "koreanHallRail" : `railStyle-${railStyle}`} ${styleSwitching ? "styleSwitching" : ""}`}>
+      {isKoreanHallZone && (
         <div className="khPetals" aria-hidden="true">
           {KH_PETALS.map((p, i) => (
             <span
@@ -388,7 +393,7 @@ function Sidebar() {
                 autoFocus
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={isKoreanHall ? "한국관 상품 검색" : "상품 검색"}
+                placeholder={isKoreanHallZone ? "한국관 상품 검색" : "상품 검색"}
                 className="railSearchInput"
               />
               {searchQuery.trim() && (
@@ -438,7 +443,7 @@ function Sidebar() {
           {darkMode ? <LuSun /> : <LuMoon />}
         </button>
 
-        {!isKoreanHall && (
+        {!isKoreanHallZone && (
           <div className="railStyleWrap" ref={styleWrapRef}>
             <button
               type="button"
@@ -504,7 +509,7 @@ function Sidebar() {
           </button>
         )}
 
-        {!isKoreanHall && !isProductDetail && (
+        {!isKoreanHallZone && !isProductDetail && (
           <>
             <span className="railDivider" />
 
@@ -549,6 +554,18 @@ function Sidebar() {
             </button>
           </>
         )}
+
+        <span className="railDivider" />
+
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="회사 정보"
+          data-tooltip="회사 정보"
+          onClick={(e) => { triggerPop(e); openCompanyInfo(); }}
+        >
+          <LuInfo />
+        </button>
       </div>
     </aside>
   );

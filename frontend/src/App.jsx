@@ -18,7 +18,6 @@ import NoticeModal from "./component/NoticeModal/NoticeModal";
 import Welcome from "./component/Welcome/Welcome";
 import ProductDetail from "./component/ProductDetail/ProductDetail";
 import HomeProductDetail from "./component/Home/HomeProductDetail";
-import ProductModal from "./component/ProductModal/ProductModal";
 import SocialCallback from "./component/SocialCallback/SocialCallback";
 import EmailVerify from "./component/EmailVerify/EmailVerify";
 import SearchResults from "./component/SearchResults/SearchResults";
@@ -26,30 +25,16 @@ import KoreanHall from "./component/KoreanHall/KoreanHall";
 import Checkout from "./component/Checkout/Checkout";
 import CheckoutKoreanHall from "./component/Checkout/CheckoutKoreanHall";
 import OrderComplete from "./component/OrderComplete/OrderComplete";
-import Footer from "./component/Footer/Footer";
+import CompanyInfoModal from "./component/CompanyInfoModal/CompanyInfoModal";
 import AuthModal from "./component/AuthModal/AuthModal";
 import { AuthModalProvider } from "./context/AuthModalContext";
 import { CartModalProvider } from "./context/CartModalContext";
 import { MyPageModalProvider } from "./context/MyPageModalContext";
 import { NoticeModalProvider } from "./context/NoticeModalContext";
-import { ProductModalProvider } from "./context/ProductModalContext";
+import { CompanyInfoModalProvider } from "./context/CompanyInfoModalContext";
 import { WithdrawModalProvider } from "./context/WithdrawModalContext";
 import { createPagingController } from "./utils/snapSetup";
 import "./App.css";
-
-// 홈("/")과 한국관("/korean-hall")에 들어올 때마다 — 새로고침이든 다른 페이지에서
-// 돌아오는 것이든, 이미 그 페이지에 있는 상태에서 사이드바 버튼을 다시 눌렀을 때든 —
-// 매번 대문 애니메이션을 다시 보여준다. pathname만 보면 같은 경로로 다시 이동할 때
-// (예: 한국관에 있는 채로 "한국관" 버튼 재클릭) 값이 안 바뀌어 재실행되지 않으므로,
-// 매 네비게이션마다 고유하게 바뀌는 location.key를 기준으로 삼는다.
-function FooterGate() {
-  const { pathname } = useLocation();
-  // 상품 상세 페이지(/item/:id)는 Home과 같은 .hTrack 안에 단일 패널로 떠 있어서,
-  // Footer가 바로 뒤에 붙어있으면 가로 스냅 스크롤이 그대로 넘어가버린다. 한국관과
-  // 마찬가지로 여기서도 Footer를 붙이지 않는다.
-  if (pathname === "/korean-hall" || pathname.startsWith("/item/")) return null;
-  return <Footer />;
-}
 
 // 탭 파비콘 — 한국관("/korean-hall")에서는 집다움 한옥 로고, 그 외 페이지에서는 JD 로고를 사용한다.
 function FaviconController() {
@@ -74,11 +59,17 @@ function DoorIntroController() {
       setShowDoorIntro(false);
       return;
     }
-    setShowDoorIntro(true);
+    // 상품 상세페이지의 "목록으로" 버튼처럼 이미 한 번 들어왔던 곳으로 돌아가는
+    // 경우엔 대문 애니메이션을 다시 볼 필요가 없다 — 세션스토리지 플래그로 1회성
+    // 건너뛰기. doorintroend 이벤트(사이드바 펼침 등)는 그대로 쏴줘야 하므로
+    // 지연시간만 0으로 줄인다(리스너가 붙을 다음 틱까지 기다리기 위해 0ms 유지).
+    const skip = sessionStorage.getItem("skipDoorIntro");
+    if (skip) sessionStorage.removeItem("skipDoorIntro");
+    setShowDoorIntro(!skip);
     const timer = setTimeout(() => {
       setShowDoorIntro(false);
       window.dispatchEvent(new Event("doorintroend"));
-    }, 7700);
+    }, skip ? 0 : 7700);
     return () => clearTimeout(timer);
   }, [key, pathname, isKoreanHall]);
 
@@ -149,7 +140,7 @@ function App() {
     <CartModalProvider>
     <MyPageModalProvider>
     <NoticeModalProvider>
-    <ProductModalProvider>
+    <CompanyInfoModalProvider>
     <WithdrawModalProvider>
     <ScrollToTop lenis={lenisRef} controller={controllerRef} panelsUnsub={panelsUnsubRef} />
     <FaviconController />
@@ -160,7 +151,7 @@ function App() {
     <Cart />
     <MyPage />
     <NoticeModal />
-    <ProductModal />
+    <CompanyInfoModal />
     <WithdrawModal />
 
     <div className="hTrack">
@@ -181,10 +172,9 @@ function App() {
         <Route path="/order-complete" element={<OrderComplete />} />
 
       </Routes>
-      <FooterGate />
     </div>
     </WithdrawModalProvider>
-    </ProductModalProvider>
+    </CompanyInfoModalProvider>
     </NoticeModalProvider>
     </MyPageModalProvider>
     </CartModalProvider>
