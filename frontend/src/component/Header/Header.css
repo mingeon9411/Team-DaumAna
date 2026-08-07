@@ -47,17 +47,39 @@ body.dark {
   pointer-events: none;
 }
 
-/* 한국관 한정 — 맨 위에서는 투명, 스크롤이 내려가면 배너 배경이 생긴다 */
-.header.koreanHallHeader.scrolled {
-  background: rgba(244, 240, 232, 0.82);
+/* 한국관 한정 — 맨 위에서는 투명, 스크롤이 내려가면 배너 배경이 생긴다.
+   기존엔 배경색이 페이지 배경(var(--background))과 완전히 같은 색이라 스크롤해도
+   배너가 페이지에 녹아 안 보이는 문제가 있었다 — 사이드바/한지 배경과 같은 톤으로
+   눈에 띄게 구분하고, 아래쪽에 테두리를 줘서 "배너"로서의 형태를 살린다.
+
+   배경을 헤더(.header)에 직접 주지 않고 ::before 레이어로 분리한 이유: 로고는
+   scrolled 여부와 무관하게 항상 떠 있어야 하는데, 배너가 나타날 때 살짝 아래로
+   내려오며 등장하는 애니메이션을 주려면 그 움직임이 로고까지 같이 흔들리면 안
+   된다. ::before를 로고보다 낮은 z-index로 깔아 배너만 따로 움직이게 분리한다. */
+.header.koreanHallHeader::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(248, 241, 227, 0.95), rgba(239, 226, 201, 0.95));
+  border-bottom: 1px solid rgba(180, 132, 74, 0.28);
   backdrop-filter: blur(12px);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
-  transition: background 0.4s ease, box-shadow 0.4s ease, backdrop-filter 0.4s ease;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.45s ease, transform 0.45s ease, backdrop-filter 0.45s ease;
 }
 
-body.dark .header.koreanHallHeader.scrolled {
-  background: rgba(6, 13, 30, 0.82);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+.header.koreanHallHeader.scrolled::before {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.dark .header.koreanHallHeader::before {
+  background: linear-gradient(135deg, rgba(43, 32, 19, 0.92), rgba(26, 19, 9, 0.92));
+  border-bottom: 1px solid rgba(214, 168, 106, 0.24);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
 }
 
 .logo {
@@ -88,17 +110,18 @@ body.dark .header.koreanHallHeader.scrolled {
    아래 각 규칙들은 모두 이 기준점(--khAnchorX)을 공유해서 위치를 맞춘다. */
 .header.koreanHallHeader {
   --khAnchorX: 50%;
+  height: 72px;
 }
 
 .header.koreanHallHeader .headerIlwol {
   height: 50px;
-  bottom: 40px;
+  bottom: 12px;
 }
 
 .header.koreanHallHeader .logo {
   position: absolute;
   left: var(--khAnchorX);
-  bottom: 53px;
+  bottom: 25px;
   transform: translateX(-50%);
   z-index: 2;
 }
@@ -108,12 +131,13 @@ body.dark .header.koreanHallHeader.scrolled {
   filter: none;
 }
 
-/* 한국관 — 해/달을 봉우리 위로 살짝 띄워 겹치지 않게 배치
-   (ilwolobongdo.png 픽셀을 직접 샘플링해 봉우리·소나무 사이의 실제 여백을 확인한 값) */
+/* 한국관 — 해/달을 봉우리 위로 살짝 띄워 겹치지 않게 배치.
+   배너가 로고 크기에 맞춰 작아진 뒤(headerIlwol top≈10px) 봉우리 바로 위에서
+   자연스럽게 하늘에 떠 있도록 더 위로 올림. */
 .header.koreanHallHeader .headerMoon,
 .header.koreanHallHeader .headerSun {
   display: block;
-  top: 12px;
+  top: 2px;
   width: 11px;
   height: 11px;
 }

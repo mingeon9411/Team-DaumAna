@@ -1,0 +1,18 @@
+/* Sidebar.css의 .sidebarRail(애플 컨트롤 센터/독 스타일)과 같은 레시피를 그대로 적용 —
+   안쪽은 얇고 평평한 반투명 화이트, 테두리는 무지개 톤 그러데이션, blur로 유리처럼 */
+.recentDock {
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.32)) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  backdrop-filter: blur(30px) saturate(115%);
+  -webkit-backdrop-filter: blur(30px) saturate(115%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+body.dark .recentDock {
+  background:
+    linear-gradient(rgba(6, 13, 30, 0.38), rgba(6, 13, 30, 0.38)) padding-box,
+    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(150, 185, 255, 0.16);
+}

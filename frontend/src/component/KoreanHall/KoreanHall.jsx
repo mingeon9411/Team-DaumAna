@@ -5,6 +5,7 @@ import products from "../../data/products";
 import irworobongdo from "../../assets/decor/irworobongdo.svg";
 
 const FILM_SOURCES = ["/videos/jipdaum-hanok.mp4", "/videos/jipdaum-kor.mp4"];
+const PRODUCT_CATEGORIES = ["전체", "소파", "테이블", "조명", "수납", "소품"];
 
 function KoreanHall() {
   const navigate = useNavigate();
@@ -12,6 +13,12 @@ function KoreanHall() {
   const gridRef = useRef(null);
   const [filmIndex, setFilmIndex] = useState(0);
   const [filmEnded, setFilmEnded] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("전체");
+
+  const filteredProducts =
+    selectedCategory === "전체"
+      ? products
+      : products.filter((p) => p.category === selectedCategory);
 
   useEffect(() => {
     if (filmIndex === 0) return;
@@ -74,26 +81,41 @@ function KoreanHall() {
         </div>
       </div>
 
-      <ul className="khGrid" ref={gridRef}>
-        {products.map((product) => (
-          <li key={product.id} className="khCard">
+      <section className="khGridSection" ref={gridRef}>
+        <div className="khCategoryMenu">
+          {PRODUCT_CATEGORIES.map((cat) => (
             <button
+              key={cat}
               type="button"
-              className="khCardLink"
-              onClick={() => navigate(`/product/${product.id}`)}
+              className={`khCategoryBtn${selectedCategory === cat ? " active" : ""}`}
+              onClick={() => setSelectedCategory(cat)}
             >
-              <div className="khImgWrap">
-                <img src={product.image} alt={product.name} className="khImg" />
-              </div>
-              <div className="khInfo">
-                <p className="khName">{product.name}</p>
-                <p className="khProductDesc">{product.desc}</p>
-                <p className="khPrice">{product.price.toLocaleString()}원</p>
-              </div>
+              {cat}
             </button>
-          </li>
-        ))}
-      </ul>
+          ))}
+        </div>
+
+        <ul className="khGrid">
+          {filteredProducts.map((product) => (
+            <li key={product.id} className="khCard">
+              <button
+                type="button"
+                className="khCardLink"
+                onClick={() => navigate(`/product/${product.id}`)}
+              >
+                <div className="khImgWrap">
+                  <img src={product.image} alt={product.name} className="khImg" />
+                </div>
+                <div className="khInfo">
+                  <p className="khName">{product.name}</p>
+                  <p className="khProductDesc">{product.desc}</p>
+                  <p className="khPrice">{product.price.toLocaleString()}원</p>
+                </div>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   );
 }

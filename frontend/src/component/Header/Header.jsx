@@ -19,12 +19,19 @@ function Header() {
   const isHome = location.pathname === "/";
   const isKoreanHall = location.pathname === "/korean-hall";
 
-  // 홈 화면에서도 페이지 상단 히어로를 지나면 오방색 하이라인을 켜기 위한 스크롤 추적
+  // 홈 화면에서도 페이지 상단 히어로를 지나면 오방색 하이라인을 켜기 위한 스크롤 추적.
+  // 한국관(.khPage)은 Lenis의 가로 스크롤에서 제외된(data-lenis-prevent) 자체 세로
+  // 스크롤(overflow-y: auto) 페이지라 window에는 scroll 이벤트가 전혀 발생하지 않는다 —
+  // 그래서 리스너를 window가 아니라 .khPage 엘리먼트에 따로 붙여야 한다.
   useEffect(() => {
+    const koreanHallEl = isKoreanHall ? document.querySelector(".khPage") : null;
+
     const handleScroll = () => {
       if (isHome) {
         const essay = document.getElementById("home-essay");
         setScrolled(essay ? essay.getBoundingClientRect().left <= 0 : window.scrollX > 50);
+      } else if (isKoreanHall) {
+        setScrolled((koreanHallEl?.scrollTop ?? 0) > 50);
       } else {
         setScrolled(window.scrollX > 50);
       }
@@ -39,11 +46,13 @@ function Header() {
 
     handleScroll();
     window.addEventListener("scroll", handleScroll);
+    koreanHallEl?.addEventListener("scroll", handleScroll);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      koreanHallEl?.removeEventListener("scroll", handleScroll);
     };
-  }, [isHome]);
+  }, [isHome, isKoreanHall]);
 
   // 다크모드는 Sidebar가 소유 — body.dark 클래스 변경을 이벤트로 전달받아 일월오봉도만 동기화
   useEffect(() => {

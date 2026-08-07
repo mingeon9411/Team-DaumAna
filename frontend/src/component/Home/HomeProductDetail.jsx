@@ -6,6 +6,7 @@ import { ChevronLeft, Heart, Star, Sparkles, Ruler, ShieldCheck, ImagePlus, X } 
 import { PRODUCTS } from "./Home";
 import { addToCart, getReviews, createReview, uploadReviewImage } from "../../api";
 import { isWished, toggleWish } from "../../utils/wishlist";
+import { addRecentlyViewed } from "../../utils/recentlyViewed";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useCartModal } from "../../context/CartModalContext";
 
@@ -61,6 +62,10 @@ function HomeProductDetail() {
     setReviewComment("");
     setReviewImageFile(null);
     setReviewImagePreview(null);
+    addRecentlyViewed({
+      ...product,
+      price: Number(product.price.replace(/,/g, "")),
+    });
   }, [product?.id]);
 
   useEffect(() => {

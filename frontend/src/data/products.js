@@ -21,6 +21,7 @@ export const products = [
     price: 128000,
     review: 4.8,
     brand: "집다움",
+    category: "테이블",
   },
   {
     id: 2,
@@ -33,6 +34,7 @@ export const products = [
     price: 89000,
     review: 4.9,
     brand: "집다움",
+    category: "조명",
   },
   {
     id: 3,
@@ -45,6 +47,7 @@ export const products = [
     price: 64000,
     review: 4.7,
     brand: "집다움",
+    category: "소품",
   },
   {
     id: 4,
@@ -56,6 +59,7 @@ export const products = [
     price: 148000,
     review: 4.8,
     brand: "집다움",
+    category: "수납",
   },
   {
     id: 7,
@@ -67,6 +71,7 @@ export const products = [
     price: 112000,
     review: 4.9,
     brand: "집다움",
+    category: "조명",
   },
   {
     id: 9,
@@ -78,6 +83,7 @@ export const products = [
     price: 418000,
     review: 4.8,
     brand: "집다움",
+    category: "소파",
   },
   {
     id: 10,
@@ -89,6 +95,7 @@ export const products = [
     price: 268000,
     review: 4.8,
     brand: "집다움",
+    category: "수납",
   },
 ];
 

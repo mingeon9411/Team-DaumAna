@@ -208,12 +208,83 @@ body.dark .khFilm {
     box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
 }
 
+.khGridSection {
+    position: relative;
+    z-index: 2;
+}
+
+/* 카테고리 메뉴 — 헤더 배너 바로 아래에 붙여서 함께 고정한다. 헤더가 fixed(높이
+   100px)라, 스크롤로 이 지점을 지나는 순간부터 헤더 하단에 달라붙어 계속 보인다.
+   배경도 헤더의 scrolled 배너와 같은 한지 톤으로 맞춰 하나로 이어진 배너처럼 보이게 함. */
+.khCategoryMenu {
+    position: sticky;
+    top: 72px;
+    z-index: 50;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 60px;
+    background: linear-gradient(135deg, rgba(248, 241, 227, 0.95), rgba(239, 226, 201, 0.95));
+    border-bottom: 1px solid rgba(180, 132, 74, 0.28);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+}
+
+body.dark .khCategoryMenu {
+    background: linear-gradient(135deg, rgba(43, 32, 19, 0.92), rgba(26, 19, 9, 0.92));
+    border-bottom: 1px solid rgba(214, 168, 106, 0.24);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+}
+
+.khCategoryBtn {
+    padding: 5px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(180, 132, 74, 0.28);
+    background: linear-gradient(135deg, #f8f1e3 0%, #efe2c9 100%);
+    color: var(--muted-foreground);
+    font-family: "Noto Sans KR", sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.khCategoryBtn:hover {
+    color: var(--foreground);
+    border-color: rgba(166, 52, 42, 0.4);
+    transform: translateY(-1px);
+}
+
+.khCategoryBtn.active {
+    background: linear-gradient(135deg, #a6342a 0%, #7c261e 100%);
+    border-color: transparent;
+    color: #f5f1ea;
+    font-weight: 500;
+}
+
+body.dark .khCategoryBtn {
+    background: linear-gradient(135deg, #2b2013 0%, #1a1309 100%);
+    border-color: rgba(214, 168, 106, 0.24);
+    color: #5a6d9a;
+}
+
+body.dark .khCategoryBtn:hover {
+    color: #c8d5f2;
+    border-color: rgba(214, 168, 106, 0.4);
+}
+
+body.dark .khCategoryBtn.active {
+    background: linear-gradient(135deg, #a6342a 0%, #7c261e 100%);
+    color: #f5f1ea;
+}
+
 .khGrid {
     position: relative;
     z-index: 2;
     list-style: none;
     margin: 0;
-    padding: 20px 60px 120px;
+    padding: 24px 60px 120px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 48px 32px;
@@ -224,6 +295,7 @@ body.dark .khFilm {
     .khFilm { width: calc(100% - 40px); margin: 0 auto 24px; aspect-ratio: 4 / 5; max-height: 520px; border-radius: 3px; }
     .khFilmCaption { left: 22px; top: 24px; }
     .khFilmText { font-size: 18px; }
+    .khCategoryMenu { padding: 10px 20px; }
     .khGrid { padding: 20px 20px 60px; gap: 32px 16px; }
 }
 

@@ -4,6 +4,8 @@ import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag } from
 import "./Home.css";
 import ChatBot from "../MyPage/ChatBot";
 import LookbookViewer from "./LookbookViewer";
+import RecentlyViewedSidebar from "./RecentlyViewedSidebar";
+import { getRecentlyViewed } from "../../utils/recentlyViewed";
 import koreanModernSofa from "../../assets/products/Korean Modern Sofa — Ivory Leather.png";
 import floorLoungeSofa from "../../assets/products/플로어 라운지 소파.png";
 import moonJarArmchair from "../../assets/products/달항아리 암체어.png";
@@ -144,7 +146,21 @@ function Home() {
   const [lookbookPage, setLookbookPage] = useState(0);
   const [lookbookViewerIndex, setLookbookViewerIndex] = useState(null);
   const [cartCounts, setCartCounts] = useState({});
+  const [recentlyViewed, setRecentlyViewed] = useState(() => getRecentlyViewed());
   const navigate = useNavigate();
+
+  // 다른 탭/페이지에서 "최근 본 상품"이 바뀌면(상품 상세 진입, 삭제 등) 동기화한다.
+  // 상품 그리드 패널까지 스크롤해야만 뜨게 해두면 인트로 영상 구간이 많아 체감상
+  // 너무 늦게 보이므로, 홈 페이지 안에서는 위치 상관없이 바로 보이게 한다.
+  useEffect(() => {
+    const sync = () => setRecentlyViewed(getRecentlyViewed());
+    window.addEventListener("recentlyviewedchange", sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener("recentlyviewedchange", sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
 
   // 상품 카드 배지는 로그인 계정의 실제 백엔드 장바구니만 기준으로 한다.
   // (localStorage 기반 카운터는 계정과 무관하게 남아 실제로 담지 않아도 표시되는 버그가 있어 제거)
@@ -562,7 +578,7 @@ function Home() {
       {/* ESSAY SPREAD 3 — 집다움.mp4, 끝나면 오른쪽 절반에 브랜드 무드 문구가 펼쳐진다 */}
       <section id="home-essay-3" data-hide-header data-hsnap className="w-screen h-screen shrink-0 overflow-hidden flex flex-row text-foreground">
         <div
-          clasName="relative h-full overflow-hidden"
+          className="relative h-full overflow-hidden"
           style={{
             width: introVideo3Ended ? "50%" : "100%",
             transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1)",
@@ -672,6 +688,7 @@ function Home() {
 
       {/* PRODUCT GRID */}
       <section
+        id="home-products"
         data-hsnap
         data-lenis-prevent
         onWheel={(e) => e.stopPropagation()}
@@ -835,6 +852,13 @@ function Home() {
           index={lookbookViewerIndex}
           onClose={() => setLookbookViewerIndex(null)}
           onNavigate={setLookbookViewerIndex}
+        />
+      )}
+
+      {recentlyViewed.length > 0 && (
+        <RecentlyViewedSidebar
+          items={recentlyViewed}
+          onChange={() => setRecentlyViewed(getRecentlyViewed())}
         />
       )}
 

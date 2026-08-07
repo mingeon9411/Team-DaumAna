@@ -167,11 +167,13 @@ function MyPage() {
   useEffect(() => {
     if (!isOpen) return;
     getOrderHistory()
-      .then((res) => setOrders(res.data))
+      // res.data가 배열이 아니면(만료된 토큰 등으로 인증 실패 응답이 예상과 다르게 와도)
+      // orders.filter/.reduce에서 앱 전체가 죽지 않도록 방어한다.
+      .then((res) => setOrders(Array.isArray(res.data) ? res.data : []))
       .catch(() => setOrders([]))
       .finally(() => setLoading(false));
     getMyCoupons()
-      .then((res) => setMyCoupons(res.data))
+      .then((res) => setMyCoupons(Array.isArray(res.data) ? res.data : []))
       .catch(() => {});
     getMe()
       .then((res) => setProfile(res.data))
