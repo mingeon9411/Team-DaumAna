@@ -2,9 +2,9 @@ import "./Home.css";
 import "./HomeProductDetail.css";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronLeft, Heart, Star, Sparkles, Ruler, ShieldCheck } from "lucide-react";
+import { ChevronLeft, Heart, Star, Sparkles, Ruler, ShieldCheck, ImagePlus, X } from "lucide-react";
 import { PRODUCTS } from "./Home";
-import { addToCart, getReviews, createReview } from "../../api";
+import { addToCart, getReviews, createReview, uploadReviewImage } from "../../api";
 import { isWished, toggleWish } from "../../utils/wishlist";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useCartModal } from "../../context/CartModalContext";
@@ -45,8 +45,11 @@ function HomeProductDetail() {
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
+  const [reviewTitle, setReviewTitle] = useState("");
   const [reviewComment, setReviewComment] = useState("");
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const [reviewImageFile, setReviewImageFile] = useState(null);
+  const [reviewImagePreview, setReviewImagePreview] = useState(null);
 
   useEffect(() => {
     if (!product) return;
@@ -54,7 +57,10 @@ function HomeProductDetail() {
     setQuantity(1);
     setWished(isWished(product.id));
     setReviewRating(5);
+    setReviewTitle("");
     setReviewComment("");
+    setReviewImageFile(null);
+    setReviewImagePreview(null);
   }, [product?.id]);
 
   useEffect(() => {
@@ -136,6 +142,26 @@ function HomeProductDetail() {
     }
   };
 
+  const handleReviewImageSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      alert("이미지 파일만 첨부할 수 있습니다.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert("파일 크기는 5MB 이하여야 합니다.");
+      return;
+    }
+    setReviewImageFile(file);
+    setReviewImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleRemoveReviewImage = () => {
+    setReviewImageFile(null);
+    setReviewImagePreview(null);
+  };
+
   const submitReview = async () => {
     if (!localStorage.getItem("access_token")) {
       alert("로그인이 필요합니다.");
@@ -148,13 +174,22 @@ function HomeProductDetail() {
     }
     setReviewSubmitting(true);
     try {
+      let imageUrl = null;
+      if (reviewImageFile) {
+        const uploadRes = await uploadReviewImage(reviewImageFile);
+        imageUrl = uploadRes.data.url;
+      }
       const res = await createReview(product.id, {
         rating: reviewRating,
+        title: reviewTitle.trim(),
         comment: reviewComment.trim(),
+        review_image_url: imageUrl,
       });
       setReviews((prev) => [res.data, ...prev]);
       setReviewRating(5);
+      setReviewTitle("");
       setReviewComment("");
+      handleRemoveReviewImage();
     } catch {
       alert("리뷰 등록에 실패했습니다. 다시 시도해주세요.");
     } finally {
@@ -339,104 +374,162 @@ function HomeProductDetail() {
         </section>
 
         <section className="border-t border-border pt-12 pb-24">
-          <div className="flex items-end justify-between mb-8">
-            <div>
-              <h2 className="text-xl font-light text-foreground mb-1" style={SERIF}>리뷰</h2>
-              <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>
-                REVIEW ({reviews.length})
-              </span>
-            </div>
-            {reviews.length > 0 && (
-              <div className="flex items-center gap-1.5 border border-border rounded-full px-3 py-1.5">
-                <Star size={13} className="fill-foreground text-foreground" />
-                <span className="text-sm font-medium text-foreground" style={MONO}>
-                  {(reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)}
+          <div className="max-w-2xl mx-auto">
+            <div className="flex items-end justify-between mb-8">
+              <div>
+                <h2 className="text-xl font-light text-foreground mb-1" style={SERIF}>리뷰</h2>
+                <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>
+                  REVIEW ({reviews.length})
                 </span>
               </div>
-            )}
-          </div>
-
-          {reviewsLoading ? (
-            <p className="text-xs text-muted-foreground mb-10">리뷰를 불러오는 중...</p>
-          ) : reviews.length === 0 ? (
-            <div className="flex flex-col items-center justify-center gap-3 border border-dashed border-border rounded-2xl py-16 mb-12 max-w-2xl text-center">
-              <Star size={22} className="text-border" />
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                아직 작성된 리뷰가 없습니다.
-                <br />
-                첫 리뷰를 남겨보세요.
-              </p>
+              {reviews.length > 0 && (
+                <div className="flex items-center gap-1.5 border border-border rounded-full px-3 py-1.5">
+                  <Star size={13} className="fill-foreground text-foreground" />
+                  <span className="text-sm font-medium text-foreground" style={MONO}>
+                    {(reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)}
+                  </span>
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="grid gap-4 mb-12 max-w-2xl">
-              {reviews.map((r) => (
-                <div
-                  key={r.id}
-                  className="rounded-2xl border border-border bg-card/40 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all"
-                >
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-9 h-9 shrink-0 rounded-full bg-foreground/10 flex items-center justify-center text-xs font-semibold text-foreground"
-                        style={MONO}
-                      >
-                        {r.user_nickname?.[0]?.toUpperCase() ?? "?"}
-                      </div>
-                      <div className="flex flex-col gap-0.5">
-                        <span className="text-xs font-medium text-foreground">{r.user_nickname}</span>
-                        <div className="flex gap-0.5">
-                          {[1, 2, 3, 4, 5].map((n) => (
-                            <Star
-                              key={n}
-                              size={10}
-                              className={n <= r.rating ? "fill-foreground text-foreground" : "text-border"}
-                            />
-                          ))}
+
+            {reviewsLoading ? (
+              <p className="text-xs text-muted-foreground mb-10">리뷰를 불러오는 중...</p>
+            ) : reviews.length === 0 ? (
+              <div className="flex flex-col items-center justify-center gap-3 border border-dashed border-border rounded-2xl py-16 mb-12 text-center">
+                <Star size={22} className="text-border" />
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  아직 작성된 리뷰가 없습니다.
+                  <br />
+                  첫 리뷰를 남겨보세요.
+                </p>
+              </div>
+            ) : (
+              <div className="grid gap-4 mb-12">
+                {reviews.map((r) => (
+                  <div
+                    key={r.id}
+                    className="rounded-2xl border border-border bg-card/40 p-5 hover:shadow-md hover:-translate-y-0.5 transition-all"
+                  >
+                    <div className="flex items-start justify-between gap-3 mb-3">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-9 h-9 shrink-0 rounded-full bg-foreground/10 flex items-center justify-center text-xs font-semibold text-foreground"
+                          style={MONO}
+                        >
+                          {r.user_nickname?.[0]?.toUpperCase() ?? "?"}
+                        </div>
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-xs font-medium text-foreground">{r.user_nickname}</span>
+                          <div className="flex gap-0.5">
+                            {[1, 2, 3, 4, 5].map((n) => (
+                              <Star
+                                key={n}
+                                size={10}
+                                className={n <= r.rating ? "fill-foreground text-foreground" : "text-border"}
+                              />
+                            ))}
+                          </div>
                         </div>
                       </div>
+                      <span className="text-[11px] text-muted-foreground shrink-0" style={MONO}>
+                        {formatReviewDate(r.created_at)}
+                      </span>
                     </div>
-                    <span className="text-[11px] text-muted-foreground shrink-0" style={MONO}>
-                      {formatReviewDate(r.created_at)}
-                    </span>
+                    {r.title && (
+                      <h4 className="text-sm font-semibold text-foreground mb-1">{r.title}</h4>
+                    )}
+                    <p className="text-sm text-foreground/80 leading-relaxed">{r.comment}</p>
+                    {r.review_image_url && (
+                      <img
+                        src={r.review_image_url}
+                        alt="리뷰 사진"
+                        className="mt-3 w-28 h-28 rounded-lg object-cover border border-border"
+                      />
+                    )}
                   </div>
-                  <p className="text-sm text-foreground/80 leading-relaxed">{r.comment}</p>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
 
-          <div className="max-w-2xl rounded-2xl border border-border bg-card/40 p-6">
-            <p className="text-xs text-muted-foreground tracking-widest mb-3" style={MONO}>평점을 선택해주세요</p>
-            <div className="flex gap-1.5 mb-4">
-              {[1, 2, 3, 4, 5].map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  onClick={() => setReviewRating(n)}
-                  aria-label={`${n}점`}
-                  className="hover:scale-110 transition-transform"
-                >
-                  <Star size={22} className={n <= reviewRating ? "fill-foreground text-foreground" : "text-border"} />
-                </button>
-              ))}
+            <div className="rounded-2xl border border-border bg-card/40 p-6">
+              <p className="text-xs text-muted-foreground tracking-widest mb-3" style={MONO}>평점을 선택해주세요</p>
+              <div className="flex gap-1.5 mb-4">
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <button
+                    key={n}
+                    type="button"
+                    onClick={() => setReviewRating(n)}
+                    aria-label={`${n}점`}
+                    className="hover:scale-110 transition-transform"
+                  >
+                    <Star size={22} className={n <= reviewRating ? "fill-foreground text-foreground" : "text-border"} />
+                  </button>
+                ))}
+              </div>
+              <input
+                type="text"
+                value={reviewTitle}
+                onChange={(e) => setReviewTitle(e.target.value)}
+                placeholder="제목 (선택)"
+                maxLength={100}
+                className="w-full rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted-foreground p-3.5 mb-3 outline-none focus:border-foreground transition-colors"
+                style={SANS}
+              />
+              <textarea
+                value={reviewComment}
+                onChange={(e) => setReviewComment(e.target.value)}
+                placeholder="상품에 대한 리뷰를 남겨주세요"
+                rows={3}
+                className="w-full rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted-foreground p-3.5 mb-3 resize-none outline-none focus:border-foreground transition-colors"
+                style={SANS}
+              />
+
+              <div className="flex items-center gap-3 mb-4">
+                {reviewImagePreview ? (
+                  <div className="relative w-16 h-16 shrink-0">
+                    <img
+                      src={reviewImagePreview}
+                      alt="첨부한 사진 미리보기"
+                      className="w-16 h-16 rounded-lg object-cover border border-border"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleRemoveReviewImage}
+                      aria-label="사진 제거"
+                      className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-foreground text-background flex items-center justify-center"
+                    >
+                      <X size={11} />
+                    </button>
+                  </div>
+                ) : (
+                  <label
+                    htmlFor="reviewImageInput"
+                    className="flex items-center gap-1.5 text-xs text-muted-foreground border border-border rounded-lg px-3 py-2 cursor-pointer hover:text-foreground hover:border-foreground transition-colors"
+                    style={SANS}
+                  >
+                    <ImagePlus size={14} />
+                    사진 추가
+                  </label>
+                )}
+                <input
+                  id="reviewImageInput"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleReviewImageSelect}
+                  className="hidden"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={submitReview}
+                disabled={reviewSubmitting}
+                className="w-full sm:w-auto rounded-lg bg-foreground text-background text-xs tracking-widest py-3 px-8 hover:opacity-85 transition-opacity disabled:opacity-50"
+                style={SANS}
+              >
+                {reviewSubmitting ? "등록 중..." : "리뷰 등록"}
+              </button>
             </div>
-            <textarea
-              value={reviewComment}
-              onChange={(e) => setReviewComment(e.target.value)}
-              placeholder="상품에 대한 리뷰를 남겨주세요"
-              rows={3}
-              className="w-full rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted-foreground p-3.5 mb-3 resize-none outline-none focus:border-foreground transition-colors"
-              style={SANS}
-            />
-            <button
-              type="button"
-              onClick={submitReview}
-              disabled={reviewSubmitting}
-              className="w-full sm:w-auto rounded-lg bg-foreground text-background text-xs tracking-widest py-3 px-8 hover:opacity-85 transition-opacity disabled:opacity-50"
-              style={SANS}
-            >
-              {reviewSubmitting ? "등록 중..." : "리뷰 등록"}
-            </button>
           </div>
         </section>
       </div>

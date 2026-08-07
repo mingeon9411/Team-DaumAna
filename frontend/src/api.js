@@ -107,6 +107,15 @@ export const getProductDetail = (id) => API.get(`/products/${id}`);
 export const getReviews = (productId) => API.get(`/products/${productId}/reviews`);
 export const createReview = (productId, data) => API.post(`/products/${productId}/reviews`, data);
 
+// 리뷰 사진 업로드 — 응답으로 받은 url을 createReview의 review_image_url에 담아 넘긴다.
+export const uploadReviewImage = (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  return API.post('/uploads/review-image', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+};
+
 // [주문 API]
 export const createOrder = (data) => API.post('/orders/create', data);
 export const cancelOrder = (orderId) => API.post(`/orders/${orderId}/cancel`);

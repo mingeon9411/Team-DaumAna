@@ -68,9 +68,10 @@ class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey('Users.User', on_delete=models.CASCADE) # 순환 참조 방지 문자열 매핑
     rating = models.PositiveIntegerField(
-        default=5, 
+        default=5,
         validators=[MinValueValidator(1), MaxValueValidator(5)]
     ) # 오라클 CHECK (rating BETWEEN 1 AND 5) 대응
+    title = models.CharField(max_length=100, blank=True, default="")
     comment = models.TextField() # 오라클 CLOB 대응
     review_image_url = models.CharField(max_length=500, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
