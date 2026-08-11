@@ -10,7 +10,7 @@ import JDLogo from "../../assets/J.D 로고.svg";
 import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent.png";
 import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent.png";
 
-const SPRING = "http://localhost:8081";
+const SPRING = import.meta.env.VITE_SPRING_API_URL || "http://localhost:8081";
 const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 const IS_DEV = import.meta.env.DEV;
 

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const SPRING_URL = 'http://localhost:8081';  // 메인 백엔드 (Spring Boot)
-const DJANGO_URL = 'http://localhost:8000';  // 결제 전담 (Django)
+const SPRING_URL = import.meta.env.VITE_SPRING_API_URL || 'http://localhost:8081';  // 메인 백엔드 (Spring Boot)
+const DJANGO_URL = 'http://localhost:8000';  // 결제 전담 (Django) — 이번엔 미배포, 로컬 고정
 
 // 장바구니/상품 등 shop API → Spring Boot
 const API = axios.create({
