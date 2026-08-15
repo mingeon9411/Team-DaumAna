@@ -85,7 +85,7 @@ function ProductDetail() {
     if (!product) return;
     setReviewsLoading(true);
     getReviews(product.id)
-      .then((res) => setReviews(res.data))
+      .then((res) => setReviews(Array.isArray(res.data) ? res.data : []))
       .catch(() => setReviews([]))
       .finally(() => setReviewsLoading(false));
   }, [product?.id]);
