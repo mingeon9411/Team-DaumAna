@@ -3,9 +3,10 @@
   --chatbot-glass-border: rgba(28, 26, 22, 0.14);
   --chatbot-bubble-bot-bg: rgba(255, 255, 255, 0.55);
   --chatbot-bar-bg: rgba(255, 255, 255, 0.5);
-  --chatbot-accent-1: #a8783a;
-  --chatbot-accent-2: #e9cd9a;
-  --chatbot-accent-3: #7a4f22;
+  /* J.D 블랙 + 실버 하이라이트 — 사이드바/로그인/최근 본 상품과 같은 메탈릭 계열로 통일 */
+  --chatbot-accent-1: #2c2c30;
+  --chatbot-accent-2: #c7cad0;
+  --chatbot-accent-3: #101012;
 }
 body.dark {
   --chatbot-glass-bg: rgba(11, 20, 48, 0.72);
@@ -46,29 +47,26 @@ body.dark .chatBotPanel {
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* ── 루트 (fixed 컨테이너) ── */
+/* ── 루트 (fixed 컨테이너) ──
+   루트는 FAB 크기(60x60)에 딱 맞는 앵커일 뿐이고, 패널은 이 앵커를 기준으로
+   position:absolute로 붙인다. 예전엔 flex row-reverse로 패널을 나란히 배치했는데,
+   루트 자체가 화면 오른쪽 6% 지점에 앵커되다 보니 패널(336px)까지 더한 너비가
+   뷰포트를 넘어가 패널이 화면 밖으로 잘려 보이는 문제가 있었다. */
 .chatBotRoot {
   position: fixed;
   top: 48%;
   right: 6%;
   transform: translateY(-50%);
   z-index: 900;
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  gap: 14px;
+  width: 60px;
+  height: 60px;
   user-select: none;
-}
-.chatBotRootLeft {
-  flex-direction: row;
 }
 
 /* ── 플로팅 버튼 ── */
 .chatBotFabWrap {
-  position: relative;
-  width: 60px;
-  height: 60px;
-  flex-shrink: 0;
+  position: absolute;
+  inset: 0;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 .chatBotFabWrapHidden {
@@ -124,39 +122,36 @@ body.dark .chatBotPanel {
   height: 26px;
 }
 
-/* ── 채팅 패널 ── */
+/* ── 채팅 패널 ──
+   FAB 앵커(root) 기준으로 절대 위치. 기본은 FAB 왼쪽에 열리고(오른쪽 절반에
+   있을 때), .chatBotRootLeft가 붙으면(왼쪽 절반) 반대로 오른쪽에 연다. */
 .chatBotPanel {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 14px);
+  margin-top: -240px;
   width: 336px;
   height: 480px;
-  font-family: "Noto Sans KR", sans-serif;
+  font-family: "TwayFly", "Noto Sans KR", "Pretendard", sans-serif;
   border-radius: 26px;
-  border: 6px solid transparent;
+  /* 사이드바/로그인/최근 본 상품과 같은 얇은 무지개 테두리 레시피로 통일 —
+     기존 6px 두꺼운 테두리 + 상단 반짝임 바는 산만해서 제거 */
+  border: 1.5px solid transparent;
   background:
     linear-gradient(var(--chatbot-glass-bg), var(--chatbot-glass-bg)) padding-box,
     linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
-  backdrop-filter: blur(24px) saturate(170%);
-  -webkit-backdrop-filter: blur(24px) saturate(170%);
+  backdrop-filter: blur(28px) saturate(150%);
+  -webkit-backdrop-filter: blur(28px) saturate(150%);
   box-shadow:
-    0 24px 60px rgba(0, 0, 0, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    0 20px 52px rgba(0, 0, 0, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  position: relative;
   opacity: 0;
   pointer-events: none;
   transform: translateY(10px) scale(0.96);
   transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.22,1,0.36,1);
-}
-.chatBotPanel::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--chatbot-accent-1), var(--chatbot-accent-2), var(--chatbot-accent-1));
-  background-size: 200% 100%;
-  animation: sheenSweep 5s linear infinite;
-  z-index: 1;
 }
 
 .chatBotPanelOpen {
@@ -164,6 +159,12 @@ body.dark .chatBotPanel {
   pointer-events: all;
   transform: translateY(0) scale(1) !important;
   animation: panelPop 0.24s cubic-bezier(0.22,1,0.36,1);
+}
+
+/* FAB이 화면 왼쪽 절반에 있을 땐 패널을 반대쪽(오른쪽)에 연다 */
+.chatBotRootLeft .chatBotPanel {
+  right: auto;
+  left: calc(100% + 14px);
 }
 
 /* ── 헤더 ── */
@@ -203,7 +204,8 @@ body.dark .chatBotPanel {
 .chatBotName {
   margin: 0;
   font-size: 13.5px;
-  font-weight: 800;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   color: var(--foreground);
   flex: 1;
 }
@@ -239,7 +241,7 @@ body.dark .chatBotPanel {
 }
 .chatBotClose:hover {
   color: var(--foreground);
-  background: rgba(150, 120, 60, 0.14);
+  background: rgba(44, 44, 48, 0.1);
 }
 
 /* ── 메시지 ── */
@@ -306,9 +308,9 @@ body.dark .chatBotPanel {
 }
 .chatMsg.user .chatBubble {
   background: linear-gradient(135deg, var(--chatbot-accent-1), var(--chatbot-accent-3));
-  color: #fdf6e8;
+  color: #f5f5f7;
   border-bottom-right-radius: 4px;
-  box-shadow: 0 4px 14px rgba(122, 79, 34, 0.28);
+  box-shadow: 0 4px 14px rgba(10, 10, 14, 0.3);
 }
 
 .chatMsgTime {
@@ -344,7 +346,7 @@ body.dark .chatBotPanel {
 }
 .chatQuickChip:hover {
   border-color: var(--chatbot-accent-1);
-  background: rgba(168, 120, 58, 0.14);
+  background: rgba(44, 44, 48, 0.08);
   transform: translateY(-1px);
 }
 
@@ -389,11 +391,12 @@ body.dark .chatBotPanel {
   border: none;
   flex-shrink: 0;
   background: linear-gradient(135deg, var(--chatbot-accent-1), var(--chatbot-accent-3));
-  color: #fdf6e8;
+  color: #f5f5f7;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-shadow: 0 3px 10px rgba(10, 10, 14, 0.28);
   transition: transform 0.15s, opacity 0.15s;
 }
 .chatBotSend:hover:not(:disabled) { transform: scale(1.08); }
@@ -403,15 +406,21 @@ body.dark .chatBotPanel {
 @media (max-width: 900px) {
   .chatBotRoot {
     top: auto !important;
-    bottom: 24px;
+    bottom: 24px !important;
     right: 20px !important;
     left: auto !important;
     transform: none !important;
-    flex-direction: column;
-    align-items: flex-end;
   }
-  .chatBotPanel {
+  /* 모바일은 옆 공간이 좁으니 좌우 대신 FAB 바로 위로 연다 */
+  .chatBotPanel,
+  .chatBotRootLeft .chatBotPanel {
+    top: auto !important;
+    right: 0;
+    left: auto;
+    bottom: calc(100% + 14px);
+    margin-top: 0;
     width: calc(100vw - 40px);
+    max-height: min(480px, calc(100vh - 140px));
     transform: translateY(20px) scale(0.97);
   }
   .chatBotPanelOpen {
