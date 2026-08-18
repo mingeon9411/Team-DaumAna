@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { loginUser } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
+import { useRailStyle } from "../../hooks/useRailStyle";
 import JDLogo from "../../assets/J.D 로고.svg";
 import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent.png";
 import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent.png";
@@ -21,6 +22,8 @@ function Login() {
   const [darkMode, setDarkMode] = useState(
     () => document.body.classList.contains("dark")
   );
+  // 하단 독바와 같은 레인보우(글래스)/메탈릭/파스텔 스타일을 로그인창에도 그대로 반영
+  const { railStyle, styleSwitching } = useRailStyle();
 
   useEffect(() => {
     const syncDarkMode = () => setDarkMode(document.body.classList.contains("dark"));
@@ -87,7 +90,7 @@ function Login() {
   };
 
   return (
-      <section className="loginBox">
+      <section className={`loginBox railStyle-${railStyle} ${styleSwitching ? "styleSwitching" : ""}`}>
         <button type="button" className="authModalClose" aria-label="닫기" onClick={close}>×</button>
         <div className="loginLogoRow">
           <img src={JDLogo} alt="J.D" className="loginLogoJD" />

@@ -29,7 +29,7 @@ import { PRODUCTS as HOME_PRODUCTS } from "../Home/Home";
 import { products as KOREAN_HALL_PRODUCTS } from "../../data/products";
 
 const RAIL_STYLES = [
-  { id: "glass", label: "글래스" },
+  { id: "glass", label: "레인보우" },
   { id: "metallic", label: "메탈릭" },
   { id: "pastel", label: "파스텔" },
 ];
@@ -84,6 +84,9 @@ function Sidebar() {
 
   useEffect(() => {
     localStorage.setItem("railStyle", railStyle);
+    // 오른쪽 최근 본 상품 독(RecentlyViewedSidebar)도 같은 스타일을 쓰므로,
+    // 여기서 바뀔 때마다 알려줘서 그쪽도 동일하게 맞춰 바뀌게 한다.
+    window.dispatchEvent(new Event("railstylechange"));
     // 배경 그러데이션은 CSS transition으로 부드럽게 넘어가지 않으므로,
     // 스타일이 바뀌는 순간에는 대신 짧게 페이드-스케일 애니메이션을 태워
     // 전환이 뚝 끊기지 않고 매끄러워 보이게 한다. (첫 마운트 시엔 재생 안 함)

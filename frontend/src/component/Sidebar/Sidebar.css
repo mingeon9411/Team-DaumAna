@@ -55,7 +55,7 @@
   border-width: 6px;
   background:
     linear-gradient(120deg, #f4f4f6 0%, #d7d9dc 20%, #ececed 40%, #b8bcc2 55%, #e6e7e9 70%, #cfd1d4 85%, #f4f4f6 100%) padding-box,
-    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+    linear-gradient(150deg, #d3d6da 0%, #8b929b 50%, #d3d6da 100%) border-box;
   background-size: 300% 300%, 100% 100%;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
@@ -77,8 +77,8 @@
 
 body.dark .sidebarRail.railStyle-metallic {
   background:
-    linear-gradient(120deg, #060d1e 0%, #0b1430 20%, #0f1f3d 40%, #060d1e 55%, #0f1f3d 70%, #0b1430 85%, #060d1e 100%) padding-box,
-    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
+    linear-gradient(120deg, #1b1d21 0%, #2a2d33 20%, #35383f 40%, #1b1d21 55%, #35383f 70%, #2a2d33 85%, #1b1d21 100%) padding-box,
+    linear-gradient(150deg, #4a4f58 0%, #8b929b 50%, #4a4f58 100%) border-box;
   background-size: 300% 300%, 100% 100%;
 }
 

@@ -12,9 +12,39 @@
     width: 420px;
     padding: 48px 40px;
 
-    /* 사이드바 하단바와 동일한 방식: 안쪽은 메탈릭 그러데이션(padding-box),
-       테두리는 무지개 톤 그러데이션 띠(border-box)로 두른다 */
+    /* 배경은 여기서 정하지 않고, 아래 railStyle-* 프리셋 블록에서 채운다 —
+       사이드바 하단 독바(Sidebar.css)와 같은 3가지 스타일(레인보우/메탈릭/파스텔)을
+       그대로 공유하기 위함 */
     border: 8px solid transparent;
+    color: var(--foreground);
+
+    text-align: center;
+
+    border-radius: 25px;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
+
+    font-family: "TwayFly", "Noto Sans KR", "Pretendard", sans-serif;
+  }
+
+  /* ── 하단 독바(Sidebar.css)의 스타일 프리셋을 그대로 미러링 ──────────────── */
+
+  /* 레인보우(글래스) — 얇고 평평한 반투명 화이트 + 무지개 톤 테두리, blur로 유리처럼 */
+  .loginBox.railStyle-glass {
+    background:
+      linear-gradient(rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.62)) padding-box,
+      linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+    backdrop-filter: blur(30px) saturate(115%);
+    -webkit-backdrop-filter: blur(30px) saturate(115%);
+  }
+
+  body.dark .loginBox.railStyle-glass {
+    background:
+      linear-gradient(rgba(6, 13, 30, 0.62), rgba(6, 13, 30, 0.62)) padding-box,
+      linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
+  }
+
+  /* 메탈릭 — 원래 있던 실버 그러데이션 + 실버 톤 테두리(독바와 동일) */
+  .loginBox.railStyle-metallic {
     background:
       linear-gradient(
         115deg,
@@ -26,19 +56,12 @@
         #dfe1e4 80%,
         #f4f5f6 100%
       ) padding-box,
-      linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+      linear-gradient(150deg, #d3d6da 0%, #8b929b 50%, #d3d6da 100%) border-box;
     background-size: 160% 160%, 100% 100%;
-    color: var(--foreground);
-
-    text-align: center;
-
-    border-radius: 25px;
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
-
-    font-family: "TwayFly", "Noto Sans KR", "Pretendard", sans-serif;
+    animation: loginSlideIn 2.6s ease, loginMetallicSheen 24s ease-in-out infinite;
   }
 
-  body.dark .loginBox {
+  body.dark .loginBox.railStyle-metallic {
     background:
       linear-gradient(
         115deg,
@@ -50,8 +73,21 @@
         #3c3e43 80%,
         #2b2d31 100%
       ) padding-box,
-      linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
+      linear-gradient(150deg, #4a4f58 0%, #8b929b 50%, #4a4f58 100%) border-box;
     background-size: 160% 160%, 100% 100%;
+  }
+
+  /* 파스텔 — 독바와 같은 정적 파스텔 채움 */
+  .loginBox.railStyle-pastel {
+    background:
+      linear-gradient(120deg, #ffe4f0 0%, #e4ecff 50%, #d9fbea 100%) padding-box,
+      linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  }
+
+  body.dark .loginBox.railStyle-pastel {
+    background:
+      linear-gradient(120deg, #3a2f4a 0%, #2a3550 50%, #223d38 100%) padding-box,
+      linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
   }
 
   .loginLogoRow {
@@ -98,9 +134,10 @@
 
   .loginBox {
     /* transform-origin을 정중앙에 둬서, 가운데를 기준으로 위/아래
-       양쪽으로 동시에 천천히 펼쳐지는 것처럼 보이게 한다 */
+       양쪽으로 동시에 천천히 펼쳐지는 것처럼 보이게 한다.
+       셰인 애니메이션(loginMetallicSheen)은 railStyle-metallic 프리셋 쪽에서만 추가한다. */
     transform-origin: center center;
-    animation: loginSlideIn 2.6s ease, loginMetallicSheen 24s ease-in-out infinite;
+    animation: loginSlideIn 2.6s ease;
   }
 
   /* 가로가 아니라 세로로 천천히 펼쳐지는 연출 — clip-path로 위아래에서

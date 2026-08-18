@@ -16,3 +16,93 @@ body.dark .recentDock {
     linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(150, 185, 255, 0.16);
 }
+
+/* ── 접었다 펼치기 (하단 독바의 railToggle/sidebarRail.collapsed와 같은 패턴) ── */
+
+.recentDockToggle {
+  cursor: pointer;
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+.recentDockChevron {
+  transition: transform 0.3s ease;
+}
+
+.recentDock.collapsed .recentDockChevron {
+  transform: rotate(-90deg);
+}
+
+.recentDockItems {
+  overflow: hidden;
+  max-height: 600px;
+  opacity: 1;
+  transition: max-height 0.4s ease, opacity 0.3s ease;
+}
+
+.recentDock.collapsed .recentDockItems {
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 접혔을 땐 토글 버튼 아래 구분선도 같이 지워 뭉툭한 알약 모양으로 마무리 */
+.recentDock.collapsed .recentDockToggle {
+  border-bottom-color: transparent;
+  padding-bottom: 0;
+}
+
+/* ── 하단 독바(Sidebar.css)의 스타일 프리셋을 그대로 미러링 ──────────────── */
+
+/* 스타일이 바뀌는 순간 짧게 페이드-스케일 (Sidebar.css의 railStyleSwap과 같은
+   목적이지만, recentDock은 가로 중앙 정렬용 translateX가 없어 별도 키프레임) */
+.recentDock.styleSwitching {
+  animation: recentDockStyleSwap 2s ease;
+}
+
+@keyframes recentDockStyleSwap {
+  0%   { opacity: 1;    transform: scale(1); }
+  40%  { opacity: 0.45; transform: scale(0.97); }
+  100% { opacity: 1;    transform: scale(1); }
+}
+
+/* 메탈릭 — Sidebar.css와 같은 실버 그러데이션 (metallicShine 키프레임 재사용) */
+.recentDock.railStyle-metallic {
+  border-width: 6px;
+  background:
+    linear-gradient(120deg, #f4f4f6 0%, #d7d9dc 20%, #ececed 40%, #b8bcc2 55%, #e6e7e9 70%, #cfd1d4 85%, #f4f4f6 100%) padding-box,
+    linear-gradient(150deg, #d3d6da 0%, #8b929b 50%, #d3d6da 100%) border-box;
+  background-size: 300% 300%, 100% 100%;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  animation: metallicShine 11s ease-in-out infinite;
+}
+
+.recentDock.railStyle-metallic.styleSwitching {
+  animation: metallicShine 11s ease-in-out infinite, recentDockStyleSwap 2s ease;
+}
+
+body.dark .recentDock.railStyle-metallic {
+  background:
+    linear-gradient(120deg, #1b1d21 0%, #2a2d33 20%, #35383f 40%, #1b1d21 55%, #35383f 70%, #2a2d33 85%, #1b1d21 100%) padding-box,
+    linear-gradient(150deg, #4a4f58 0%, #8b929b 50%, #4a4f58 100%) border-box;
+  background-size: 300% 300%, 100% 100%;
+}
+
+/* 파스텔 — Sidebar.css와 같은 정적 파스텔 채움 */
+.recentDock.railStyle-pastel {
+  border-width: 4px;
+  background:
+    linear-gradient(120deg, #ffe4f0 0%, #e4ecff 50%, #d9fbea 100%) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+body.dark .recentDock.railStyle-pastel {
+  background:
+    linear-gradient(120deg, #3a2f4a 0%, #2a3550 50%, #223d38 100%) padding-box,
+    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
+}
