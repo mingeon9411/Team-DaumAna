@@ -4,7 +4,7 @@ import { SiKakaotalk, SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
 import { useState, useRef, useEffect } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
-import { loginUser } from "../../api";
+import { loginUser, requestSocialCaptchaTicket } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useRailStyle } from "../../hooks/useRailStyle";
 import JDLogo from "../../assets/J.D 로고.svg";
@@ -13,7 +13,6 @@ import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparen
 
 const SPRING = import.meta.env.VITE_SPRING_API_URL || "http://localhost:8081";
 const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
-const IS_DEV = import.meta.env.DEV;
 
 function Login() {
   const navigate = useNavigate();
@@ -36,9 +35,18 @@ function Login() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [captchaError, setCaptchaError] = useState("");
-  const [captchaToken, setCaptchaToken] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  // 개발 모드 StrictMode 이중 마운트 대응: hCaptcha 위젯이 아직 완전히 준비되기 전에
+  // 첫 execute()가 실행되면 한 번 실패할 수 있다. 사용자에게 에러를 보여주기 전에
+  // 시도당 한 번만 조용히 재시도한다(프로덕션 빌드는 애초에 이 경로를 안 탐).
+  const captchaRetriedRef = useRef(false);
+  // 일반 로그인 폼과 SNS 버튼 3개가 hCaptcha 위젯 하나를 공유하므로, execute() 결과를
+  // onVerify에서 어느 액션으로 처리할지 구분하기 위한 값 — 'login' 또는 provider 이름.
+  const pendingActionRef = useRef(null);
 
-  const handleLogin = async (e) => {
+  // "로그인" 버튼을 누르는 순간에만 캡차가 뜨도록 — hCaptcha를 invisible 모드로 두고
+  // 필드 검증 통과 시 execute()로 그때 트리거한다. 실제 로그인 API 호출은 onVerify에서 진행.
+  const handleLogin = (e) => {
     e.preventDefault();
 
     let isValid = true;
@@ -64,17 +72,45 @@ function Login() {
       setPasswordError("");
     }
 
-    if (!IS_DEV && !captchaToken) {
-      setCaptchaError("※로봇이 아님을 확인해주세요.");
-      isValid = false;
-    } else {
-      setCaptchaError("");
-    }
-
     if (!isValid) return;
 
+    pendingActionRef.current = "login";
+    setCaptchaError("");
+    setSubmitting(true);
+    captchaRetriedRef.current = false;
+    recaptchaRef.current?.execute();
+  };
+
+  // 카카오/네이버/구글 버튼도 같은 hCaptcha 위젯을 트리거만 다르게 해서 재사용한다.
+  // /oauth2/authorization/{provider}는 브라우저가 직접 이동하는 GET이라 토큰을 JSON으로
+  // 못 실어보내므로, 먼저 /api/auth/social-captcha로 토큰을 검증받아 1회용 ticket을 받고
+  // 그 ticket을 쿼리 파라미터로 붙여 이동한다(SocialLoginCaptchaFilter가 검사).
+  const handleSocialClick = (provider) => {
+    pendingActionRef.current = provider;
+    setCaptchaError("");
+    setSubmitting(true);
+    captchaRetriedRef.current = false;
+    recaptchaRef.current?.execute();
+  };
+
+  const handleCaptchaVerify = async (token) => {
+    const action = pendingActionRef.current;
+
+    if (action && action !== "login") {
+      try {
+        const res = await requestSocialCaptchaTicket(token);
+        window.location.href = `${SPRING}/oauth2/authorization/${action}?ticket=${encodeURIComponent(res.data.ticket)}`;
+      } catch (err) {
+        const msg = err.response?.data?.error || "보안 인증에 실패했습니다. 다시 시도해주세요.";
+        setCaptchaError(`※${msg}`);
+        recaptchaRef.current?.resetCaptcha();
+        setSubmitting(false);
+      }
+      return;
+    }
+
     try {
-      const res = await loginUser({ username: email, password, recaptcha_token: captchaToken });
+      const res = await loginUser({ username: email, password, recaptcha_token: token });
       sessionStorage.setItem("pending_access_token", res.data.access);
       sessionStorage.setItem("pending_refresh_token", res.data.refresh);
       sessionStorage.setItem("pending_nickname", res.data.user.nickname);
@@ -83,10 +119,21 @@ function Login() {
     } catch (err) {
       const msg = err.response?.data?.error || "로그인에 실패했습니다. 다시 시도해주세요.";
       setEmailError(`※${msg}`);
-      // 실패 시 hCaptcha 초기화
+    } finally {
       recaptchaRef.current?.resetCaptcha();
-      setCaptchaToken(null);
+      setSubmitting(false);
     }
+  };
+
+  const handleCaptchaError = () => {
+    if (!captchaRetriedRef.current) {
+      captchaRetriedRef.current = true;
+      recaptchaRef.current?.resetCaptcha();
+      recaptchaRef.current?.execute();
+      return;
+    }
+    setCaptchaError("※보안 인증에 실패했습니다. 다시 시도해주세요.");
+    setSubmitting(false);
   };
 
   return (
@@ -134,19 +181,20 @@ function Login() {
             </label>
           </div>
 
-          <div className="recaptchaWrap">
-            {!IS_DEV && (
-              <HCaptcha
-                ref={recaptchaRef}
-                sitekey={HCAPTCHA_SITE_KEY}
-                onVerify={(token) => { setCaptchaToken(token); setCaptchaError(""); }}
-                onExpire={() => setCaptchaToken(null)}
-              />
-            )}
-            {captchaError && <p className="errorText">{captchaError}</p>}
-          </div>
+          <HCaptcha
+            ref={recaptchaRef}
+            sitekey={HCAPTCHA_SITE_KEY}
+            size="invisible"
+            languageOverride="ko"
+            onVerify={handleCaptchaVerify}
+            onError={handleCaptchaError}
+            onExpire={() => setSubmitting(false)}
+          />
+          {captchaError && <p className="errorText">{captchaError}</p>}
 
-          <button type="submit">로그인</button>
+          <button type="submit" disabled={submitting}>
+            {submitting ? "확인 중..." : "로그인"}
+          </button>
         </form>
 
         <div className="loginLinks">
@@ -159,15 +207,11 @@ function Login() {
 
         <div className="snsLogin">
           <p>SNS 계정을 통해 빠르게 로그인 하실 수 있습니다.</p>
-          
-          {!IS_DEV && !captchaToken && (
-            <p className="snsDisabledNotice">위 reCAPTCHA를 먼저 완료해주세요.</p>
-          )}
 
           <button
             className="kakaoBtn"
-            disabled={!IS_DEV && !captchaToken}
-            onClick={() => { window.location.href = `${SPRING}/oauth2/authorization/kakao`; }}
+            disabled={submitting}
+            onClick={() => handleSocialClick("kakao")}
           >
             <SiKakaotalk className="snsIcon" />
             카카오로 로그인하기
@@ -175,8 +219,8 @@ function Login() {
 
           <button
             className="naverBtn"
-            disabled={!IS_DEV && !captchaToken}
-            onClick={() => { window.location.href = `${SPRING}/oauth2/authorization/naver`; }}
+            disabled={submitting}
+            onClick={() => handleSocialClick("naver")}
           >
             <SiNaver className="snsIcon" />
             네이버로 로그인하기
@@ -184,8 +228,8 @@ function Login() {
 
           <button
             className="googleBtn"
-            disabled={!IS_DEV && !captchaToken}
-            onClick={() => { window.location.href = `${SPRING}/oauth2/authorization/google`; }}
+            disabled={submitting}
+            onClick={() => handleSocialClick("google")}
           >
             <FcGoogle className="snsIcon" />
             Google로 로그인하기

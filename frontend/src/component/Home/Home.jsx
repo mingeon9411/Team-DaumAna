@@ -1,15 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag, Plus } from "lucide-react";
 import "./Home.css";
 import ChatBot from "../MyPage/ChatBot";
 import LookbookViewer from "./LookbookViewer";
+import PhotoReviewViewer from "./PhotoReviewViewer";
+import PhotoReviewUploadModal from "./PhotoReviewUploadModal";
 import RecentlyViewedSidebar from "./RecentlyViewedSidebar";
+import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import { getRecentlyViewed } from "../../utils/recentlyViewed";
 import koreanModernSofa from "../../assets/products/Korean Modern Sofa — Ivory Leather.png";
 import floorLoungeSofa from "../../assets/products/플로어 라운지 소파.png";
 import moonJarArmchair from "../../assets/products/달항아리 암체어.png";
-import { getCartItems } from "../../api";
+import { getCartItems, getPhotoReviews } from "../../api";
 
 
 const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
@@ -145,7 +148,20 @@ function Home() {
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [lookbookPage, setLookbookPage] = useState(0);
   const [lookbookViewerIndex, setLookbookViewerIndex] = useState(null);
+  const [photoReviews, setPhotoReviews] = useState([]);
+  const [photoReviewViewerIndex, setPhotoReviewViewerIndex] = useState(null);
+  const [showPhotoUploadModal, setShowPhotoUploadModal] = useState(false);
   const [cartCounts, setCartCounts] = useState({});
+
+  // 구매자가 올린 포토리뷰(사진 첨부된 리뷰) — 룩북 갤러리 패널에 실제 데이터로 보여준다.
+  const loadPhotoReviews = () => {
+    getPhotoReviews()
+      .then((res) => setPhotoReviews(res.data))
+      .catch(() => {});
+  };
+  useEffect(() => {
+    loadPhotoReviews();
+  }, []);
   const [recentlyViewed, setRecentlyViewed] = useState(() => getRecentlyViewed());
   const navigate = useNavigate();
 
@@ -468,7 +484,7 @@ function Home() {
   }, []);
 
   return (
-    <div className="home bg-background text-foreground flex flex-row" style={SANS}>
+    <div className="home relative bg-background text-foreground flex flex-row" style={SANS}>
 
       {/* ESSAY SPREAD — 처음엔 영상이 화면 전체를 채우고, 영상이 끝나면 마지막 장면
           그대로 절반으로 줄어들고, 나머지 절반은 에세이(상품 구매 유도) 페이지가 자연스럽게 펼쳐진다 */}
@@ -694,28 +710,36 @@ function Home() {
         onWheel={(e) => e.stopPropagation()}
         className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto overscroll-contain flex flex-col justify-start py-20 px-8"
       >
-        <div className="relative z-10 max-w-7xl mx-auto w-full mb-10 flex items-end justify-end gap-8 flex-wrap">
-          <div className="flex items-center gap-2 border-b border-foreground w-full sm:w-72 pb-2">
-            <Search size={15} className="text-muted-foreground shrink-0" />
-            <input
-              type="text"
-              value={productSearchQuery}
-              onChange={(e) => setProductSearchQuery(e.target.value)}
-              placeholder="상품명, 브랜드, 라벨 검색"
-              aria-label="전체 상품 검색"
-              className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
-              style={SANS}
-            />
-            {productSearchQuery && (
-              <button
-                type="button"
-                onClick={() => setProductSearchQuery("")}
-                aria-label="검색어 지우기"
-                className="text-muted-foreground hover:text-foreground transition-colors shrink-0"
-              >
-                <X size={14} />
-              </button>
-            )}
+        {/* z-30 — 아래 상품 그리드 래퍼도 z-10이라, 같은 값이면 DOM 순서상 나중에 오는
+            그리드가 인기 검색어 드롭다운을 덮어버린다(같은 값끼리는 각자 안의 z-index가
+            아니라 그냥 뒤에 오는 요소가 이긴다). 확실히 더 높여서 덮이지 않게 함. */}
+        <div className="relative z-30 max-w-7xl mx-auto w-full mb-10 flex items-end justify-end gap-4 flex-wrap">
+          <div className="relative w-full sm:w-72">
+            <div className="flex items-center gap-2 border-b border-foreground pb-2">
+              <Search size={15} className="text-muted-foreground shrink-0" />
+              <input
+                type="text"
+                value={productSearchQuery}
+                onChange={(e) => setProductSearchQuery(e.target.value)}
+                placeholder="상품명, 브랜드, 라벨 검색"
+                aria-label="전체 상품 검색"
+                className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                style={SANS}
+              />
+              {productSearchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setProductSearchQuery("")}
+                  aria-label="검색어 지우기"
+                  className="text-muted-foreground hover:text-foreground transition-colors shrink-0"
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
+
+            {/* 검색창 바로 아래 항상 붙어있는 인기 검색어 미니바(자동 롤링) */}
+            <PopularKeywordsSidebar onSelect={setProductSearchQuery} />
           </div>
         </div>
 
@@ -789,8 +813,19 @@ function Home() {
       </section>
 
       {/* LOOKBOOK */}
-      <section data-hsnap className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto flex flex-col justify-center">
-        <div className="max-w-7xl mx-auto px-8 py-10 w-full">
+      {/* justify-center + overflow-y-auto 조합은 콘텐츠가 뷰포트보다 길어지면 위쪽이
+          스크롤로 안 닿는 흔한 플렉스박스 버그가 있다(#home-products처럼 justify-start로
+          맞춰야 포토리뷰 섹션이 추가된 지금 길이에서도 끝까지 스크롤된다).
+          data-lenis-prevent + onWheel stopPropagation도 #home-products와 동일하게 —
+          이게 없으면 Lenis가 휠 입력을 가로채 좌우 패널 전환으로 먼저 처리해버려서
+          이 패널 안에서 위아래로 스크롤하려 해도 옆 패널로 슬라이드되곤 했다. */}
+      <section
+        data-hsnap
+        data-lenis-prevent
+        onWheel={(e) => e.stopPropagation()}
+        className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto overscroll-contain flex flex-col justify-start"
+      >
+        <div className="max-w-7xl mx-auto px-8 py-20 w-full">
           <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 gap-2">
             {lookbookPhotos.map((src, i) => (
               <div
@@ -843,8 +878,76 @@ function Home() {
               </button>
             </div>
           )}
+
+          {/* 구매자 포토리뷰 — 위 큐레이션 사진과 구분해서 별도 섹션으로 둔다.
+              위쪽은 관리자가 고른 무드 사진(LookbookViewer가 가짜 좋아요/댓글까지 꾸며서 보여줌),
+              아래는 실제 리뷰 데이터라 그 둘을 섞지 않는다. */}
+          <div className="mt-16 pt-10 border-t border-border">
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h3 className="text-lg font-medium text-foreground" style={SERIF}>고객님이 올린 사진</h3>
+                <p className="text-xs text-muted-foreground mt-1" style={MONO}>집다움 상품으로 꾸민 우리 집을 자랑해보세요</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowPhotoUploadModal(true)}
+                className="flex items-center gap-1.5 rounded-full border border-foreground text-foreground text-xs tracking-widest px-4 py-2 hover:bg-foreground hover:text-background transition-colors shrink-0"
+                style={SANS}
+              >
+                <Plus size={13} />
+                사진 올리기
+              </button>
+            </div>
+
+            {photoReviews.length === 0 ? (
+              <p className="text-sm text-muted-foreground text-center py-10" style={SANS}>
+                아직 등록된 사진이 없어요. 첫 번째 사진을 올려보세요!
+              </p>
+            ) : (
+              <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 gap-2">
+                {photoReviews.map((review, i) => (
+                  <button
+                    type="button"
+                    key={review.id}
+                    onClick={() => setPhotoReviewViewerIndex(i)}
+                    className="group overflow-hidden bg-muted aspect-square cursor-pointer relative"
+                  >
+                    <img
+                      src={review.review_image_url}
+                      alt={`${review.user_nickname}님이 올린 사진`}
+                      className="w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-600"
+                    />
+                    <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/15 transition-colors duration-300" />
+                    <span
+                      className="absolute bottom-1.5 left-2 text-[10px] text-white drop-shadow"
+                      style={MONO}
+                    >
+                      {review.user_nickname}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </section>
+
+      {showPhotoUploadModal && (
+        <PhotoReviewUploadModal
+          products={PRODUCTS}
+          onClose={() => setShowPhotoUploadModal(false)}
+          onUploaded={loadPhotoReviews}
+        />
+      )}
+
+      {photoReviewViewerIndex !== null && (
+        <PhotoReviewViewer
+          reviews={photoReviews}
+          index={photoReviewViewerIndex}
+          onClose={() => setPhotoReviewViewerIndex(null)}
+          onNavigate={setPhotoReviewViewerIndex}
+        />
+      )}
 
       {lookbookViewerIndex !== null && (
         <LookbookViewer

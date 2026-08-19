@@ -107,6 +107,9 @@ export const getProductDetail = (id) => API.get(`/products/${id}`);
 export const getReviews = (productId) => API.get(`/products/${productId}/reviews`);
 export const createReview = (productId, data) => API.post(`/products/${productId}/reviews`, data);
 
+// 룩북 갤러리용 — 상품 상관없이 사진 첨부된 최신 리뷰 모아보기
+export const getPhotoReviews = () => API.get('/products/reviews/photos');
+
 // 리뷰 사진 업로드 — 응답으로 받은 url을 createReview의 review_image_url에 담아 넘긴다.
 export const uploadReviewImage = (file) => {
   const formData = new FormData();
@@ -137,6 +140,11 @@ export const sendChatMessage = (message) => API.post('/chat', { message });
 // [소셜 로그인 code 교환 → Spring Boot /api/auth]
 export const socialExchange = (code) =>
   axios.post(`${SPRING_URL}/api/auth/social-exchange`, { code });
+
+// [소셜 로그인 hCaptcha 게이트] 캡차 토큰을 검증받고 1회용 ticket을 발급받는다.
+// 이 ticket을 /oauth2/authorization/{provider}?ticket=... 에 붙여야 SocialLoginCaptchaFilter를 통과한다.
+export const requestSocialCaptchaTicket = (recaptchaToken) =>
+  axios.post(`${SPRING_URL}/api/auth/social-captcha`, { recaptcha_token: recaptchaToken });
 
 // [인증 API]
 export const loginUser = (data) => AUTH_API.post('/login', data);

@@ -18,6 +18,11 @@
   position: relative;
   max-height: calc(100vh - 48px);
   overflow-y: auto;
+  /* overflow-y:auto는 다른 축(overflow-x)도 자동으로 클리핑 대상이 되어버려서,
+     안에 든 .loginBox의 둥근 모서리 box-shadow가 패널 경계에 딱 잘려 보이는 문제가 있었다.
+     패딩만큼 안쪽으로 여유를 주고 같은 크기의 음수 마진으로 바깥 레이아웃은 그대로 유지한다. */
+  padding: 10px;
+  margin: -10px;
   animation: authModalIn 0.25s ease;
 }
 

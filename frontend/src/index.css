@@ -1,6 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&family=Noto+Sans+KR:wght@300;400;500&family=Song+Myung&family=DM+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
+/* Tailwind 기본 dark: 변형은 OS의 prefers-color-scheme를 따르는데, 이 앱의 다크모드는
+   body.dark 클래스 토글 방식이라(darkmodechange 이벤트로 여기저기서 body.dark를 검사) 서로 안 맞았다.
+   앱이 실제로 쓰는 토글 기준에 맞춰 dark: 변형이 body.dark일 때만 적용되도록 재정의한다. */
+@custom-variant dark (&:where(body.dark, body.dark *));
+
 @font-face {
   font-family: 'TwayFly';
   src: url('./assets/font/tway_fly.ttf') format('truetype');

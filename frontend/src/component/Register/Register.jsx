@@ -2,15 +2,19 @@
 import "./Register.css";
 import "../Login/Login.css";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { registerUser, checkNicknameAPI } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import JDLogo from "../../assets/J.D 로고.svg";
 import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent.png";
 import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent.png";
 
+const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
+
 function Register() {
   const navigate = useNavigate();
+  const recaptchaRef = useRef(null);
   const { close, openLogin } = useAuthModal();
   const [darkMode, setDarkMode] = useState(
     () => document.body.classList.contains("dark")
@@ -34,6 +38,12 @@ function Register() {
   const [passwordError, setPasswordError] = useState("");
   const [passwordConfirmError, setPasswordConfirmError] = useState("");
   const [agreeError, setAgreeError] = useState("");
+  const [captchaError, setCaptchaError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  // 개발 모드 StrictMode 이중 마운트 대응: hCaptcha 위젯이 아직 완전히 준비되기 전에
+  // 첫 execute()가 실행되면 한 번 실패할 수 있다. 사용자에게 에러를 보여주기 전에
+  // 시도당 한 번만 조용히 재시도한다(프로덕션 빌드는 애초에 이 경로를 안 탐).
+  const captchaRetriedRef = useRef(false);
 
   const [nicknameChecked, setNicknameChecked] = useState(false);
   const [termsAgree, setTermsAgree] = useState(false);
@@ -61,7 +71,9 @@ function Register() {
     }
   };
 
-  const handleRegister = async (e) => {
+  // "회원가입" 버튼을 누르는 순간에만 캡차가 뜨도록 — hCaptcha를 invisible 모드로 두고
+  // 필드 검증 통과 시 execute()로 그때 트리거한다. 실제 가입 API 호출은 onVerify에서 진행.
+  const handleRegister = (e) => {
     e.preventDefault();
 
     let isValid = true;
@@ -116,8 +128,21 @@ function Register() {
 
     if (!isValid) return;
 
+    setCaptchaError("");
+    setSubmitting(true);
+    captchaRetriedRef.current = false;
+    recaptchaRef.current?.execute();
+  };
+
+  const handleCaptchaVerify = async (token) => {
     try {
-      await registerUser({ email, nickname, password, password_confirm: passwordConfirm });
+      await registerUser({
+        email,
+        nickname,
+        password,
+        password_confirm: passwordConfirm,
+        recaptcha_token: token,
+      });
       localStorage.setItem("nickname", nickname);
       close();
       navigate("/welcome");
@@ -132,7 +157,23 @@ function Register() {
       if (data.password) setPasswordError(Array.isArray(data.password) ? data.password[0] : data.password);
       if (data.password_confirm) setPasswordConfirmError(Array.isArray(data.password_confirm) ? data.password_confirm[0] : data.password_confirm);
       if (data.non_field_errors) setPasswordError(Array.isArray(data.non_field_errors) ? data.non_field_errors[0] : data.non_field_errors);
+      // hCaptcha 검증 실패 등 필드에 안 묶이는 에러는 {"error": "..."} 형태로 옴 (Spring AuthException)
+      if (data.error) setCaptchaError(`※${data.error}`);
+    } finally {
+      recaptchaRef.current?.resetCaptcha();
+      setSubmitting(false);
     }
+  };
+
+  const handleCaptchaError = () => {
+    if (!captchaRetriedRef.current) {
+      captchaRetriedRef.current = true;
+      recaptchaRef.current?.resetCaptcha();
+      recaptchaRef.current?.execute();
+      return;
+    }
+    setCaptchaError("※보안 인증에 실패했습니다. 다시 시도해주세요.");
+    setSubmitting(false);
   };
 
   return (
@@ -268,7 +309,20 @@ function Register() {
             {agreeError && <p className="errorText">{agreeError}</p>}
           </div>
 
-          <button type="submit">회원가입</button>
+          <HCaptcha
+            ref={recaptchaRef}
+            sitekey={HCAPTCHA_SITE_KEY}
+            size="invisible"
+            languageOverride="ko"
+            onVerify={handleCaptchaVerify}
+            onError={handleCaptchaError}
+            onExpire={() => setSubmitting(false)}
+          />
+          {captchaError && <p className="errorText">{captchaError}</p>}
+
+          <button type="submit" disabled={submitting}>
+            {submitting ? "확인 중..." : "회원가입"}
+          </button>
         </form>
 
         <div className="registerLinks">

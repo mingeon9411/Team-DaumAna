@@ -10,7 +10,7 @@
     z-index: 2;
 
     width: 420px;
-    padding: 48px 40px;
+    padding: 36px 40px;
 
     /* 배경은 여기서 정하지 않고, 아래 railStyle-* 프리셋 블록에서 채운다 —
        사이드바 하단 독바(Sidebar.css)와 같은 3가지 스타일(레인보우/메탈릭/파스텔)을
@@ -95,8 +95,8 @@
     align-items: center;
     justify-content: center;
     gap: 20px;
-    margin: 0 auto 24px;
-    padding-bottom: 22px;
+    margin: 0 auto 16px;
+    padding-bottom: 14px;
     border-bottom: 1px solid rgba(120, 120, 120, 0.18);
   }
 
@@ -173,25 +173,25 @@
 
   .loginBox h1 {
     font-family: "TwayFly", "Noto Serif KR", serif;
-    font-size: 34px;
+    font-size: 30px;
     font-weight: 500;
-    margin-bottom: 14px;
+    margin-bottom: 10px;
   }
-  
+
   .loginDesc {
     font-size: 14px;
     color: var(--muted-foreground);
-    margin-bottom: 34px;
+    margin-bottom: 22px;
   }
 
   .loginForm {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
   }
 
   .loginForm input {
-    height: 54px;
+    height: 50px;
     padding: 0 18px;
 
     border: 1px solid #ffffff;
@@ -226,8 +226,8 @@
     align-items: center;
     gap: 24px;
 
-    margin-top: 4px;
-    margin-bottom: 8px;
+    margin-top: 2px;
+    margin-bottom: 2px;
   }
   
   .keepLogin label {
@@ -252,7 +252,7 @@
   }
   
   .loginForm button {
-    height: 56px;
+    height: 52px;
 
     display: flex;
     align-items: center;
@@ -267,7 +267,7 @@
     font-size: 18px;
     cursor: pointer;
 
-    margin-top: 10px;
+    margin-top: 4px;
 
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
     transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
@@ -319,8 +319,8 @@
   }
   
   .loginLinks {
-    margin-top: 24px;
-  
+    margin-top: 16px;
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -351,20 +351,20 @@
 
   /* SNS 로그인 영역 */
 .snsLogin {
-    margin-top: 42px;
+    margin-top: 24px;
   }
 
   .snsLogin p {
     font-size: 13px;
     color: var(--muted-foreground);
 
-    margin-bottom: 18px;
+    margin-bottom: 12px;
   }
-  
+
   /* 공통 버튼 */
   .snsLogin button {
     width: 100%;
-    height: 54px;
+    height: 48px;
 
     display: flex;
     align-items: center;
@@ -374,7 +374,7 @@
     border: 3px solid transparent;
     border-radius: 14px;
 
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 
     font-size: 15px;
     font-weight: 500;
