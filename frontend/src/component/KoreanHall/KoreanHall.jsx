@@ -177,6 +177,7 @@ function KoreanHall() {
           onChange={() => setRecentlyViewed(getRecentlyViewed("korean-hall"))}
           detailBasePath="/product"
           namespace="korean-hall"
+          variant="korean-hall"
         />
       )}
 
