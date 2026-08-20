@@ -4,6 +4,8 @@ import "./KoreanHall.css";
 import products from "../../data/products";
 import ChatBot from "../MyPage/ChatBot";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
+import RecentlyViewedSidebar from "../Home/RecentlyViewedSidebar";
+import { getRecentlyViewed } from "../../utils/recentlyViewed";
 import irworobongdo from "../../assets/decor/irworobongdo.svg";
 
 const FILM_SOURCES = ["/videos/jipdaum-hanok.mp4", "/videos/jipdaum-kor.mp4"];
@@ -29,6 +31,19 @@ function KoreanHall() {
   const [filmEnded, setFilmEnded] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [productSearchQuery, setProductSearchQuery] = useState("");
+  const [recentlyViewed, setRecentlyViewed] = useState(() => getRecentlyViewed("korean-hall"));
+
+  // Home.jsx와 동일한 패턴 — 상품 상세 진입/삭제 등으로 다른 곳에서 바뀌면 동기화한다.
+  // namespace가 분리돼 있어(recentlyViewedKoreanHall) 메인 페이지 기록과 섞이지 않는다.
+  useEffect(() => {
+    const sync = () => setRecentlyViewed(getRecentlyViewed("korean-hall"));
+    window.addEventListener("recentlyviewedchange", sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener("recentlyviewedchange", sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
 
   const filteredProducts = (() => {
     const q = productSearchQuery.trim().toLowerCase();
@@ -155,6 +170,15 @@ function KoreanHall() {
           ))}
         </ul>
       </section>
+
+      {recentlyViewed.length > 0 && (
+        <RecentlyViewedSidebar
+          items={recentlyViewed}
+          onChange={() => setRecentlyViewed(getRecentlyViewed("korean-hall"))}
+          detailBasePath="/product"
+          namespace="korean-hall"
+        />
+      )}
 
       <ChatBot
         catalog={products}

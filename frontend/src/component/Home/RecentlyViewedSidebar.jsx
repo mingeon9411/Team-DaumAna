@@ -12,7 +12,9 @@ const MAX_VISIBLE = 6;
 
 // 최근에 들어가 본 상품을 macOS 독처럼 화면 오른쪽에 이미지로 항상 띄워두고,
 // 올리면 살짝 튀어나오며 커지고(독 매그니피케이션), 이름/가격 툴팁이 왼쪽으로 뜬다.
-function RecentlyViewedSidebar({ items, onChange }) {
+// detailBasePath: 클릭 시 이동할 상세페이지 경로 접두사 — 메인은 /item, 한국관은 /product.
+// namespace: recentlyViewed.js에 넘길 저장소 구분자 — 메인은 "main", 한국관은 "korean-hall".
+function RecentlyViewedSidebar({ items, onChange, detailBasePath = "/item", namespace = "main" }) {
   const navigate = useNavigate();
 
   // 하단 독바(Sidebar)와 같은 glass/메탈릭/파스텔 스타일을 공유한다.
@@ -34,12 +36,12 @@ function RecentlyViewedSidebar({ items, onChange }) {
 
   const handleRemove = (e, id) => {
     e.stopPropagation();
-    removeRecentlyViewed(id);
+    removeRecentlyViewed(id, namespace);
     onChange();
   };
 
   const handleClear = () => {
-    clearRecentlyViewed();
+    clearRecentlyViewed(namespace);
     onChange();
   };
 
@@ -63,7 +65,7 @@ function RecentlyViewedSidebar({ items, onChange }) {
           <div key={item.id} className="relative group">
             <button
               type="button"
-              onClick={() => navigate(`/item/${item.id}`)}
+              onClick={() => navigate(`${detailBasePath}/${item.id}`)}
               aria-label={item.name}
               className="block w-16 h-16 rounded-xl overflow-hidden border border-border shadow-sm transition-transform duration-200 ease-out group-hover:scale-[1.18] group-hover:-translate-x-1.5"
             >

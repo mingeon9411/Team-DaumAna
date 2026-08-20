@@ -7,6 +7,7 @@ import { ChevronLeft, Heart, Star } from "lucide-react";
 import { getProductDetail, addToCart, getReviews, createReview } from "../../api";
 import products from "../../data/products";
 import { isWished, toggleWish } from "../../utils/wishlist";
+import { addRecentlyViewed } from "../../utils/recentlyViewed";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useCartModal } from "../../context/CartModalContext";
 
@@ -79,6 +80,8 @@ function ProductDetail() {
     setWished(isWished(product.id));
     setReviewRating(5);
     setReviewComment("");
+    // 한국관 상품은 별도 namespace로 기록 — 메인 페이지 "최근 본 상품"과 id가 겹쳐도 섞이지 않는다.
+    addRecentlyViewed(product, "korean-hall");
   }, [product?.id]);
 
   useEffect(() => {
