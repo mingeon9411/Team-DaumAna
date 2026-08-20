@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import "./ChatBot.css";
 import { sendChatMessage } from "../../api";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import JDLogo from "../../assets/J.D 로고.svg";
+
+const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 
 const GREETING = {
   id: 0,
@@ -25,6 +28,10 @@ function ChatBot() {
   const messagesRef = useRef(null);
   const dragData = useRef({ startX: 0, startY: 0, origX: 0, origY: 0, hasMoved: false });
   const dragSource = useRef("fab");
+  // 새 대화(history 없음) 시작 시에만 hCaptcha가 필요하다 — 위젯은 invisible로 숨겨두고
+  // execute()로만 트리거, 통과하면 onVerify에서 여기 담아둔 요청을 이어서 보낸다.
+  const captchaRef = useRef(null);
+  const pendingSendRef = useRef(null);
 
   // 초기 위치: 오른쪽 6%, 수직 중앙
   useEffect(() => {
@@ -94,19 +101,57 @@ function ChatBot() {
     beginDrag(e, "header");
   };
 
-  const sendText = async (text) => {
-    if (!text || loading) return;
-    setMessages((prev) => [...prev, { id: Date.now(), role: "user", text, time: Date.now() }]);
-    setInput("");
+  const showErrorReply = () => {
+    setMessages((prev) => [...prev, { id: Date.now() + 1, role: "bot", text: "일시적인 오류가 발생했습니다.", time: Date.now() }]);
+  };
+
+  // 실제 서버 호출. captchaToken은 새 대화 시작(history 없음)일 때만 채워져 있다.
+  const doSend = async (text, history, captchaToken) => {
     setLoading(true);
     try {
-      const res = await sendChatMessage(text);
+      const res = await sendChatMessage(text, history, captchaToken);
       setMessages((prev) => [...prev, { id: Date.now() + 1, role: "bot", text: res.data.reply, time: Date.now() }]);
     } catch {
-      setMessages((prev) => [...prev, { id: Date.now() + 1, role: "bot", text: "일시적인 오류가 발생했습니다.", time: Date.now() }]);
+      showErrorReply();
     } finally {
       setLoading(false);
     }
+  };
+
+  const sendText = (text) => {
+    if (!text || loading) return;
+
+    // 초기 인사말(id:0)은 실제 대화가 아니므로 서버에 보낼 history에서 제외한다.
+    const history = messages
+      .filter((m) => m.id !== 0)
+      .map((m) => ({ role: m.role === "bot" ? "assistant" : "user", content: m.text }));
+
+    setMessages((prev) => [...prev, { id: Date.now(), role: "user", text, time: Date.now() }]);
+    setInput("");
+
+    if (history.length === 0) {
+      // 이 대화의 첫 메시지 — hCaptcha 통과 후에만 전송
+      pendingSendRef.current = { text, history };
+      setLoading(true);
+      captchaRef.current?.execute();
+      return;
+    }
+
+    doSend(text, history, null);
+  };
+
+  const handleCaptchaVerify = (token) => {
+    const pending = pendingSendRef.current;
+    pendingSendRef.current = null;
+    captchaRef.current?.resetCaptcha();
+    if (!pending) return;
+    doSend(pending.text, pending.history, token);
+  };
+
+  const handleCaptchaError = () => {
+    pendingSendRef.current = null;
+    setLoading(false);
+    showErrorReply();
   };
 
   const send = () => sendText(input.trim());
@@ -212,6 +257,16 @@ function ChatBot() {
           </svg>
         </button>
       </div>
+
+      <HCaptcha
+        ref={captchaRef}
+        sitekey={HCAPTCHA_SITE_KEY}
+        size="invisible"
+        languageOverride="ko"
+        onVerify={handleCaptchaVerify}
+        onError={handleCaptchaError}
+        onExpire={handleCaptchaError}
+      />
     </div>
   );
 }
