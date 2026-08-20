@@ -27,14 +27,14 @@ const CONDITION_RULES = [
   { test: (t) => /친환경|에코/.test(t), match: (p) => p.label === "ECO", title: "🌿 친환경 상품" },
 ];
 
-function matchProducts(text) {
+function matchProducts(text, catalog) {
   if (!text) return null;
   const t = text.replace(/\s/g, "");
   const category = CATEGORY_KEYWORDS.find((c) => t.includes(c));
   const rule = CONDITION_RULES.find((r) => r.test(t));
   if (!category && !rule) return null;
 
-  const items = PRODUCTS.filter((p) => {
+  const items = catalog.filter((p) => {
     const catOk = category ? p.category === category : true;
     const condOk = rule ? rule.match(p) : true;
     return catOk && condOk;
@@ -47,7 +47,9 @@ function matchProducts(text) {
 
 const parseWon = (v) => Number(String(v).replace(/,/g, ""));
 
-function ChatBot() {
+// catalog: 상품 추천 패널이 검색할 상품 목록 (라우트별로 카탈로그가 분리돼 있어 기본값은 메인 페이지 PRODUCTS).
+// detailBasePath: 카드 클릭 시 이동할 상세페이지 경로 접두사 — 메인은 /item, 한국관은 /product.
+function ChatBot({ catalog = PRODUCTS, detailBasePath = "/item" }) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([GREETING]);
@@ -138,7 +140,7 @@ function ChatBot() {
       .map((m) => ({ role: m.role === "bot" ? "assistant" : "user", content: m.text }));
 
     // 질문에 맞는 상품이 있으면 오른쪽에 패널로, 없으면 패널을 닫아 매 질문마다 화면이 갱신되게 한다.
-    setPanel(matchProducts(text));
+    setPanel(matchProducts(text, catalog));
 
     setMessages((prev) => [...prev, { id: Date.now(), role: "user", text, time: Date.now() }]);
     setInput("");
@@ -245,19 +247,21 @@ function ChatBot() {
             </div>
             <div className="chatBotSideList" data-lenis-prevent>
               {panel.items.map((p) => {
+                // 카탈로그마다 price 표기가 다르다 (메인은 "328,000" 콤마 문자열, 한국관은 128000 숫자) —
+                // parseWon으로 한 번 숫자로 정규화한 뒤 toLocaleString으로 통일해서 표기한다.
                 const priceNum = parseWon(p.price);
                 const originalNum = p.originalPrice ? parseWon(p.originalPrice) : null;
                 const discountPct = originalNum ? Math.round((1 - priceNum / originalNum) * 100) : 0;
                 return (
-                  <button key={p.id} className="chatBotSideCard" onClick={() => navigate(`/item/${p.id}`)}>
+                  <button key={p.id} className="chatBotSideCard" onClick={() => navigate(`${detailBasePath}/${p.id}`)}>
                     <img src={p.image} alt={p.alt || p.name} className="chatBotSideImg" />
                     <div className="chatBotSideInfo">
                       <p className="chatBotSideName">{p.name}</p>
                       <p className="chatBotSideDesc">{p.desc}</p>
                       <div className="chatBotSidePrice">
                         {originalNum && <span className="chatBotSideDiscount">{discountPct}%</span>}
-                        <span className="chatBotSideNow">{p.price}원</span>
-                        {originalNum && <span className="chatBotSideOrig">{p.originalPrice}원</span>}
+                        <span className="chatBotSideNow">{priceNum.toLocaleString("ko-KR")}원</span>
+                        {originalNum && <span className="chatBotSideOrig">{originalNum.toLocaleString("ko-KR")}원</span>}
                       </div>
                     </div>
                   </button>

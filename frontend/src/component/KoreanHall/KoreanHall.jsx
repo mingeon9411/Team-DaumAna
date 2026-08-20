@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./KoreanHall.css";
 import products from "../../data/products";
+import ChatBot from "../MyPage/ChatBot";
 import irworobongdo from "../../assets/decor/irworobongdo.svg";
 
 const FILM_SOURCES = ["/videos/jipdaum-hanok.mp4", "/videos/jipdaum-kor.mp4"];
@@ -116,6 +117,8 @@ function KoreanHall() {
           ))}
         </ul>
       </section>
+
+      <ChatBot catalog={products} detailBasePath="/product" />
     </div>
   );
 }
