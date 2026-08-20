@@ -134,9 +134,8 @@ export const getMyCoupons = () => API.get('/coupons/my');
 export const validateCoupon = (code, order_amount) =>
   API.post('/coupons/validate', { code, order_amount });
 
-// [챗봇 API] history가 비어있는 "새 대화 시작" 요청에서만 captchaToken이 필요하다 (ChatController 참고).
-export const sendChatMessage = (message, history, captchaToken) =>
-  API.post('/chat', { message, history, captchaToken });
+// [챗봇 API] history는 멀티턴 문맥 유지를 위해 함께 보낸다 (캡차 게이트는 없음 — ChatController 참고).
+export const sendChatMessage = (message, history) => API.post('/chat', { message, history });
 
 // [소셜 로그인 code 교환 → Spring Boot /api/auth]
 export const socialExchange = (code) =>
