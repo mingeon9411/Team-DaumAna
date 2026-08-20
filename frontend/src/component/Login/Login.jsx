@@ -8,8 +8,11 @@ import { loginUser, requestSocialCaptchaTicket } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useRailStyle } from "../../hooks/useRailStyle";
 import JDLogo from "../../assets/J.D 로고.svg";
-import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent.png";
-import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent.png";
+// -sm: 48px 높이로만 쓰이는데 원본이 1015x600(750KB)이라 로그인창이 뜰 때마다
+// 불필요하게 무거웠음 — 표시 크기에 맞춰 300px 높이로 미리 축소해둔 버전으로 교체.
+// DoorIntro(한국관 인트로, 420px+)처럼 실제로 큰 화면에 쓰는 곳만 원본을 그대로 쓴다.
+import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
+import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent-sm.png";
 
 const SPRING = import.meta.env.VITE_SPRING_API_URL || "http://localhost:8081";
 const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;

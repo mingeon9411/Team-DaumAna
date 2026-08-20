@@ -7,8 +7,9 @@ import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { registerUser, checkNicknameAPI } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import JDLogo from "../../assets/J.D 로고.svg";
-import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent.png";
-import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent.png";
+// -sm: 48px로만 쓰여서 원본(1015x600, 750KB) 대신 축소본을 쓴다.
+import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
+import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent-sm.png";
 
 const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 

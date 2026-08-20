@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import JDLogo from "../../assets/J.D 로고.svg";
 import Ilwolobongdo from "../../assets/decor/ilwolobongdo.png";
 import IlwolobongdoDark from "../../assets/decor/ilwolobongdo-dark.png";
-import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent.png";
-import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent.png";
+// -sm: 헤더에선 37px로만 쓰여서 원본(1015x600, 750KB) 대신 축소본을 쓴다.
+import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
+import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent-sm.png";
 import { Link, useLocation } from "react-router-dom";
 
 function Header() {

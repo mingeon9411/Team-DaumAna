@@ -3,7 +3,8 @@ import { FaInstagram, FaXTwitter, FaThreads } from "react-icons/fa6";
 import { useLocation } from "react-router-dom";
 import { useCompanyInfoModal } from "../../context/CompanyInfoModalContext";
 import JDLogo from "../../assets/J.D 로고.svg";
-import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent.png";
+// -sm: 56px로만 쓰여서 원본(1015x600, 750KB) 대신 축소본을 쓴다.
+import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
 
 const CLOSING_QUOTE = "집이란 나의 공간에\n나만의 색을 더해가는 또다른 세상이다.";
 

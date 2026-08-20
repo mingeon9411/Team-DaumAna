@@ -16,8 +16,9 @@ import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import { useWithdrawModal } from "../../context/WithdrawModalContext";
 import JDLogo from "../../assets/J.D 로고.svg";
-import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent.png";
-import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent.png";
+// -sm: 34px로만 쓰여서 원본(1015x600, 750KB) 대신 축소본을 쓴다.
+import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
+import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent-sm.png";
 
 const STATUS_LABEL = {
   PENDING: "입금대기",
