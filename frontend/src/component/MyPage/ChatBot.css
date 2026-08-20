@@ -48,7 +48,7 @@ body.dark .chatBotKoreanHall {
 }
 
 .chatBotKoreanHall .chatBotPanel {
-  font-family: "Noto Serif KR", "Song Myung", "Noto Sans KR", serif;
+  font-family: "TwayFly", "Noto Serif KR", "Song Myung", "Noto Sans KR", serif;
   background:
     linear-gradient(var(--chatbot-glass-bg), var(--chatbot-glass-bg)) padding-box,
     linear-gradient(150deg, #2a4d8f 0%, #f5f1ea 25%, #a6342a 50%, #1c1a16 75%, #c9a227 100%) border-box;
@@ -62,7 +62,7 @@ body.dark .chatBotKoreanHall .chatBotPanel {
 .chatBotKoreanHall .chatBotName,
 .chatBotKoreanHall .chatBotSideTitle,
 .chatBotKoreanHall .chatBotSideName {
-  font-family: "Song Myung", "Noto Serif KR", serif;
+  font-family: "TwayFly", "Song Myung", "Noto Serif KR", serif;
   letter-spacing: 0.02em;
 }
 

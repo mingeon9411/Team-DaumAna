@@ -8,7 +8,7 @@
     background:
       radial-gradient(120% 60% at 15% 0%, rgba(201, 162, 39, 0.06), transparent 60%),
       var(--background);
-    font-family: "Noto Sans KR", sans-serif;
+    font-family: "TwayFly", "Noto Sans KR", sans-serif;
     animation: khFadeIn 0.8s ease-out forwards;
 }
 
@@ -103,7 +103,7 @@ body.dark .khWatermark {
 }
 
 .khLabel {
-    font-family: "DM Mono", monospace;
+    font-family: "TwayFly", "DM Mono", monospace;
     font-size: 11px;
     letter-spacing: 0.32em;
     text-transform: uppercase;
@@ -112,7 +112,7 @@ body.dark .khWatermark {
 }
 
 .khTitle {
-    font-family: "Song Myung", "Noto Serif KR", serif;
+    font-family: "TwayFly", "Song Myung", "Noto Serif KR", serif;
     font-size: 56px;
     font-weight: 400;
     color: var(--foreground);
@@ -130,7 +130,7 @@ body.dark .khWatermark {
 }
 
 .khDesc {
-    font-family: "Noto Serif KR", serif;
+    font-family: "TwayFly", "Noto Serif KR", serif;
     font-size: 15px;
     font-weight: 300;
     line-height: 1.9;
@@ -191,7 +191,7 @@ body.dark .khWatermark {
 }
 
 .khFilmText {
-    font-family: "Song Myung", "Noto Serif KR", serif;
+    font-family: "TwayFly", "Song Myung", "Noto Serif KR", serif;
     font-size: 22px;
     line-height: 1.6;
     color: #f4f0e8;
@@ -318,7 +318,7 @@ body.dark .khCategoryMenu {
     border: 1px solid rgba(180, 132, 74, 0.28);
     background: linear-gradient(135deg, #f8f1e3 0%, #efe2c9 100%);
     color: var(--muted-foreground);
-    font-family: "Noto Sans KR", sans-serif;
+    font-family: "TwayFly", "Noto Sans KR", sans-serif;
     font-size: 11px;
     letter-spacing: 0.02em;
     cursor: pointer;
@@ -436,7 +436,7 @@ body.dark .khCategoryBtn.active {
 }
 
 .khName {
-    font-family: "Song Myung", "Noto Serif KR", serif;
+    font-family: "TwayFly", "Song Myung", "Noto Serif KR", serif;
     font-size: 18px;
     font-weight: 400;
     letter-spacing: 0.02em;
@@ -453,7 +453,7 @@ body.dark .khCategoryBtn.active {
 }
 
 .khPrice {
-    font-family: "DM Mono", monospace;
+    font-family: "TwayFly", "DM Mono", monospace;
     font-size: 15px;
     font-weight: 600;
     letter-spacing: 0.01em;
