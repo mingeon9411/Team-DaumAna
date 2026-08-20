@@ -135,7 +135,10 @@ export const validateCoupon = (code, order_amount) =>
   API.post('/coupons/validate', { code, order_amount });
 
 // [챗봇 API] history는 멀티턴 문맥 유지를 위해 함께 보낸다 (캡차 게이트는 없음 — ChatController 참고).
-export const sendChatMessage = (message, history) => API.post('/chat', { message, history });
+// channel은 어느 페이지 챗봇인지("korean-hall" | undefined = 기본 쇼핑몰) — 서버가 상품 검색
+// 범위(collection)를 그 문맥에 맞게 고정하는 데 쓴다.
+export const sendChatMessage = (message, history, channel) =>
+  API.post('/chat', { message, history, channel });
 
 // [소셜 로그인 code 교환 → Spring Boot /api/auth]
 export const socialExchange = (code) =>

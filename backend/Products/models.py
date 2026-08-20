@@ -26,6 +26,14 @@ class Category(models.Model):
 
 # [2] 상품 마스터
 class Product(models.Model):
+    # 카테고리명이 메인 상품군과 겹쳐서(둘 다 "소파/테이블/조명"...) 카테고리만으로는 어느 진열장
+    # 소속인지 구분이 안 된다. 챗봇의 상품 검색 범위(search_products)를 페이지 문맥에 맞게 좁히기
+    # 위한 구분 필드 — 프론트의 메인 진열(Home.jsx PRODUCTS) vs 한국관 진열(data/products.js)에 대응.
+    COLLECTION_CHOICES = [
+        ('main', '메인'),
+        ('korean_hall', '한국관'),
+    ]
+
     id = models.AutoField(primary_key=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=200)
@@ -33,6 +41,7 @@ class Product(models.Model):
     base_price = models.PositiveIntegerField(default=0) # 오라클 CHECK (base_price >= 0) 대응
     description = models.TextField() # 오라클 CLOB 대응
     thumbnail_url = models.CharField(max_length=500) # URLField보다 오라클 VARCHAR2(500) 직결을 위해 CharField 권장
+    collection = models.CharField(max_length=20, choices=COLLECTION_CHOICES, default='main')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -221,14 +221,89 @@ body.dark .khFilm {
     top: 72px;
     z-index: 50;
     display: flex;
+    align-items: center;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
+    gap: 16px;
     padding: 12px 60px;
     background: linear-gradient(135deg, rgba(248, 241, 227, 0.95), rgba(239, 226, 201, 0.95));
     border-bottom: 1px solid rgba(180, 132, 74, 0.28);
     backdrop-filter: blur(12px);
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+}
+
+.khCategoryList {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+/* 인기 검색어 랭킹 — 카테고리 메뉴 오른쪽 끝에 고정폭으로 붙는다 */
+.khKeywordWrap {
+    flex: 0 0 240px;
+    width: 240px;
+}
+.khKeywordWrap .popularKeywordMiniBar {
+    background: rgba(166, 52, 42, 0.06);
+}
+.khKeywordWrap .popularKeywordMiniBar:hover {
+    background: rgba(166, 52, 42, 0.12);
+}
+body.dark .khKeywordWrap .popularKeywordMiniBar {
+    background: rgba(214, 168, 106, 0.08);
+}
+body.dark .khKeywordWrap .popularKeywordMiniBar:hover {
+    background: rgba(214, 168, 106, 0.14);
+}
+/* 펼침 패널도 메인의 실버 메탈릭 대신 한지 톤 + 오방색 테두리로 — 챗봇 한국관 테마와 통일 */
+.khKeywordWrap .popularKeywordDropdown {
+    background:
+      linear-gradient(135deg, #f8f1e3 0%, #efe2c9 100%) padding-box,
+      linear-gradient(150deg, #2a4d8f 0%, #f5f1ea 25%, #a6342a 50%, #1c1a16 75%, #c9a227 100%) border-box;
+    background-size: 100% 100%, 100% 100%;
+    animation: none;
+    box-shadow: 0 16px 44px rgba(30, 20, 10, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+body.dark .khKeywordWrap .popularKeywordDropdown {
+    background:
+      linear-gradient(135deg, #2b2013 0%, #1a1309 100%) padding-box,
+      linear-gradient(150deg, #3f5f9e 0%, #2b2013 25%, #b8453a 50%, #14100a 75%, #d6a86a 100%) border-box;
+    background-size: 100% 100%, 100% 100%;
+    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(214, 168, 106, 0.1);
+}
+
+.khSearchNotice {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 16px 60px 0;
+    font-size: 12.5px;
+    color: var(--muted-foreground);
+}
+
+.khSearchClear {
+    border: 1px solid rgba(180, 132, 74, 0.32);
+    background: transparent;
+    color: #a6342a;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+.khSearchClear:hover {
+    background: rgba(166, 52, 42, 0.08);
+    border-color: rgba(166, 52, 42, 0.4);
+}
+body.dark .khSearchClear {
+    color: #d98a7a;
+    border-color: rgba(214, 168, 106, 0.28);
+}
+body.dark .khSearchClear:hover {
+    background: rgba(214, 168, 106, 0.1);
 }
 
 body.dark .khCategoryMenu {

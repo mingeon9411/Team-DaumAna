@@ -5,12 +5,7 @@ import { sendChatMessage } from "../../api";
 import { PRODUCTS } from "../Home/Home";
 import JDLogo from "../../assets/J.D 로고.svg";
 
-const GREETING = {
-  id: 0,
-  role: "bot",
-  text: "안녕하세요! 집다움 AI 어시스턴트입니다 😊\n궁금한 점을 편하게 물어보세요.",
-  time: Date.now(),
-};
+const DEFAULT_GREETING = "안녕하세요! 집다움 AI 어시스턴트입니다 😊\n궁금한 점을 편하게 물어보세요.";
 
 const QUICK_REPLIES = ["배송 조회", "반품·교환 안내", "회원 등급 혜택", "매장 위치 안내"];
 
@@ -49,10 +44,18 @@ const parseWon = (v) => Number(String(v).replace(/,/g, ""));
 
 // catalog: 상품 추천 패널이 검색할 상품 목록 (라우트별로 카탈로그가 분리돼 있어 기본값은 메인 페이지 PRODUCTS).
 // detailBasePath: 카드 클릭 시 이동할 상세페이지 경로 접두사 — 메인은 /item, 한국관은 /product.
-function ChatBot({ catalog = PRODUCTS, detailBasePath = "/item" }) {
+// variant: "korean-hall"이면 ChatBot.css의 .chatBotKoreanHall 테마(한지톤+오방색)가 적용된다.
+// botName / greeting: 헤더 이름과 첫 인사말 — 페이지별로 챗봇 정체성을 다르게 줄 때 사용.
+function ChatBot({
+  catalog = PRODUCTS,
+  detailBasePath = "/item",
+  variant = "default",
+  botName = "집다움 챗봇",
+  greeting = DEFAULT_GREETING,
+}) {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState([GREETING]);
+  const [messages, setMessages] = useState([{ id: 0, role: "bot", text: greeting, time: Date.now() }]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [pos, setPos] = useState(null);
@@ -146,7 +149,7 @@ function ChatBot({ catalog = PRODUCTS, detailBasePath = "/item" }) {
     setInput("");
     setLoading(true);
     try {
-      const res = await sendChatMessage(text, history);
+      const res = await sendChatMessage(text, history, variant);
       setMessages((prev) => [...prev, { id: Date.now() + 1, role: "bot", text: res.data.reply, time: Date.now() }]);
     } catch {
       setMessages((prev) => [...prev, { id: Date.now() + 1, role: "bot", text: "일시적인 오류가 발생했습니다.", time: Date.now() }]);
@@ -166,7 +169,11 @@ function ChatBot({ catalog = PRODUCTS, detailBasePath = "/item" }) {
 
   return (
     <div
-      className={"chatBotRoot" + (onRightHalf ? "" : " chatBotRootLeft")}
+      className={
+        "chatBotRoot" +
+        (onRightHalf ? "" : " chatBotRootLeft") +
+        (variant === "korean-hall" ? " chatBotKoreanHall" : "")
+      }
       style={rootStyle}
       onWheel={(e) => e.stopPropagation()}
     >
@@ -178,7 +185,7 @@ function ChatBot({ catalog = PRODUCTS, detailBasePath = "/item" }) {
               <img src={JDLogo} alt="J.D" className="chatBotAvatarImg" />
             </div>
             <div style={{ flex: 1 }}>
-              <p className="chatBotName">집다움 챗봇</p>
+              <p className="chatBotName">{botName}</p>
               <p className="chatBotStatus">온라인</p>
             </div>
             <button className="chatBotClose" onClick={() => setOpen(false)}>✕</button>

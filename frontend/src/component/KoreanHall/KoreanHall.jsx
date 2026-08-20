@@ -3,10 +3,23 @@ import { useNavigate } from "react-router-dom";
 import "./KoreanHall.css";
 import products from "../../data/products";
 import ChatBot from "../MyPage/ChatBot";
+import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import irworobongdo from "../../assets/decor/irworobongdo.svg";
 
 const FILM_SOURCES = ["/videos/jipdaum-hanok.mp4", "/videos/jipdaum-kor.mp4"];
 const PRODUCT_CATEGORIES = ["전체", "소파", "테이블", "조명", "수납", "소품"];
+
+// 한국관 전용 인기 검색어 — Home.jsx의 MOCK_KEYWORDS와 마찬가지로 실제 products(위 배열)
+// 상품명 속 문구로만 골랐다. 클릭하면 productSearchQuery로 들어가 아래 그리드가 바로 필터링된다.
+const KH_POPULAR_KEYWORDS = [
+  { rank: 1, keyword: "한지 무드 조명", status: "up" },
+  { rank: 2, keyword: "평상 소파", status: "new" },
+  { rank: 3, keyword: "서안청 책장", status: "new" },
+  { rank: 4, keyword: "월넛 사이드 테이블", status: "same" },
+  { rank: 5, keyword: "한지 펜던트 조명", status: "up" },
+  { rank: 6, keyword: "나비 문양 수납장", status: "down" },
+  { rank: 7, keyword: "꽃잎 화병", status: "new" },
+];
 
 function KoreanHall() {
   const navigate = useNavigate();
@@ -15,11 +28,21 @@ function KoreanHall() {
   const [filmIndex, setFilmIndex] = useState(0);
   const [filmEnded, setFilmEnded] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("전체");
+  const [productSearchQuery, setProductSearchQuery] = useState("");
 
-  const filteredProducts =
-    selectedCategory === "전체"
-      ? products
-      : products.filter((p) => p.category === selectedCategory);
+  const filteredProducts = (() => {
+    const q = productSearchQuery.trim().toLowerCase();
+    return products.filter((p) => {
+      const matchesCategory = selectedCategory === "전체" || p.category === selectedCategory;
+      const matchesQuery =
+        !q ||
+        p.name.toLowerCase().includes(q) ||
+        p.desc.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        p.brand.toLowerCase().includes(q);
+      return matchesCategory && matchesQuery;
+    });
+  })();
 
   useEffect(() => {
     if (filmIndex === 0) return;
@@ -84,17 +107,32 @@ function KoreanHall() {
 
       <section className="khGridSection" ref={gridRef}>
         <div className="khCategoryMenu">
-          {PRODUCT_CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              className={`khCategoryBtn${selectedCategory === cat ? " active" : ""}`}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
+          <div className="khCategoryList">
+            {PRODUCT_CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                type="button"
+                className={`khCategoryBtn${selectedCategory === cat ? " active" : ""}`}
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          <div className="khKeywordWrap">
+            <PopularKeywordsSidebar data={KH_POPULAR_KEYWORDS} onSelect={setProductSearchQuery} />
+          </div>
         </div>
+
+        {productSearchQuery && (
+          <p className="khSearchNotice">
+            "{productSearchQuery}" 검색 결과 {filteredProducts.length}건
+            <button type="button" className="khSearchClear" onClick={() => setProductSearchQuery("")}>
+              검색 해제
+            </button>
+          </p>
+        )}
 
         <ul className="khGrid">
           {filteredProducts.map((product) => (
@@ -118,7 +156,13 @@ function KoreanHall() {
         </ul>
       </section>
 
-      <ChatBot catalog={products} detailBasePath="/product" />
+      <ChatBot
+        catalog={products}
+        detailBasePath="/product"
+        variant="korean-hall"
+        botName="한국관 도우미"
+        greeting={"어서 오세요, 한국관입니다 🏯\n한옥의 정취를 담은 상품을 안내해드릴게요."}
+      />
     </div>
   );
 }
