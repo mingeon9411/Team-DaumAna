@@ -182,7 +182,7 @@ function ChatBot() {
             <button className="chatBotClose" onClick={() => setOpen(false)}>✕</button>
           </div>
 
-          <div className="chatBotMessages" ref={messagesRef}>
+          <div className="chatBotMessages" ref={messagesRef} data-lenis-prevent>
             {messages.map((msg) => (
               <div key={msg.id} className={"chatMsg " + msg.role}>
                 {msg.role === "bot" && (
@@ -243,7 +243,7 @@ function ChatBot() {
               <p className="chatBotSideTitle">{panel.title}</p>
               <button className="chatBotSideClose" onClick={() => setPanel(null)} aria-label="상품 패널 닫기">✕</button>
             </div>
-            <div className="chatBotSideList">
+            <div className="chatBotSideList" data-lenis-prevent>
               {panel.items.map((p) => {
                 const priceNum = parseWon(p.price);
                 const originalNum = p.originalPrice ? parseWon(p.originalPrice) : null;

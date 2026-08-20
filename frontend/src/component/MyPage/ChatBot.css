@@ -15,11 +15,11 @@ body.dark {
   --chatbot-bar-bg: rgba(191, 203, 236, 0.06);
 }
 
-/* 챗봇 패널 테두리 — 사이드바(.sidebarRail)와 같은 방식의 에세이 페이지 톤 띠 테두리 */
+/* 챗봇 패널 테두리 — 사이드바(.sidebarRail)와 같은 띠 구조를 쓰되, 챗봇만 파스텔 톤으로 부드럽게 */
 body.dark .chatBotPanel {
   background:
     linear-gradient(var(--chatbot-glass-bg), var(--chatbot-glass-bg)) padding-box,
-    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
+    linear-gradient(150deg, #9c8fd4 0%, #7fd0ac 45%, #dd9ac0 100%) border-box;
 }
 
 @keyframes bubbleIn {
@@ -45,6 +45,10 @@ body.dark .chatBotPanel {
 @keyframes panelPop {
   from { opacity: 0; transform: translateY(10px) scale(0.96); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes sidePanelIn {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
 /* ── 루트 (fixed 컨테이너) ──
@@ -134,12 +138,11 @@ body.dark .chatBotPanel {
   height: 760px;
   font-family: "TwayFly", "Noto Sans KR", "Pretendard", sans-serif;
   border-radius: 26px;
-  /* 사이드바/로그인/최근 본 상품과 같은 얇은 무지개 테두리 레시피로 통일 —
-     기존 6px 두꺼운 테두리 + 상단 반짝임 바는 산만해서 제거 */
-  border: 1.5px solid transparent;
+  /* 파스텔 무지개 띠 테두리 — 얇은 라인 대신 두꺼운 띠로 존재감을 줌 */
+  border: 5px solid transparent;
   background:
     linear-gradient(var(--chatbot-glass-bg), var(--chatbot-glass-bg)) padding-box,
-    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+    linear-gradient(150deg, #c9baf7 0%, #a8ecc6 45%, #f7b8d8 100%) border-box;
   backdrop-filter: blur(28px) saturate(150%);
   -webkit-backdrop-filter: blur(28px) saturate(150%);
   box-shadow:
@@ -152,7 +155,7 @@ body.dark .chatBotPanel {
   opacity: 0;
   pointer-events: none;
   transform: translateY(10px) scale(0.96);
-  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.22,1,0.36,1), width 0.25s ease;
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.22,1,0.36,1), width 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* 질문에 맞는 상품 패널이 열리면 옆으로 넓어진다 — 왼쪽 채팅 영역과 동일한 폭으로 좌우 대칭 */
@@ -424,7 +427,7 @@ body.dark .chatBotPanel {
   flex-direction: column;
   border-left: 1px solid var(--chatbot-glass-border);
   background: var(--chatbot-bubble-bot-bg);
-  animation: bubbleIn 0.22s ease both;
+  animation: sidePanelIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .chatBotSideHeader {
