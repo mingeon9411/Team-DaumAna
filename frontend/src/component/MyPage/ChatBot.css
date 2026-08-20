@@ -129,9 +129,9 @@ body.dark .chatBotPanel {
   position: absolute;
   top: 50%;
   right: calc(100% + 14px);
-  margin-top: -240px;
-  width: 336px;
-  height: 480px;
+  margin-top: -380px;
+  width: 560px;
+  height: 760px;
   font-family: "TwayFly", "Noto Sans KR", "Pretendard", sans-serif;
   border-radius: 26px;
   /* 사이드바/로그인/최근 본 상품과 같은 얇은 무지개 테두리 레시피로 통일 —
@@ -146,12 +146,25 @@ body.dark .chatBotPanel {
     0 20px 52px rgba(0, 0, 0, 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.45);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: stretch;
   overflow: hidden;
   opacity: 0;
   pointer-events: none;
   transform: translateY(10px) scale(0.96);
-  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.22,1,0.36,1);
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.22,1,0.36,1), width 0.25s ease;
+}
+
+/* 질문에 맞는 상품 패널이 열리면 옆으로 넓어진다 — 왼쪽 채팅 영역과 동일한 폭으로 좌우 대칭 */
+.chatBotPanelWithSide {
+  width: 1120px;
+}
+
+.chatBotMain {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .chatBotPanelOpen {
@@ -203,7 +216,7 @@ body.dark .chatBotPanel {
 
 .chatBotName {
   margin: 0;
-  font-size: 13.5px;
+  font-size: 15.5px;
   font-weight: 700;
   letter-spacing: 0.01em;
   color: var(--foreground);
@@ -211,8 +224,8 @@ body.dark .chatBotPanel {
 }
 
 .chatBotStatus {
-  margin: 2px 0 0;
-  font-size: 10px;
+  margin: 3px 0 0;
+  font-size: 12px;
   color: var(--muted-foreground);
   font-weight: 600;
 }
@@ -227,10 +240,10 @@ body.dark .chatBotPanel {
   background: none;
   border: none;
   color: var(--muted-foreground);
-  font-size: 15px;
+  font-size: 17px;
   cursor: pointer;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -268,7 +281,7 @@ body.dark .chatBotPanel {
 .chatMsgCol {
   display: flex;
   flex-direction: column;
-  max-width: 218px;
+  max-width: 340px;
 }
 .chatMsg.user .chatMsgCol { align-items: flex-end; }
 .chatMsg.bot .chatMsgCol { align-items: flex-start; }
@@ -292,11 +305,11 @@ body.dark .chatBotPanel {
 }
 
 .chatBubble {
-  padding: 9px 13px;
+  padding: 11px 15px;
   border-radius: 16px;
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 500;
-  line-height: 1.55;
+  line-height: 1.65;
   word-break: break-word;
 }
 .chatMsg.bot .chatBubble {
@@ -314,7 +327,7 @@ body.dark .chatBotPanel {
 }
 
 .chatMsgTime {
-  font-size: 9.5px;
+  font-size: 11px;
   color: var(--muted-foreground);
   margin: 3px 4px 0;
   opacity: 0.75;
@@ -336,9 +349,9 @@ body.dark .chatBotPanel {
   border: 1px solid var(--chatbot-glass-border);
   background: var(--chatbot-bubble-bot-bg);
   color: var(--foreground);
-  font-size: 11.5px;
+  font-size: 13px;
   font-weight: 600;
-  padding: 6px 12px;
+  padding: 7px 14px;
   border-radius: 14px;
   cursor: pointer;
   white-space: nowrap;
@@ -362,8 +375,8 @@ body.dark .chatBotPanel {
   flex: 1;
   display: flex;
   align-items: center;
-  height: 42px;
-  padding: 0 6px 0 14px;
+  height: 46px;
+  padding: 0 6px 0 16px;
   border: 1px solid var(--chatbot-glass-border);
   border-radius: 21px;
   background: var(--chatbot-bar-bg);
@@ -378,7 +391,7 @@ body.dark .chatBotPanel {
   height: 100%;
   border: none;
   background: transparent;
-  font-size: 12.5px;
+  font-size: 14.5px;
   color: var(--foreground);
   outline: none;
 }
@@ -403,6 +416,149 @@ body.dark .chatBotPanel {
 .chatBotSend:disabled { opacity: 0.35; cursor: not-allowed; }
 .chatBotSend svg { width: 15px; height: 15px; }
 
+/* ── 상품 추천 패널 (질문에 맞는 상품이 있을 때만 오른쪽에 노출) ── */
+.chatBotSidePanel {
+  width: 560px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--chatbot-glass-border);
+  background: var(--chatbot-bubble-bot-bg);
+  animation: bubbleIn 0.22s ease both;
+}
+
+.chatBotSideHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 16px 14px 12px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--chatbot-glass-border);
+}
+
+.chatBotSideTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.chatBotSideClose {
+  background: none;
+  border: none;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s;
+}
+.chatBotSideClose:hover {
+  color: var(--foreground);
+  background: rgba(44, 44, 48, 0.1);
+}
+
+.chatBotSideList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 10px, #000 100%);
+}
+.chatBotSideList::-webkit-scrollbar { width: 3px; }
+.chatBotSideList::-webkit-scrollbar-thumb { background: var(--chatbot-glass-border); border-radius: 2px; }
+
+.chatBotSideCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid var(--chatbot-glass-border);
+  border-radius: 14px;
+  background: var(--chatbot-glass-bg);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.chatBotSideCard:hover {
+  transform: translateY(-2px);
+  border-color: var(--chatbot-accent-1);
+}
+
+.chatBotSideImg {
+  width: 66px;
+  height: 66px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: rgba(120, 120, 120, 0.12);
+}
+
+.chatBotSideInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.chatBotSideName {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chatBotSideDesc {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.chatBotSidePrice {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-top: 2px;
+  flex-wrap: wrap;
+}
+
+.chatBotSideDiscount {
+  font-size: 13px;
+  font-weight: 800;
+  color: #e0546b;
+}
+
+.chatBotSideNow {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.chatBotSideOrig {
+  font-size: 11.5px;
+  color: var(--muted-foreground);
+  text-decoration: line-through;
+}
+
 @media (max-width: 900px) {
   .chatBotRoot {
     top: auto !important;
@@ -413,15 +569,28 @@ body.dark .chatBotPanel {
   }
   /* 모바일은 옆 공간이 좁으니 좌우 대신 FAB 바로 위로 연다 */
   .chatBotPanel,
-  .chatBotRootLeft .chatBotPanel {
+  .chatBotRootLeft .chatBotPanel,
+  .chatBotPanelWithSide {
     top: auto !important;
     right: 0;
     left: auto;
     bottom: calc(100% + 14px);
     margin-top: 0;
     width: calc(100vw - 40px);
-    max-height: min(480px, calc(100vh - 140px));
+    height: auto;
+    max-height: min(760px, calc(100vh - 140px));
+    flex-direction: column;
     transform: translateY(20px) scale(0.97);
+  }
+  /* 상품 패널은 옆이 아니라 채팅창 아래에 별도 구획으로 쌓인다 */
+  .chatBotSidePanel {
+    width: 100%;
+    max-height: 200px;
+    border-left: none;
+    border-top: 1px solid var(--chatbot-glass-border);
+  }
+  .chatBotMain {
+    min-height: 0;
   }
   .chatBotPanelOpen {
     transform: translateY(0) scale(1) !important;
