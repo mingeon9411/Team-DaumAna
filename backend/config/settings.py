@@ -50,6 +50,7 @@ AUTH_USER_MODEL = 'Users.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -126,9 +127,19 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files
+# Static files — admin(/admin/) CSS/JS를 gunicorn 단독 배포에서도 서빙하기 위해 whitenoise 사용.
+# collectstatic 산출물은 컨테이너 시작 시 entrypoint.sh가 만든다(STATIC_ROOT).
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
 
 # test 실행 시 SQLite 인메모리 DB로 스위칭
