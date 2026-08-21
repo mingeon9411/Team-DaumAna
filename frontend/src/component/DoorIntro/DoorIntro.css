@@ -516,8 +516,8 @@
 /* 순수 한글 워드마크 이미지("집다움" 글자만, 한옥 그래픽 없음) — 위 하이라인(64px)
    폭에 맞춰 아주 작게, 로고라기보다 캡션에 가까운 크기로 낮춘다. */
 .introKorText {
-  width: 34px;
-  margin: 12px 0 0;
+  width: 20px;
+  margin: 10px 0 0;
   opacity: 0;
   animation: korTextIn 7.5s ease forwards;
 }
