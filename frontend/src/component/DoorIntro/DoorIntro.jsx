@@ -7,6 +7,9 @@ import doorPhotoHoloLeft from "../../assets/scenes/hero1.png";
 import doorPhotoHoloRight from "../../assets/scenes/hero3.png";
 import doorPhotoHanjiLeft from "../../assets/scenes/hanok-bedroom-doorway.jpg";
 import doorPhotoHanjiRight from "../../assets/scenes/korean-royal-modern-interior.jpg";
+// 순수 한글 워드마크(한옥 그래픽 없이 "집다움" 글자만) — 다크모드는 로고 이미지와
+// 같은 invert 필터로 흰색 처리(별도 흰색본이 없어서).
+import JipdaumWordmark from "../../assets/logo/Jipdaum-logo-transparent.png";
 
 function DoorIntro({ logoLight = JDLogo, logoDark = JDLogo, lightEffect = "petals", theme = "holo" }) {
   const [doorPhotoLeft, doorPhotoRight] =
@@ -83,7 +86,7 @@ function DoorIntro({ logoLight = JDLogo, logoDark = JDLogo, lightEffect = "petal
       <div className="introLogo">
         <img src={darkMode ? logoDark : logoLight} alt="집다움" />
         <span className="introHairline" />
-        <p className="introKorText">집다움</p>
+        <img src={JipdaumWordmark} alt="집다움" className="introKorText" />
       </div>
     </div>
   );
