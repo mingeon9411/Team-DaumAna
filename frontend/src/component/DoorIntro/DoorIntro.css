@@ -513,13 +513,20 @@
   animation: hairlineIn 7.5s ease forwards;
 }
 
-.introKorLogo {
-  width: 108px;
-  margin: 18px 0 0;
+/* 순수 한글 텍스트 워드마크 — 로고 이미지가 아니라 "집다움" 세 글자만, 아주 작게 */
+.introKorText {
+  margin: 16px 0 0;
+  font-family: "TwayFly", "Noto Serif KR", serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5em;
+  text-indent: 0.5em; /* 넓은 자간 때문에 마지막 글자만큼 오른쪽으로 쏠리는 걸 보정 */
+  color: #2c2c30;
   opacity: 0;
-  transform: scale(0.92);
-  animation: korLogoIn 7.5s ease forwards;
+  animation: korTextIn 7.5s ease forwards;
 }
+.doorIntro.dark .introKorText { color: #f5f5f7; }
+.doorIntro.hanji:not(.dark) .introKorText { color: #6b4a2a; }
 .doorIntro.hanji:not(.dark) .introHairline { background: linear-gradient(90deg, transparent, #a6342a, transparent); }
 
 @keyframes hairlineIn {
@@ -529,11 +536,11 @@
   100% { width: 0; opacity: 0; }
 }
 
-@keyframes korLogoIn {
-  0%, 22% { opacity: 0; transform: scale(0.92); }
-  36% { opacity: 0.92; transform: scale(1); }
-  70% { opacity: 0.92; transform: scale(1); }
-  100% { opacity: 0; transform: scale(1.05); }
+@keyframes korTextIn {
+  0%, 22% { opacity: 0; letter-spacing: 0.2em; }
+  36% { opacity: 0.85; letter-spacing: 0.5em; }
+  70% { opacity: 0.85; }
+  100% { opacity: 0; }
 }
 
 @keyframes logoFade {
