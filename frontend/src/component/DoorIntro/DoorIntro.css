@@ -49,9 +49,16 @@
   bottom: 0;
   width: 50%;
   z-index: 10000;
-  background:
+  /* 맨 아래 레이어(사진)는 JSX가 --door-photo로 넘겨준다 — 양쪽 문에 서로
+     다른 인테리어 사진을 깔고, 그 위에 문 재질감 그라디언트를 반투명하게 얹어
+     "사진이 비치는 문짝" 느낌을 낸다. */
+  background-image:
     linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 32%),
-    linear-gradient(160deg, #38383e 0%, #57575f 42%, #101012 100%);
+    linear-gradient(160deg, rgba(56, 56, 62, 0.82) 0%, rgba(87, 87, 95, 0.68) 42%, rgba(16, 16, 18, 0.9) 100%),
+    var(--door-photo, none);
+  background-size: auto, auto, cover;
+  background-position: center, center, center;
+  background-repeat: no-repeat;
 }
 .doorPanelLeft {
   left: 0;
@@ -76,9 +83,12 @@
 
 /* 한국관 — 문도 금속 톤 대신 한옥 목재 톤으로 */
 .doorIntro.hanji:not(.dark) .doorPanel {
-  background:
+  background-image:
     linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 32%),
-    linear-gradient(160deg, #7a5530 0%, #543a1e 55%, #2c1c0e 100%);
+    linear-gradient(160deg, rgba(122, 85, 48, 0.82) 0%, rgba(84, 58, 30, 0.7) 55%, rgba(44, 28, 14, 0.92) 100%),
+    var(--door-photo, none);
+  background-size: auto, auto, cover;
+  background-position: center, center, center;
 }
 
 /* 한국관 — 라이트모드에서만 홀로그램 대신 한지 질감 배경 (다크모드는 기존 홀로그램 유지) */
