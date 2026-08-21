@@ -1098,6 +1098,140 @@ body.dark .chatBotKoreanHall .chatBotSideDiscount {
   color: var(--foreground);
 }
 
+/* ── 챗봇 안 회원탈퇴 패널 (WithdrawPanel) — 가입/결제와 달리 파괴적 액션이라
+   브랜드 골드/블랙 그라디언트 대신 경고색(레드) 톤을 따로 쓴다. ── */
+.chatBotWithdrawBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.chatBotWithdrawHero {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--chatbot-glass-border);
+}
+.chatBotWithdrawHeroIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(176, 48, 31, 0.12);
+  color: #b0301f;
+}
+.chatBotWithdrawHero p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--muted-foreground);
+}
+
+.chatBotWithdrawNotice {
+  padding: 12px 14px;
+  border: 1px solid rgba(176, 48, 31, 0.22);
+  border-radius: 12px;
+  background: rgba(176, 48, 31, 0.06);
+}
+.chatBotWithdrawNotice > p {
+  margin: 0 0 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #b0301f;
+}
+.chatBotWithdrawNotice ul {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.chatBotWithdrawNotice li {
+  font-size: 11.5px;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+
+.chatBotWithdrawSelect {
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--chatbot-glass-border);
+  border-radius: 12px;
+  background: var(--chatbot-bar-bg);
+  color: var(--foreground);
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  cursor: pointer;
+}
+
+.chatBotWithdrawAgree {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--chatbot-glass-border);
+  border-radius: 12px;
+  font-size: 12px;
+  color: var(--foreground);
+  cursor: pointer;
+}
+.chatBotWithdrawAgree input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+  accent-color: #b0301f;
+  cursor: pointer;
+}
+
+.chatBotWithdrawFooter {
+  display: flex;
+  gap: 8px;
+  padding: 12px 14px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--chatbot-glass-border);
+}
+.chatBotWithdrawFooter button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+}
+.chatBotWithdrawCancelBtn {
+  border: 1px solid var(--chatbot-glass-border);
+  background: var(--chatbot-bar-bg);
+  color: var(--foreground);
+}
+.chatBotWithdrawCancelBtn:hover:not(:disabled) {
+  background: rgba(44, 44, 48, 0.08);
+}
+.chatBotWithdrawDeleteBtn {
+  border: none;
+  background: #b0301f;
+  color: #fff;
+}
+.chatBotWithdrawDeleteBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #94271a;
+}
+.chatBotWithdrawFooter button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 @media (max-width: 900px) {
   .chatBotRoot {
     top: auto !important;
