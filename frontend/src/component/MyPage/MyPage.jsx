@@ -218,6 +218,9 @@ function MyPage() {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("nickname");
+    // 로그인 시(SocialCallback/EmailVerify)는 다 쏘는데 로그아웃만 빠져 있었음 —
+    // Sidebar의 로그인 상태 표시, 챗봇의 대화 메모리 삭제 등이 이 이벤트에 기대고 있다.
+    window.dispatchEvent(new Event("authchange"));
     closeMyPage();
     navigate("/");
     openLogin();
