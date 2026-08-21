@@ -7,6 +7,8 @@ import doorPhotoHoloLeft from "../../assets/scenes/hero1.png";
 import doorPhotoHoloRight from "../../assets/scenes/hero3.png";
 import doorPhotoHanjiLeft from "../../assets/scenes/hanok-bedroom-doorway.jpg";
 import doorPhotoHanjiRight from "../../assets/scenes/korean-royal-modern-interior.jpg";
+import KorLogo from "../../assets/logo/Kor_logo.png";
+import KorLogoWhite from "../../assets/logo/white_logo.png";
 
 function DoorIntro({ logoLight = JDLogo, logoDark = JDLogo, lightEffect = "petals", theme = "holo" }) {
   const [doorPhotoLeft, doorPhotoRight] =
@@ -83,7 +85,7 @@ function DoorIntro({ logoLight = JDLogo, logoDark = JDLogo, lightEffect = "petal
       <div className="introLogo">
         <img src={darkMode ? logoDark : logoLight} alt="집다움" />
         <span className="introHairline" />
-        <p className="introEyebrow">JIPDAUM</p>
+        <img src={darkMode ? KorLogoWhite : KorLogo} alt="집다움" className="introKorLogo" />
       </div>
     </div>
   );

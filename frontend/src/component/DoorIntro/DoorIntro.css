@@ -50,11 +50,11 @@
   width: 50%;
   z-index: 10000;
   /* 맨 아래 레이어(사진)는 JSX가 --door-photo로 넘겨준다 — 양쪽 문에 서로
-     다른 인테리어 사진을 깔고, 그 위에 문 재질감 그라디언트를 반투명하게 얹어
-     "사진이 비치는 문짝" 느낌을 낸다. */
+     다른 인테리어 사진을 깔고, 그 위에 밝은 펄 실버 톤을 반투명하게 얹어
+     "사진이 비치는 문짝" 느낌을 낸다(어두운 금속 톤 대신 밝게). */
   background-image:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 32%),
-    linear-gradient(160deg, rgba(56, 56, 62, 0.82) 0%, rgba(87, 87, 95, 0.68) 42%, rgba(16, 16, 18, 0.9) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 32%),
+    linear-gradient(160deg, rgba(244, 245, 246, 0.55) 0%, rgba(217, 219, 222, 0.4) 45%, rgba(196, 200, 206, 0.55) 100%),
     var(--door-photo, none);
   background-size: auto, auto, cover;
   background-position: center, center, center;
@@ -62,14 +62,14 @@
 }
 .doorPanelLeft {
   left: 0;
-  border-right: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 8px 0 40px rgba(0, 0, 0, 0.35);
+  border-right: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 8px 0 32px rgba(120, 110, 90, 0.18);
   animation: doorOpenLeft 1.7s cubic-bezier(0.76, 0, 0.24, 1) forwards;
 }
 .doorPanelRight {
   right: 0;
-  border-left: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.35);
+  border-left: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: -8px 0 32px rgba(120, 110, 90, 0.18);
   animation: doorOpenRight 1.7s cubic-bezier(0.76, 0, 0.24, 1) forwards;
 }
 @keyframes doorOpenLeft {
@@ -81,11 +81,11 @@
   100% { transform: translateX(100%); }
 }
 
-/* 한국관 — 문도 금속 톤 대신 한옥 목재 톤으로 */
+/* 한국관 — 문은 밝은 한지/원목 톤으로(어두운 월넛 대신) */
 .doorIntro.hanji:not(.dark) .doorPanel {
   background-image:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 32%),
-    linear-gradient(160deg, rgba(122, 85, 48, 0.82) 0%, rgba(84, 58, 30, 0.7) 55%, rgba(44, 28, 14, 0.92) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 32%),
+    linear-gradient(160deg, rgba(243, 234, 210, 0.6) 0%, rgba(232, 220, 184, 0.48) 55%, rgba(211, 192, 146, 0.62) 100%),
     var(--door-photo, none);
   background-size: auto, auto, cover;
   background-position: center, center, center;
@@ -513,18 +513,13 @@
   animation: hairlineIn 7.5s ease forwards;
 }
 
-.introEyebrow {
-  margin: 16px 0 0;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.55em;
-  text-indent: 0.55em; /* 넓은 자간 때문에 마지막 글자만큼 시각적으로 오른쪽에 쏠리는 걸 보정 */
-  color: #2c2c30;
+.introKorLogo {
+  width: 108px;
+  margin: 18px 0 0;
   opacity: 0;
-  animation: eyebrowIn 7.5s ease forwards;
+  transform: scale(0.92);
+  animation: korLogoIn 7.5s ease forwards;
 }
-.doorIntro.dark .introEyebrow { color: #f5f5f7; }
-.doorIntro.hanji:not(.dark) .introEyebrow { color: #6b4a2a; }
 .doorIntro.hanji:not(.dark) .introHairline { background: linear-gradient(90deg, transparent, #a6342a, transparent); }
 
 @keyframes hairlineIn {
@@ -534,11 +529,11 @@
   100% { width: 0; opacity: 0; }
 }
 
-@keyframes eyebrowIn {
-  0%, 22% { opacity: 0; letter-spacing: 0.2em; }
-  36% { opacity: 0.85; letter-spacing: 0.55em; }
-  70% { opacity: 0.85; }
-  100% { opacity: 0; }
+@keyframes korLogoIn {
+  0%, 22% { opacity: 0; transform: scale(0.92); }
+  36% { opacity: 0.92; transform: scale(1); }
+  70% { opacity: 0.92; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.05); }
 }
 
 @keyframes logoFade {
