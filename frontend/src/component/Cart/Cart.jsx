@@ -1,6 +1,7 @@
 import "./Cart.css";
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Check, Trash2, ShoppingBag } from "lucide-react";
 import { getCartItems, updateCartItem, deleteCartItem } from "../../api";
 import koreanHallProducts from "../../data/products";
 import { PRODUCTS as homeProducts } from "../Home/Home";
@@ -151,7 +152,10 @@ function Cart() {
         {!loading && cartItems.length > 0 && (
           <div className="cartToolbar">
             <label className="cartAllCheck">
-              <input type="checkbox" checked={allChecked} onChange={handleAllCheck} />
+              <span className="cartCheckbox">
+                <input type="checkbox" checked={allChecked} onChange={handleAllCheck} />
+                <span className="cartCheckboxBox"><Check size={13} /></span>
+              </span>
               전체선택 <span className="cartAllCheckCount">({cartItems.length})</span>
             </label>
             <button type="button" className="cartDeleteSelectedLink" onClick={handleDeleteSelected}>
@@ -167,7 +171,7 @@ function Cart() {
             </div>
           ) : cartItems.length === 0 ? (
             <div className="emptyCart">
-              <span className="emptyCartIcon">🛍</span>
+              <span className="emptyCartIcon"><ShoppingBag size={26} /></span>
               <p>장바구니에 담긴 상품이 없습니다.</p>
               <button onClick={closeCart}>쇼핑 계속하기</button>
             </div>
@@ -175,11 +179,14 @@ function Cart() {
             cartItems.map((item) => (
               <div className="cartItemRow" key={item.id}>
                 <label className="cartItemCheck">
-                  <input
-                    type="checkbox"
-                    checked={item.checked}
-                    onChange={() => handleItemCheck(item.id)}
-                  />
+                  <span className="cartCheckbox">
+                    <input
+                      type="checkbox"
+                      checked={item.checked}
+                      onChange={() => handleItemCheck(item.id)}
+                    />
+                    <span className="cartCheckboxBox"><Check size={13} /></span>
+                  </span>
                 </label>
 
                 <div className="cartItemThumb">
@@ -232,8 +239,8 @@ function Cart() {
                     >
                       바로구매
                     </button>
-                    <button className="cartRemoveBtn" onClick={() => handleDelete(item.id)}>
-                      삭제
+                    <button className="cartRemoveBtn" onClick={() => handleDelete(item.id)} aria-label="삭제">
+                      <Trash2 size={14} />
                     </button>
                   </div>
                 </div>

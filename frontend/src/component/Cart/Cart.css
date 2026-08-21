@@ -260,17 +260,60 @@ body.dark .cartInner::before {
 }
 .cartDeleteSelectedLink:hover { color: var(--foreground); }
 
-.cartTable input,
-.cartList input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--cart-accent-1);
+/* 커스텀 체크박스 — 네이티브 accent-color만으로는 언체크 상태가 브라우저 기본
+   각진 사각형 그대로라 눈에 튀었다(스크린샷 지적 지점). input은 투명하게 깔고
+   그 위에 원형 박스 + Check 아이콘을 얹어 브랜드 톤으로 통일한다. */
+.cartCheckbox {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: inline-flex;
+}
+.cartCheckbox input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+.cartCheckboxBox {
+  width: 100%;
+  height: 100%;
+  border-radius: 7px;
+  border: 1.5px solid rgba(28, 26, 22, 0.22);
+  background: rgba(255, 255, 255, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fdf6e8;
+  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.cartCheckboxBox svg {
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.cartCheckbox input:checked + .cartCheckboxBox {
+  background: linear-gradient(135deg, var(--cart-accent-1), var(--cart-accent-2));
+  border-color: transparent;
+  box-shadow: 0 4px 12px -3px rgba(198, 151, 73, 0.55);
+}
+.cartCheckbox input:checked + .cartCheckboxBox svg {
+  opacity: 1;
+  transform: scale(1);
+}
+body.dark .cartCheckboxBox {
+  border-color: rgba(150, 185, 255, 0.28);
+  background: rgba(150, 185, 255, 0.06);
 }
 
 /* ── 상품 목록 ── */
 .cartList {
   display: flex;
   flex-direction: column;
+  gap: 12px;
 }
 
 .cartItemRow {
@@ -278,19 +321,28 @@ body.dark .cartInner::before {
   grid-template-columns: 32px 96px 1fr auto;
   align-items: start;
   gap: 22px;
-  padding: 22px 14px;
-  border-bottom: 1px solid rgba(28, 26, 22, 0.1);
-  border-radius: 16px;
+  padding: 20px 18px;
+  border: 1px solid rgba(28, 26, 22, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.34);
+  box-shadow: 0 4px 16px -10px rgba(20, 14, 6, 0.3);
   animation: cartRowIn 0.3s ease both;
-  transition: background 0.25s ease, box-shadow 0.25s ease;
+  transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease, border-color 0.25s ease;
 }
 .cartItemRow:hover {
-  background: rgba(255, 255, 255, 0.42);
-  box-shadow: 0 8px 26px -8px rgba(198, 151, 73, 0.35);
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(198, 151, 73, 0.3);
+  box-shadow: 0 10px 28px -10px rgba(198, 151, 73, 0.4);
+  transform: translateY(-1px);
+}
+body.dark .cartItemRow {
+  background: rgba(150, 185, 255, 0.04);
+  border-color: rgba(150, 185, 255, 0.12);
 }
 body.dark .cartItemRow:hover {
   background: rgba(150, 185, 255, 0.08);
-  box-shadow: 0 8px 26px -8px rgba(120, 150, 255, 0.35);
+  border-color: rgba(120, 150, 255, 0.32);
+  box-shadow: 0 10px 28px -10px rgba(120, 150, 255, 0.4);
 }
 
 .cartItemCheck {
@@ -427,14 +479,27 @@ body.dark .cartItemThumb {
 .cartBuyNowBtn:active { transform: scale(0.97); }
 
 .cartRemoveBtn {
-  border: none;
-  background: none;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(28, 26, 22, 0.14);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
   color: var(--muted-foreground);
-  font-size: 12px;
   cursor: pointer;
-  text-decoration: underline;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
-.cartRemoveBtn:hover { color: var(--foreground); }
+.cartRemoveBtn:hover {
+  color: #c0392b;
+  border-color: rgba(192, 57, 43, 0.35);
+  background: rgba(192, 57, 43, 0.08);
+}
+body.dark .cartRemoveBtn {
+  border-color: rgba(150, 185, 255, 0.18);
+  background: rgba(150, 185, 255, 0.05);
+}
 
 /* 빈 장바구니 */
 .emptyCart {
@@ -452,9 +517,18 @@ body.dark .cartItemThumb {
 }
 
 .emptyCartIcon {
-  font-size: 32px;
-  margin-bottom: 10px;
-  opacity: 0.8;
+  width: 60px;
+  height: 60px;
+  margin-bottom: 12px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cart-accent-1);
+  background: var(--cart-accent-soft);
+}
+body.dark .emptyCartIcon {
+  color: #e6c179;
 }
 
 .emptyCart button {
@@ -575,7 +649,6 @@ body.dark .cartItemOption,
 body.dark .cartHeaderSub,
 body.dark .cartSummaryRow { color: #7a8db5; }
 
-body.dark .cartItemRow { border-bottom-color: rgba(150, 185, 255, 0.14); }
 body.dark .cartItemBody h3,
 body.dark .cartItemPrice,
 body.dark .cartQty span { color: #bfcbec; }
