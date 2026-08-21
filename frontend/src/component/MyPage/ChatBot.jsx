@@ -4,9 +4,9 @@ import * as PortOne from "@portone/browser-sdk/v2";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { SiKakaotalk, SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
-import { Sparkles, Ruler, ShieldCheck, UserPlus, Mail, User, Lock, ChevronDown, CheckCircle2, AlertCircle, ArrowRight, LogIn } from "lucide-react";
+import { Sparkles, Ruler, ShieldCheck, UserPlus, UserX, Mail, User, Lock, ChevronDown, CheckCircle2, AlertCircle, AlertTriangle, ArrowRight, LogIn } from "lucide-react";
 import "./ChatBot.css";
-import { sendChatMessage, createOrder, readyPayment, verifyPayment, registerUser, checkNicknameAPI, requestSocialCaptchaTicket } from "../../api";
+import { sendChatMessage, createOrder, readyPayment, verifyPayment, registerUser, loginUser, checkNicknameAPI, requestSocialCaptchaTicket, withdrawUser } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { PRODUCTS } from "../Home/Home";
 import JDLogo from "../../assets/J.D 로고.svg";
@@ -24,6 +24,9 @@ const GUEST_SIGNUP_NUDGE = "지금 회원가입하면 다양한 혜택을 바로
 
 // 질문에 회원가입 의도가 담겨 있으면 오른쪽에 간편 회원가입 패널을 띄운다.
 const SIGNUP_KEYWORDS = /회원가입|가입해\s?줘|가입할래|가입하고\s?싶|계정\s?만들/;
+
+// 질문에 회원탈퇴 의도가 담겨 있으면(로그인 상태에서만) 오른쪽에 탈퇴 패널을 띄운다.
+const WITHDRAW_KEYWORDS = /회원탈퇴|탈퇴할래|탈퇴하고\s?싶|탈퇴해\s?줘|계정\s?삭제|계정\s?해지/;
 
 // 로그인 계정의 대화 기록을 페이지 이동/챗봇 재오픈에도 유지하는 모듈 스코프 저장소.
 // 새로고침하면 초기화된다("메모리에 저장" 요구사항) — 로그아웃하면 clearChatMemory()가 비운다.
@@ -91,6 +94,7 @@ function toBuyItem(p) {
 // 약관만 체크박스 하나로 합쳐서 "간편하게" 끝낸다.
 function SignupPanel({ onClose, onDone }) {
   const recaptchaRef = useRef(null);
+  const navigate = useNavigate();
   const { openLogin } = useAuthModal();
   const captchaRetriedRef = useRef(false);
   // 이메일 가입 폼과 SNS 버튼 3개가 hCaptcha 위젯 하나를 공유한다 — Login.jsx와 동일한 패턴.
@@ -174,35 +178,71 @@ function SignupPanel({ onClose, onDone }) {
 
   const handleCaptchaVerify = async (token) => {
     const action = pendingActionRef.current;
+    if (action === "register") return handleRegisterVerify(token);
+    if (action === "login-retry") return handleLoginRetryVerify(token);
+    return handleSocialVerify(token, action);
+  };
 
-    if (action !== "register") {
-      try {
-        const res = await requestSocialCaptchaTicket(token);
-        window.location.href = `${SPRING_URL}/oauth2/authorization/${action}?ticket=${encodeURIComponent(res.data.ticket)}`;
-      } catch (err) {
-        const msg = err.response?.data?.error || "보안 인증에 실패했습니다. 다시 시도해주세요.";
-        setCaptchaError(`※${msg}`);
-        recaptchaRef.current?.resetCaptcha();
-        setSubmitting(false);
-      }
-      return;
+  const handleSocialVerify = async (token, provider) => {
+    try {
+      const res = await requestSocialCaptchaTicket(token);
+      window.location.href = `${SPRING_URL}/oauth2/authorization/${provider}?ticket=${encodeURIComponent(res.data.ticket)}`;
+    } catch (err) {
+      const msg = err.response?.data?.error || "보안 인증에 실패했습니다. 다시 시도해주세요.";
+      setCaptchaError(`※${msg}`);
+      recaptchaRef.current?.resetCaptcha();
+      setSubmitting(false);
     }
+  };
 
+  const handleRegisterVerify = async (token) => {
     try {
       await registerUser({ email, nickname, password, password_confirm: passwordConfirm, recaptcha_token: token });
       localStorage.setItem("nickname", nickname);
+      recaptchaRef.current?.resetCaptcha();
+      setSubmitting(false);
       onDone(nickname);
       openLogin();
     } catch (err) {
       const data = err.response?.data;
-      if (!data) { setEmailError("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요."); return; }
-      if (data.email) setEmailError(Array.isArray(data.email) ? data.email[0] : data.email);
-      if (data.nickname) setNicknameError(Array.isArray(data.nickname) ? data.nickname[0] : data.nickname);
-      if (data.password) setPasswordError(Array.isArray(data.password) ? data.password[0] : data.password);
-      if (data.password_confirm) setPasswordConfirmError(Array.isArray(data.password_confirm) ? data.password_confirm[0] : data.password_confirm);
-      if (data.non_field_errors) setPasswordError(Array.isArray(data.non_field_errors) ? data.non_field_errors[0] : data.non_field_errors);
-      if (data.error) setCaptchaError(`※${data.error}`);
-    } finally {
+      // 이미 가입된 이메일이면 에러로 막지 않고, 방금 입력한 정보로 바로 로그인을 이어서
+      // 시도한다 — hCaptcha 토큰은 1회용이라 execute()를 다시 트리거해 새 토큰을 받아야 한다.
+      if (data?.email?.includes?.("이미")) {
+        pendingActionRef.current = "login-retry";
+        recaptchaRef.current?.resetCaptcha();
+        recaptchaRef.current?.execute();
+        return;
+      }
+      if (!data) {
+        setEmailError("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      } else {
+        if (data.email) setEmailError(Array.isArray(data.email) ? data.email[0] : data.email);
+        if (data.nickname) setNicknameError(Array.isArray(data.nickname) ? data.nickname[0] : data.nickname);
+        if (data.password) setPasswordError(Array.isArray(data.password) ? data.password[0] : data.password);
+        if (data.password_confirm) setPasswordConfirmError(Array.isArray(data.password_confirm) ? data.password_confirm[0] : data.password_confirm);
+        if (data.non_field_errors) setPasswordError(Array.isArray(data.non_field_errors) ? data.non_field_errors[0] : data.non_field_errors);
+        if (data.error) setCaptchaError(`※${data.error}`);
+      }
+      recaptchaRef.current?.resetCaptcha();
+      setSubmitting(false);
+    }
+  };
+
+  // 회원가입을 시도했는데 알고 보니 이미 있던 계정인 경우 — 같은 이메일/비밀번호로
+  // 로그인까지 대신 이어서 처리한다. Login.jsx와 동일하게 이메일 인증(OTP) 단계로 넘긴다.
+  const handleLoginRetryVerify = async (token) => {
+    try {
+      const res = await loginUser({ username: email, password, recaptcha_token: token });
+      sessionStorage.setItem("pending_access_token", res.data.access);
+      sessionStorage.setItem("pending_refresh_token", res.data.refresh);
+      sessionStorage.setItem("pending_nickname", res.data.user.nickname);
+      recaptchaRef.current?.resetCaptcha();
+      setSubmitting(false);
+      alert("이미 가입이 된 회원입니다.\n정상적으로 로그인 완료되었습니다.");
+      navigate("/email-verify");
+    } catch (err) {
+      const msg = err.response?.data?.error || "비밀번호가 일치하지 않습니다.";
+      setEmailError(`이미 가입된 이메일입니다. ${msg}`);
       recaptchaRef.current?.resetCaptcha();
       setSubmitting(false);
     }
@@ -342,6 +382,79 @@ function SignupPanel({ onClose, onDone }) {
           이미 계정이 있으신가요? 로그인
         </button>
       </form>
+    </div>
+  );
+}
+
+// 챗봇 안에서 바로 회원탈퇴하는 미니 패널 — WithdrawModal.jsx의 탈퇴 사유/동의 체크/
+// withdrawUser 로직을 그대로 재사용. 완료 후 "고마웠다"는 화면을 패널 안에 따로 두지
+// 않고(로그아웃 처리로 패널 자체가 닫히므로), 성공하면 onDone()으로 부모가 패널을 닫고
+// 챗봇 대화창에 인사 메시지를 남기게 위임한다 — BuyPanel/SignupPanel과 동일한 패턴.
+function WithdrawPanel({ onClose, onDone }) {
+  const [reason, setReason] = useState("");
+  const [agree, setAgree] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleDelete = async () => {
+    if (!agree || submitting) return;
+    setSubmitting(true);
+    const refresh = localStorage.getItem("refresh_token");
+    try {
+      await withdrawUser({ refresh: refresh || null });
+    } catch {
+      alert("탈퇴 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      setSubmitting(false);
+      return;
+    }
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("nickname");
+    window.dispatchEvent(new Event("authchange"));
+    onDone();
+  };
+
+  return (
+    <div className="chatBotSidePanel chatBotWithdrawPanel">
+      <div className="chatBotSideHeader">
+        <p className="chatBotSideTitle">회원 탈퇴</p>
+        <button className="chatBotSideClose" onClick={onClose} aria-label="탈퇴 패널 닫기">✕</button>
+      </div>
+      <div className="chatBotWithdrawBody" data-lenis-prevent>
+        <div className="chatBotWithdrawHero">
+          <span className="chatBotWithdrawHeroIcon"><UserX size={19} /></span>
+          <p>탈퇴 시 회원 정보와 주문 내역이 삭제되며 복구할 수 없어요.</p>
+        </div>
+
+        <div className="chatBotWithdrawNotice">
+          <p><AlertTriangle size={13} /> 탈퇴 전 확인해주세요</p>
+          <ul>
+            <li>보유 쿠폰 및 적립금은 모두 소멸됩니다.</li>
+            <li>진행 중인 주문이 있다면 탈퇴가 제한될 수 있습니다.</li>
+            <li>탈퇴 후 동일 계정으로 재가입이 어려울 수 있습니다.</li>
+          </ul>
+        </div>
+
+        <select className="chatBotWithdrawSelect" value={reason} onChange={(e) => setReason(e.target.value)} disabled={submitting}>
+          <option value="">탈퇴 사유를 선택해주세요 (선택)</option>
+          <option value="product">원하는 상품이나 콘텐츠가 부족해요</option>
+          <option value="benefit">가격이나 혜택이 아쉬워요</option>
+          <option value="service">사이트 이용이 불편해요</option>
+          <option value="otherService">다른 서비스를 주로 이용해요</option>
+          <option value="privacy">개인정보 및 보안이 걱정돼요</option>
+          <option value="etc">기타</option>
+        </select>
+
+        <label className="chatBotWithdrawAgree">
+          <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} disabled={submitting} />
+          <span>위 안내사항을 모두 확인했으며 탈퇴에 동의합니다.</span>
+        </label>
+      </div>
+      <div className="chatBotWithdrawFooter">
+        <button type="button" className="chatBotWithdrawCancelBtn" onClick={onClose} disabled={submitting}>취소</button>
+        <button type="button" className="chatBotWithdrawDeleteBtn" onClick={handleDelete} disabled={!agree || submitting}>
+          {submitting ? "처리 중..." : "탈퇴하기"}
+        </button>
+      </div>
     </div>
   );
 }
@@ -529,6 +642,7 @@ function ChatBot({
   const [panel, setPanel] = useState(null); // { title, items } | null — 질문에 맞는 상품 추천 패널
   const [buyItem, setBuyItem] = useState(null); // 옆 패널에서 "바로 구매" 누른 상품 — 있으면 추천 패널 대신 결제 패널을 보여준다
   const [showSignup, setShowSignup] = useState(false); // 회원가입 의도가 감지되면 다른 패널보다 우선해서 보여준다
+  const [showWithdraw, setShowWithdraw] = useState(false); // 로그인 상태에서 탈퇴 의도가 감지되면 보여준다
   const messagesRef = useRef(null);
   const dragData = useRef({ startX: 0, startY: 0, origX: 0, origY: 0, hasMoved: false });
   const dragSource = useRef("fab");
@@ -546,6 +660,7 @@ function ChatBot({
         setPanel(null);
         setBuyItem(null);
         setShowSignup(false);
+        setShowWithdraw(false);
       }
       wasLoggedInRef.current = now;
       setLoggedIn(now);
@@ -558,6 +673,16 @@ function ChatBot({
   useEffect(() => {
     if (loggedIn) chatMemory[variant] = { messages };
   }, [messages, loggedIn, variant]);
+
+  // 결제 패널(PortOne)·회원가입 패널(hCaptcha)은 화면 좌표에 고정으로 뜨는 외부 팝업을
+  // 띄운다 — AuthModalContext가 로그인/회원가입 모달에서 이미 쓰는 것과 같은 이유로,
+  // 배경 페이지가 계속 스크롤되면 팝업만 뜬 시점 좌표에 남아 따로 노는 것처럼 보인다.
+  // 그동안은 Lenis를 멈춰서 팝업이 화면에 그대로 고정돼 보이게 한다.
+  useEffect(() => {
+    if (!buyItem && !showSignup) return;
+    window.lenis?.stop();
+    return () => window.lenis?.start();
+  }, [buyItem, showSignup]);
 
   // 초기 위치: 오른쪽 6%, 수직 중앙
   useEffect(() => {
@@ -636,14 +761,22 @@ function ChatBot({
       .filter((m) => m.id !== 0)
       .map((m) => ({ role: m.role === "bot" ? "assistant" : "user", content: m.text }));
 
-    // 옆 패널은 한 번에 하나만 — 회원가입 의도가 최우선, 그다음 "결제/구매"+상품명,
-    // 마지막으로 상품 추천. 셋 다 아니면 패널을 닫아 매 질문마다 화면이 갱신되게 한다.
+    // 옆 패널은 한 번에 하나만 — 회원가입 의도가 최우선, 그다음 (로그인 상태에서) 탈퇴
+    // 의도, 그다음 "결제/구매"+상품명, 마지막으로 상품 추천. 넷 다 아니면 패널을 닫아
+    // 매 질문마다 화면이 갱신되게 한다.
     if (SIGNUP_KEYWORDS.test(text)) {
       setShowSignup(true);
+      setShowWithdraw(false);
+      setBuyItem(null);
+      setPanel(null);
+    } else if (WITHDRAW_KEYWORDS.test(text) && loggedIn) {
+      setShowWithdraw(true);
+      setShowSignup(false);
       setBuyItem(null);
       setPanel(null);
     } else {
       setShowSignup(false);
+      setShowWithdraw(false);
       const buyMatch = matchBuyProduct(text, catalog);
       if (buyMatch) {
         setBuyItem(toBuyItem(buyMatch));
@@ -687,7 +820,7 @@ function ChatBot({
       onWheel={(e) => e.stopPropagation()}
     >
       {/* 채팅 패널 */}
-      <div className={"chatBotPanel" + (open ? " chatBotPanelOpen" : "") + ((panel || buyItem || showSignup) ? " chatBotPanelWithSide" : "")}>
+      <div className={"chatBotPanel" + (open ? " chatBotPanelOpen" : "") + ((panel || buyItem || showSignup || showWithdraw) ? " chatBotPanelWithSide" : "")}>
         <div className="chatBotMain">
           <div className="chatBotHeader" onMouseDown={handleHeaderDown} onTouchStart={handleHeaderDown}>
             <div className="chatBotAvatar">
@@ -762,7 +895,7 @@ function ChatBot({
           </div>
         </div>
 
-        {/* 옆 패널: 회원가입 의도 > "바로 구매" 상품 > 추천 목록 순으로 하나만 보여준다 */}
+        {/* 옆 패널: 회원가입 의도 > 탈퇴 의도 > "바로 구매" 상품 > 추천 목록 순으로 하나만 보여준다 */}
         {showSignup ? (
           <SignupPanel
             onClose={() => setShowSignup(false)}
@@ -771,6 +904,17 @@ function ChatBot({
               setMessages((prev) => [
                 ...prev,
                 { id: Date.now(), role: "bot", text: `"${nickname}"님, 회원가입이 완료되었습니다! 🎉\n로그인 후 다양한 혜택을 만나보세요.`, time: Date.now() },
+              ]);
+            }}
+          />
+        ) : showWithdraw ? (
+          <WithdrawPanel
+            onClose={() => setShowWithdraw(false)}
+            onDone={() => {
+              setShowWithdraw(false);
+              setMessages((prev) => [
+                ...prev,
+                { id: Date.now(), role: "bot", text: "그동안 집다움을 이용해주셔서 감사했습니다. 탈퇴가 완료되었습니다. 더 나은 모습으로 다시 찾아뵐게요.", time: Date.now() },
               ]);
             }}
           />

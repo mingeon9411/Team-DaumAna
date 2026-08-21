@@ -11,6 +11,9 @@ function SocialCallback() {
         const params = new URLSearchParams(window.location.search);
         const code = params.get('code');
         const error = params.get('error');
+        // "OO로 가입하기"를 눌렀지만 실제로는 이미 있던 계정으로 로그인된 경우
+        // (백엔드 OAuth2SuccessHandler가 붙여주는 신호 — jipdaum-spring 참고).
+        const existing = params.get('existing') === 'true';
 
         if (error === 'withdrawn') {
             alert('탈퇴한 계정입니다. 새로 가입해주세요.');
@@ -48,6 +51,9 @@ function SocialCallback() {
                 sessionStorage.removeItem('pending_access_token');
                 sessionStorage.removeItem('pending_refresh_token');
 
+                if (existing) {
+                    alert('이미 가입이 된 회원입니다.\n정상적으로 로그인 완료되었습니다.');
+                }
                 window.location.replace('/');
             })
             .catch(() => {
