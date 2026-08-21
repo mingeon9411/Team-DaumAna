@@ -40,6 +40,47 @@
   100% { background-position: 100% 70%; }
 }
 
+/* 실제로 갈라져 열리는 두 짝의 문 — 안개/로고가 서서히 드러나는 것보다 먼저,
+   문이 열리는 순간의 무게감을 준다. 로고는 이 문이 다 열릴 즈음(약 1.6s)
+   fade-in을 시작하도록 이미 타이밍이 맞아 떨어져 있음(logoFade 20% ≈ 1.5s). */
+.doorPanel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  z-index: 10000;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 32%),
+    linear-gradient(160deg, #38383e 0%, #57575f 42%, #101012 100%);
+}
+.doorPanelLeft {
+  left: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 8px 0 40px rgba(0, 0, 0, 0.35);
+  animation: doorOpenLeft 1.7s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+.doorPanelRight {
+  right: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: -8px 0 40px rgba(0, 0, 0, 0.35);
+  animation: doorOpenRight 1.7s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+@keyframes doorOpenLeft {
+  0%, 16% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
+}
+@keyframes doorOpenRight {
+  0%, 16% { transform: translateX(0); }
+  100% { transform: translateX(100%); }
+}
+
+/* 한국관 — 문도 금속 톤 대신 한옥 목재 톤으로 */
+.doorIntro.hanji:not(.dark) .doorPanel {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 32%),
+    linear-gradient(160deg, #7a5530 0%, #543a1e 55%, #2c1c0e 100%);
+}
+
 /* 한국관 — 라이트모드에서만 홀로그램 대신 한지 질감 배경 (다크모드는 기존 홀로그램 유지) */
 .doorIntro.hanji:not(.dark) {
   background:
@@ -430,6 +471,9 @@
   position: absolute;
   top: 50%;
   left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 
   transform: translate(-50%, -50%);
   z-index: 10001;
@@ -446,6 +490,45 @@
 /* 다크모드 홀로그램 배경에 맞춰 로고를 흰색으로 */
 .doorIntro.dark .introLogo img {
   filter: brightness(0) invert(1);
+}
+
+/* 로고 아래 얇은 골드 하이라인 + 자간을 벌리며 떠오르는 브랜드명 —
+   상품 상세/체크아웃 페이지에서 쓰는 eyebrow+hairline 모티프를 인트로에도 그대로 가져온다. */
+.introHairline {
+  display: block;
+  width: 0;
+  height: 1px;
+  margin: 22px 0 0;
+  background: linear-gradient(90deg, transparent, #c9a227, transparent);
+  animation: hairlineIn 7.5s ease forwards;
+}
+
+.introEyebrow {
+  margin: 16px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.55em;
+  text-indent: 0.55em; /* 넓은 자간 때문에 마지막 글자만큼 시각적으로 오른쪽에 쏠리는 걸 보정 */
+  color: #2c2c30;
+  opacity: 0;
+  animation: eyebrowIn 7.5s ease forwards;
+}
+.doorIntro.dark .introEyebrow { color: #f5f5f7; }
+.doorIntro.hanji:not(.dark) .introEyebrow { color: #6b4a2a; }
+.doorIntro.hanji:not(.dark) .introHairline { background: linear-gradient(90deg, transparent, #a6342a, transparent); }
+
+@keyframes hairlineIn {
+  0%, 22% { width: 0; opacity: 0; }
+  34% { width: 64px; opacity: 1; }
+  70% { width: 64px; opacity: 1; }
+  100% { width: 0; opacity: 0; }
+}
+
+@keyframes eyebrowIn {
+  0%, 22% { opacity: 0; letter-spacing: 0.2em; }
+  36% { opacity: 0.85; letter-spacing: 0.55em; }
+  70% { opacity: 0.85; }
+  100% { opacity: 0; }
 }
 
 @keyframes logoFade {

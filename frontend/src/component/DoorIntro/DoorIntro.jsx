@@ -66,8 +66,14 @@ function DoorIntro({ logoLight = JDLogo, logoDark = JDLogo, lightEffect = "petal
         </div>
       )}
 
+      {/* 실제로 두 짝의 문이 갈라져 열리는 연출 — 컴포넌트 이름값을 하게 만든다 */}
+      <div className="doorPanel doorPanelLeft" />
+      <div className="doorPanel doorPanelRight" />
+
       <div className="introLogo">
         <img src={darkMode ? logoDark : logoLight} alt="집다움" />
+        <span className="introHairline" />
+        <p className="introEyebrow">JIPDAUM</p>
       </div>
     </div>
   );
