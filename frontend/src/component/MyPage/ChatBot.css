@@ -434,6 +434,20 @@ body.dark .chatBotKoreanHall .chatBotSideDiscount {
   transform: translateY(-1px);
 }
 
+/* 비회원 온보딩 메시지 아래 붙는 회원가입 유도 버튼 — 말풍선 안 청유 느낌으로 포인트 컬러 */
+.chatSignupNudgeBtn {
+  margin-top: 6px;
+  align-self: flex-start;
+  background: linear-gradient(135deg, var(--chatbot-accent-1), var(--chatbot-accent-3));
+  color: #f5f5f7;
+  border-color: transparent;
+}
+.chatSignupNudgeBtn:hover {
+  background: linear-gradient(135deg, var(--chatbot-accent-1), var(--chatbot-accent-3));
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
 /* ── 입력창 ── */
 .chatBotInput {
   display: flex;
@@ -628,6 +642,460 @@ body.dark .chatBotKoreanHall .chatBotSideDiscount {
   font-size: 11.5px;
   color: var(--muted-foreground);
   text-decoration: line-through;
+}
+
+.chatBotSideBuyBtn {
+  align-self: flex-start;
+  margin-top: 6px;
+  padding: 5px 12px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--chatbot-accent-1), var(--chatbot-accent-3));
+  color: #f5f5f7;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.chatBotSideBuyBtn:hover {
+  transform: translateY(-1px);
+}
+
+/* ── 챗봇 안 바로 결제 패널 (BuyPanel) ── */
+.chatBotBuyBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chatBotBuyImgWrap {
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(120, 120, 120, 0.12);
+  flex-shrink: 0;
+}
+.chatBotBuyImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.chatBotBuyInfo {
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--chatbot-glass-border);
+}
+.chatBotBuySub {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+.chatBotBuyName {
+  margin: 0 0 6px;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+.chatBotBuyDesc {
+  margin: 0 0 6px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--foreground);
+  opacity: 0.85;
+}
+.chatBotBuySpec {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--muted-foreground);
+}
+
+.chatBotBuyHighlights {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--chatbot-glass-border);
+}
+.chatBotBuyHighlight {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.chatBotBuyHighlightIcon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--chatbot-accent-1);
+}
+.chatBotBuyHighlightTitle {
+  margin: 0 0 2px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+.chatBotBuyHighlightText {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--muted-foreground);
+}
+
+.chatBotBuyQtyRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.chatBotBuyQtyLabel {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+.chatBotBuyQtyStepper {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border: 1px solid var(--chatbot-glass-border);
+  border-radius: 10px;
+  padding: 5px 14px;
+}
+.chatBotBuyQtyStepper button {
+  border: none;
+  background: none;
+  color: var(--foreground);
+  font-size: 15px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px;
+}
+.chatBotBuyQtyStepper button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.chatBotBuyQtyStepper span {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--foreground);
+  min-width: 14px;
+  text-align: center;
+}
+
+.chatBotBuyForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.chatBotBuyForm input {
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--chatbot-glass-border);
+  border-radius: 12px;
+  background: var(--chatbot-bar-bg);
+  color: var(--foreground);
+  font-size: 13.5px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.chatBotBuyForm input:focus {
+  border-color: var(--chatbot-accent-1);
+}
+.chatBotBuyForm input::placeholder {
+  color: var(--muted-foreground);
+}
+
+.chatBotBuyFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  flex-shrink: 0;
+  border-top: 1px solid var(--chatbot-glass-border);
+}
+
+.chatBotBuyTotal {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+
+.chatBotBuyPayBtn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--chatbot-accent-1), var(--chatbot-accent-3));
+  color: #f5f5f7;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.chatBotBuyPayBtn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+.chatBotBuyPayBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── 챗봇 안 간편 회원가입 패널 (SignupPanel) ── */
+.chatBotSignupBody {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.chatBotSignupHero {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 15px;
+  margin-bottom: 3px;
+  border-bottom: 1px solid var(--chatbot-glass-border);
+}
+.chatBotSignupHeroIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--chatbot-accent-1), var(--chatbot-accent-3));
+  color: #f5f5f7;
+  box-shadow: 0 6px 16px rgba(10, 10, 14, 0.28);
+}
+.chatBotSignupHeroTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--foreground);
+}
+.chatBotSignupHeroSub {
+  margin: 3px 0 0;
+  font-size: 11.5px;
+  color: var(--muted-foreground);
+}
+
+/* 아이콘 + 인풋을 한 필드로 묶는 래퍼 — .chatBotBuyForm input과 동일한 톤을 유지 */
+.chatBotSignupField {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--chatbot-glass-border);
+  border-radius: 12px;
+  background: var(--chatbot-bar-bg);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.chatBotSignupField:focus-within {
+  border-color: var(--chatbot-accent-1);
+  box-shadow: 0 0 0 3px rgba(44, 44, 48, 0.06);
+}
+.chatBotSignupFieldIcon {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+}
+.chatBotSignupField input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: var(--foreground);
+  font-size: 13.5px;
+  font-family: inherit;
+  outline: none;
+}
+.chatBotSignupField input::placeholder {
+  color: var(--muted-foreground);
+}
+
+.chatBotSignupNickRow {
+  display: flex;
+  gap: 6px;
+}
+.chatBotSignupNickRow .chatBotSignupField {
+  flex: 1;
+  min-width: 0;
+}
+.chatBotSignupCheckBtn {
+  flex-shrink: 0;
+  padding: 0 14px;
+  border: 1px solid var(--chatbot-glass-border);
+  border-radius: 12px;
+  background: var(--chatbot-bar-bg);
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.15s, color 0.15s;
+}
+.chatBotSignupCheckBtn:hover:not(:disabled) {
+  border-color: var(--chatbot-accent-1);
+  color: var(--chatbot-accent-1);
+}
+.chatBotSignupCheckBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chatBotSignupError,
+.chatBotSignupSuccess {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: -3px 0 1px 2px;
+  font-size: 11.5px;
+}
+.chatBotSignupError { color: #e0546b; }
+.chatBotSignupSuccess { color: #4fbd7a; }
+.chatBotSignupError svg,
+.chatBotSignupSuccess svg { flex-shrink: 0; }
+
+.chatBotSignupTermsBtn {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  border: none;
+  background: none;
+  color: var(--muted-foreground);
+  font-size: 11.5px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 3px 0;
+  transition: color 0.15s;
+}
+.chatBotSignupTermsBtn:hover {
+  color: var(--foreground);
+}
+.chatBotSignupChevron {
+  transition: transform 0.2s ease;
+}
+.chatBotSignupChevronOpen {
+  transform: rotate(180deg);
+}
+.chatBotSignupTerms {
+  max-height: 110px;
+  overflow-y: auto;
+  padding: 10px 12px;
+  border: 1px solid var(--chatbot-glass-border);
+  border-radius: 12px;
+  background: var(--chatbot-bar-bg);
+}
+.chatBotSignupTerms h4 {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: var(--foreground);
+}
+.chatBotSignupTerms p {
+  margin: 0 0 8px;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--muted-foreground);
+}
+
+.chatBotSignupAgree {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--chatbot-glass-border);
+  border-radius: 12px;
+  font-size: 12px;
+  color: var(--foreground);
+  cursor: pointer;
+}
+.chatBotSignupAgree input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 15px;
+  height: 15px;
+  accent-color: var(--chatbot-accent-1);
+  cursor: pointer;
+}
+.chatBotSignupAgree em {
+  font-style: normal;
+  color: var(--chatbot-accent-1);
+  font-weight: 700;
+}
+
+.chatBotSignupSubmit {
+  margin-top: 6px;
+  padding: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--chatbot-accent-1), var(--chatbot-accent-3));
+  color: #f5f5f7;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(10, 10, 14, 0.22);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+.chatBotSignupSubmit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(10, 10, 14, 0.28);
+}
+.chatBotSignupSubmit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chatBotSignupDivider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0;
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+.chatBotSignupDivider::before,
+.chatBotSignupDivider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--chatbot-glass-border);
+}
+
+/* 전역 .snsLogin/.kakaoBtn 등(Login.css)을 그대로 쓰되, 챗봇 패널 폭에 맞게 살짝 눌러준다 */
+.chatBotSignupSns.snsLogin {
+  margin-top: 0;
+}
+.chatBotSignupSns.snsLogin button {
+  height: 42px;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.chatBotSignupLoginLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: none;
+  background: none;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 0 2px;
+  transition: color 0.15s;
+}
+.chatBotSignupLoginLink:hover {
+  color: var(--foreground);
 }
 
 @media (max-width: 900px) {
