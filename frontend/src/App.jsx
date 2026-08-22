@@ -25,13 +25,11 @@ import KoreanHall from "./component/KoreanHall/KoreanHall";
 import Checkout from "./component/Checkout/Checkout";
 import CheckoutKoreanHall from "./component/Checkout/CheckoutKoreanHall";
 import OrderComplete from "./component/OrderComplete/OrderComplete";
-import CompanyInfoModal from "./component/CompanyInfoModal/CompanyInfoModal";
 import AuthModal from "./component/AuthModal/AuthModal";
 import { AuthModalProvider } from "./context/AuthModalContext";
 import { CartModalProvider } from "./context/CartModalContext";
 import { MyPageModalProvider } from "./context/MyPageModalContext";
 import { NoticeModalProvider } from "./context/NoticeModalContext";
-import { CompanyInfoModalProvider } from "./context/CompanyInfoModalContext";
 import { WithdrawModalProvider } from "./context/WithdrawModalContext";
 import { createPagingController } from "./utils/snapSetup";
 import { NAV_FLAGS, NAV_ZONE } from "./utils/navFlags";
@@ -158,7 +156,6 @@ function App() {
     <CartModalProvider>
     <MyPageModalProvider>
     <NoticeModalProvider>
-    <CompanyInfoModalProvider>
     <WithdrawModalProvider>
     <ScrollToTop lenis={lenisRef} controller={controllerRef} panelsUnsub={panelsUnsubRef} />
     <FaviconController />
@@ -169,7 +166,6 @@ function App() {
     <Cart />
     <MyPage />
     <NoticeModal />
-    <CompanyInfoModal />
     <WithdrawModal />
 
     <div className="hTrack">
@@ -192,7 +188,6 @@ function App() {
       </Routes>
     </div>
     </WithdrawModalProvider>
-    </CompanyInfoModalProvider>
     </NoticeModalProvider>
     </MyPageModalProvider>
     </CartModalProvider>

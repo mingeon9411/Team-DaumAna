@@ -24,7 +24,6 @@ import { useAuthModal } from "../../context/AuthModalContext";
 import { useCartModal } from "../../context/CartModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import { useNoticeModal } from "../../context/NoticeModalContext";
-import { useCompanyInfoModal } from "../../context/CompanyInfoModalContext";
 import { PRODUCTS as HOME_PRODUCTS } from "../Home/Home";
 import { products as KOREAN_HALL_PRODUCTS } from "../../data/products";
 import { NAV_FLAGS } from "../../utils/navFlags";
@@ -60,7 +59,6 @@ function Sidebar() {
   const { openCart } = useCartModal();
   const { openMyPage } = useMyPageModal();
   const { openNotice } = useNoticeModal();
-  const { openCompanyInfo } = useCompanyInfoModal();
   const isHome = location.pathname === "/";
   const isKoreanHall = location.pathname === "/korean-hall";
   // 한국관 상품 상세(/product/:id)는 /korean-hall과 다른 라우트지만 한국관 전용
@@ -179,6 +177,17 @@ function Sidebar() {
     if (index === null) return;
     // Home이 실제로 마운트되고 레이아웃/Lenis 콘텐츠 크기가 갱신될 시간을 준 뒤 이동
     const timer = setTimeout(() => scrollToPanel(index, { immediate }), 200);
+    return () => clearTimeout(timer);
+  }, [isHome]);
+
+  // 다른 페이지에서 독의 "회사 정보" 버튼을 눌러 홈으로 넘어온 경우 — 맨 끝
+  // (BusinessInfoPanel)까지 스크롤한다. 클릭으로 시작한 이동이라 애니메이션을
+  // 그대로 보여준다(뒤로가기 복귀와 달리 "화면이 훑고 지나간다"는 위화감이 없음).
+  useEffect(() => {
+    if (!isHome) return;
+    if (!sessionStorage.getItem(NAV_FLAGS.PENDING_SCROLL_TO_END)) return;
+    sessionStorage.removeItem(NAV_FLAGS.PENDING_SCROLL_TO_END);
+    const timer = setTimeout(() => scrollToBottom(), 200);
     return () => clearTimeout(timer);
   }, [isHome]);
 
@@ -571,7 +580,15 @@ function Sidebar() {
           className="railBtn"
           aria-label="회사 정보"
           data-tooltip="회사 정보"
-          onClick={(e) => { triggerPop(e); openCompanyInfo(); }}
+          onClick={(e) => {
+            triggerPop(e);
+            if (isHome) {
+              scrollToBottom();
+              return;
+            }
+            sessionStorage.setItem(NAV_FLAGS.PENDING_SCROLL_TO_END, "1");
+            navigate("/");
+          }}
         >
           <LuInfo />
         </button>

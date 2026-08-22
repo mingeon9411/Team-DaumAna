@@ -8,6 +8,7 @@ import PhotoReviewViewer from "./PhotoReviewViewer";
 import PhotoReviewUploadModal from "./PhotoReviewUploadModal";
 import RecentlyViewedSidebar from "./RecentlyViewedSidebar";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
+import BusinessInfoPanel from "./BusinessInfoPanel";
 import { getRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS } from "../../utils/navFlags";
 import koreanModernSofa from "../../assets/products/Korean Modern Sofa — Ivory Leather.png";
@@ -932,6 +933,8 @@ function Home() {
           </div>
         </div>
       </section>
+
+      <BusinessInfoPanel />
 
       {showPhotoUploadModal && (
         <PhotoReviewUploadModal
