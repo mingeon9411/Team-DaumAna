@@ -59,6 +59,15 @@ body.dark .chatBotKoreanHall .chatBotPanel {
     linear-gradient(150deg, #3f5f9e 0%, #2b2013 25%, #b8453a 50%, #14100a 75%, #d6a86a 100%) border-box;
 }
 
+/* 아바타는 흑백 J.D 대신 집다움 한옥 컬러 로고를 그대로 보여준다 — 메인 챗봇 아바타에
+   걸려있는 brightness(0) invert(1)(흰 실루엣용)를 여기서만 해제. */
+.chatBotKoreanHall .chatBotAvatarImg,
+.chatBotKoreanHall .chatMsgAvatarImg {
+  filter: none;
+  width: 100%;
+  height: 100%;
+}
+
 .chatBotKoreanHall .chatBotName,
 .chatBotKoreanHall .chatBotSideTitle,
 .chatBotKoreanHall .chatBotSideName {

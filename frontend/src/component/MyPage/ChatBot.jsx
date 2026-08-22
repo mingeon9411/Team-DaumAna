@@ -10,6 +10,7 @@ import { sendChatMessage, createOrder, readyPayment, verifyPayment, registerUser
 import { useAuthModal } from "../../context/AuthModalContext";
 import { PRODUCTS } from "../Home/Home";
 import JDLogo from "../../assets/J.D 로고.svg";
+import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
 
 const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 const SPRING_URL = import.meta.env.VITE_SPRING_API_URL || "http://localhost:8081";
@@ -824,7 +825,11 @@ function ChatBot({
         <div className="chatBotMain">
           <div className="chatBotHeader" onMouseDown={handleHeaderDown} onTouchStart={handleHeaderDown}>
             <div className="chatBotAvatar">
-              <img src={JDLogo} alt="J.D" className="chatBotAvatarImg" />
+              <img
+                src={variant === "korean-hall" ? JipdaumHanokLogo : JDLogo}
+                alt="집다움"
+                className="chatBotAvatarImg"
+              />
             </div>
             <div style={{ flex: 1 }}>
               <p className="chatBotName">{botName}</p>
@@ -838,7 +843,11 @@ function ChatBot({
               <div key={msg.id} className={"chatMsg " + msg.role}>
                 {msg.role === "bot" && (
                   <span className="chatMsgAvatar">
-                    <img src={JDLogo} alt="J.D" className="chatMsgAvatarImg" />
+                    <img
+                      src={variant === "korean-hall" ? JipdaumHanokLogo : JDLogo}
+                      alt="집다움"
+                      className="chatMsgAvatarImg"
+                    />
                   </span>
                 )}
                 <div className="chatMsgCol">
@@ -862,7 +871,11 @@ function ChatBot({
             {loading && (
               <div className="chatMsg bot">
                 <span className="chatMsgAvatar">
-                  <img src={JDLogo} alt="J.D" className="chatMsgAvatarImg" />
+                  <img
+                    src={variant === "korean-hall" ? JipdaumHanokLogo : JDLogo}
+                    alt="집다움"
+                    className="chatMsgAvatarImg"
+                  />
                 </span>
                 <div className="chatBubble chatTyping"><span /><span /><span /></div>
               </div>

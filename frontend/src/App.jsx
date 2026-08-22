@@ -109,7 +109,14 @@ function App() {
       smoothWheel: true,
       wheelMultiplier: 0.7,
       orientation: "horizontal",
-      gestureOrientation: "vertical",
+      // "vertical"로 고정해뒀던 건 데스크톱 마우스 휠(세로 델타)만 염두에 둔 설정 —
+      // 이러면 모바일에서 좌우로 스와이프해도(가로 델타) "알 수 없는 제스처"로
+      // 무시돼버린다. "both"는 델타가 더 큰 축을 그때그때 골라 쓰므로, 마우스
+      // 휠(항상 세로)은 기존과 동일하게 동작하면서 터치 좌우 스와이프도 같이 먹는다.
+      gestureOrientation: "both",
+      // 터치 드래그를 Lenis의 가상 스크롤과 동기화 — 이게 꺼져있으면(기본값) 터치는
+      // 네이티브 스크롤로 빠져서 Snap(스냅 정렬)이 전혀 안 걸린다.
+      syncTouch: true,
     });
 
     lenisRef.current = lenis;

@@ -9,7 +9,9 @@
     position: relative;
     z-index: 2;
 
-    width: 420px;
+    /* 고정폭이라 420px보다 좁은 화면(대부분의 폰)에서 옆으로 잘려나갔다 —
+       데스크톱 크기는 그대로 두고 좁은 화면에서만 여백을 두고 줄어들게 */
+    width: min(420px, calc(100vw - 48px));
     padding: 36px 40px;
 
     /* 배경은 여기서 정하지 않고, 아래 railStyle-* 프리셋 블록에서 채운다 —
@@ -488,3 +490,8 @@
     border-radius: 4px;
     overflow: hidden;
   }
+@media (max-width: 480px) {
+  .loginBox {
+    padding: 28px 22px;
+  }
+}

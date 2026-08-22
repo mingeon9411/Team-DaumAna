@@ -152,3 +152,20 @@ body.dark .recentDockKoreanHall .recentDockToggle:hover,
 body.dark .recentDockKoreanHall .recentDockItems > button:hover {
   color: #d98a7a;
 }
+
+/* 좁은 화면에서는 right-24(96px)/top-32(128px)로 떠 있으면 화면 오른쪽에
+   붕 뜬 것처럼 보이고, 아이템 이미지(64px)도 과하게 크다 — 가장자리에 붙이고
+   살짝 축소한다. Tailwind 유틸리티 클래스와 동일한 특이도라 순서 보장을 위해
+   !important 사용(ChatBot.css의 모바일 FAB 재배치와 같은 패턴). */
+@media (max-width: 480px) {
+  .recentDock {
+    right: 10px !important;
+    top: 84px !important;
+    padding: 6px !important;
+  }
+
+  .recentDockItemImg {
+    width: 48px !important;
+    height: 48px !important;
+  }
+}
