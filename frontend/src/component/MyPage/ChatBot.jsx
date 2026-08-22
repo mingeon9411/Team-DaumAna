@@ -86,8 +86,23 @@ function matchBuyProduct(text, catalog) {
 // BuyPanel이 기대하는 상품 모양으로 변환 — 카탈로그마다 price 표기가 달라 parseWon으로 정규화.
 function toBuyItem(p) {
   return {
-    id: p.id, name: p.name, price: parseWon(p.price), image: p.image, quantity: 1, option_id: null,
+    id: p.id, name: p.name, price: parseWon(p.price), image: p.image, quantity: 1, option_id: p.option_id ?? null,
     sub: p.sub, spec: p.spec, desc: p.longDesc || p.desc,
+  };
+}
+
+// 챗봇 응답의 products(ProductDetailResponse, GET /api/shop/products와 동일한 필드 이름)를
+// 옆 패널 카드(matchProducts가 만드는 로컬 카탈로그 아이템)와 같은 모양으로 변환한다.
+function fromApiProduct(p) {
+  return {
+    id: p.id,
+    name: p.name,
+    desc: p.description,
+    image: p.thumbnail_url,
+    alt: p.name,
+    price: String(p.base_price),
+    originalPrice: null,
+    option_id: p.options?.[0]?.id ?? null,
   };
 }
 
@@ -794,6 +809,13 @@ function ChatBot({
     try {
       const res = await sendChatMessage(text, history, variant);
       setMessages((prev) => [...prev, { id: Date.now() + 1, role: "bot", text: res.data.reply, time: Date.now() }]);
+      // 챗봇이 실제로 검색해서 찾은 상품이 있으면(예: "한국관 상품 뭐가 있어" 같은 일반 질문도
+      // 포함) 로컬 키워드 매칭(matchProducts) 결과를 실제 검색 결과로 덮어써서 화면과 챗봇
+      // 답변이 항상 일치하게 한다. 못 찾았으면(products 없음) 로컬 매칭 결과를 그대로 둔다.
+      if (res.data.products?.length > 0) {
+        setBuyItem(null);
+        setPanel({ title: "🔍 찾아본 상품", items: res.data.products.map(fromApiProduct) });
+      }
     } catch {
       setMessages((prev) => [...prev, { id: Date.now() + 1, role: "bot", text: "일시적인 오류가 발생했습니다.", time: Date.now() }]);
     } finally {
