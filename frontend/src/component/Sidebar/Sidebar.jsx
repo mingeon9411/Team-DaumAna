@@ -27,6 +27,7 @@ import { useNoticeModal } from "../../context/NoticeModalContext";
 import { useCompanyInfoModal } from "../../context/CompanyInfoModalContext";
 import { PRODUCTS as HOME_PRODUCTS } from "../Home/Home";
 import { products as KOREAN_HALL_PRODUCTS } from "../../data/products";
+import { NAV_FLAGS } from "../../utils/navFlags";
 
 const RAIL_STYLES = [
   { id: "glass", label: "레인보우" },
@@ -163,16 +164,21 @@ function Sidebar() {
     if (!isHome) return;
     let index = pendingPanelRef.current;
     pendingPanelRef.current = null;
+    // 상품 상세페이지에서 돌아오는 경우(sessionStorage 경로)는 인트로 영상 패널을
+    // 스쳐 지나가는 스크롤 애니메이션 없이 상품 목록 패널로 즉시 전환한다 —
+    // 애니메이션이 보이면 "뒤로가기 했더니 화면이 훑고 지나간다"처럼 느껴진다.
+    let immediate = false;
     if (index === null) {
-      const stored = sessionStorage.getItem("pendingHomePanelIndex");
+      const stored = sessionStorage.getItem(NAV_FLAGS.PENDING_HOME_PANEL_INDEX);
       if (stored !== null) {
-        sessionStorage.removeItem("pendingHomePanelIndex");
+        sessionStorage.removeItem(NAV_FLAGS.PENDING_HOME_PANEL_INDEX);
         index = Number(stored);
+        immediate = true;
       }
     }
     if (index === null) return;
     // Home이 실제로 마운트되고 레이아웃/Lenis 콘텐츠 크기가 갱신될 시간을 준 뒤 이동
-    const timer = setTimeout(() => scrollToPanel(index), 200);
+    const timer = setTimeout(() => scrollToPanel(index, { immediate }), 200);
     return () => clearTimeout(timer);
   }, [isHome]);
 
@@ -229,16 +235,16 @@ function Sidebar() {
   };
 
   // data-hsnap 패널 목록 중 index번째 패널로 바로 이동 (0-based)
-  const scrollToPanel = (index) => {
+  const scrollToPanel = (index, { immediate = false } = {}) => {
     const target = document.querySelectorAll("[data-hsnap]")[index];
     if (!target) return;
     if (window.lenis) {
       // 방금 마운트된 페이지의 콘텐츠 폭을 Lenis가 아직 반영하지 못했을 수 있어,
       // 스크롤 한계(limit)를 먼저 다시 계산시킨 뒤 이동한다.
       window.lenis.resize();
-      window.lenis.scrollTo(target);
+      window.lenis.scrollTo(target, immediate ? { immediate: true } : undefined);
     } else {
-      target.scrollIntoView({ behavior: "smooth" });
+      target.scrollIntoView(immediate ? undefined : { behavior: "smooth" });
     }
   };
 
@@ -255,7 +261,7 @@ function Sidebar() {
       scrollToPanel(0);
     } else {
       pendingPanelRef.current = 0;
-      sessionStorage.setItem("skipHomeDefaultPanel", "1");
+      sessionStorage.setItem(NAV_FLAGS.SKIP_HOME_DEFAULT_PANEL, "1");
       navigate("/");
     }
   };

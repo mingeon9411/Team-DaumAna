@@ -9,6 +9,7 @@ import PhotoReviewUploadModal from "./PhotoReviewUploadModal";
 import RecentlyViewedSidebar from "./RecentlyViewedSidebar";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import { getRecentlyViewed } from "../../utils/recentlyViewed";
+import { NAV_FLAGS } from "../../utils/navFlags";
 import koreanModernSofa from "../../assets/products/Korean Modern Sofa — Ivory Leather.png";
 import floorLoungeSofa from "../../assets/products/플로어 라운지 소파.png";
 import moonJarArmchair from "../../assets/products/달항아리 암체어.png";
@@ -466,8 +467,8 @@ function Home() {
   // (HERO가 전체 상품 페이지 앞으로 옮겨가면서 에세이가 첫 패널이 됨)
   // 사이드바의 "홈"/"상품" 버튼으로 진입한 경우엔 각자 원하는 패널로 직접 이동하므로 건너뛴다.
   useEffect(() => {
-    if (sessionStorage.getItem("skipHomeDefaultPanel")) {
-      sessionStorage.removeItem("skipHomeDefaultPanel");
+    if (sessionStorage.getItem(NAV_FLAGS.SKIP_HOME_DEFAULT_PANEL)) {
+      sessionStorage.removeItem(NAV_FLAGS.SKIP_HOME_DEFAULT_PANEL);
       return;
     }
     const target = document.querySelectorAll("[data-hsnap]")[0];

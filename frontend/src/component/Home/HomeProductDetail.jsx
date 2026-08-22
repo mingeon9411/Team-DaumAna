@@ -7,6 +7,7 @@ import { PRODUCTS } from "./Home";
 import { addToCart, getReviews, createReview, uploadReviewImage } from "../../api";
 import { isWished, toggleWish } from "../../utils/wishlist";
 import { addRecentlyViewed } from "../../utils/recentlyViewed";
+import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useCartModal } from "../../context/CartModalContext";
 
@@ -66,6 +67,10 @@ function HomeProductDetail() {
       ...product,
       price: Number(product.price.replace(/,/g, "")),
     });
+    // "목록으로" 버튼 클릭이든 브라우저 뒤로가기든, 여기서 홈으로 돌아가면
+    // 대문 애니메이션 없이 상품 목록으로 바로 이어지도록 App.jsx의
+    // DoorIntroController가 참고할 흔적을 남긴다.
+    sessionStorage.setItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE, NAV_ZONE.HOME);
   }, [product?.id]);
 
   useEffect(() => {
@@ -205,16 +210,12 @@ function HomeProductDetail() {
   return (
     <main className="homeDetailPage" data-lenis-prevent data-hsnap>
       <div className="max-w-6xl mx-auto w-full px-6 md:px-10">
+        {/* 대문 애니메이션 스킵 + 상품 그리드로 바로 점프는 App.jsx의
+            DoorIntroController가 productDetailReturnZone(마운트 시 기록)을 보고
+            처리한다 — 브라우저 뒤로가기로 돌아갈 때도 똑같이 적용된다. */}
         <button
           type="button"
-          onClick={() => {
-            // 대문 애니메이션과 홈의 인트로 시퀀스(0~3번 패널)를 다시 재생하지
-            // 않고, 상품 그리드 패널(4번)로 바로 이동하도록 신호를 남긴다.
-            sessionStorage.setItem("skipDoorIntro", "1");
-            sessionStorage.setItem("skipHomeDefaultPanel", "1");
-            sessionStorage.setItem("pendingHomePanelIndex", "4");
-            navigate("/");
-          }}
+          onClick={() => navigate("/")}
           className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors mb-8"
           style={MONO}
         >

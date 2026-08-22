@@ -6,6 +6,7 @@ import ChatBot from "../MyPage/ChatBot";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import RecentlyViewedSidebar from "../Home/RecentlyViewedSidebar";
 import { getRecentlyViewed } from "../../utils/recentlyViewed";
+import { NAV_FLAGS } from "../../utils/navFlags";
 import irworobongdo from "../../assets/decor/irworobongdo.svg";
 
 const FILM_SOURCES = ["/videos/jipdaum-hanok.mp4", "/videos/jipdaum-kor.mp4"];
@@ -67,8 +68,8 @@ function KoreanHall() {
   // 상품 상세페이지의 "목록으로" 버튼으로 돌아온 경우, 대문·필름 인트로를 다시
   // 보여주지 않고 상품 목록으로 바로 스크롤한다 (Home.jsx의 skipHomeDefaultPanel과 동일한 패턴).
   useEffect(() => {
-    if (!sessionStorage.getItem("skipKoreanHallIntro")) return;
-    sessionStorage.removeItem("skipKoreanHallIntro");
+    if (!sessionStorage.getItem(NAV_FLAGS.SKIP_KOREAN_HALL_INTRO)) return;
+    sessionStorage.removeItem(NAV_FLAGS.SKIP_KOREAN_HALL_INTRO);
     const timer = setTimeout(() => {
       gridRef.current?.scrollIntoView({ block: "start" });
     }, 50);

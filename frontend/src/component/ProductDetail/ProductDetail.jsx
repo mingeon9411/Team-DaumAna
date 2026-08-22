@@ -8,6 +8,7 @@ import { getProductDetail, addToCart, getReviews, createReview } from "../../api
 import products from "../../data/products";
 import { isWished, toggleWish } from "../../utils/wishlist";
 import { addRecentlyViewed } from "../../utils/recentlyViewed";
+import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useCartModal } from "../../context/CartModalContext";
 
@@ -82,6 +83,10 @@ function ProductDetail() {
     setReviewComment("");
     // 한국관 상품은 별도 namespace로 기록 — 메인 페이지 "최근 본 상품"과 id가 겹쳐도 섞이지 않는다.
     addRecentlyViewed(product, "korean-hall");
+    // "목록으로" 버튼 클릭이든 브라우저 뒤로가기든, 여기서 한국관으로 돌아가면
+    // 대문 애니메이션 없이 상품 목록으로 바로 이어지도록 App.jsx의
+    // DoorIntroController가 참고할 흔적을 남긴다.
+    sessionStorage.setItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE, NAV_ZONE.KOREAN_HALL);
   }, [product?.id]);
 
   useEffect(() => {
@@ -195,15 +200,12 @@ function ProductDetail() {
       </div>
 
       <div className="pdContent max-w-6xl mx-auto w-full px-6 md:px-10">
+        {/* 대문 애니메이션 스킵 + 상품 목록으로 바로 스크롤은 App.jsx의
+            DoorIntroController가 productDetailReturnZone(마운트 시 기록)을 보고
+            처리한다 — 브라우저 뒤로가기로 돌아갈 때도 똑같이 적용된다. */}
         <button
           type="button"
-          onClick={() => {
-            // 대문 애니메이션·필름 인트로를 다시 재생하지 않고 상품 목록으로
-            // 바로 이동하도록 신호를 남긴다 (Home의 "목록으로"와 동일한 패턴).
-            sessionStorage.setItem("skipDoorIntro", "1");
-            sessionStorage.setItem("skipKoreanHallIntro", "1");
-            navigate("/korean-hall");
-          }}
+          onClick={() => navigate("/korean-hall")}
           className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors mb-8"
           style={MONO}
         >

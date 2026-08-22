@@ -34,6 +34,7 @@ import { NoticeModalProvider } from "./context/NoticeModalContext";
 import { CompanyInfoModalProvider } from "./context/CompanyInfoModalContext";
 import { WithdrawModalProvider } from "./context/WithdrawModalContext";
 import { createPagingController } from "./utils/snapSetup";
+import { NAV_FLAGS, NAV_ZONE } from "./utils/navFlags";
 import "./App.css";
 
 // 탭 파비콘 — 한국관("/korean-hall")에서는 집다움 한옥 로고, 그 외 페이지에서는 JD 로고를 사용한다.
@@ -59,12 +60,29 @@ function DoorIntroController() {
       setShowDoorIntro(false);
       return;
     }
-    // 상품 상세페이지의 "목록으로" 버튼처럼 이미 한 번 들어왔던 곳으로 돌아가는
-    // 경우엔 대문 애니메이션을 다시 볼 필요가 없다 — 세션스토리지 플래그로 1회성
-    // 건너뛰기. doorintroend 이벤트(사이드바 펼침 등)는 그대로 쏴줘야 하므로
+
+    // 상품 상세페이지(HomeProductDetail/ProductDetail)는 마운트될 때 자신이
+    // "home"/"korean-hall" 중 어느 쪽 상세페이지인지 productDetailReturnZone에
+    // 남겨둔다. 여기서 그 흔적을 보고 "방금 그 상세페이지를 보다가 여기로
+    // 돌아왔다"를 판단하면, "목록으로" 버튼 클릭(PUSH)이든 브라우저 뒤로가기
+    // (POP)든 트리거 방식과 무관하게 동일하게 처리된다 — 대문 애니메이션 없이
+    // 곧장 상품 목록으로. 이 페이지에 도착한 이상(스킵 대상이든 아니든) 다음
+    // 방문에 잘못 재사용되지 않도록 항상 지운다.
+    const returnZone = sessionStorage.getItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE);
+    sessionStorage.removeItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE);
+    const skip = returnZone === (isKoreanHall ? NAV_ZONE.KOREAN_HALL : NAV_ZONE.HOME);
+
+    if (skip) {
+      if (isKoreanHall) {
+        sessionStorage.setItem(NAV_FLAGS.SKIP_KOREAN_HALL_INTRO, "1");
+      } else {
+        sessionStorage.setItem(NAV_FLAGS.SKIP_HOME_DEFAULT_PANEL, "1");
+        sessionStorage.setItem(NAV_FLAGS.PENDING_HOME_PANEL_INDEX, "4");
+      }
+    }
+
+    // doorintroend 이벤트(사이드바 펼침 등)는 건너뛸 때도 그대로 쏴줘야 하므로
     // 지연시간만 0으로 줄인다(리스너가 붙을 다음 틱까지 기다리기 위해 0ms 유지).
-    const skip = sessionStorage.getItem("skipDoorIntro");
-    if (skip) sessionStorage.removeItem("skipDoorIntro");
     setShowDoorIntro(!skip);
     const timer = setTimeout(() => {
       setShowDoorIntro(false);
