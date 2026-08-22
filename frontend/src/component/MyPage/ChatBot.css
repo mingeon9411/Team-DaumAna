@@ -1278,3 +1278,17 @@ body.dark .chatBotKoreanHall .chatBotSideDiscount {
     transform: translateY(0) scale(1) !important;
   }
 }
+
+/* 900px 기준값(vh - 140px)은 태블릿 기준으로는 적당했는데, 실제 폰(예: 아이폰
+   844px 높이)에서는 화면의 80% 이상을 차지해서 "화면을 꽉 채운다"는 느낌을
+   줬다 — 폰 폭에서만 한 번 더 눌러준다. dvh는 iOS Safari의 접히는 주소창을
+   반영한 실제 보이는 높이라 vh보다 정확하지만, 구형 브라우저 폴백으로 vh를
+   먼저 선언해둔다. */
+@media (max-width: 480px) {
+  .chatBotPanel,
+  .chatBotRootLeft .chatBotPanel,
+  .chatBotPanelWithSide {
+    max-height: min(520px, 65vh);
+    max-height: min(520px, 65dvh);
+  }
+}
