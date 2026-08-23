@@ -1,4 +1,7 @@
 import "./NoticeModal.css";
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { ChevronLeft } from "lucide-react";
 import { useNoticeModal } from "../../context/NoticeModalContext";
 
 const NOTICES = [
@@ -34,12 +37,26 @@ const NOTICES = [
 
 function NoticeModal() {
   const { isOpen, closeNotice } = useNoticeModal();
+  const { pathname } = useLocation();
+  const isKoreanHallZone =
+    pathname === "/korean-hall" ||
+    pathname.startsWith("/product/") ||
+    pathname === "/korean-hall/checkout";
+
+  const [selectedId, setSelectedId] = useState(null);
+
+  // 모달이 닫혔다 다시 열릴 때는 항상 목록부터 보여준다.
+  useEffect(() => {
+    if (!isOpen) setSelectedId(null);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
+  const selected = NOTICES.find((n) => n.id === selectedId) || null;
+
   return (
     <div className="noticeModalOverlay">
-      <div className="noticeModalInner">
+      <div className={`noticeModalInner${isKoreanHallZone ? " noticeModalKoreanHall" : ""}`}>
         <button
           type="button"
           className="noticeModalClose"
@@ -50,22 +67,41 @@ function NoticeModal() {
         </button>
 
         <div className="noticeModalHeader">
-          <h2>공지사항</h2>
+          {selected ? (
+            <button type="button" className="noticeBackBtn" onClick={() => setSelectedId(null)}>
+              <ChevronLeft size={16} /> 목록으로
+            </button>
+          ) : (
+            <h2>공지사항</h2>
+          )}
         </div>
 
         <div className="noticeModalResults">
-          <ul className="noticeList">
-            {NOTICES.map((notice) => (
-              <li key={notice.id} className="noticeItem">
-                <div className="noticeItemHead">
-                  <span className="noticeTag">{notice.tag}</span>
-                  <span className="noticeDate">{notice.date}</span>
-                </div>
-                <h3 className="noticeTitle">{notice.title}</h3>
-                <p className="noticeBody">{notice.body}</p>
-              </li>
-            ))}
-          </ul>
+          {selected ? (
+            <div className="noticeDetail">
+              <div className="noticeItemHead">
+                <span className="noticeTag">{selected.tag}</span>
+                <span className="noticeDate">{selected.date}</span>
+              </div>
+              <h3 className="noticeDetailTitle">{selected.title}</h3>
+              <p className="noticeDetailBody">{selected.body}</p>
+            </div>
+          ) : (
+            <ul className="noticeList">
+              {NOTICES.map((notice) => (
+                <li key={notice.id} className="noticeItem">
+                  <button type="button" className="noticeItemBtn" onClick={() => setSelectedId(notice.id)}>
+                    <div className="noticeItemHead">
+                      <span className="noticeTag">{notice.tag}</span>
+                      <span className="noticeDate">{notice.date}</span>
+                    </div>
+                    <h3 className="noticeTitle">{notice.title}</h3>
+                    <p className="noticeBody">{notice.body}</p>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </div>

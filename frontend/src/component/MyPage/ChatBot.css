@@ -68,6 +68,13 @@ body.dark .chatBotKoreanHall .chatBotPanel {
   height: 100%;
 }
 
+/* 컬러 로고 뒤 배경도 오방색 그러데이션 대신 흰색으로 — 로고가 원형을 꽉 채우지
+   않아 가장자리에 배경이 비치는데, 붉은 그러데이션 위에서는 로고 색이 묻혔다. */
+.chatBotKoreanHall .chatBotAvatar,
+.chatBotKoreanHall .chatMsgAvatar {
+  background: #fff;
+}
+
 .chatBotKoreanHall .chatBotName,
 .chatBotKoreanHall .chatBotSideTitle,
 .chatBotKoreanHall .chatBotSideName {

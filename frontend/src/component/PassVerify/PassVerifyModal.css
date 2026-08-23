@@ -1,0 +1,172 @@
+.passVerifyOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(13, 13, 13, 0.55);
+  backdrop-filter: blur(4px);
+
+  padding: 24px;
+  font-family: "TwayFly", "Noto Sans KR", sans-serif;
+}
+
+@keyframes passVerifyIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.passVerifyBox {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+
+  padding: 40px 28px 32px;
+  border-radius: 20px;
+
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+
+  animation: passVerifyIn 0.2s ease;
+}
+
+.passVerifyClose {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+
+  width: 28px;
+  height: 28px;
+
+  border: none;
+  background: transparent;
+  color: var(--muted-foreground);
+
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.passVerifyClose:hover {
+  color: var(--foreground);
+}
+
+.passVerifyLogo {
+  display: inline-block;
+  padding: 6px 16px;
+  margin-bottom: 20px;
+
+  border-radius: 8px;
+  background: #2f6fed;
+  color: #fff;
+
+  font-family: "DM Mono", monospace;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.passVerifyTitle {
+  font-family: "TwayFly", "Noto Serif KR", serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--foreground);
+  margin: 0 0 4px;
+}
+
+.passVerifyDesc {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin: 0 0 20px;
+}
+
+.passCarrierGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+}
+
+.passCarrierBtn {
+  padding: 14px 0;
+
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--background);
+  color: var(--foreground);
+
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.passCarrierBtn:hover {
+  border-color: #2f6fed;
+  transform: translateY(-1px);
+}
+
+.passVerifyNote {
+  margin: 18px 0 0;
+  font-size: 11px;
+  color: var(--muted-foreground);
+  opacity: 0.75;
+}
+
+.passVerifyStatus {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 0 4px;
+}
+
+.passVerifyStatus p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--foreground);
+}
+
+.passSpinner {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 3px solid var(--border);
+  border-top-color: #2f6fed;
+  animation: passSpin 0.8s linear infinite;
+}
+
+@keyframes passSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.passCheckIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #2f6fed;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+}

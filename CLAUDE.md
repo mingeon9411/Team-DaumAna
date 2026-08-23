@@ -8,11 +8,11 @@ React/Vite 프론트엔드(`frontend/`) + Spring Boot 백엔드(별도 저장소
 
 1. **MySQL 컨테이너 실행** — 프로젝트 루트에서 `docker compose up -d` (Docker Desktop 켜져 있어야 함). `jibdaum-mysql` 컨테이너가 3306 포트로 뜬다 (DB `jibdaum`, root/rootpassword). Django와 Spring Boot가 이 DB 하나를 공유한다.
 2. **`backend/.env` 직접 생성** — 이 파일은 git에 안 올라간다(gitignore). PC마다 새로 만들어야 함: `backend/.env.example`을 복사해서 `.env`로 만들고 값 채우기. `DB_*` 값은 docker-compose 기본값(jibdaum/root/rootpassword/127.0.0.1/3306)과 맞출 것.
-3. **`frontend/.env` 직접 생성** — 이것도 gitignore 대상. `frontend/.env.example`을 복사해서 `.env`로 만들고 PortOne(`VITE_PORTONE_STORE_ID`, `VITE_PORTONE_CHANNEL_KEY`)·hCaptcha(`VITE_HCAPTCHA_SITE_KEY`) 값을 채울 것 — 결제·회원가입/로그인 캡차가 이 값 없이는 로컬에서 아예 안 뜬다. `VITE_SPRING_API_URL`은 비워두면 로컬 Spring Boot(`http://localhost:8081`)를 기본으로 씀.
+3. **`frontend/.env` 직접 생성** — 이것도 gitignore 대상. `frontend/.env.example`을 복사해서 `.env`로 만들고 PortOne(`VITE_PORTONE_STORE_ID`, `VITE_PORTONE_CHANNEL_KEY`) 값을 채울 것 — 결제가 이 값 없이는 로컬에서 아예 안 뜬다. `VITE_SPRING_API_URL`은 비워두면 로컬 Spring Boot(`http://localhost:8081`)를 기본으로 씀.
 4. **`jipdaum-spring` 저장소를 별도로 클론/pull**하고, `src/main/resources/application.yml.example`을 복사해 같은 위치에 `application.yml`로 만들어 값 채우기 (이것도 gitignore, git에 없음). 특히:
    - `jwt.secret`은 `backend/.env`의 `SECRET_KEY`와 **반드시 같은 값**이어야 프론트가 발급받은 토큰이 Django/Spring 양쪽에서 다 통함.
    - `portone.api-secret`은 프론트의 `VITE_PORTONE_STORE_ID`/`VITE_PORTONE_CHANNEL_KEY`와는 **다른 값**(PortOne 콘솔의 API Secret Key) — 결제 검증(verifyPayment)에 씀.
-   - `hcaptcha.secret-key`가 비어 있으면 캡차 검증을 항상 통과시키므로(로컬 개발 편의), 로컬에서 급하면 비워둬도 부팅은 됨.
+   - `hcaptcha.secret-key`가 비어 있으면 캡차 검증을 항상 통과시키므로(로컬 개발 편의), 로컬에서 급하면 비워둬도 부팅은 됨. **단, 프론트는 더 이상 진짜 hCaptcha를 안 띄운다 — 아래 PASS 항목 참고. 이 값이 채워져 있으면(프로덕션 등) 회원가입/로그인이 실제로 막힐 수 있다.**
 5. **나머지 설치/실행 절차**는 `backend/README.md`, `frontend/README.md`, `jipdaum-spring/README.md`에 단계별로 있음 (venv, `pip install -r requirements.txt`, `npm install`, `./mvnw spring-boot:run` 등). 여기서 중복 설명 안 함.
 
 **GitHub Secrets(Actions)는 이거랑 별개** — 배포 파이프라인(EC2)이 쓰는 값이라 클라우드에 이미 저장돼 있고, 어느 PC에서 작업하든 다시 설정할 필요 없음. 위 1~4번은 어디까지나 "로컬에서 직접 실행/테스트"할 때만 필요.
@@ -27,10 +27,11 @@ React/Vite 프론트엔드(`frontend/`) + Spring Boot 백엔드(별도 저장소
 - **챗봇(`ChatBot.jsx`)은 메인/한국관 공용 컴포넌트** — `catalog`/`variant` 등 props로만 갈라지고 결제·회원가입·탈퇴 패널 같은 기능 로직은 variant 분기 없이 자동으로 양쪽에 적용됨. 메인 챗봇을 고치면 보통 한국관도 같이 바뀐다.
 - **파비콘이 라우트별로 다름**: `App.jsx`의 `FaviconController`가 `/korean-hall`이면 한옥 로고, 그 외 전부 JD 로고로 자동 전환. `index.html`의 favicon 링크는 기본값(JD)일 뿐 실제로는 이 컨트롤러가 매 라우트 변경마다 덮어씀.
 - **사이드바 검색**(`Sidebar.jsx`)은 현재 라우트에 맞는 카탈로그만 검색함(한국관이면 한국관 상품만, 그 외엔 메인 상품만).
-- **Lenis(스무스 스크롤)가 전역 휠 이벤트를 가로챔** — 모달처럼 내부 스크롤이 따로 필요한 요소는 `data-lenis-prevent` 속성을 반드시 달아야 스크롤이 먹힌다 (MyPage에서 이거 빠져서 스크롤 안 되던 버그 있었음). 화면에 고정으로 뜨는 외부 팝업(hCaptcha 챌린지, PortOne 결제창)이 떠 있는 동안은 `window.lenis?.stop()`/`start()`로 배경 스크롤 자체를 막아야 한다 — 안 그러면 팝업은 제자리에 있고 배경만 스크롤돼 서로 따로 노는 것처럼 보인다.
+- **Lenis(스무스 스크롤)가 전역 휠 이벤트를 가로챔** — 모달처럼 내부 스크롤이 따로 필요한 요소는 `data-lenis-prevent` 속성을 반드시 달아야 스크롤이 먹힌다 (MyPage에서 이거 빠져서 스크롤 안 되던 버그 있었음). 화면에 고정으로 뜨는 외부 팝업(PASS 인증창, PortOne 결제창)이 떠 있는 동안은 `window.lenis?.stop()`/`start()`로 배경 스크롤 자체를 막아야 한다 — 안 그러면 팝업은 제자리에 있고 배경만 스크롤돼 서로 따로 노는 것처럼 보인다.
+- **회원가입/로그인의 "본인인증"은 진짜 hCaptcha가 아니라 PASS 흉내만 내는 데모(`PassVerifyModal.jsx`)임** (2026-08). 실제 PASS(통신사 본인인증)는 대행사와 사업자 계약이 필요해 개인 프로젝트로는 붙일 수 없어서, 화면 흐름만 재현하고 `mock-pass-...` 형태의 가짜 토큰을 `recaptcha_token` 필드에 그대로 실어 보낸다. `Register.jsx`/`Login.jsx`/`ChatBot.jsx`(SignupPanel)가 전부 이걸 쓰며, react-hcaptcha와 같은 `ref.execute()`/`onVerify` 인터페이스라 호출부 로직은 그대로 재사용됨. **Spring `hcaptcha.secret-key`가 채워져 있는 환경(프로덕션 등)에서는 이 가짜 토큰이 서버 쪽 실제 hCaptcha 검증에서 거부돼 가입/로그인이 실패할 수 있다** — 되게 하려면 Spring 쪽도 이 토큰을 검증 없이 통과시키게 바꾸거나(`hcaptcha.secret-key` 비우기 등), 다시 진짜 hCaptcha로 되돌려야 함.
 
 ## 배포
 
-- **Team-DaumAna**(이 저장소): `main` 푸시 시 `.github/workflows/deploy.yml`이 프론트(EC2 nginx 정적 서빙)와 Django(Docker Hub → EC2 컨테이너)를 각각 배포.
+- **Team-DaumAna**(이 저장소): 프론트(`frontend/`)는 2026-08부터 EC2가 아니라 **Cloudflare Pages**로 배포 — Cloudflare 대시보드가 이 저장소를 직접 Git 연동해서 push마다 자체 빌드/배포함(Root: `frontend`, Build: `npm run build`, Output: `dist`). 환경변수(`VITE_PORTONE_STORE_ID` 등)는 GitHub Secrets가 아니라 **Cloudflare Pages 프로젝트 설정에 따로** 등록해야 함. `.github/workflows/deploy.yml`은 이제 Django(Docker Hub → EC2 컨테이너)만 배포 — 프론트 빌드/배포 job은 삭제됨. React Router(`BrowserRouter`)를 쓰므로 `frontend/public/_redirects`(`/* /index.html 200`)가 SPA 폴백에 필수 — 지우면 새로고침 시 라우트가 다 404 남.
 - **jipdaum-spring**: `main` 푸시 시 그쪽 저장소의 `.github/workflows/docker-publish.yml`이 Docker Hub → EC2 컨테이너로 배포. Spring Boot의 `application.yml`은 저장소에 없고 **EC2 서버의 `/opt/jipdaum/config/application.yml`을 컨테이너에 마운트**해서 씀 — 그 값을 바꾸려면 EC2에 직접 SSH로 들어가 파일을 고쳐야 하고, GitHub Secrets로는 안 됨.
 - 둘 다 솔로 개발이라 브랜치/PR 없이 `main`에 직접 커밋 후 푸시하는 게 곧 배포 트리거. `gh workflow run deploy.yml`(또는 `docker-publish.yml`)로 코드 변경 없이 수동 재배포도 가능(예: GitHub Secret 값만 바꿨을 때).

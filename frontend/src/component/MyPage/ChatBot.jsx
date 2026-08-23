@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import * as PortOne from "@portone/browser-sdk/v2";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
+import PassVerifyModal from "../PassVerify/PassVerifyModal";
 import { SiKakaotalk, SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
 import { Sparkles, Ruler, ShieldCheck, UserPlus, UserX, Mail, User, Lock, ChevronDown, CheckCircle2, AlertCircle, AlertTriangle, ArrowRight, LogIn } from "lucide-react";
@@ -12,7 +12,6 @@ import { PRODUCTS } from "../Home/Home";
 import JDLogo from "../../assets/J.D 로고.svg";
 import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
 
-const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 const SPRING_URL = import.meta.env.VITE_SPRING_API_URL || "http://localhost:8081";
 
 const DEFAULT_GREETING = "안녕하세요! 집다움 AI 어시스턴트입니다 😊\n궁금한 점을 편하게 물어보세요.";
@@ -113,7 +112,7 @@ function SignupPanel({ onClose, onDone }) {
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
   const captchaRetriedRef = useRef(false);
-  // 이메일 가입 폼과 SNS 버튼 3개가 hCaptcha 위젯 하나를 공유한다 — Login.jsx와 동일한 패턴.
+  // 이메일 가입 폼과 SNS 버튼 3개가 PASS 인증창 하나를 공유한다 — Login.jsx와 동일한 패턴.
   // execute() 결과를 onVerify에서 어느 액션으로 처리할지 구분하는 값 ("register" 또는 provider명).
   const pendingActionRef = useRef("register");
 
@@ -182,7 +181,7 @@ function SignupPanel({ onClose, onDone }) {
     recaptchaRef.current?.execute();
   };
 
-  // 카카오/네이버/구글 버튼 — Login.jsx와 동일하게 hCaptcha를 먼저 통과시켜 1회용 ticket을
+  // 카카오/네이버/구글 버튼 — Login.jsx와 동일하게 PASS 인증을 먼저 통과시켜 1회용 ticket을
   // 받고, 브라우저를 OAuth 인가 엔드포인트로 직접 이동시킨다(SNS 로그인=신규면 자동 가입).
   const handleSocialClick = (provider) => {
     pendingActionRef.current = provider;
@@ -222,7 +221,7 @@ function SignupPanel({ onClose, onDone }) {
     } catch (err) {
       const data = err.response?.data;
       // 이미 가입된 이메일이면 에러로 막지 않고, 방금 입력한 정보로 바로 로그인을 이어서
-      // 시도한다 — hCaptcha 토큰은 1회용이라 execute()를 다시 트리거해 새 토큰을 받아야 한다.
+      // 시도한다 — 인증 토큰은 1회용이라 execute()를 다시 트리거해 새 토큰을 받아야 한다.
       if (data?.email?.includes?.("이미")) {
         pendingActionRef.current = "login-retry";
         recaptchaRef.current?.resetCaptcha();
@@ -363,11 +362,8 @@ function SignupPanel({ onClose, onDone }) {
         </label>
         {agreeError && <p className="chatBotSignupError"><AlertCircle size={12} />{agreeError}</p>}
 
-        <HCaptcha
+        <PassVerifyModal
           ref={recaptchaRef}
-          sitekey={HCAPTCHA_SITE_KEY}
-          size="invisible"
-          languageOverride="ko"
           onVerify={handleCaptchaVerify}
           onError={handleCaptchaError}
           onExpire={() => setSubmitting(false)}
@@ -690,7 +686,7 @@ function ChatBot({
     if (loggedIn) chatMemory[variant] = { messages };
   }, [messages, loggedIn, variant]);
 
-  // 결제 패널(PortOne)·회원가입 패널(hCaptcha)은 화면 좌표에 고정으로 뜨는 외부 팝업을
+  // 결제 패널(PortOne)·회원가입 패널(PASS 인증)은 화면 좌표에 고정으로 뜨는 외부 팝업을
   // 띄운다 — AuthModalContext가 로그인/회원가입 모달에서 이미 쓰는 것과 같은 이유로,
   // 배경 페이지가 계속 스크롤되면 팝업만 뜬 시점 좌표에 남아 따로 노는 것처럼 보인다.
   // 그동안은 Lenis를 멈춰서 팝업이 화면에 그대로 고정돼 보이게 한다.

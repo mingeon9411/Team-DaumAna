@@ -105,10 +105,30 @@ body.dark .noticeModalInner {
 }
 
 .noticeModalHeader h2 {
-  font-family: "Noto Serif KR", serif;
+  font-family: "TwayFly", "Noto Serif KR", serif;
   font-size: 28px;
   font-weight: 500;
   margin: 0;
+}
+
+.noticeBackBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  border: none;
+  background: none;
+  padding: 0;
+
+  font-family: "TwayFly", "DM Mono", monospace;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.noticeBackBtn:hover {
+  color: var(--foreground);
 }
 
 .noticeModalResults {
@@ -126,12 +146,47 @@ body.dark .noticeModalInner {
 }
 
 .noticeItem {
-  padding: 24px 4px;
   border-bottom: 1px solid var(--border);
 }
 
-.noticeItem:first-child {
+.noticeItem:first-child .noticeItemBtn {
   padding-top: 4px;
+}
+
+.noticeItemBtn {
+  display: block;
+  width: 100%;
+  padding: 24px 4px;
+
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+
+  border-radius: 10px;
+  transition: background 0.15s ease;
+}
+
+.noticeItemBtn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+body.dark .noticeItemBtn:hover {
+  background: rgba(150, 185, 255, 0.06);
+}
+
+.noticeDetailTitle {
+  font-size: 21px;
+  font-weight: 600;
+  margin: 0 0 16px;
+  color: var(--foreground);
+}
+
+.noticeDetailBody {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--muted-foreground);
+  margin: 0;
 }
 
 .noticeItemHead {
@@ -151,7 +206,7 @@ body.dark .noticeModalInner {
 }
 
 .noticeDate {
-  font-family: "DM Mono", monospace;
+  font-family: "TwayFly", "DM Mono", monospace;
   font-size: 12px;
   color: var(--muted-foreground);
 }
@@ -193,4 +248,49 @@ body.dark .noticeBody {
 
 body.dark .noticeItem {
   border-color: rgba(150, 185, 255, 0.16);
+}
+
+/* ── 한국관 전용 테마 — 은색 메탈릭 대신 한지 종이 질감 + 오방색 테두리
+   (ProductDetail.css의 .pdPage, ChatBot.css의 .chatBotKoreanHall .chatBotPanel과
+   같은 레시피를 공지사항 모달에도 그대로 적용) ── */
+.noticeModalKoreanHall {
+  animation: noticeModalIn 0.25s ease;
+  background:
+    repeating-linear-gradient(115deg, rgba(120, 90, 50, 0.06) 0px, rgba(120, 90, 50, 0.06) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(25deg, rgba(120, 90, 50, 0.05) 0px, rgba(120, 90, 50, 0.05) 1px, transparent 1px, transparent 4px),
+    linear-gradient(160deg, #f6efdc 0%, #ecdfbd 55%, #e3d2a4 100%);
+  border: 1.5px solid rgba(120, 74, 30, 0.28);
+}
+
+body.dark .noticeModalKoreanHall {
+  background: #0a1226;
+  border-color: rgba(214, 168, 106, 0.26);
+}
+
+.noticeModalKoreanHall .noticeModalHeader h2 {
+  font-family: "TwayFly", "Song Myung", "Noto Serif KR", serif;
+}
+
+.noticeModalKoreanHall .noticeTag,
+.noticeModalKoreanHall .noticeDetailTitle,
+.noticeModalKoreanHall .noticeTitle {
+  color: #a6342a;
+}
+
+.noticeModalKoreanHall .noticeTag {
+  border-color: #a6342a;
+}
+
+body.dark .noticeModalKoreanHall .noticeTag,
+body.dark .noticeModalKoreanHall .noticeDetailTitle,
+body.dark .noticeModalKoreanHall .noticeTitle {
+  color: #d6a86a;
+}
+
+body.dark .noticeModalKoreanHall .noticeTag {
+  border-color: #d6a86a;
+}
+
+.noticeModalKoreanHall .noticeItemBtn:hover {
+  background: rgba(166, 52, 42, 0.06);
 }

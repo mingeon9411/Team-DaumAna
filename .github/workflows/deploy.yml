@@ -1,4 +1,9 @@
-name: Build and Deploy (Frontend + Django)
+name: Build and Deploy (Django)
+
+# 프론트(frontend/)는 더 이상 이 워크플로우가 안 건드림 — Cloudflare Pages가
+# 대시보드에서 이 저장소를 직접 연동해 push마다 자체적으로 빌드/배포한다
+# (Root directory: frontend, Build command: npm run build, Output: dist).
+# 예전엔 여기서 빌드해 EC2 nginx(/var/www/jipdaum)로 SCP했었는데, 그 job은 삭제됨.
 
 on:
   push:
@@ -6,45 +11,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  # 프론트는 컨테이너가 아니라, EC2 host nginx가 /var/www/jipdaum을 정적 서빙하는 기존 구조를 따른다.
-  # (참고: /etc/nginx/sites-enabled/jipdaum 이 root /var/www/jipdaum; try_files ... /index.html; 로 되어있음)
-  deploy-frontend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install deps
-        working-directory: frontend
-        run: npm ci
-
-      - name: Build
-        working-directory: frontend
-        run: npm run build
-        env:
-          VITE_SPRING_API_URL: ${{ secrets.VITE_SPRING_API_URL }}
-          VITE_HCAPTCHA_SITE_KEY: ${{ secrets.VITE_HCAPTCHA_SITE_KEY }}
-          VITE_PORTONE_STORE_ID: ${{ secrets.VITE_PORTONE_STORE_ID }}
-          VITE_PORTONE_CHANNEL_KEY: ${{ secrets.VITE_PORTONE_CHANNEL_KEY }}
-
-      - name: Copy dist to EC2 (/var/www/jipdaum)
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "frontend/dist/*"
-          target: "/var/www/jipdaum"
-          strip_components: 2
-          overwrite: true
-
   build-django:
     runs-on: ubuntu-latest
     steps:

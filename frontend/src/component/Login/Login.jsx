@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { SiKakaotalk, SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
 import { useState, useRef, useEffect } from "react";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
+import PassVerifyModal from "../PassVerify/PassVerifyModal";
 import { loginUser, requestSocialCaptchaTicket } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useRailStyle } from "../../hooks/useRailStyle";
@@ -15,7 +15,6 @@ import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-s
 import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent-sm.png";
 
 const SPRING = import.meta.env.VITE_SPRING_API_URL || "http://localhost:8081";
-const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 
 function Login() {
   const navigate = useNavigate();
@@ -39,16 +38,15 @@ function Login() {
   const [passwordError, setPasswordError] = useState("");
   const [captchaError, setCaptchaError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  // 개발 모드 StrictMode 이중 마운트 대응: hCaptcha 위젯이 아직 완전히 준비되기 전에
-  // 첫 execute()가 실행되면 한 번 실패할 수 있다. 사용자에게 에러를 보여주기 전에
-  // 시도당 한 번만 조용히 재시도한다(프로덕션 빌드는 애초에 이 경로를 안 탐).
+  // PassVerifyModal은 데모라 onError를 안 부르지만, 나중에 실제 PASS 연동으로
+  // 교체됐을 때를 대비해 재시도 로직은 그대로 남겨둔다(1회만 조용히 재시도).
   const captchaRetriedRef = useRef(false);
-  // 일반 로그인 폼과 SNS 버튼 3개가 hCaptcha 위젯 하나를 공유하므로, execute() 결과를
+  // 일반 로그인 폼과 SNS 버튼 3개가 PASS 인증창 하나를 공유하므로, execute() 결과를
   // onVerify에서 어느 액션으로 처리할지 구분하기 위한 값 — 'login' 또는 provider 이름.
   const pendingActionRef = useRef(null);
 
-  // "로그인" 버튼을 누르는 순간에만 캡차가 뜨도록 — hCaptcha를 invisible 모드로 두고
-  // 필드 검증 통과 시 execute()로 그때 트리거한다. 실제 로그인 API 호출은 onVerify에서 진행.
+  // "로그인" 버튼을 누르는 순간에만 PASS 인증창이 뜨도록 — 필드 검증 통과 시
+  // execute()로 그때 트리거한다. 실제 로그인 API 호출은 onVerify에서 진행.
   const handleLogin = (e) => {
     e.preventDefault();
 
@@ -84,7 +82,7 @@ function Login() {
     recaptchaRef.current?.execute();
   };
 
-  // 카카오/네이버/구글 버튼도 같은 hCaptcha 위젯을 트리거만 다르게 해서 재사용한다.
+  // 카카오/네이버/구글 버튼도 같은 PASS 인증창을 트리거만 다르게 해서 재사용한다.
   // /oauth2/authorization/{provider}는 브라우저가 직접 이동하는 GET이라 토큰을 JSON으로
   // 못 실어보내므로, 먼저 /api/auth/social-captcha로 토큰을 검증받아 1회용 ticket을 받고
   // 그 ticket을 쿼리 파라미터로 붙여 이동한다(SocialLoginCaptchaFilter가 검사).
@@ -184,11 +182,8 @@ function Login() {
             </label>
           </div>
 
-          <HCaptcha
+          <PassVerifyModal
             ref={recaptchaRef}
-            sitekey={HCAPTCHA_SITE_KEY}
-            size="invisible"
-            languageOverride="ko"
             onVerify={handleCaptchaVerify}
             onError={handleCaptchaError}
             onExpire={() => setSubmitting(false)}
