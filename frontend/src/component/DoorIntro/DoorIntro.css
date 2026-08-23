@@ -502,42 +502,6 @@
   filter: brightness(0) invert(1);
 }
 
-/* 로고 아래 얇은 골드 하이라인 + 자간을 벌리며 떠오르는 브랜드명 —
-   상품 상세/체크아웃 페이지에서 쓰는 eyebrow+hairline 모티프를 인트로에도 그대로 가져온다. */
-.introHairline {
-  display: block;
-  width: 0;
-  height: 1px;
-  margin: 22px 0 0;
-  background: linear-gradient(90deg, transparent, #c9a227, transparent);
-  animation: hairlineIn 7.5s ease forwards;
-}
-
-/* 순수 한글 워드마크 이미지("집다움" 글자만, 한옥 그래픽 없음) — 위 하이라인(64px)
-   폭에 맞춰 아주 작게, 로고라기보다 캡션에 가까운 크기로 낮춘다. */
-.introKorText {
-  width: 20px;
-  margin: 10px 0 0;
-  opacity: 0;
-  animation: korTextIn 7.5s ease forwards;
-}
-.doorIntro.dark .introKorText { filter: brightness(0) invert(1); }
-.doorIntro.hanji:not(.dark) .introHairline { background: linear-gradient(90deg, transparent, #a6342a, transparent); }
-
-@keyframes hairlineIn {
-  0%, 22% { width: 0; opacity: 0; }
-  34% { width: 64px; opacity: 1; }
-  70% { width: 64px; opacity: 1; }
-  100% { width: 0; opacity: 0; }
-}
-
-@keyframes korTextIn {
-  0%, 22% { opacity: 0; transform: scale(0.92); }
-  36% { opacity: 0.9; transform: scale(1); }
-  70% { opacity: 0.9; transform: scale(1); }
-  100% { opacity: 0; }
-}
-
 @keyframes logoFade {
   0% {
     opacity: 0;
