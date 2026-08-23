@@ -1,0 +1,30 @@
+⭐ 수정 사항
+
+✅ Login.jsx / Register.jsx / ChatBot.jsx(SignupPanel) / AuthModalContext.jsx
+   - hCaptcha 위젯 대신 화면 흐름만 재현하던 PassVerifyModal(mock-pass-... 토큰)을
+     다시 원래의 <HCaptcha /> 위젯으로 되돌림
+     · PASS는 실제 검증을 안 하는 데모라, 짝인 Spring 백엔드(HCaptchaService.verify())가
+       실제 hCaptcha siteverify API로 그 mock 토큰을 검증하려다 전부 거부해서
+       회원가입/로그인/소셜로그인이 프로덕션에서 다 막히는 문제로 이어졌음
+     · PassVerifyModal.jsx/.css 삭제, VITE_HCAPTCHA_SITE_KEY를 .env.example에 복원
+   - CLAUDE.md의 hCaptcha 관련 서술도 복구(Cloudflare Pages 마이그레이션,
+     공지사항 상세보기 등 무관한 변경은 그대로 유지)
+
+✅ jipdaum_Springboot(별도 저장소)도 같이 원복
+   - HCaptchaService.verify() 및 회원가입/로그인/소셜캡차 3개 호출 지점을
+     되돌려서(revert) 실제 hCaptcha 검증이 다시 정상 작동하도록 맞춤
+
+✅ Cloudflare Pages가 최신 커밋을 계속 못 물어가던 문제 진단/수정
+   - jipdaum.life에서 "hCaptcha has failed to initialize" + 콘솔에
+     "Missing sitekey" 확인 — VITE_HCAPTCHA_SITE_KEY가 Cloudflare Pages
+     프로젝트 환경변수에 미등록 상태였음(PASS 전환 때 .env.example에서 지워진 여파)
+   - 환경변수를 등록해도 여전히 동일 에러 → Vite 환경변수는 빌드 시점에
+     번들에 굳어지므로 재빌드 없이는 반영 안 됨을 확인
+   - 확인해보니 Cloudflare Pages가 main의 새 커밋을 계속 못 물어가고
+     예전 커밋(4ddaeab)에 멈춰있었음 — Cloudflare Pages 기본 빌드 Node
+     버전(보통 18.x)이 vite 7의 요구사항(engines: node ^20.19.0 ||
+     >=22.12.0)을 못 맞춰서, Cloudflare Pages로 이관(hCaptcha→PASS 교체와
+     같은 커밋에서 진행)된 이후 모든 빌드가 계속 실패했을 가능성이 높다고 판단
+   - frontend/.nvmrc(20) 추가 + package.json에 engines.node(">=20.19.0")
+     명시 — Cloudflare Pages가 올바른 Node 버전으로 빌드하도록 유도
+   - 재배포 성공 여부는 확인 대기 중
