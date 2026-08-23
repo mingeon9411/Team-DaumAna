@@ -327,13 +327,12 @@
 
 <div align="center">
 
-### 🗄 Database &nbsp;&nbsp; <sub>📝 예정</sub>
+### 🗄 Database
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/tables/database-dark.png"/>
-  <source media="(prefers-color-scheme: light)" srcset="assets/tables/database-light.png"/>
-  <img src="assets/tables/database-light.png" alt="Database Migration" width="860"/>
-</picture>
+| | |
+|---|---|
+| 🐬 **MySQL (Docker)** | `Oracle → MySQL` 전환 완료(2026-07) · Django · Spring Boot가 하나의 DB를 공유 |
+| 🔗 **연동** | `docker compose up -d`로 로컬 컨테이너(`jibdaum-mysql`, 3306) 기동, PC마다 `.env`만 새로 생성하면 동일 스키마 공유 |
 
 </div>
 
@@ -347,18 +346,46 @@
 
 <div align="center">
 
-### 🚀 Deployment &nbsp;&nbsp; <sub>📝 예정</sub>
+### 📌 최근 작업 사항
 
-<p>
-  React · Django · Spring Boot 세 서비스를 각각 <b>Docker</b> 이미지로 컨테이너화하고,
-  <br/>
-  <b>Kubernetes</b> 클러스터 위에서 오케스트레이션하는 배포 환경을 구축할 예정입니다.
-</p>
+<sub>자세한 변경 내역은 <code>#Developer_Document/frontend_developer/</code>에 작업 단위별로 문서화되어 있습니다.</sub>
+
+<br/><br/>
+
+| 구분 | 내용 |
+|---|---|
+| 🛍 상품 상세 | 한국관/메인 상품 상세페이지를 하나의 디자인 시스템으로 통일, API 연동 리뷰로 전환 |
+| 🧭 네비게이션 | 상세 → 목록 뒤가기 시 인트로를 건너뛰고 원래 스크롤 위치로 즉시 복귀 |
+| 📜 법적 고지 | 전자상거래법상 사업자 정보 표시 패널(BusinessInfoPanel) 신설 |
+| 📱 반응형 | 로그인/회원가입/챗봇/사이드바 모바일 레이아웃 및 터치 스크롤 대응 |
+| 🔐 본인인증 | 회원가입/로그인 인증 방식을 hCaptcha로 유지·정리 |
+| ☁️ 배포 | 프론트엔드 배포를 EC2 → Cloudflare Pages(Git 자동 배포)로 전환 |
+
+</div>
+
+<br/>
+
+<div align="center">
+  <img src="assets/divider.svg" width="680" alt="divider"/>
+</div>
+
+<br/>
+
+<div align="center">
+
+### 🚀 Deployment
+
+| | |
+|---|---|
+| 🎨 **Frontend (React)** | **Cloudflare Pages** — 저장소 Git 연동, `main` 푸시마다 자동 빌드/배포 (Root `frontend`, Build `npm run build`, Output `dist`) |
+| 🛠 **Django** | **Docker** 이미지 빌드 → Docker Hub → **EC2** 컨테이너 배포 (GitHub Actions, `main` 푸시 시 자동 트리거) |
+| ☕ **Spring Boot** | 별도 저장소 `jipdaum-spring`에서 동일하게 Docker Hub → EC2 컨테이너 배포 |
 
 <br/>
 
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
-![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=flat-square&logo=kubernetes&logoColor=white)
+![Cloudflare Pages](https://img.shields.io/badge/Cloudflare_Pages-F38020?style=flat-square&logo=cloudflarepages&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white)
 
 </div>
 

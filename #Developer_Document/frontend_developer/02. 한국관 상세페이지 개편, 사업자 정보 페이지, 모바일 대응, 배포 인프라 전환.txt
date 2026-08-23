@@ -1,0 +1,86 @@
+⭐ 수정 사항
+
+✅ ProductDetail.jsx / ProductDetail.css (한국관 상품 상세)
+   - Home 쪽 HomeProductDetail.jsx 디자인 시스템에 맞춰 전면 재작성
+     · 글래스 카드 + Tailwind, SERIF/SANS/MONO 스타일 상수, Hairline 컴포넌트 등 동일 패턴 이식
+     · 리뷰를 localStorage 방식에서 getReviews/createReview API 연동으로 교체
+     · data/products.js 상품 데이터 + getProductDetail(id) API 응답을 merge해서 사용
+   - pdPage/pdPetals/pdPetal 클래스로 한지 텍스처 배경 + 무궁화 꽃잎 낙하 애니메이션 추가
+     · 테두리는 오방색 계열(rgba(120,74,30,0.28)) 홍색 라인
+   - "목록으로" 버튼: 클릭 시 플래그를 세팅하던 방식 → 마운트 시 sessionStorage에
+     NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE = NAV_ZONE.KOREAN_HALL 세팅 후 navigate("/korean-hall")로 단순화
+
+✅ HomeProductDetail.jsx (메인 상품 상세)
+   - "상세정보" 섹션 신규 추가 (히어로 배너, Sparkles/Ruler/ShieldCheck 아이콘 하이라이트 카드,
+     이미지+텍스트 교차 블록, 스펙 테이블, 마감 그라디언트 배너)
+   - "목록으로" 버튼도 ProductDetail과 동일하게 마운트 시 플래그 세팅 후 navigate("/")로 단순화
+
+✅ utils/navFlags.js (신규)
+   - 컴포넌트 간 sessionStorage 기반 네비게이션 의도 전달용 상수를 한 곳에 모음
+     · NAV_FLAGS: PRODUCT_DETAIL_RETURN_ZONE / SKIP_HOME_DEFAULT_PANEL / PENDING_HOME_PANEL_INDEX /
+       SKIP_KOREAN_HALL_INTRO / PENDING_SCROLL_TO_END
+     · NAV_ZONE: HOME / KOREAN_HALL
+   - 기존에 컴포넌트마다 흩어져 있던 sessionStorage 키 문자열 리터럴을 전부 이 파일 참조로 교체
+     (오타/불일치로 인한 조용한 버그 방지 목적)
+
+✅ App.jsx
+   - DoorIntroController가 NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE 값을 읽어 "/" 또는 "/korean-hall"
+     진입 시 인트로 애니메이션 없이 곧장 목록(그리드)으로 스크롤하도록 분기
+   - Lenis 초기화 옵션을 { orientation: "horizontal", gestureOrientation: "vertical" } →
+     { orientation: "horizontal", gestureOrientation: "both", syncTouch: true }로 변경
+     · 모바일에서 세로 스와이프가 가로 스크롤로 씹히던 문제 → Lenis 소스(node_modules/lenis/dist/lenis.mjs)
+       직접 확인 후 원인 파악해서 수정
+   - CompanyInfoModalProvider/<CompanyInfoModal /> 완전 제거 (BusinessInfoPanel로 대체됨에 따라 중복 삭제)
+   - ProductModalProvider/<ProductModal /> 완전 제거 (상품 모달 → 상세페이지 라우팅 전환에 따라 dead code 정리)
+
+✅ Sidebar.jsx / Sidebar.css
+   - isKoreanHallZone 판별 범위를 /product/:id까지 확장 (검색 대상 카탈로그, 스타일 스위처 노출 여부 등이 여기 종속)
+   - scrollToPanel(index, { immediate }) - 상품 상세에서 뒤로가기로 복귀할 때만 애니메이션 없이 즉시 이동하도록
+     immediate 옵션 추가 (기존엔 매번 스무스 애니메이션이 걸려 인트로 패널을 스쳐 지나가는 것처럼 보이던 문제 수정)
+   - "회사 정보" 독 버튼: 메인이면 곧장 scrollToBottom(), 아니면 NAV_FLAGS.PENDING_SCROLL_TO_END 세팅 후
+     navigate("/")
+   - 모바일 대응: railItems에 overflow-x: auto + 버튼 축소, sidebarRail/railSearchFlyout 폭을
+     calc(100vw - Npx) 기준으로 제한하는 @media (max-width: 480px) 블록 추가
+
+✅ KoreanHall.jsx / KoreanHall.css
+   - 상품 카드 클릭 시 모달(openProduct) 대신 navigate(`/product/${product.id}`)로 라우팅
+   - khPage 테두리를 오방색(청/백/적/흑/황) 그라데이션 border-image로 적용
+   - NAV_FLAGS.SKIP_KOREAN_HALL_INTRO 플래그를 소비해 인트로 필름을 건너뛰고 상품 그리드로 바로 스크롤
+
+✅ Home/BusinessInfoPanel.jsx (신규) / Home.jsx
+   - 전자상거래법 제10조(사이버몰 초기화면 사업자 정보 표시 의무) 대응용 패널을 Home의 마지막
+     data-hsnap 패널로 추가 (상호/대표자/사업자등록번호/통신판매업신고번호/영업소소재지/전화번호/
+     팩스번호/이메일/개인정보보호책임자 - 실제 사업자 등록 전이라 전부 placeholder 값)
+   - 기존 CompanyInfoModal(+ context)와 Footer 컴포넌트는 BusinessInfoPanel로 완전히 대체되어
+     둘 다 파일째 삭제 (중복/사장 코드 정리)
+
+✅ NoticeModal.jsx / NoticeModal.css
+   - 목록 → 상세 보기 토글 추가 (selectedId 상태, noticeItemBtn/noticeBackBtn/noticeDetail 등)
+   - useLocation 기반 isKoreanHallZone 판별로 noticeModalKoreanHall 클래스 적용 시 한지+홍색 테마로 전환
+   - noticeModalHeader h2 / noticeBackBtn / noticeDate에 누락돼 있던 "TwayFly" 폰트 패밀리 지정 수정
+
+✅ ChatBot.jsx / ChatBot.css (메인/한국관 공용 컴포넌트)
+   - variant === "korean-hall"일 때 아바타 로고를 JD 로고 대신 한옥 컬러 로고(JipdaumHanokLogo)로 교체
+     (헤더 아바타 / 메시지 아바타 / 타이핑 인디케이터 아바타 3곳)
+   - 모바일 대응: @media (max-width: 480px)에서 챗봇 패널 최대 높이를
+     min(520px, 65dvh)로 제한 (모바일에서 패널이 화면을 거의 다 차지하던 문제 수정)
+
+✅ Register.jsx / Register.css, Login.jsx / Login.css
+   - nicknameRow 버튼 높이/마진 정렬 수정, termsBox에 data-lenis-prevent 추가(스크롤 씹힘 방지)
+   - 모바일 대응: registerBox/loginBox 폭을 min(Npx, calc(100vw - 48px))로 제한
+   - 본인인증 방식을 PASS 흉내 모크 UI(PassVerifyModal)로 교체했다가, 백엔드(Spring) 쪽 결정에 맞춰
+     다시 실제 hCaptcha(<HCaptcha ref sitekey size="invisible" .../>)로 원복
+     · PassVerify/ 컴포넌트 폴더는 최종적으로 삭제, .env.example / CLAUDE.md / AuthModalContext.jsx의
+       관련 문구도 함께 원복
+
+✅ DoorIntro.jsx / DoorIntro.css (메인/한국관 공용)
+   - introLogo에서 introHairline(구분선)와 JipdaumWordmark(한글 워드마크 이미지) 제거,
+     상단 로고 이미지만 남기도록 정리
+   - 대응하는 CSS(.introHairline, .introKorText, @keyframes hairlineIn/korTextIn 등)도 함께 삭제
+
+✅ .github/workflows/deploy.yml / frontend/public/_redirects (신규)
+   - 프론트엔드 배포 방식을 EC2 nginx 정적 서빙(GitHub Actions SCP) → Cloudflare Pages(Git 연동 자동 배포)로 전환
+     · deploy-frontend 잡을 워크플로에서 완전히 제거, Django(build-django/deploy-django)만 남김
+     · Cloudflare Pages 프로젝트 설정: Root frontend, Build npm run build, Output dist,
+       환경변수는 GitHub Secrets가 아닌 Cloudflare 대시보드에서 별도 관리
+   - _redirects 파일(`/*  /index.html  200`) 추가 - React Router SPA 새로고침 시 404 방지
