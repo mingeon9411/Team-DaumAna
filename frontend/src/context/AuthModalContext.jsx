@@ -21,8 +21,8 @@ export function AuthModalProvider({ children }) {
   }, []);
 
   // 모달이 떠있는 동안 배경 페이지 스크롤을 완전히 멈춘다.
-  // 안 그러면 Lenis(스무스 스크롤)로 배경이 계속 움직이면서, PASS 인증 팝업이
-  // 뜬 시점의 화면 좌표에 그대로 남아 모달과 따로 노는 것처럼 보인다.
+  // 안 그러면 Lenis(스무스 스크롤)로 배경이 계속 움직이면서, hCaptcha 챌린지 팝업이
+  // 위젯이 뜬 시점의 화면 좌표에 그대로 남아 모달과 따로 노는 것처럼 보인다.
   useEffect(() => {
     if (!view) return;
     window.lenis?.stop();

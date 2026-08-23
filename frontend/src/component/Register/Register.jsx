@@ -3,13 +3,15 @@ import "./Register.css";
 import "../Login/Login.css";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import PassVerifyModal from "../PassVerify/PassVerifyModal";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { registerUser, checkNicknameAPI } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import JDLogo from "../../assets/J.D 로고.svg";
 // -sm: 48px로만 쓰여서 원본(1015x600, 750KB) 대신 축소본을 쓴다.
 import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
 import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent-sm.png";
+
+const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 
 function Register() {
   const navigate = useNavigate();
@@ -39,8 +41,9 @@ function Register() {
   const [agreeError, setAgreeError] = useState("");
   const [captchaError, setCaptchaError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  // PassVerifyModal은 데모라 onError를 안 부르지만, 나중에 실제 PASS 연동으로
-  // 교체됐을 때를 대비해 재시도 로직은 그대로 남겨둔다(1회만 조용히 재시도).
+  // 개발 모드 StrictMode 이중 마운트 대응: hCaptcha 위젯이 아직 완전히 준비되기 전에
+  // 첫 execute()가 실행되면 한 번 실패할 수 있다. 사용자에게 에러를 보여주기 전에
+  // 시도당 한 번만 조용히 재시도한다(프로덕션 빌드는 애초에 이 경로를 안 탐).
   const captchaRetriedRef = useRef(false);
 
   const [nicknameChecked, setNicknameChecked] = useState(false);
@@ -69,8 +72,8 @@ function Register() {
     }
   };
 
-  // "회원가입" 버튼을 누르는 순간에만 PASS 인증창이 뜨도록 — 필드 검증 통과 시
-  // execute()로 그때 트리거한다. 실제 가입 API 호출은 onVerify에서 진행.
+  // "회원가입" 버튼을 누르는 순간에만 캡차가 뜨도록 — hCaptcha를 invisible 모드로 두고
+  // 필드 검증 통과 시 execute()로 그때 트리거한다. 실제 가입 API 호출은 onVerify에서 진행.
   const handleRegister = (e) => {
     e.preventDefault();
 
@@ -307,8 +310,11 @@ function Register() {
             {agreeError && <p className="errorText">{agreeError}</p>}
           </div>
 
-          <PassVerifyModal
+          <HCaptcha
             ref={recaptchaRef}
+            sitekey={HCAPTCHA_SITE_KEY}
+            size="invisible"
+            languageOverride="ko"
             onVerify={handleCaptchaVerify}
             onError={handleCaptchaError}
             onExpire={() => setSubmitting(false)}
