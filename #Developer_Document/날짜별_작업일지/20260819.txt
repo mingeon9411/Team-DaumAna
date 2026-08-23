@@ -1,4 +1,30 @@
 ⭐ 2026-08-19
 
-✅ Django를 관리자(admin) 전용으로 축소 — API는 전부 Spring Boot로 이관 완료
+✅ Django를 관리자(admin) 전용으로 축소, API는 전부 Spring Boot로 이관 완료
+➡️ 회원/상품/쿠폰/결제/챗봇 API가 이미 Spring Boot(jipdaum-spring)로 이관되어
+   프론트가 더 이상 호출하지 않는 상태라, Django 쪽 중복 API 표면을 걷어냄
+➡️ Users/Products/coupons/payments 앱의 뷰·시리얼라이저·urls 삭제(모델·admin.py·
+   migrations는 유지 — Django Admin과 스키마 소유권 때문)
+➡️ config/chat_view.py(룰 기반 챗봇) 삭제 — Spring의 Gemini 기반 챗봇으로 완전히 대체됨
+➡️ Products/community.py(오라클 시절 죽은 '집들이' 피드 코드), Users/adapters.py,
+   signals.py(제거된 allauth 잔재) 삭제
+➡️ config/urls.py를 /admin/ 하나만 남기게 정리, settings.py에서 DRF/JWT/CORS
+   설정 제거
+➡️ requirements.txt 27개 → 9개로 정리(allauth/oauth-toolkit/psycopg/
+   google-generativeai 등 안 쓰는 패키지 제거)
+
 ✅ hCaptcha 로그인 게이트, 인기 검색어 미니바, 룩북 포토리뷰 갤러리 추가
+➡️ [hCaptcha] 로그인/회원가입/소셜로그인(카카오·네이버·구글) 모두에 적용 —
+   invisible 모드로 두고 버튼 누를 때만 트리거, 실패 시 1회 조용히 재시도
+➡️ [hCaptcha] 소셜 로그인은 리다이렉트라 토큰을 못 실어 보내므로, 먼저 POST
+   /api/auth/social-captcha로 ticket을 발급받아 쿼리에 붙이는 방식(Spring
+   SocialLoginCaptchaFilter와 짝)
+➡️ [hCaptcha] 언어 ko 고정, 다크모드 클래스 토글 대응, 로컬 개발용 127.0.0.1.nip.io
+   host 설정, 모달 떠있는 동안 배경 Lenis 스크롤 정지로 챌린지 팝업 위치 문제 해결
+➡️ [인기 검색어 미니바] 상품 그리드 패널의 검색창 아래에 1~10위 검색어를 자동
+   롤링하며 보여주는 PopularKeywordsSidebar 추가 — 클릭하면 실제 검색 결과로 연결
+➡️ [룩북 갤러리] 기존 고정 큐레이션 사진 아래에 실제 구매자 포토리뷰 섹션 추가
+   (PhotoReviewUploadModal/PhotoReviewViewer), 큐레이션용 가짜 좋아요·댓글과는
+   구분해서 별도 섹션으로 분리
+➡️ [룩북 갤러리] data-lenis-prevent 누락으로 내부 스크롤이 옆 패널 전환으로
+   새던 문제, 플렉스박스로 긴 콘텐츠 위쪽이 안 스크롤되던 문제 수정

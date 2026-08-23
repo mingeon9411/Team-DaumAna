@@ -1,3 +1,6 @@
 ⭐ 2026-07-27
 
 ✅ 아키텍처 다이어그램 갱신 — DB를 MySQL 하나로 통합
+➡️ Django(v1)/Spring Boot(v2)가 각각 Oracle·PostgreSQL을 쓰던 구성에서 MySQL
+   단일 DB를 공용으로 쓰는 구조로 바뀐 걸 반영해 다이어그램과 README 기술
+   스택 설명을 함께 갱신

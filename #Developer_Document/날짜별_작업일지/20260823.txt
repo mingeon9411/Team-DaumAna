@@ -1,9 +1,31 @@
 ⭐ 2026-08-23 (PASS 인증 실험 및 Cloudflare Pages 이관일)
 
-✅ 공지사항 게시글 상세보기 추가
-✅ hCaptcha를 PASS(통신사 본인인증) 데모로 교체 + Cloudflare Pages로 배포 이관
-✅ 백엔드 실검증과 어긋나 가입/로그인이 막히는 문제 발견 → PASS 인증 목업을
-   다시 hCaptcha로 되돌림
-✅ Cloudflare Pages 빌드용 Node 버전 고정(vite 7이 Node 18 미지원 — .nvmrc/engines 추가)
-✅ DoorIntro 한글 워드마크 텍스트 최종 제거
+✅ 공지사항 게시글 상세보기, hCaptcha를 PASS 인증 목업으로 교체, Cloudflare Pages 마이그레이션
+➡️ NoticeModal: 게시글 클릭 시 상세 화면으로 전환(뒤로가기 버튼), 라우트별
+   테마(메인 실버 메탈릭/한국관 한지+오방색) 적용
+➡️ hCaptcha 대신 PASS 본인인증 흐름을 흉내내는 PassVerifyModal로 교체 — 실제
+   PASS는 대행사 사업자 계약이 필요해 개인 프로젝트로는 붙일 수 없어 화면
+   흐름만 재현(통신사 선택→인증중→완료). react-hcaptcha와 동일한 인터페이스라
+   Register/Login/ChatBot의 검증·제출 로직은 그대로 재사용됨
+➡️ frontend/public/_redirects 추가 — Cloudflare Pages의 BrowserRouter SPA 폴백
+➡️ .github/workflows/deploy.yml에서 EC2로 프론트 SCP하던 deploy-frontend job
+   삭제 — 프론트는 Cloudflare Pages가 Git 연동으로 직접 빌드/배포하도록 이관
+
+✅ PASS 인증 목업을 다시 hCaptcha로 되돌림
+➡️ Spring 쪽에서 hCaptcha로 계속 진행하기로 해서, Register.jsx/Login.jsx/
+   ChatBot.jsx(SignupPanel)를 원래의 <HCaptcha> 사용 코드로 복원
+➡️ PassVerifyModal 컴포넌트 삭제, VITE_HCAPTCHA_SITE_KEY 및 관련 문서
+   (CLAUDE.md, AuthModalContext.jsx 주석) 원복. Cloudflare Pages 마이그레이션
+   관련 내용은 그대로 유지
+
+✅ Cloudflare Pages 빌드용 Node 버전 고정 (vite 7이 Node 18 미지원)
+➡️ Cloudflare Pages가 main에 새 커밋이 쌓여도 계속 예전 배포만 서빙하던 문제 —
+   Cloudflare Pages 기본 빌드 Node 버전(18.x)이 vite 7(engines: node ^20.19.0
+   || >=22.12.0) 요구사항을 못 맞춰 빌드가 계속 실패했을 가능성
+➡️ frontend/.nvmrc 추가(20), package.json engines.node로도 명시
+
+✅ 대문 애니메이션에서 "집다움" 한글 워드마크 텍스트 제거
+➡️ 로고 아래 떠오르던 순수 한글 워드마크 이미지와 그 위 골드 하이라인을 삭제
+   (DoorIntro.jsx가 메인/한국관 공용이라 한 곳만 고치면 양쪽 다 적용됨)
+
 ✅ 작업 요약 문서 정리(PASS/Cloudflare 이슈, 7월~8월 전체 개발 요약)

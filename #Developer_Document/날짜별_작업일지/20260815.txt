@@ -1,3 +1,9 @@
 ⭐ 2026-08-15
 
 ✅ 비로그인 상태에서 상품 상세 페이지 빈 화면 나던 버그 수정
+➡️ 리뷰 API가 미인증 요청 시 Spring Security에 의해 /login HTML 페이지로
+   리다이렉트되는데, axios가 이를 200으로 정상 처리해 res.data에 HTML 문자열이
+   그대로 들어감 → reviews state가 배열이 아니게 되어 reviews.reduce 호출 시
+   TypeError로 렌더링 전체가 죽던 문제
+➡️ 응답이 배열인지 검증 후 setReviews 하도록 방어 코드 추가
+   (HomeProductDetail.jsx, ProductDetail.jsx 둘 다 동일 패턴)

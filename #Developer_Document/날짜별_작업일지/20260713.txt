@@ -1,3 +1,14 @@
 ⭐ 2026-07-13
 
-✅ 프로젝트 README 작성, 프론트엔드/백엔드 초기 구현체 커밋(React/Vite + Django)
+✅ 프로젝트 README 작성
+➡️ 프로젝트 소개, Tech Stack, Architecture Diagram, Logo/Brand, Frontend/Backend
+   상세, Database·Deployment 계획을 담은 README
+
+✅ 프론트엔드/백엔드 초기 구현체 커밋
+➡️ React 기반 프론트엔드 전체(Home, Header, Sidebar, Cart, MyPage 등 컴포넌트),
+   한지 톤 라이트/다크모드 디자인 시스템, 일월오봉도 모티프 헤더 장식
+➡️ Django 백엔드 앱 구조(Users, Products, Orders, coupons, payments)
+➡️ .gitignore에 DB 비밀번호 파일 제외 규칙 추가
+
+✅ README 로고 이미지 경로 수정
+➡️ 에셋 폴더 정리(assets/logo/ 하위로 이동) 이후 깨져 있던 이미지 경로 수정

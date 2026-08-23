@@ -1,3 +1,9 @@
 ⭐ 2026-08-18
 
 ✅ 로그인/최근 본 상품 독에 사이드바 레일 스타일 공유
+➡️ useRailStyle 훅으로 분리해 사이드바 하단 독바의 레인보우/메탈릭/파스텔
+   스타일 프리셋을 Login, FindAccount, RecentlyViewedSidebar에서도 공유
+➡️ Sidebar에서 스타일 변경 시 railstylechange 이벤트를 브로드캐스트해
+   RecentlyViewedSidebar도 동일하게 즉시 반영되도록 동기화
+➡️ RecentlyViewedSidebar에 접기/펼치기 토글 추가, localStorage로 상태 유지
+➡️ 사이드바 "글래스" 라벨을 "레인보우"로 변경
