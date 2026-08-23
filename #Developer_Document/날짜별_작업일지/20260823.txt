@@ -1,0 +1,9 @@
+⭐ 2026-08-23 (PASS 인증 실험 및 Cloudflare Pages 이관일)
+
+✅ 공지사항 게시글 상세보기 추가
+✅ hCaptcha를 PASS(통신사 본인인증) 데모로 교체 + Cloudflare Pages로 배포 이관
+✅ 백엔드 실검증과 어긋나 가입/로그인이 막히는 문제 발견 → PASS 인증 목업을
+   다시 hCaptcha로 되돌림
+✅ Cloudflare Pages 빌드용 Node 버전 고정(vite 7이 Node 18 미지원 — .nvmrc/engines 추가)
+✅ DoorIntro 한글 워드마크 텍스트 최종 제거
+✅ 작업 요약 문서 정리(PASS/Cloudflare 이슈, 7월~8월 전체 개발 요약)
