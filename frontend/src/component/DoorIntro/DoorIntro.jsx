@@ -1,16 +1,15 @@
 import "./DoorIntro.css";
 import { useEffect, useMemo, useState } from "react";
 import JDLogo from "../../assets/J.D 로고.svg";
-// 문 양쪽에 서로 다른 인테리어 사진을 얹는다 — 메인은 모던한 라운지/침실 톤,
+// 문 양쪽에 서로 다른 인테리어 사진을 얹는다 — 메인은 상품 이미지 배너 사진,
 // 한국관은 실제 한옥 문·궁중풍 거실 톤으로 테마에 맞춰 다른 사진을 쓴다.
-import doorPhotoHoloLeft from "../../assets/scenes/hero1.png";
-import doorPhotoHoloRight from "../../assets/scenes/hero3.png";
+import doorPhotoHolo from "../../assets/scenes/product-banner-bedroom.jpg";
 import doorPhotoHanjiLeft from "../../assets/scenes/hanok-bedroom-doorway.jpg";
 import doorPhotoHanjiRight from "../../assets/scenes/korean-royal-modern-interior.jpg";
 
 function DoorIntro({ logoLight = JDLogo, logoDark = JDLogo, lightEffect = "petals", theme = "holo" }) {
   const [doorPhotoLeft, doorPhotoRight] =
-    theme === "hanji" ? [doorPhotoHanjiLeft, doorPhotoHanjiRight] : [doorPhotoHoloLeft, doorPhotoHoloRight];
+    theme === "hanji" ? [doorPhotoHanjiLeft, doorPhotoHanjiRight] : [doorPhotoHolo, doorPhotoHolo];
 
   const [darkMode, setDarkMode] = useState(
     () => document.body.classList.contains("dark")
