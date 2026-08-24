@@ -21,16 +21,16 @@ const PREVIEW_INTERVAL_MS = 2500;
  * 실제 서비스로 넘어가면 GET /api/shop/products/popular-keywords 같은 걸로 교체하면 된다.
  * @type {KeywordItem[]} */
 export const MOCK_KEYWORDS = [
-  { rank: 1, keyword: "린넨 암체어", status: "up" },
-  { rank: 2, keyword: "라운지 소파", status: "new" },
-  { rank: 3, keyword: "모던 소파", status: "new" },
-  { rank: 4, keyword: "그림자 조명", status: "new" },
-  { rank: 5, keyword: "오픈 책장", status: "up" },
-  { rank: 6, keyword: "유약 접시", status: "new" },
-  { rank: 7, keyword: "원형 거울", status: "same" },
-  { rank: 8, keyword: "누빔 침구", status: "new" },
-  { rank: 9, keyword: "혼방 러그", status: "down" },
-  { rank: 10, keyword: "원목 스툴", status: "up" },
+  { rank: 1, keyword: "북유럽 소파", status: "up" },
+  { rank: 2, keyword: "우드 무드등", status: "new" },
+  { rank: 3, keyword: "우드 의자", status: "new" },
+  { rank: 4, keyword: "피서지 의자", status: "up" },
+  { rank: 5, keyword: "북유럽 침대", status: "same" },
+  { rank: 6, keyword: "파스텔 문양 침대", status: "new" },
+  { rank: 7, keyword: "빨래 바구니", status: "up" },
+  { rank: 8, keyword: "러그 B형", status: "down" },
+  { rank: 9, keyword: "린넨 빨래 바구니", status: "new" },
+  { rank: 10, keyword: "러그 A형", status: "up" },
 ];
 
 /** @param {{ status: KeywordStatus }} props */

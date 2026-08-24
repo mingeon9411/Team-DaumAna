@@ -25,6 +25,13 @@ import woodChair from "../../assets/products/(의자) 우드 의자.jpg";
 import resortChair from "../../assets/products/(의자) 유럽풍 피서지 의자.jpg";
 import nordicBed from "../../assets/products/(침대) 북유럽 침대.jpg";
 import pastelPatternBed from "../../assets/products/(침대) 북유럽풍 파스텔 문양 침대.jpg";
+// 인테리어 컷 — 일부 상품만 있음. 카드에 커서를 올리면 스튜디오 사진 대신
+// 방에 놓인 모습으로 잠깐 전환해서 보여준다(마우스를 떼면 원래 사진으로 복귀).
+import rugBInterior from "../../assets/interior/(소품) 북유럽풍 러그 B형 -인테리어.jpg";
+import patternLaundryBasketInterior from "../../assets/interior/(소품) 북유럽 문양 빨래 바구니 - 인테리어.jpg";
+import rugAInterior from "../../assets/interior/(소품) 북유럽풍 러그 A형 - 인테리어.jpg";
+import ecoWoodLaundryBasketInterior from "../../assets/interior/(소품) 친환경 우드 빨래 바구니 - 인테리어.jpg";
+import pastelPatternBedInterior from "../../assets/interior/(침대) 북유럽풍 파스텔 문양 침대 - 인테리어.jpg";
 import { getCartItems, getPhotoReviews } from "../../api";
 
 
@@ -36,7 +43,7 @@ export const PRODUCTS = [
   { id: 1, no: "No.1", name: "북유럽풍 러그 B형", sub: "멀티 파스텔 아브스트랙트", price: "168,000", originalPrice: "198,000", label: "BESTSELLER",
     desc: "크림 베이스 위에 블루·올리브·더스티핑크가 어우러진 추상 아라베스크 무늬 터프팅 러그입니다. 두툼한 울 파일감이 발끝에 포근하게 감기고, 어느 벽지·바닥재와도 무난하게 어울려 거실이나 침실 중심에 깔기 좋습니다.",
     spec: "SIZE : W160 D230 · MATERIAL : wool, cotton backing",
-    image: rugB, alt: "북유럽풍 러그 B형", brand: "집다움", category: "러그" },
+    image: rugB, interiorImage: rugBInterior, alt: "북유럽풍 러그 B형", brand: "집다움", category: "러그" },
   { id: 2, no: "No.2", name: "북유럽풍 우드 무드등", sub: "내추럴 라탄", price: "118,000", label: "NEW",
     desc: "오크 원목 스탠드에 라탄 케인 원통 갓을 씌운 플로어 조명입니다. 불을 켜면 라탄 사이로 은은한 그물무늬 빛이 새어나와 저녁 시간 거실에 따뜻한 분위기를 더합니다.",
     spec: "SIZE : W38 D38 H118 · MATERIAL : oak, rattan cane",
@@ -64,15 +71,15 @@ export const PRODUCTS = [
   { id: 8, no: "No.8", name: "북유럽 문양 빨래 바구니", sub: "내추럴 라탄", price: "45,000", label: "NEW",
     desc: "가는 라탄 가닥을 별무늬로 엮어 짠 바스켓으로, 가죽 손잡이가 포인트를 더합니다. 세탁물 정리는 물론 담요나 잡지꽂이로도 어울리는 다용도 소품입니다.",
     spec: "SIZE : W34 D34 H36 · MATERIAL : rattan, leather handle",
-    image: patternLaundryBasket, alt: "북유럽 문양 빨래 바구니", brand: "집다움", category: "소품" },
+    image: patternLaundryBasket, interiorImage: patternLaundryBasketInterior, alt: "북유럽 문양 빨래 바구니", brand: "집다움", category: "소품" },
   { id: 9, no: "No.9", name: "북유럽풍 러그 A형", sub: "아이보리 지오메트릭", price: "128,000", label: "NEW",
     desc: "삼각·다이아몬드 패턴을 세이지, 블루그레이 톤으로 촘촘히 터프팅한 러그입니다. 기하학적인 패턴이 공간에 리듬감을 더해 소파 앞이나 침대 곁 포인트 러그로 잘 어울립니다.",
     spec: "SIZE : W140 D200 · MATERIAL : wool, cotton backing",
-    image: rugA, alt: "북유럽풍 러그 A형", brand: "집다움", category: "소품" },
+    image: rugA, interiorImage: rugAInterior, alt: "북유럽풍 러그 A형", brand: "집다움", category: "소품" },
   { id: 10, no: "No.10", name: "친환경 우드 빨래 바구니", sub: "내추럴 라탄 & 가죽", price: "39,000", label: "ECO",
     desc: "천연 라탄을 촘촘히 엮고 가죽 손잡이를 덧댄 친환경 소재 바구니입니다. 옷방, 욕실, 아이 방 등 어디에 두어도 자연스럽게 스며드는 내추럴한 분위기를 냅니다.",
     spec: "SIZE : W38 D38 H40 · MATERIAL : rattan, leather handle",
-    image: ecoWoodLaundryBasket, alt: "친환경 우드 빨래 바구니", brand: "집다움", category: "소품" },
+    image: ecoWoodLaundryBasket, interiorImage: ecoWoodLaundryBasketInterior, alt: "친환경 우드 빨래 바구니", brand: "집다움", category: "소품" },
   { id: 11, no: "No.11", name: "우드 의자", sub: "내추럴 라탄 케인", price: "219,000", label: "NEW",
     desc: "둥근 라탄 케인 등받이와 오크 프레임이 만나는 자그마한 암체어입니다. 넉넉한 리넨 쿠션을 더해 식탁 의자로도, 침실 코너 체어로도 편안하게 쓸 수 있습니다.",
     spec: "SIZE : W64 D58 H74 · MATERIAL : oak, rattan cane, linen",
@@ -88,7 +95,7 @@ export const PRODUCTS = [
   { id: 14, no: "No.14", name: "북유럽풍 파스텔 문양 침대", sub: "멀티 파스텔 아브스트랙트", price: "950,000", label: "NEW",
     desc: "블루, 세이지, 로즈 톤의 추상 패턴 패브릭으로 감싼 업홀스터리 침대입니다. 높은 헤드보드가 침실의 포인트가 되어 주고, 부드러운 패딩감이 등을 편안하게 받쳐줍니다.",
     spec: "SIZE : W165 D210 H130 (Q) · MATERIAL : polyester fabric, wood frame",
-    image: pastelPatternBed, alt: "북유럽풍 파스텔 문양 침대", brand: "집다움", category: "침대" },
+    image: pastelPatternBed, interiorImage: pastelPatternBedInterior, alt: "북유럽풍 파스텔 문양 침대", brand: "집다움", category: "침대" },
 ];
 
 const PRODUCT_CATEGORIES = ["전체", "소파", "의자", "침대", "조명", "러그", "소품"];
@@ -808,6 +815,23 @@ function Home() {
                       여백 없이 꽉 차 보이게 하고, 실제 사진은 잘리지 않게 위에 그대로 얹는다. */}
                   <img src={p.image} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-70" />
                   <img src={p.image} alt={p.alt} className="relative w-full h-full object-contain group-hover:scale-[1.04] transition-transform duration-700" />
+                  {/* 인테리어 컷이 있는 상품만 — 커서를 올리면 스튜디오 사진 위로 방에 놓인
+                      모습이 서서히 겹쳐지며 "- 인테리어" 버전으로 잠깐 전환된다. */}
+                  {p.interiorImage && (
+                    <>
+                      <img
+                        src={p.interiorImage}
+                        alt={`${p.alt} - 인테리어`}
+                        className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                      />
+                      <span
+                        className="absolute bottom-3 left-3 rounded-full bg-foreground/70 px-2.5 py-1 text-[10px] font-semibold tracking-wide text-background opacity-0 backdrop-blur-sm transition-opacity duration-500 group-hover:opacity-100"
+                        style={MONO}
+                      >
+                        – 인테리어
+                      </span>
+                    </>
+                  )}
                   <button onClick={(e) => { e.stopPropagation(); toggleWish(p.id); }}
                     className="absolute top-3 right-3 w-7 h-7 bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <Heart size={12} className={wishlist.includes(p.id) ? "fill-foreground text-foreground" : "text-foreground"} />
