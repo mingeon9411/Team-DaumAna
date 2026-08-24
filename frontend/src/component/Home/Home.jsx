@@ -807,7 +807,7 @@ function Home() {
               : `${selectedCategory} 카테고리에 상품이 없습니다.`}
           </p>
         ) : (
-        <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-2 sm:grid-cols-3 gap-6">
+        <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-2 sm:grid-cols-3 items-start gap-6">
           {filteredProducts.map((p) => {
             const priceNum = Number(p.price.replace(/,/g, ""));
             const originalNum = p.originalPrice ? Number(p.originalPrice.replace(/,/g, "")) : 0;
@@ -816,12 +816,11 @@ function Home() {
 
             return (
               <article key={p.id} className="group cursor-pointer" onClick={() => navigate(`/item/${p.id}`)}>
-                <div className="relative overflow-hidden bg-muted mb-3 aspect-[5/6]">
-                  {/* 세로로 긴 사진(무드등 등)은 카드 비율과 안 맞아 object-contain만 쓰면
-                      좌우에 빈 여백이 생긴다 — 같은 사진을 확대·블러해 배경으로 깔아
-                      여백 없이 꽉 차 보이게 하고, 실제 사진은 잘리지 않게 위에 그대로 얹는다. */}
-                  <img src={p.image} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-70" />
-                  <img src={p.image} alt={p.alt} className="relative w-full h-full object-contain group-hover:scale-[1.04] transition-transform duration-700" />
+                <div className="relative overflow-hidden bg-muted mb-3">
+                  {/* 고정 비율 박스에 사진을 억지로 맞추는 대신, 상품 영역 자체를 사진의
+                      실제 비율에 맞춘다 — 잘리지도, 여백이 남지도 않는다. 대신 사진마다
+                      비율이 달라 같은 줄 카드 높이가 서로 다를 수 있다. */}
+                  <img src={p.image} alt={p.alt} className="block w-full h-auto group-hover:scale-[1.04] transition-transform duration-700" />
                   {/* 인테리어 컷이 있는 상품만 — 커서를 올리면 스튜디오 사진 위로 방에 놓인
                       모습이 서서히 겹쳐지며 "- 인테리어" 버전으로 잠깐 전환된다. */}
                   {p.interiorImage && (
