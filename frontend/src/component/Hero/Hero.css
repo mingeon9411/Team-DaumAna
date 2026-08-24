@@ -106,6 +106,48 @@
   opacity: 0.5;
 }
 
+/* ── 슬라이드 선택 dot (구 heroIndicator 숫자 카운터를 접근성 있는 tablist로 교체) ──
+   bottom: 40px는 사이드바의 전역 하단 플로팅 독바와 겹쳐서(약 y 831~871px 대역을
+   차지) 그보다 위로 띄운다. */
+.heroDots {
+  position: absolute;
+  bottom: 96px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+}
+
+.heroDot {
+  height: 10px;
+  width: 10px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: width 0.25s ease, background 0.25s ease;
+}
+
+.heroDot:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.heroDot.active {
+  width: 24px;
+  background: #fff;
+}
+
+/* ── 키보드 포커스 링 (터치/마우스 클릭 시엔 안 뜨고 키보드 탐색 때만) ── */
+.hero:focus-visible,
+.heroPrev:focus-visible,
+.heroNext:focus-visible,
+.heroDot:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.9);
+  outline-offset: 3px;
+}
+
 .slideBtn {
   position: absolute;
   top: 50%;
