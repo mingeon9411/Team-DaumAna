@@ -107,12 +107,10 @@ function HomeProductDetail() {
     {
       title: `${product.sub}, 공간에 자연스럽게 스며드는 컬러`,
       text: `${product.desc} 은은한 ${product.sub} 톤은 화이트, 우드, 그레이 등 어떤 인테리어 베이스와도 무리 없이 어우러져 공간의 톤을 해치지 않습니다.`,
-      pos: "center 15%",
     },
     {
       title: "매일 마주해도 질리지 않는 디테일",
       text: `매일 눈에 닿는 자리이기에 마감 하나하나에 신경 썼습니다. ${product.category} 본연의 기능과 완성도 높은 디테일을 함께 담아, 오래 두고 써도 자연스럽게 곁을 지키는 가구가 되도록 만들었습니다.`,
-      pos: "center 85%",
     },
   ];
 
@@ -299,8 +297,7 @@ function HomeProductDetail() {
             <img
               src={product.image}
               alt={product.alt}
-              className="w-full h-full object-cover"
-              style={{ objectPosition: "center 30%" }}
+              className="w-full h-full object-contain"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
             <div className="absolute bottom-8 left-8 right-8 text-white">
@@ -336,8 +333,7 @@ function HomeProductDetail() {
                 <img
                   src={product.image}
                   alt=""
-                  className="w-full h-full object-cover"
-                  style={{ objectPosition: b.pos }}
+                  className="w-full h-full object-contain"
                 />
               </div>
               <div className="w-full md:w-1/2">
