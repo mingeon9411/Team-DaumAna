@@ -41,8 +41,8 @@ function CheckoutKoreanHall() {
 
   useEffect(() => {
     getMyCoupons()
-      .then((res) => setMyCoupons(res.data))
-      .catch(() => {});
+      .then((res) => setMyCoupons(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setMyCoupons([]));
   }, []);
 
   // 상품 없이 직접 접근 또는 새로고침 시 한국관으로 보내고 장바구니 모달을 띄운다

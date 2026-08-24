@@ -19,7 +19,14 @@ function TrackingModal({ order, onClose }) {
     setLoading(true);
     setError("");
     getOrderTracking(order.id)
-      .then((res) => setTracking(res.data))
+      .then((res) => {
+        const data = res.data;
+        if (data && typeof data === "object" && Array.isArray(data.steps)) {
+          setTracking(data);
+        } else {
+          setError("배송 조회에 실패했습니다.");
+        }
+      })
       .catch((err) => setError(err.response?.data?.message || "배송 조회에 실패했습니다."))
       .finally(() => setLoading(false));
   }, [order]);

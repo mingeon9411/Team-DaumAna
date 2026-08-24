@@ -5,6 +5,13 @@
     <link rel="icon" type="image/png" href="/favicon-jd.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>집다움</title>
+    <!-- 로그인/회원가입 모달은 열리는 순간에야 hCaptcha 스크립트를 요청하는데,
+         그 시점에 DNS/TLS 연결까지 새로 맺다 보니 체감 지연이 컸다.
+         페이지 로드 시 미리 연결을 예열해두면 실제 클릭 시엔 스크립트 바이트만 받으면 된다. -->
+    <link rel="preconnect" href="https://js.hcaptcha.com" crossorigin />
+    <link rel="preconnect" href="https://newassets.hcaptcha.com" crossorigin />
+    <link rel="dns-prefetch" href="https://js.hcaptcha.com" />
+    <link rel="dns-prefetch" href="https://newassets.hcaptcha.com" />
   </head>
   <body>
     <div id="root"></div>

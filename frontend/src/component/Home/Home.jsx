@@ -183,8 +183,8 @@ function Home() {
   // 구매자가 올린 포토리뷰(사진 첨부된 리뷰) — 룩북 갤러리 패널에 실제 데이터로 보여준다.
   const loadPhotoReviews = () => {
     getPhotoReviews()
-      .then((res) => setPhotoReviews(res.data))
-      .catch(() => {});
+      .then((res) => setPhotoReviews(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setPhotoReviews([]));
   };
   useEffect(() => {
     loadPhotoReviews();

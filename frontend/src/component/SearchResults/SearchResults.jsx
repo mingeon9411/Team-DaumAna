@@ -16,7 +16,7 @@ function SearchResults() {
         setLoading(true);
         setError('');
         searchProducts(query)
-            .then((res) => setProducts(res.data))
+            .then((res) => setProducts(Array.isArray(res.data) ? res.data : []))
             .catch(() => setError('검색 중 오류가 발생했습니다.'))
             .finally(() => setLoading(false));
     }, [query]);
