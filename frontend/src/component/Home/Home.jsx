@@ -793,7 +793,7 @@ function Home() {
               : `${selectedCategory} 카테고리에 상품이 없습니다.`}
           </p>
         ) : (
-        <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-2 sm:grid-cols-3 gap-6">
           {filteredProducts.map((p) => {
             const priceNum = Number(p.price.replace(/,/g, ""));
             const originalNum = p.originalPrice ? Number(p.originalPrice.replace(/,/g, "")) : 0;
