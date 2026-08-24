@@ -11,20 +11,20 @@ import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import BusinessInfoPanel from "./BusinessInfoPanel";
 import { getRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS } from "../../utils/navFlags";
-import rugB from "../../assets/products/(러그) 북유럽풍 러그 B형.png";
-import woodMoodLamp from "../../assets/products/(무드등) 북유럽풍 우드 무드등.png";
-import smallMoodLamp from "../../assets/products/(무드등) 북유럽풍 침대 작은 무드등.png";
-import linenWoodSofa from "../../assets/products/(소파) 린넨 우드 소파.png";
-import nordicSofa from "../../assets/products/(소파) 북유럽 소파.png";
-import europeanWoodSofa from "../../assets/products/(소파) 유러피안 우드 소파.png";
-import linenLaundryBasket from "../../assets/products/(소품) 린넨 빨래 바구니.png";
-import patternLaundryBasket from "../../assets/products/(소품) 북유럽 문양 빨래 바구니.png";
-import rugA from "../../assets/products/(소품) 북유럽풍 러그 A형.png";
-import ecoWoodLaundryBasket from "../../assets/products/(소품) 친환경 우드 빨래 바구니.png";
-import woodChair from "../../assets/products/(의자) 우드 의자.png";
-import resortChair from "../../assets/products/(의자) 유럽풍 피서지 의자.png";
-import nordicBed from "../../assets/products/(침대) 북유럽 침대.png";
-import pastelPatternBed from "../../assets/products/(침대) 북유럽풍 파스텔 문양 침대.png";
+import rugB from "../../assets/products/(러그) 북유럽풍 러그 B형.jpg";
+import woodMoodLamp from "../../assets/products/(무드등) 북유럽풍 우드 무드등.jpg";
+import smallMoodLamp from "../../assets/products/(무드등) 북유럽풍 침대 작은 무드등.jpg";
+import linenWoodSofa from "../../assets/products/(소파) 린넨 우드 소파.jpg";
+import nordicSofa from "../../assets/products/(소파) 북유럽 소파.jpg";
+import europeanWoodSofa from "../../assets/products/(소파) 유러피안 우드 소파.jpg";
+import linenLaundryBasket from "../../assets/products/(소품) 린넨 빨래 바구니.jpg";
+import patternLaundryBasket from "../../assets/products/(소품) 북유럽 문양 빨래 바구니.jpg";
+import rugA from "../../assets/products/(소품) 북유럽풍 러그 A형.jpg";
+import ecoWoodLaundryBasket from "../../assets/products/(소품) 친환경 우드 빨래 바구니.jpg";
+import woodChair from "../../assets/products/(의자) 우드 의자.jpg";
+import resortChair from "../../assets/products/(의자) 유럽풍 피서지 의자.jpg";
+import nordicBed from "../../assets/products/(침대) 북유럽 침대.jpg";
+import pastelPatternBed from "../../assets/products/(침대) 북유럽풍 파스텔 문양 침대.jpg";
 import { getCartItems, getPhotoReviews } from "../../api";
 
 
@@ -89,7 +89,6 @@ export const PRODUCTS = [
     desc: "블루, 세이지, 로즈 톤의 추상 패턴 패브릭으로 감싼 업홀스터리 침대입니다. 높은 헤드보드가 침실의 포인트가 되어 주고, 부드러운 패딩감이 등을 편안하게 받쳐줍니다.",
     spec: "SIZE : W165 D210 H130 (Q) · MATERIAL : polyester fabric, wood frame",
     image: pastelPatternBed, alt: "북유럽풍 파스텔 문양 침대", brand: "집다움", category: "침대" },
-    {id: 15, no: "No.15", name: ""}
 ];
 
 const PRODUCT_CATEGORIES = ["전체", "소파", "의자", "침대", "조명", "러그", "소품"];
