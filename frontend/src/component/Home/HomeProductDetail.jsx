@@ -224,7 +224,7 @@ function HomeProductDetail() {
 
         <div className="homeDetailGlassCard grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 mb-20">
           <div className="overflow-hidden bg-muted aspect-[5/6]">
-            <img src={product.image} alt={product.alt} className="w-full h-full object-cover" />
+            <img src={product.image} alt={product.alt} className="w-full h-full object-contain" />
           </div>
 
           <div className="flex flex-col justify-center">

@@ -89,6 +89,7 @@ export const PRODUCTS = [
     desc: "블루, 세이지, 로즈 톤의 추상 패턴 패브릭으로 감싼 업홀스터리 침대입니다. 높은 헤드보드가 침실의 포인트가 되어 주고, 부드러운 패딩감이 등을 편안하게 받쳐줍니다.",
     spec: "SIZE : W165 D210 H130 (Q) · MATERIAL : polyester fabric, wood frame",
     image: pastelPatternBed, alt: "북유럽풍 파스텔 문양 침대", brand: "집다움", category: "침대" },
+    {id: 15, no: "No.15", name: ""}
 ];
 
 const PRODUCT_CATEGORIES = ["전체", "소파", "의자", "침대", "조명", "러그", "소품"];
@@ -791,7 +792,7 @@ function Home() {
             return (
               <article key={p.id} className="group cursor-pointer" onClick={() => navigate(`/item/${p.id}`)}>
                 <div className="relative overflow-hidden bg-muted mb-3 aspect-[5/6]">
-                  <img src={p.image} alt={p.alt} className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+                  <img src={p.image} alt={p.alt} className="w-full h-full object-contain group-hover:scale-[1.04] transition-transform duration-700" />
                   <button onClick={(e) => { e.stopPropagation(); toggleWish(p.id); }}
                     className="absolute top-3 right-3 w-7 h-7 bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <Heart size={12} className={wishlist.includes(p.id) ? "fill-foreground text-foreground" : "text-foreground"} />
