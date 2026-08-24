@@ -32,6 +32,13 @@ import patternLaundryBasketInterior from "../../assets/interior/(소품) 북유�
 import rugAInterior from "../../assets/interior/(소품) 북유럽풍 러그 A형 - 인테리어.jpg";
 import ecoWoodLaundryBasketInterior from "../../assets/interior/(소품) 친환경 우드 빨래 바구니 - 인테리어.jpg";
 import pastelPatternBedInterior from "../../assets/interior/(침대) 북유럽풍 파스텔 문양 침대 - 인테리어.jpg";
+import woodMoodLampInterior from "../../assets/interior/(무드등) 북유럽풍 우드 무드등 - 인테리어.jpg";
+import smallMoodLampInterior from "../../assets/interior/(무드등) 북유럽풍 침대 작은 무드등 - 인테리어.jpg";
+import linenWoodSofaInterior from "../../assets/interior/(소파) 린넨 우드 소파 - 인테리어.jpg";
+import nordicSofaInterior from "../../assets/interior/(소파) 북유럽 소파 - 인테리어.jpg";
+import europeanWoodSofaInterior from "../../assets/interior/(소파) 유러피안 우드 소파 - 인테리어.jpg";
+import resortChairInterior from "../../assets/interior/(의자) 유럽풍 피서지 의자 - 인테리어.jpg";
+import nordicBedInterior from "../../assets/interior/(침대) 북유럽 침대 - 인테리어.jpg";
 import { getCartItems, getPhotoReviews } from "../../api";
 
 
@@ -47,23 +54,23 @@ export const PRODUCTS = [
   { id: 2, no: "No.2", name: "북유럽풍 우드 무드등", sub: "내추럴 라탄", price: "118,000", label: "NEW",
     desc: "오크 원목 스탠드에 라탄 케인 원통 갓을 씌운 플로어 조명입니다. 불을 켜면 라탄 사이로 은은한 그물무늬 빛이 새어나와 저녁 시간 거실에 따뜻한 분위기를 더합니다.",
     spec: "SIZE : W38 D38 H118 · MATERIAL : oak, rattan cane",
-    image: woodMoodLamp, alt: "북유럽풍 우드 무드등", brand: "집다움", category: "조명" },
+    image: woodMoodLamp, interiorImage: woodMoodLampInterior, alt: "북유럽풍 우드 무드등", brand: "집다움", category: "조명" },
   { id: 3, no: "No.3", name: "북유럽풍 침대 작은 무드등", sub: "내추럴 우드 & 자연사", price: "49,000", label: "NEW",
     desc: "원뿔형 원목 다리 위에 천연 마사(자연사)를 촘촘히 감아 만든 미니 무드등입니다. 침대 협탁이나 콘솔 위에 올려두면 아늑한 저녁 조명으로 제격입니다.",
     spec: "SIZE : W20 D20 H32 · MATERIAL : wood, jute rope",
-    image: smallMoodLamp, alt: "북유럽풍 침대 작은 무드등", brand: "집다움", category: "조명" },
+    image: smallMoodLamp, interiorImage: smallMoodLampInterior, alt: "북유럽풍 침대 작은 무드등", brand: "집다움", category: "조명" },
   { id: 4, no: "No.4", name: "린넨 우드 소파", sub: "샌드 베이지", price: "498,000", originalPrice: "560,000", label: "BESTSELLER",
     desc: "오크 프레임 팔걸이를 자연사로 엮고, 두툼한 린넨 쿠션을 올린 2인용 소파입니다. 담백한 프레임과 부드러운 쿠션감이 균형을 이뤄 거실 어디에 두어도 편안한 무게중심이 됩니다.",
     spec: "SIZE : W165 D80 H78 · MATERIAL : linen, oak, rope",
-    image: linenWoodSofa, alt: "린넨 우드 소파", brand: "집다움", category: "소파" },
+    image: linenWoodSofa, interiorImage: linenWoodSofaInterior, alt: "린넨 우드 소파", brand: "집다움", category: "소파" },
   { id: 5, no: "No.5", name: "북유럽 소파", sub: "아이보리 부클", price: "780,000", originalPrice: "890,000", label: "NEW",
     desc: "곡선을 그리며 이어지는 프레임에 부클 원단을 두른 라운지형 3인 소파입니다. 낮은 좌면과 넉넉한 팔걸이가 몸을 편안히 감싸 주고, 오브제 같은 실루엣이 거실의 시선을 자연스럽게 붙잡습니다.",
     spec: "SIZE : W240 D95 H70 · MATERIAL : boucle, ash wood",
-    image: nordicSofa, alt: "북유럽 소파", brand: "집다움", category: "소파" },
+    image: nordicSofa, interiorImage: nordicSofaInterior, alt: "북유럽 소파", brand: "집다움", category: "소파" },
   { id: 6, no: "No.6", name: "유러피안 우드 소파", sub: "머스터드 옐로우", price: "560,000", label: "NEW",
     desc: "라탄 케인을 짜 넣은 등받이와 월넛 톤 원목 프레임이 클래식한 무드를 더하는 3인용 소파입니다. 머스터드 컬러 쿠션이 포인트가 되어 차분한 공간에 생기를 불어넣습니다.",
     spec: "SIZE : W205 D85 H82 · MATERIAL : rattan cane, walnut, cotton",
-    image: europeanWoodSofa, alt: "유러피안 우드 소파", brand: "집다움", category: "소파" },
+    image: europeanWoodSofa, interiorImage: europeanWoodSofaInterior, alt: "유러피안 우드 소파", brand: "집다움", category: "소파" },
   { id: 7, no: "No.7", name: "린넨 빨래 바구니", sub: "민트 그레이 컬러블록", price: "32,000", label: "ECO",
     desc: "민트, 블루, 아이보리가 컬러블록으로 나뉜 패브릭 빨래 바구니입니다. 가벼운 무광 소재에 메탈 손잡이를 달아 옷방과 욕실을 오가며 들고 다니기 편합니다.",
     spec: "SIZE : W36 D36 H40 · MATERIAL : coated fabric, metal handle",
@@ -87,11 +94,11 @@ export const PRODUCTS = [
   { id: 12, no: "No.12", name: "유럽풍 피서지 의자", sub: "코냑 브라운 레더 스트랩", price: "268,000", originalPrice: "298,000", label: "BESTSELLER",
     desc: "티크 원목 프레임에 가죽 스트랩을 교차로 엮어 만든 로우 라운지 체어입니다. 낮은 좌면과 여유로운 각도가 휴양지에 온 듯한 편안함을 주어, 테라스나 창가 자리에 잘 어울립니다.",
     spec: "SIZE : W68 D75 H68 · MATERIAL : teak wood, leather strap",
-    image: resortChair, alt: "유럽풍 피서지 의자", brand: "집다움", category: "의자" },
+    image: resortChair, interiorImage: resortChairInterior, alt: "유럽풍 피서지 의자", brand: "집다움", category: "의자" },
   { id: 13, no: "No.13", name: "북유럽 침대", sub: "내추럴 오크", price: "890,000", originalPrice: "1,050,000", label: "BESTSELLER",
     desc: "원목의 결과 라이브 엣지를 살린 헤드보드가 인상적인 플랫폼 침대 프레임입니다. 군더더기 없는 낮은 구조로 침실을 한층 넓고 차분하게 만들어 줍니다.",
     spec: "SIZE : W160 D200 H85 (Q) · MATERIAL : solid oak",
-    image: nordicBed, alt: "북유럽 침대", brand: "집다움", category: "침대" },
+    image: nordicBed, interiorImage: nordicBedInterior, alt: "북유럽 침대", brand: "집다움", category: "침대" },
   { id: 14, no: "No.14", name: "북유럽풍 파스텔 문양 침대", sub: "멀티 파스텔 아브스트랙트", price: "950,000", label: "NEW",
     desc: "블루, 세이지, 로즈 톤의 추상 패턴 패브릭으로 감싼 업홀스터리 침대입니다. 높은 헤드보드가 침실의 포인트가 되어 주고, 부드러운 패딩감이 등을 편안하게 받쳐줍니다.",
     spec: "SIZE : W165 D210 H130 (Q) · MATERIAL : polyester fabric, wood frame",
