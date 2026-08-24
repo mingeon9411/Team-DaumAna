@@ -150,6 +150,26 @@ function HomeProductDetail() {
     }
   };
 
+  const handleBuyNow = () => {
+    if (!localStorage.getItem("access_token")) {
+      alert("로그인이 필요합니다.");
+      openLogin();
+      return;
+    }
+    navigate("/checkout", {
+      state: {
+        cartItems: [{
+          id: product.id,
+          name: product.name,
+          price: priceNum,
+          image: product.image,
+          quantity,
+          option_id: null,
+        }],
+      },
+    });
+  };
+
   const handleReviewImageSelect = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -273,6 +293,13 @@ function HomeProductDetail() {
                 aria-label="찜 리스트에 담기"
               >
                 <Heart size={16} className={wished ? "fill-foreground text-foreground" : "text-foreground"} />
+              </button>
+              <button
+                onClick={handleBuyNow}
+                className="flex-1 border border-foreground text-foreground text-xs tracking-widest hover:bg-foreground hover:text-background transition-colors"
+                style={SANS}
+              >
+                바로 구매하기
               </button>
               <button
                 onClick={handleAddToCart}
