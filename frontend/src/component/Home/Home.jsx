@@ -175,14 +175,26 @@ function Home() {
   useEffect(() => {
     loadPhotoReviews();
   }, []);
-  const [recentlyViewed, setRecentlyViewed] = useState(() => getRecentlyViewed());
+  // localStorage에 박제된 image URL은 빌드할 때마다 해시가 바뀌어 깨지기 쉽다(상품
+  // 사진을 교체/재압축할 때마다 예전에 저장해둔 경로가 404남) — 그래서 저장된 스냅샷을
+  // 그대로 쓰지 않고, 상품이 아직 PRODUCTS에 있으면 항상 최신 image/name/price로 덮어쓴다.
+  // (상품이 삭제된 경우에만 마지막으로 저장된 스냅샷을 그대로 보여준다.)
+  const withFreshProductData = (list) =>
+    list.map((item) => {
+      const live = PRODUCTS.find((p) => p.id === item.id);
+      return live
+        ? { ...item, image: live.image, name: live.name, price: Number(live.price.replace(/,/g, "")) }
+        : item;
+    });
+
+  const [recentlyViewed, setRecentlyViewed] = useState(() => withFreshProductData(getRecentlyViewed()));
   const navigate = useNavigate();
 
   // 다른 탭/페이지에서 "최근 본 상품"이 바뀌면(상품 상세 진입, 삭제 등) 동기화한다.
   // 상품 그리드 패널까지 스크롤해야만 뜨게 해두면 인트로 영상 구간이 많아 체감상
   // 너무 늦게 보이므로, 홈 페이지 안에서는 위치 상관없이 바로 보이게 한다.
   useEffect(() => {
-    const sync = () => setRecentlyViewed(getRecentlyViewed());
+    const sync = () => setRecentlyViewed(withFreshProductData(getRecentlyViewed()));
     window.addEventListener("recentlyviewedchange", sync);
     window.addEventListener("storage", sync);
     return () => {
