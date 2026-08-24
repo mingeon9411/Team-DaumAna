@@ -1,0 +1,51 @@
+⭐ 2026-08-25
+
+✅ 메인 상품 상세페이지에 바로구매 버튼 추가
+➡️ 한국관 상세페이지(ProductDetail.jsx)에는 이미 있던 "바로 구매하기" 버튼을
+   메인 상세페이지(HomeProductDetail.jsx)에도 동일 스타일로 추가 — 찜 / 바로
+   구매하기(테두리) / 담기(검은 배경) 3버튼 구성
+➡️ 미로그인 시 "로그인이 필요합니다" 안내 후 로그인 모달 오픈, 로그인 상태면
+   장바구니를 거치지 않고 /checkout으로 현재 상품·수량을 cartItems state로
+   들고 바로 이동
+
+✅ 로그인 모달 hCaptcha 연결 예열, 그리고 진짜 원인이었던 홈페이지 크래시 버그 발견/수정
+➡️ "로그인 모달이 느리게 뜬다"는 요청으로 index.html에 hCaptcha CDN
+   (js.hcaptcha.com / newassets.hcaptcha.com) preconnect + dns-prefetch 추가 —
+   모달 열 때 DNS/TLS를 새로 맺던 지연 제거
+➡️ 실제 테스트 중 홈페이지 자체가 photoReviews.map is not a function으로
+   완전히 크래시하고 있는 걸 발견 — 로그인 모달이 안 뜨는 게 아니라 룩북
+   포토리뷰 API가 배열이 아닌 응답을 줄 때 홈 전체가 하얗게 죽어 있었음
+➡️ 지난번(8/15) 고쳤던 것과 같은 패턴(res.data를 검증 없이 배열 state에 바로
+   넣음)이 SearchResults, Checkout/CheckoutKoreanHall(쿠폰), TrackingModal
+   (배송조회)에도 있어 전부 방어 코드 추가 — 백엔드가 예상과 다른 응답(로그인
+   리다이렉트 HTML 등)을 줘도 해당 화면만 빈 상태로 넘어가고 페이지 전체가
+   죽지 않도록 함
+
+✅ Hero 캐러셀을 리듀서 기반 양방향 무한루프 구조로 교체
+➡️ 사용자가 보완된 개선 코드(TypeScript)를 제시 → 프로젝트가 쓰는 순수 JS로
+   변환하고, 존재하지 않는 /images/*.jpg 경로를 실제 프로젝트 자산(sunset.png,
+   mount.png)으로 교체해 적용
+➡️ 기존 구현은 정방향 루프만 clone 슬라이드로 매끄럽고 역방향(prevSlide)은
+   clone 없이 index를 직접 점프시켜 여러 슬라이드를 한번에 미끄러지듯 지나가는
+   버그가 있었음 — 앞뒤 양쪽에 clone을 둔 배열 + useReducer 상태머신으로 교체해
+   양방향 모두 매끄럽게 순환하도록 수정
+➡️ 비디오 슬라이드는 고정 5초가 아니라 재생 종료(ended) 시점에 다음으로
+   전환(ended 미수신 대비 15초 폴백), hover/터치/탭 비활성/reduced-motion 시
+   자동재생 정지, 키보드(←/→)·터치 스와이프, ARIA carousel/tablist 접근성 추가
+➡️ 숫자 카운터를 접근성 있는 dot tablist로 교체 — 처음 위치가 사이드바 하단
+   플로팅 독바와 겹쳐서 bottom 위치 조정
+➡️ Hero.jsx는 현재 어디서도 import되지 않는 미사용 컴포넌트라 실제 화면 영향은
+   없음. 임시 라우트로 마운트해 Playwright로 정방향/역방향 순환·키보드·dot
+   클릭·hover 정지까지 확인 후 라우트는 제거
+
+✅ 한국관 배너 영상(jipdaum-kor) 재인코딩 및 배치
+➡️ jipdaum-kor(1).mp4에서도 동일한 H.264 Late SEI 코덱 이슈 확인돼 재인코딩
+➡️ 한국관 인트로와 상품 그리드 사이에 시네마틱 영상 밴드로 배치, 스크롤 진입 시
+   자동재생 → 재생 종료 시 접히며 상품 목록이 위로 드러나는 연출, 이후 사용자
+   요청으로 크기를 키우고 화면 중앙에 정렬
+
+✅ 기타
+➡️ 다른 PC에서 작업한 커밋 70개 이상을 pull로 반영(상품 14종 교체, 챗봇 상품
+   추천 사이드 패널, Cloudflare Pages 마이그레이션, hCaptcha 로그인 게이트 등)
+➡️ gh CLI 설치 및 브라우저 device-flow로 로그인 — 이후 push마다 GitHub Actions
+   배포(Build and Deploy) 성공/실패를 직접 조회해서 확인하는 흐름 확립
