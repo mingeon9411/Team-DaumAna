@@ -803,7 +803,11 @@ function Home() {
             return (
               <article key={p.id} className="group cursor-pointer" onClick={() => navigate(`/item/${p.id}`)}>
                 <div className="relative overflow-hidden bg-muted mb-3 aspect-[5/6]">
-                  <img src={p.image} alt={p.alt} className="w-full h-full object-contain group-hover:scale-[1.04] transition-transform duration-700" />
+                  {/* 세로로 긴 사진(무드등 등)은 카드 비율과 안 맞아 object-contain만 쓰면
+                      좌우에 빈 여백이 생긴다 — 같은 사진을 확대·블러해 배경으로 깔아
+                      여백 없이 꽉 차 보이게 하고, 실제 사진은 잘리지 않게 위에 그대로 얹는다. */}
+                  <img src={p.image} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-70" />
+                  <img src={p.image} alt={p.alt} className="relative w-full h-full object-contain group-hover:scale-[1.04] transition-transform duration-700" />
                   <button onClick={(e) => { e.stopPropagation(); toggleWish(p.id); }}
                     className="absolute top-3 right-3 w-7 h-7 bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                     <Heart size={12} className={wishlist.includes(p.id) ? "fill-foreground text-foreground" : "text-foreground"} />

@@ -221,8 +221,9 @@ function HomeProductDetail() {
         </button>
 
         <div className="homeDetailGlassCard grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 mb-20">
-          <div className="overflow-hidden bg-muted aspect-[5/6]">
-            <img src={product.image} alt={product.alt} className="w-full h-full object-contain" />
+          <div className="relative overflow-hidden bg-muted aspect-[5/6]">
+            <img src={product.image} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-70" />
+            <img src={product.image} alt={product.alt} className="relative w-full h-full object-contain" />
           </div>
 
           <div className="flex flex-col justify-center">
@@ -296,8 +297,14 @@ function HomeProductDetail() {
           <div className="relative overflow-hidden rounded-3xl mb-16 aspect-[16/9] max-w-4xl mx-auto">
             <img
               src={product.image}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-70"
+            />
+            <img
+              src={product.image}
               alt={product.alt}
-              className="w-full h-full object-contain"
+              className="relative w-full h-full object-contain"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
             <div className="absolute bottom-8 left-8 right-8 text-white">
@@ -329,11 +336,17 @@ function HomeProductDetail() {
               key={b.title}
               className={`flex flex-col ${i % 2 ? "md:flex-row-reverse" : "md:flex-row"} items-center gap-10 max-w-4xl mx-auto mb-20`}
             >
-              <div className="w-full md:w-1/2 overflow-hidden rounded-2xl aspect-[4/3] shrink-0">
+              <div className="relative w-full md:w-1/2 overflow-hidden rounded-2xl aspect-[4/3] shrink-0">
                 <img
                   src={product.image}
                   alt=""
-                  className="w-full h-full object-contain"
+                  aria-hidden="true"
+                  className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-70"
+                />
+                <img
+                  src={product.image}
+                  alt=""
+                  className="relative w-full h-full object-contain"
                 />
               </div>
               <div className="w-full md:w-1/2">
