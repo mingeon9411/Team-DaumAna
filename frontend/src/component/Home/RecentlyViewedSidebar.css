@@ -17,7 +17,9 @@ body.dark .recentDock {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(150, 185, 255, 0.16);
 }
 
-/* ── 접었다 펼치기 (하단 독바의 railToggle/sidebarRail.collapsed와 같은 패턴) ── */
+/* ── 접었다 펼치기 (하단 독바 Sidebar.css의 railToggle/railItems와 완전히 동일한
+   레시피 — emphasized-decelerate로 느긋하게 펼치고 emphasized-accelerate로
+   산뜻하게 접는 비대칭 easing, 늘어난 duration, 아이템별 stagger까지 그대로 이식) ── */
 
 .recentDockToggle {
   cursor: pointer;
@@ -28,24 +30,83 @@ body.dark .recentDock {
 }
 
 .recentDockChevron {
-  transition: transform 0.3s ease;
+  /* 펼침 전용: Material 3 emphasized decelerate */
+  transition: transform 0.7s cubic-bezier(0.05, 0.7, 0.1, 1);
 }
 
 .recentDock.collapsed .recentDockChevron {
   transform: rotate(-90deg);
+  /* 접힘 전용: emphasized accelerate — 여는 것보다 짧고 산뜻하게 */
+  transition: transform 0.5s cubic-bezier(0.3, 0, 0.8, 0.15);
 }
 
 .recentDockItems {
   overflow: hidden;
   max-height: 600px;
-  opacity: 1;
-  transition: max-height 0.4s ease, opacity 0.3s ease;
+  /* 펼침 전용. Sidebar.css의 railItems(max-width)와 동일한 곡선/속도 —
+     0.4s ease의 밋밋한 곡선 대신 감속이 훨씬 매끄러운 emphasized-decelerate,
+     duration도 여유 있게. opacity는 컨테이너가 아니라 아래에서 아이템 각각에
+     건다(이유는 railBtn 스태거와 동일 — 개별 아이템이 순서대로 나타나야
+     "펼쳐진다"는 느낌이 살고, 컨테이너 하나로 뭉뚱그려 페이드하면 흐리멍텅하다). */
+  transition: max-height 0.85s cubic-bezier(0.05, 0.7, 0.1, 1);
 }
 
 .recentDock.collapsed .recentDockItems {
   max-height: 0;
-  opacity: 0;
   pointer-events: none;
+  /* 접힘 전용: emphasized accelerate, 펼침(0.85s)보다 짧게(0.6s) */
+  transition: max-height 0.6s cubic-bezier(0.3, 0, 0.8, 0.15);
+}
+
+/* 아이템(썸네일/+N 배지/전체삭제 버튼)이 위에서부터 순서대로 살짝 커지며
+   나타나도록 — Sidebar.css의 railBtn 스태거와 동일한 패턴.
+   flex-shrink:0이 없으면 recentDockItems의 max-height가 0→600px로 자라는
+   도중(아직 다 안 자란 좁은 높이) 아이템들이 세로로 눌려 찌그러졌다가 튕기듯
+   복귀한다 — Sidebar.css의 railBtn에서 겪었던 것과 같은 버그가 여기서는
+   overflow:hidden에 가려 안 보일 뿐 그대로 존재해서 같이 고친다. */
+.recentDockItems > * {
+  flex-shrink: 0;
+  opacity: 1;
+  transform: scale(1);
+  transition:
+    opacity 0.5s cubic-bezier(0.05, 0.7, 0.1, 1),
+    transform 0.5s cubic-bezier(0.05, 0.7, 0.1, 1);
+}
+
+.recentDock.collapsed .recentDockItems > * {
+  opacity: 0;
+  transform: scale(0.92);
+  transition:
+    opacity 0.38s cubic-bezier(0.3, 0, 0.8, 0.15),
+    transform 0.38s cubic-bezier(0.3, 0, 0.8, 0.15);
+}
+
+/* stagger 딜레이 — 간격/총 duration은 Sidebar.css의 railBtn과 동일한 비율
+   (아이콘 duration 0.5s에 18ms 간격). MAX_VISIBLE=6 + "+N" 배지 + 전체삭제
+   버튼 = 최대 8개인데, 여유 있게 10개까지 잡아둔다. */
+.recentDockItems > *:nth-child(1)  { transition-delay: 0ms; }
+.recentDockItems > *:nth-child(2)  { transition-delay: 18ms; }
+.recentDockItems > *:nth-child(3)  { transition-delay: 36ms; }
+.recentDockItems > *:nth-child(4)  { transition-delay: 54ms; }
+.recentDockItems > *:nth-child(5)  { transition-delay: 72ms; }
+.recentDockItems > *:nth-child(6)  { transition-delay: 90ms; }
+.recentDockItems > *:nth-child(7)  { transition-delay: 108ms; }
+.recentDockItems > *:nth-child(8)  { transition-delay: 126ms; }
+.recentDockItems > *:nth-child(9)  { transition-delay: 144ms; }
+.recentDockItems > *:nth-child(10) { transition-delay: 162ms; }
+/* 접힐 때의 transition-delay:0s는 위 .recentDock.collapsed .recentDockItems > *
+   규칙의 transition 단축 속성이 이미 되돌려주므로(delay 미명시 시 자동 0s)
+   별도 오버라이드 불필요 — Sidebar.css에서 썼다가 dead code로 지운 것과 같은
+   실수를 여기서 반복하지 않는다. */
+
+/* 모션을 줄이도록 설정한 사용자에게는 즉시 전환 (Sidebar.css와 동일 원칙) */
+@media (prefers-reduced-motion: reduce) {
+  .recentDockChevron,
+  .recentDockItems,
+  .recentDockItems > * {
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
 }
 
 /* 접혔을 땐 토글 버튼 아래 구분선도 같이 지워 뭉툭한 알약 모양으로 마무리 */
