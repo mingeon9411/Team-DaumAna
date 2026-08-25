@@ -289,7 +289,7 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
      감속 구간이 더 매끄럽고 여유 있게 느껴진다. 펼칠 때(기본 상태로 돌아갈 때)만
      적용되고, 접을 때는 아래 .collapsed 규칙에서 더 빠른 전용 곡선으로 덮는다 —
      열 때는 느긋하게, 닫을 때는 산뜻하게(Material의 enter/exit 곡선 분리 원칙). */
-  transition: background 0.2s ease, color 0.2s ease, margin 0.4s cubic-bezier(0.05, 0.7, 0.1, 1), transform 0.4s cubic-bezier(0.05, 0.7, 0.1, 1);
+  transition: background 0.2s ease, color 0.2s ease, margin 0.7s cubic-bezier(0.05, 0.7, 0.1, 1), transform 0.7s cubic-bezier(0.05, 0.7, 0.1, 1);
 }
 
 .railToggle svg {
@@ -305,11 +305,9 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
 .sidebarRail.collapsed .railToggle {
   margin-right: 0;
   transform: rotate(90deg);
-  /* 접힐 땐 "emphasized accelerate" 곡선으로 — 열 때(0.4s)보다는 짧지만,
-     0.22s처럼 너무 짧으면 "부드럽게 줄어든다"기보다 "툭 접힌다"로 보인다.
-     0.3s 정도는 줘야 accelerate 곡선 특유의 느린 시작~빠른 마무리가 눈에
-     보일 시간이 확보돼 "줄어드는 동작"으로 읽힌다. */
-  transition: background 0.2s ease, color 0.2s ease, margin 0.3s cubic-bezier(0.3, 0, 0.8, 0.15), transform 0.3s cubic-bezier(0.3, 0, 0.8, 0.15);
+  /* 접힐 땐 "emphasized accelerate" 곡선으로 — 열 때(0.7s)보다는 짧지만
+     전체적으로 "너무 빠르다"는 피드백을 받아 같은 비율로 늘림. */
+  transition: background 0.2s ease, color 0.2s ease, margin 0.5s cubic-bezier(0.3, 0, 0.8, 0.15), transform 0.5s cubic-bezier(0.3, 0, 0.8, 0.15);
 }
 
 .railItems {
@@ -324,21 +322,20 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
      위쪽으로 튀어나가야 하므로, 접힘 처리는 opacity + pointer-events로만 */
   overflow: visible;
 
-  /* 펼침 전용: emphasized decelerate, 0.42s→0.5s로 살짝 늘려 더 여유 있고
-     프리미엄하게. 아이콘 stagger(아래)도 이 0.5s 안에 맞춰 다시 계산했다. */
-  transition: max-width 0.5s cubic-bezier(0.05, 0.7, 0.1, 1);
+  /* 펼침 전용: emphasized decelerate. "접고 펼치는 게 너무 빠르다"는 피드백에
+     따라 0.5s→0.85s로 늘림 — 아이콘 stagger(아래)도 이 0.85s 안에 맞춰
+     다시 계산했다. */
+  transition: max-width 0.85s cubic-bezier(0.05, 0.7, 0.1, 1);
 }
 
 .sidebarRail.collapsed .railItems {
   max-width: 0;
   pointer-events: none;
   overflow: hidden;
-  /* 접힘 전용: emphasized accelerate. 펼침(0.5s)과 완전히 대칭일 필요는
-     없지만, 0.26s는 너무 짧아서 "부드럽게 줄어든다"보다 "훅 사라진다"에
-     가깝게 보였다 — 늘어나는 쪽만큼 줄어드는 쪽도 하나의 매끄러운 동작으로
-     체감되도록 0.38s로 늘림(펼침의 약 76% — 닫는 게 여는 것보다 약간
-     빠른 건 유지하되, 성급해 보이지 않을 정도로). */
-  transition: max-width 0.38s cubic-bezier(0.3, 0, 0.8, 0.15);
+  /* 접힘 전용: emphasized accelerate. 펼침(0.85s)과 같은 비율(약 71%)로
+     0.38s→0.6s로 늘려 — 닫는 게 여는 것보다 여전히 약간 빠르되, 전체적으로
+     느긋해진 펼침 속도와 어울리게 함께 느려지도록. */
+  transition: max-width 0.6s cubic-bezier(0.3, 0, 0.8, 0.15);
 }
 
 /* 독이 펼쳐질 때 컨테이너 폭만 늘어나는 게 아니라, 안의 아이콘들이 왼쪽부터
@@ -362,13 +359,13 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
   opacity: 1;
   transform: scale(1);
   /* 펼침 전용 — 컨테이너와 동일한 emphasized decelerate로 통일해 "하나의
-     동작"처럼 읽히게 하고, 0.24s→0.32s로 늘려 감속 구간을 더 여유 있게
-     느끼도록 했다. scale 시작값은 0.92(거의 안 보이는 미세한 커짐) 유지 —
-     opacity 페이드가 주는 인상에 무게중심을 둔다. */
+     동작"처럼 읽히게 함. "너무 빠르다"는 피드백에 따라 0.32s→0.5s로 늘림.
+     scale 시작값은 0.92(거의 안 보이는 미세한 커짐) 유지 — opacity 페이드가
+     주는 인상에 무게중심을 둔다. */
   transition:
     background 0.2s ease,
-    opacity 0.32s cubic-bezier(0.05, 0.7, 0.1, 1),
-    transform 0.32s cubic-bezier(0.05, 0.7, 0.1, 1);
+    opacity 0.5s cubic-bezier(0.05, 0.7, 0.1, 1),
+    transform 0.5s cubic-bezier(0.05, 0.7, 0.1, 1);
 }
 
 .sidebarRail.collapsed .railItems > .railBtn,
@@ -377,47 +374,46 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
 .sidebarRail.collapsed .railItems > .railStyleWrap {
   opacity: 0;
   transform: scale(0.92);
-  /* 접힘 전용 — 컨테이너 collapse(0.38s)와 보조를 맞춰 "줄어드는 동작"이
-     눈에 보이도록 0.18s→0.24s로 늘림. transition 단축 속성은 delay를
-     명시 안 하면 각 속성의 delay를 자동으로 0s로 되돌리므로, 별도의
-     transition-delay 선언은 불필요하다(stagger 딜레이를 여기서 완전히
-     무효화하는 역할까지 이 한 줄이 다 함). */
+  /* 접힘 전용 — 컨테이너 collapse(0.6s)와 보조를 맞춰 0.24s→0.38s로 늘림.
+     transition 단축 속성은 delay를 명시 안 하면 각 속성의 delay를 자동으로
+     0s로 되돌리므로, 별도의 transition-delay 선언은 불필요하다(stagger
+     딜레이를 여기서 완전히 무효화하는 역할까지 이 한 줄이 다 함). */
   transition:
     background 0.2s ease,
-    opacity 0.24s cubic-bezier(0.3, 0, 0.8, 0.15),
-    transform 0.24s cubic-bezier(0.3, 0, 0.8, 0.15);
+    opacity 0.38s cubic-bezier(0.3, 0, 0.8, 0.15),
+    transform 0.38s cubic-bezier(0.3, 0, 0.8, 0.15);
 }
 
 /* 펼칠 때만 순서대로 딜레이를 줘서 왼쪽부터 흘러나오는 느낌을 만든다. 접을 때는
    위 .collapsed 규칙(같은 부모 선택자라 항상 이 규칙보다 우선순위가 높음)이
    딜레이를 0s로 되돌리므로 한 번에 줄어든다 — 별도의 !important 오버라이드는
    불필요(오히려 다음에 이 규칙을 또 덮어써야 할 때 !important 전쟁을 유발함).
-   간격은 9ms — 아이콘 transition이 0.32s(320ms)이므로 마지막(20번째, 171ms
-   딜레이) 아이콘도 171+320=491ms로 컨테이너(max-width, 0.5s=500ms)와 거의
+   간격은 18ms — 아이콘 transition이 0.5s(500ms)이므로 마지막(20번째, 342ms
+   딜레이) 아이콘도 342+500=842ms로 컨테이너(max-width, 0.85s=850ms)와 거의
    같은 타이밍에 끝나 하나의 동작처럼 읽힌다. 목록은 최대 직계 자식 수(로그인+
    홈+상품상세 아님 기준 18개)보다 여유 있게 20개까지 잡아둔다 — 아이콘이 더
    늘어날 걸 대비한다면 JS에서 style={{"--i": idx}}로 넘기고
-   `transition-delay: calc(var(--i) * 9ms)` 한 줄로 대체하는 편이 더 안전하다. */
+   `transition-delay: calc(var(--i) * 18ms)` 한 줄로 대체하는 편이 더 안전하다. */
 .railItems > *:nth-child(1)  { transition-delay: 0ms; }
-.railItems > *:nth-child(2)  { transition-delay: 9ms; }
-.railItems > *:nth-child(3)  { transition-delay: 18ms; }
-.railItems > *:nth-child(4)  { transition-delay: 27ms; }
-.railItems > *:nth-child(5)  { transition-delay: 36ms; }
-.railItems > *:nth-child(6)  { transition-delay: 45ms; }
-.railItems > *:nth-child(7)  { transition-delay: 54ms; }
-.railItems > *:nth-child(8)  { transition-delay: 63ms; }
-.railItems > *:nth-child(9)  { transition-delay: 72ms; }
-.railItems > *:nth-child(10) { transition-delay: 81ms; }
-.railItems > *:nth-child(11) { transition-delay: 90ms; }
-.railItems > *:nth-child(12) { transition-delay: 99ms; }
-.railItems > *:nth-child(13) { transition-delay: 108ms; }
-.railItems > *:nth-child(14) { transition-delay: 117ms; }
-.railItems > *:nth-child(15) { transition-delay: 126ms; }
-.railItems > *:nth-child(16) { transition-delay: 135ms; }
-.railItems > *:nth-child(17) { transition-delay: 144ms; }
-.railItems > *:nth-child(18) { transition-delay: 153ms; }
-.railItems > *:nth-child(19) { transition-delay: 162ms; }
-.railItems > *:nth-child(20) { transition-delay: 171ms; }
+.railItems > *:nth-child(2)  { transition-delay: 18ms; }
+.railItems > *:nth-child(3)  { transition-delay: 36ms; }
+.railItems > *:nth-child(4)  { transition-delay: 54ms; }
+.railItems > *:nth-child(5)  { transition-delay: 72ms; }
+.railItems > *:nth-child(6)  { transition-delay: 90ms; }
+.railItems > *:nth-child(7)  { transition-delay: 108ms; }
+.railItems > *:nth-child(8)  { transition-delay: 126ms; }
+.railItems > *:nth-child(9)  { transition-delay: 144ms; }
+.railItems > *:nth-child(10) { transition-delay: 162ms; }
+.railItems > *:nth-child(11) { transition-delay: 180ms; }
+.railItems > *:nth-child(12) { transition-delay: 198ms; }
+.railItems > *:nth-child(13) { transition-delay: 216ms; }
+.railItems > *:nth-child(14) { transition-delay: 234ms; }
+.railItems > *:nth-child(15) { transition-delay: 252ms; }
+.railItems > *:nth-child(16) { transition-delay: 270ms; }
+.railItems > *:nth-child(17) { transition-delay: 288ms; }
+.railItems > *:nth-child(18) { transition-delay: 306ms; }
+.railItems > *:nth-child(19) { transition-delay: 324ms; }
+.railItems > *:nth-child(20) { transition-delay: 342ms; }
 
 /* 모션을 줄이도록 설정한 사용자에게는 스프링 바운스 + 순차 등장 대신 즉시 전환 */
 @media (prefers-reduced-motion: reduce) {
