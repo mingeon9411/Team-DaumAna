@@ -44,8 +44,59 @@
    자동재생 → 재생 종료 시 접히며 상품 목록이 위로 드러나는 연출, 이후 사용자
    요청으로 크기를 키우고 화면 중앙에 정렬
 
+✅ 사이드바(하단바 독) 코드 리뷰 요청 — race condition·에러 무시·토글 아이콘 버그 수정
+➡️ 사용자가 제시한 fetchCartCount 개선 diff를 시니어 아키텍트 페르소나로 검수
+➡️ cancelled 플래그 하나로는 같은 effect 인스턴스 안에서 cartchange가 연달아
+   여러 번 발화될 때(짧은 시간에 상품 2개 담기 등) 응답 순서 역전을 못 막는
+   문제 발견 — useCallback + 세대(generation) 번호 비교 방식으로 교체
+➡️ res.data가 배열이 아닐 때(res.data.reduce가 throw) catch가 원인 로그 없이
+   조용히 배지를 0으로 초기화하던 문제 — Array.isArray 가드 추가(이 세션에서
+   낸 같은 패턴 버그 6개와 동일 계열)
+➡️ 로그아웃 API 실패를 빈 catch로 완전히 삼키던 것을 console.error로 최소
+   원인 추적 가능하게 함
+➡️ 접기/펼치기 토글 버튼이 collapsed 상태와 무관하게 항상 왼쪽 화살표만
+   보여주던 버그 수정 — collapsed 여부에 따라 아이콘 전환 + aria-expanded 추가
+
+✅ 플로팅 독(하단바 독) 펼침 애니메이션 — "부드럽지 않다"는 피드백을 계속 추적해
+   여러 라운드에 걸쳐 근본 원인을 하나씩 찾아 수정
+➡️ 1차: railBtn/railDivider/railSearchWrap/railStyleWrap 애니메이션이 직계
+   자식으로 스코프 안 돼, railSearchWrap/railStyleWrap 안에 중첩된 검색·스타일
+   버튼이 부모+자식 이중으로 scale(0.5) 적용받아 0.25로 찌그러지던 버그, nth-child
+   stagger 목록이 17개뿐이라 실제 최대 18개 상태에서 마지막 아이콘 순서 역전
+   글리치, 특이도상 죽은 코드였던 !important 오버라이드, prefers-reduced-motion
+   미대응 — 전부 수정
+➡️ 2차: "그래도 튕긴다"는 피드백 → 실측(Playwright rAF 프레임 간격, matrix
+   회전각 추출)으로 railBtn/railDivider/railSearchWrap/railStyleWrap에
+   flex-shrink 기본값(1)이 데스크톱 스타일엔 없어서(모바일 미디어쿼리에만 있었음)
+   railItems의 max-width가 자라는 도중 아이콘이 40px→29px 폭으로 눌렸다 튕기듯
+   복귀하던 진짜 원인 발견 — flex-shrink:0 추가
+➡️ 3차: opacity(0.32s ease)와 transform(스프링 바운스 곡선)이 서로 다른
+   duration/easing을 써서 미세하게 흔들려 보이던 문제, railToggle 버튼 자신의
+   회전에 남아있던 스프링 바운스(사용자가 직접 클릭하는 지점이라 가장 크게
+   체감됨), railPop 클릭 피드백(80%→118% 오버슈트)까지 — 전부 Material 3
+   emphasized-decelerate/accelerate 곡선으로 통일해 오버슈트 완전히 제거,
+   scale 시작값도 0.5→0.92로 줄여 "펑" 하는 팝 모션 완화
+➡️ 4차: "여전히 빠르다"는 피드백에 duration을 단계적으로 크게 늘림(최종적으로
+   펼침 1.8s/접힘 1.3s, 처음 대비 약 4배) — 열기/닫기를 각각 별도 transition
+   규칙으로 분리해 여는 건 느긋하게, 닫는 건 상대적으로 산뜻하게 대비
+➡️ 그래도 "안 보인다"는 피드백 → macOS "동작 줄이기(Reduce Motion)" 접근성
+   설정이 켜져 있으면 prefers-reduced-motion 미디어쿼리가 duration을 강제로
+   0.01ms로 되돌리는 코드가 원인이었음 확인(사용자 쪽 설정 문제로 확인 종료)
+
+✅ 우측 사이드바(RecentlyViewedSidebar/최근 본 상품 독)에도 동일 적용
+➡️ 주석에 "하단 독바와 같은 패턴"이라고만 적혀있고 실제로는 단순 ease
+   0.3~0.4s 트랜지션이던 걸, 위 하단바 독 개선사항(emphasized 곡선, 아이템별
+   stagger, flex-shrink:0 — 세로 방향 리스트라 같은 squish 버그가
+   overflow:hidden에 가려 안 보이고 있었음, reduced-motion 대응) 전부 이식
+➡️ Sidebar.jsx는 실제로는 화면 하단 중앙에 뜨는데 컴포넌트명이 "Sidebar"이고,
+   RecentlyViewedSidebar는 화면 우측 상단에 뜨는데 이름에도 Sidebar가 들어있어
+   대화 중 지칭이 계속 헷갈림 — 이후 "하단바 독"(Sidebar)/"우측 사이드바"
+   (RecentlyViewedSidebar)로 대화용 명칭만 합의(코드상 실제 이름은 안 바꿈)
+
 ✅ 기타
 ➡️ 다른 PC에서 작업한 커밋 70개 이상을 pull로 반영(상품 14종 교체, 챗봇 상품
    추천 사이드 패널, Cloudflare Pages 마이그레이션, hCaptcha 로그인 게이트 등)
 ➡️ gh CLI 설치 및 브라우저 device-flow로 로그인 — 이후 push마다 GitHub Actions
    배포(Build and Deploy) 성공/실패를 직접 조회해서 확인하는 흐름 확립
+➡️ 사용자가 향후 코드 리뷰/구현 전 설계 분석 요청 시 쓸 고정 페르소나·출력
+   형식 두 가지를 합의(시니어 아키텍트 코드 리뷰 / 구현 전 3항목 분석)
