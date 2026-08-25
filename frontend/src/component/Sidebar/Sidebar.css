@@ -305,9 +305,11 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
 .sidebarRail.collapsed .railToggle {
   margin-right: 0;
   transform: rotate(90deg);
-  /* 접힐 땐 "emphasized accelerate" 곡선으로 — 진입(0.4s)보다 짧고 초반부터
-     빠르게 빠져나가, 열 때의 여유로운 느낌과 닫을 때의 산뜻한 느낌이 대비된다. */
-  transition: background 0.2s ease, color 0.2s ease, margin 0.22s cubic-bezier(0.3, 0, 0.8, 0.15), transform 0.22s cubic-bezier(0.3, 0, 0.8, 0.15);
+  /* 접힐 땐 "emphasized accelerate" 곡선으로 — 열 때(0.4s)보다는 짧지만,
+     0.22s처럼 너무 짧으면 "부드럽게 줄어든다"기보다 "툭 접힌다"로 보인다.
+     0.3s 정도는 줘야 accelerate 곡선 특유의 느린 시작~빠른 마무리가 눈에
+     보일 시간이 확보돼 "줄어드는 동작"으로 읽힌다. */
+  transition: background 0.2s ease, color 0.2s ease, margin 0.3s cubic-bezier(0.3, 0, 0.8, 0.15), transform 0.3s cubic-bezier(0.3, 0, 0.8, 0.15);
 }
 
 .railItems {
@@ -331,10 +333,12 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
   max-width: 0;
   pointer-events: none;
   overflow: hidden;
-  /* 접힘 전용: emphasized accelerate로 짧고 산뜻하게 — 펼침(0.5s)과 대칭이
-     아니어도 된다. 사용자가 지적한 건 "열릴 때"였고, 닫힐 때까지 늘어지면
-     오히려 굼떠 보인다. */
-  transition: max-width 0.26s cubic-bezier(0.3, 0, 0.8, 0.15);
+  /* 접힘 전용: emphasized accelerate. 펼침(0.5s)과 완전히 대칭일 필요는
+     없지만, 0.26s는 너무 짧아서 "부드럽게 줄어든다"보다 "훅 사라진다"에
+     가깝게 보였다 — 늘어나는 쪽만큼 줄어드는 쪽도 하나의 매끄러운 동작으로
+     체감되도록 0.38s로 늘림(펼침의 약 76% — 닫는 게 여는 것보다 약간
+     빠른 건 유지하되, 성급해 보이지 않을 정도로). */
+  transition: max-width 0.38s cubic-bezier(0.3, 0, 0.8, 0.15);
 }
 
 /* 독이 펼쳐질 때 컨테이너 폭만 늘어나는 게 아니라, 안의 아이콘들이 왼쪽부터
@@ -373,14 +377,15 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
 .sidebarRail.collapsed .railItems > .railStyleWrap {
   opacity: 0;
   transform: scale(0.92);
-  /* 접힘 전용 — 컨테이너 collapse(0.26s)와 보조를 맞춰 짧고 산뜻하게.
-     transition 단축 속성은 delay를 명시 안 하면 각 속성의 delay를 자동으로
-     0s로 되돌리므로, 별도의 transition-delay 선언은 불필요하다(stagger
-     딜레이를 여기서 완전히 무효화하는 역할까지 이 한 줄이 다 함). */
+  /* 접힘 전용 — 컨테이너 collapse(0.38s)와 보조를 맞춰 "줄어드는 동작"이
+     눈에 보이도록 0.18s→0.24s로 늘림. transition 단축 속성은 delay를
+     명시 안 하면 각 속성의 delay를 자동으로 0s로 되돌리므로, 별도의
+     transition-delay 선언은 불필요하다(stagger 딜레이를 여기서 완전히
+     무효화하는 역할까지 이 한 줄이 다 함). */
   transition:
     background 0.2s ease,
-    opacity 0.18s cubic-bezier(0.3, 0, 0.8, 0.15),
-    transform 0.18s cubic-bezier(0.3, 0, 0.8, 0.15);
+    opacity 0.24s cubic-bezier(0.3, 0, 0.8, 0.15),
+    transform 0.24s cubic-bezier(0.3, 0, 0.8, 0.15);
 }
 
 /* 펼칠 때만 순서대로 딜레이를 줘서 왼쪽부터 흘러나오는 느낌을 만든다. 접을 때는
