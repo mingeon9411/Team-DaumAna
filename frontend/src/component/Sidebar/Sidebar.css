@@ -335,6 +335,12 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
 .railItems > .railDivider,
 .railItems > .railSearchWrap,
 .railItems > .railStyleWrap {
+  /* flex-shrink 기본값(1) 그대로 두면, railItems의 max-width가 0→640px로
+     자라는 도중(아직 다 안 자란 좁은 폭) 아이콘들이 그 좁은 폭에 맞춰 강제로
+     눌려 찌그러졌다가(예: 40px → 29px 폭) max-width가 다 자란 순간 원래
+     크기로 튕기듯 복귀한다 — "펼침이 부드럽지 않다"고 느껴지는 원인.
+     overflow:visible이라 어차피 안 잘리니, 절대 안 눌리게 고정한다. */
+  flex-shrink: 0;
   opacity: 1;
   transform: scale(1);
   transition:
