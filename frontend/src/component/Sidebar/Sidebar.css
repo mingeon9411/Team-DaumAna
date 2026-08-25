@@ -284,7 +284,11 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
   margin-right: 8px;
 
   transform: rotate(-90deg);
-  transition: background 0.2s ease, color 0.2s ease, margin 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* 아이콘들의 스프링 바운스는 다 없앴는데, 정작 클릭하는 이 토글 버튼
+     자신의 회전(90도 지나쳤다 튕겨 돌아옴)에는 여전히 남아있었다 — 사용자가
+     실제로 손가락/커서를 두고 보는 지점이 바로 여기라 "여전히 튕긴다"는
+     인상의 핵심 원인. 나머지와 동일한 바운스 없는 ease-out으로 통일. */
+  transition: background 0.2s ease, color 0.2s ease, margin 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .railToggle svg {
