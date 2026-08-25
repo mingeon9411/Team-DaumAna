@@ -1,5 +1,5 @@
 import "./Sidebar.css";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   LuHouse,
@@ -108,35 +108,49 @@ function Sidebar() {
     return () => window.removeEventListener("doorintroend", playOpen);
   }, [isHome, location.key]);
 
-  const fetchCartCount = () => {
-    // 장바구니 개수는 로그인 계정의 백엔드 장바구니만 기준으로 한다.
-    // (예전 localStorage "homeCartCounts"는 계정과 무관하게 남아 다른 계정에도 이월되던 버그의 원인이라 제거)
+  // 장바구니 개수는 로그인 계정의 백엔드 장바구니만 기준으로 한다.
+  // (예전 localStorage "homeCartCounts"는 계정과 무관하게 남아 다른 계정에도 이월되던 버그의 원인이라 제거)
+  //
+  // cancelled 플래그 하나만으로는 "같은 effect 인스턴스 안에서" cartchange 등이 연달아
+  // 여러 번 발화돼 fetchCartCount가 중복 호출될 때(예: 상품을 짧은 간격으로 두 번 담음)
+  // 응답이 요청 순서와 다르게 도착하는 경우까지는 못 막는다. 호출마다 세대(generation)
+  // 번호를 매겨, 그 사이 더 최신 호출이 있었으면 오래된 응답은 버리도록 한다.
+  const cartFetchGenRef = useRef(0);
+
+  const fetchCartCount = useCallback(() => {
+    const gen = ++cartFetchGenRef.current;
     if (!localStorage.getItem("access_token")) {
       setCartCount(0);
       return;
     }
     getCartItems()
       .then((res) => {
-        const total = res.data.reduce((sum, item) => sum + (item.quantity || 1), 0);
-        setCartCount(total);
+        if (gen !== cartFetchGenRef.current) return; // 그 사이 더 최신 요청이 있었으면 폐기
+        const items = Array.isArray(res.data) ? res.data : [];
+        setCartCount(items.reduce((sum, item) => sum + (item.quantity || 1), 0));
       })
-      .catch(() => setCartCount(0));
-  };
+      .catch(() => {
+        if (gen === cartFetchGenRef.current) setCartCount(0);
+      });
+  }, []);
 
   const syncLoginState = () => setIsLoggedIn(!!localStorage.getItem("access_token"));
 
+  // 라우트 이동마다 재동기화 — 다른 탭에서 로그인/로그아웃한 경우처럼 이 탭엔
+  // authchange 이벤트가 안 닿는 케이스를 내비게이션 시점에 보정한다.
   useEffect(() => {
     syncLoginState();
     fetchCartCount();
-  }, [location.pathname]);
+  }, [location.pathname, fetchCartCount]);
 
   useEffect(() => {
     window.addEventListener("authchange", syncLoginState);
     return () => window.removeEventListener("authchange", syncLoginState);
   }, []);
 
+  // cartchange/authchange/homecartchange 구독은 mount 시 한 번만 — 이벤트 핸들러가
+  // location에 의존하지 않으므로, 라우트 이동마다 해제/재등록할 이유가 없다.
   useEffect(() => {
-    fetchCartCount();
     window.addEventListener("cartchange", fetchCartCount);
     window.addEventListener("authchange", fetchCartCount);
     window.addEventListener("homecartchange", fetchCartCount);
@@ -145,7 +159,7 @@ function Sidebar() {
       window.removeEventListener("authchange", fetchCartCount);
       window.removeEventListener("homecartchange", fetchCartCount);
     };
-  }, []);
+  }, [fetchCartCount]);
 
   useEffect(() => {
     if (isHome && !localStorage.getItem("access_token")) {
@@ -306,7 +320,11 @@ function Sidebar() {
     const refresh = localStorage.getItem("refresh_token");
     try {
       if (refresh) await logoutUser({ refresh });
-    } catch {}
+    } catch (err) {
+      // 서버 로그아웃(리프레시 토큰 폐기)이 실패해도 클라이언트 토큰은 그대로
+      // 지우고 진행한다 — 다만 원인 추적이 가능하도록 로그는 남긴다.
+      console.error("logout API failed:", err);
+    }
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("nickname");
@@ -357,9 +375,10 @@ function Sidebar() {
         type="button"
         className="railToggle"
         aria-label={collapsed ? "메뉴 펼치기" : "메뉴 접기"}
+        aria-expanded={!collapsed}
         onClick={() => setCollapsed(!collapsed)}
       >
-        <LuChevronLeft />
+        {collapsed ? <LuChevronRight /> : <LuChevronLeft />}
       </button>
 
       <div className="railItems">
