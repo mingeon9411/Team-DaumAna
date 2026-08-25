@@ -284,14 +284,12 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
   margin-right: 8px;
 
   transform: rotate(-90deg);
-  /* 스프링 오버슈트는 없앴지만(cubic-bezier(0.16,1,.3,1)은 수학적으로 절대
-     1을 넘지 않는다 — dy/dt=3(1-t)²≥0이라 항상 단조증가), 그 곡선 자체가
-     초반에 아주 빠르게 튀어나갔다가 뒤에서 길게 감속하는 "확 튀는" 인상을
-     주는 형태라 여전히 통통 튀는 느낌으로 읽혔다. Material 표준 easing
-     (cubic-bezier(0.4,0,0.2,1))으로 교체 — 가속/감속이 훨씬 고르게
-     분배돼 "차분하게 움직인다"는 인상을 주는, 실무에서 가장 널리 쓰이는
-     무난한 곡선. */
-  transition: background 0.2s ease, color 0.2s ease, margin 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Material 3의 "emphasized decelerate" 곡선(cubic-bezier(0.05,0.7,0.1,1))으로
+     교체 — 등장/펼침 모션 전용으로 설계된 곡선이라 표준 곡선(0.4,0,0.2,1)보다
+     감속 구간이 더 매끄럽고 여유 있게 느껴진다. 펼칠 때(기본 상태로 돌아갈 때)만
+     적용되고, 접을 때는 아래 .collapsed 규칙에서 더 빠른 전용 곡선으로 덮는다 —
+     열 때는 느긋하게, 닫을 때는 산뜻하게(Material의 enter/exit 곡선 분리 원칙). */
+  transition: background 0.2s ease, color 0.2s ease, margin 0.4s cubic-bezier(0.05, 0.7, 0.1, 1), transform 0.4s cubic-bezier(0.05, 0.7, 0.1, 1);
 }
 
 .railToggle svg {
@@ -307,6 +305,9 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
 .sidebarRail.collapsed .railToggle {
   margin-right: 0;
   transform: rotate(90deg);
+  /* 접힐 땐 "emphasized accelerate" 곡선으로 — 진입(0.4s)보다 짧고 초반부터
+     빠르게 빠져나가, 열 때의 여유로운 느낌과 닫을 때의 산뜻한 느낌이 대비된다. */
+  transition: background 0.2s ease, color 0.2s ease, margin 0.22s cubic-bezier(0.3, 0, 0.8, 0.15), transform 0.22s cubic-bezier(0.3, 0, 0.8, 0.15);
 }
 
 .railItems {
@@ -321,13 +322,19 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
      위쪽으로 튀어나가야 하므로, 접힘 처리는 opacity + pointer-events로만 */
   overflow: visible;
 
-  transition: max-width 0.42s cubic-bezier(0.4, 0, 0.2, 1);
+  /* 펼침 전용: emphasized decelerate, 0.42s→0.5s로 살짝 늘려 더 여유 있고
+     프리미엄하게. 아이콘 stagger(아래)도 이 0.5s 안에 맞춰 다시 계산했다. */
+  transition: max-width 0.5s cubic-bezier(0.05, 0.7, 0.1, 1);
 }
 
 .sidebarRail.collapsed .railItems {
   max-width: 0;
   pointer-events: none;
   overflow: hidden;
+  /* 접힘 전용: emphasized accelerate로 짧고 산뜻하게 — 펼침(0.5s)과 대칭이
+     아니어도 된다. 사용자가 지적한 건 "열릴 때"였고, 닫힐 때까지 늘어지면
+     오히려 굼떠 보인다. */
+  transition: max-width 0.26s cubic-bezier(0.3, 0, 0.8, 0.15);
 }
 
 /* 독이 펼쳐질 때 컨테이너 폭만 늘어나는 게 아니라, 안의 아이콘들이 왼쪽부터
@@ -350,16 +357,14 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
   flex-shrink: 0;
   opacity: 1;
   transform: scale(1);
-  /* 오버슈트는 없었지만(수학적으로 검증 완료) opacity/transform이 초반에
-     확 움직이고 뒤에서 길게 늘어지는 곡선이라 "통통 튀는" 인상을 줬다.
-     Material 표준 easing으로 통일 + scale 시작값을 0.5(절반 크기에서
-     자라남 — 눈에 확 띄는 "펑" 하는 팝 모션)에서 0.92(거의 안 보일
-     정도의 미세한 커짐)로 대폭 줄여, 스케일 변화 자체가 "튀어나온다"고
-     읽히지 않고 opacity 페이드가 주는 인상으로 무게중심을 옮겼다. */
+  /* 펼침 전용 — 컨테이너와 동일한 emphasized decelerate로 통일해 "하나의
+     동작"처럼 읽히게 하고, 0.24s→0.32s로 늘려 감속 구간을 더 여유 있게
+     느끼도록 했다. scale 시작값은 0.92(거의 안 보이는 미세한 커짐) 유지 —
+     opacity 페이드가 주는 인상에 무게중심을 둔다. */
   transition:
     background 0.2s ease,
-    opacity 0.24s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity 0.32s cubic-bezier(0.05, 0.7, 0.1, 1),
+    transform 0.32s cubic-bezier(0.05, 0.7, 0.1, 1);
 }
 
 .sidebarRail.collapsed .railItems > .railBtn,
@@ -368,17 +373,24 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
 .sidebarRail.collapsed .railItems > .railStyleWrap {
   opacity: 0;
   transform: scale(0.92);
-  transition-delay: 0s;
+  /* 접힘 전용 — 컨테이너 collapse(0.26s)와 보조를 맞춰 짧고 산뜻하게.
+     transition 단축 속성은 delay를 명시 안 하면 각 속성의 delay를 자동으로
+     0s로 되돌리므로, 별도의 transition-delay 선언은 불필요하다(stagger
+     딜레이를 여기서 완전히 무효화하는 역할까지 이 한 줄이 다 함). */
+  transition:
+    background 0.2s ease,
+    opacity 0.18s cubic-bezier(0.3, 0, 0.8, 0.15),
+    transform 0.18s cubic-bezier(0.3, 0, 0.8, 0.15);
 }
 
 /* 펼칠 때만 순서대로 딜레이를 줘서 왼쪽부터 흘러나오는 느낌을 만든다. 접을 때는
    위 .collapsed 규칙(같은 부모 선택자라 항상 이 규칙보다 우선순위가 높음)이
    딜레이를 0s로 되돌리므로 한 번에 줄어든다 — 별도의 !important 오버라이드는
    불필요(오히려 다음에 이 규칙을 또 덮어써야 할 때 !important 전쟁을 유발함).
-   간격은 9ms — 아이콘 transition이 0.24s(240ms)이므로 마지막(20번째, 171ms
-   딜레이) 아이콘도 171+240=411ms로 컨테이너(max-width, 420ms)와 거의 같은
-   타이밍에 끝나 하나의 동작처럼 읽힌다. 목록은 최대 직계 자식 수(로그인+홈+
-   상품상세 아님 기준 18개)보다 여유 있게 20개까지 잡아둔다 — 아이콘이 더
+   간격은 9ms — 아이콘 transition이 0.32s(320ms)이므로 마지막(20번째, 171ms
+   딜레이) 아이콘도 171+320=491ms로 컨테이너(max-width, 0.5s=500ms)와 거의
+   같은 타이밍에 끝나 하나의 동작처럼 읽힌다. 목록은 최대 직계 자식 수(로그인+
+   홈+상품상세 아님 기준 18개)보다 여유 있게 20개까지 잡아둔다 — 아이콘이 더
    늘어날 걸 대비한다면 JS에서 style={{"--i": idx}}로 넘기고
    `transition-delay: calc(var(--i) * 9ms)` 한 줄로 대체하는 편이 더 안전하다. */
 .railItems > *:nth-child(1)  { transition-delay: 0ms; }
