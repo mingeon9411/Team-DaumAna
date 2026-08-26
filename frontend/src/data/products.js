@@ -11,7 +11,7 @@ import seoanchungShelf from "../assets/products/Korean Traditional Shelf — Seo
 
 export const products = [
   {
-    id: 1,
+    id: 11,
     image: table,
     hoverImage: table2,
     name: "월넛 사이드 테이블",
@@ -26,7 +26,7 @@ export const products = [
     category: "테이블",
   },
   {
-    id: 2,
+    id: 12,
     image: light,
     hoverImage: light2,
     name: "한지 무드 조명",
@@ -40,7 +40,7 @@ export const products = [
     category: "조명",
   },
   {
-    id: 3,
+    id: 13,
     image: bottle,
     hoverImage: hover3,
     name: "무자기 꽃잎 화병 Petal vase",
@@ -54,7 +54,7 @@ export const products = [
     category: "소품",
   },
   {
-    id: 4,
+    id: 14,
     image: storageCabinet,
     name: "한국 모던 나비 문양 수납장",
     desc: "브라스 나비 손잡이가 포인트인 원목 수납장",
@@ -68,7 +68,7 @@ export const products = [
     category: "수납",
   },
   {
-    id: 7,
+    id: 15,
     image: hanjiPendantLight,
     name: "한지 펜던트 조명",
     desc: "한지가 은은하게 빛을 머금는 프레임형 펜던트 조명",
@@ -82,7 +82,7 @@ export const products = [
     category: "조명",
   },
   {
-    id: 9,
+    id: 16,
     image: pyeongsangSofa,
     name: "평상 소파",
     desc: "낮은 원목 프레임 위에 리넨 쿠션을 얹은 평상형 3인 소파",
@@ -95,7 +95,7 @@ export const products = [
     category: "소파",
   },
   {
-    id: 10,
+    id: 17,
     image: seoanchungShelf,
     name: "서안청 책장",
     desc: "청자 소품과 서책을 올려두기 좋은 원목 서안청 스타일 책장",
