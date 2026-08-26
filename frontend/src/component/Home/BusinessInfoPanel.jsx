@@ -27,7 +27,8 @@ function BusinessInfoPanel() {
       data-hsnap
       data-lenis-prevent
       onWheel={(e) => e.stopPropagation()}
-      className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col items-center justify-center px-6 bg-background text-foreground"
+      className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col items-center justify-center px-6 text-foreground"
+      style={{ background: "linear-gradient(135deg, #e8e8ea 0%, #c9cacd 35%, #f4f4f6 55%, #b0b1b5 80%, #dcdde0 100%)" }}
     >
       <div className="w-full max-w-lg">
         <div className="flex items-center gap-3 mb-8">
