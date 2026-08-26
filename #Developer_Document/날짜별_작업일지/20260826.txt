@@ -1,0 +1,53 @@
+⭐ 2026-08-26
+
+✅ 프론트-백엔드 상품 데이터 연동 구조 진단
+➡️ "메인/한국관 상품이 왜 두 카탈로그로 나뉘어 있나"는 질문에서 출발해 실제
+   구조를 끝까지 추적: Home.jsx의 PRODUCTS(export)와 data/products.js가 화면
+   표시용 정적 JS 배열로 완전히 분리돼 있고, ChatBot.jsx(공용 컴포넌트)가
+   catalog prop으로 둘 중 하나를 받아 쓰는 구조라 두 카탈로그에 같은 필드가
+   양쪽 다 채워져 있어야만 챗봇 로직이 안전하게 동작함을 확인
+➡️ 별도 저장소 jipdaum-spring을 직접 열어 백엔드 실체를 확인 — 상품은
+   JIPDAUM_PRODUCT 테이블 하나뿐이고 collection 컬럼("main"/"korean_hall")
+   으로 진열을 구분하는 설계였음. ProductRepository/ProductService엔 이미
+   collection 필터링 메서드·오버로드가 다 구현돼 있었는데, 공개 API
+   컨트롤러(GET /api/shop/products)만 그 파라미터를 안 받고 있어서 프론트가
+   이 경로를 못 쓰고 정적 파일로 자체 재구현하게 된 것으로 결론
+
+✅ DB 실제 데이터 조회 — 카탈로그 불일치의 진짜 원인 발견
+➡️ docker exec로 JIPDAUM_PRODUCT 테이블을 직접 조회, 두 가지 서로 다른
+   문제를 확인:
+   - korean_hall 컬렉션(id 11~17)은 이름·가격이 data/products.js 7개 상품과
+     정확히 1:1 일치 — 콘텐츠는 이미 맞는데 프론트 로컬 id(1,2,3,4,7,9,10)
+     만 DB id와 어긋나 있던 상태
+   - main 컬렉션(id 1~7,9,10)은 지금 Home.jsx의 14개 북유럽풍 상품과 이름부터
+     전혀 다른 옛 상품(린넨 암체어, 대나무 트레이 등) — 북유럽 컨셉으로
+     피벗하기 전 잔존 시드 데이터로 추정, DB 재입력 없이는 프론트와 연동
+     불가능한 상태
+➡️ thumbnail_url도 Unsplash 임시 URL / 로컬 파일 경로 문자열이 그대로 박힌
+   값 / 빈 문자열이 섞여 있어 실사용 불가 확인
+
+✅ 백엔드 API: GET /api/shop/products에 collection 파라미터 노출
+➡️ ProductController.listProducts가 search/category만 받던 걸 collection
+   파라미터 추가해 3-인자 서비스 오버로드로 연결 — 안 넘기면 기존과 동일하게
+   전체 반환(하위 호환 유지). 프론트 merge 코드는 DB main 데이터 재입력
+   전까지는 보류하기로 결정(잘못된 DB 값으로 화면이 깨지는 걸 방지)
+
+✅ 한국관 상품 id를 백엔드 실제 id로 재구성 (실버그 수정)
+➡️ data/products.js 7개 상품의 id를 1,2,3,4,7,9,10 → 11~17로 renumber
+➡️ 부수 효과로 실제 버그 하나 확인: Cart.jsx(product_id 매칭),
+   ProductDetail.jsx(라우트 id 매칭)가 백엔드 id 기준으로 로컬 상품을
+   찾는 구조였는데, 로컬 id가 11~17이 아니라 1~10대였던 탓에 한국관
+   상품은 이 매칭이 항상 실패하고 있었을 것 — renumber로 함께 해결
+➡️ Home.jsx(메인) 상품은 대상에서 제외 — DB main 데이터 자체가 재입력
+   전까지는 대응되는 id가 없어 다음 작업으로 넘김
+
+✅ 사업자 정보 패널(BusinessInfoPanel.jsx) 배경 메탈릭 실버로 변경
+➡️ bg-background(테마 토큰) 대신 실버 톤 diagonal linear-gradient 인라인
+   스타일 적용
+
+✅ 기타
+➡️ jipdaum-spring 저장소를 SMTP 이메일 발송 문제를 다루던 별도 세션과
+   동시에 작업 — 이 세션에서 만든 collection 파라미터 변경이 그쪽 세션의
+   커밋(51ff149, "이메일 SMTP 환경변수 주입 추가")에 같이 묶여 커밋/푸시됨.
+   내용은 맞지만 커밋 메시지가 실제 변경과 안 맞으니 참고할 것 —
+   jipdaum-spring 작업일지(같은 날짜)에도 별도로 기록해 둠
