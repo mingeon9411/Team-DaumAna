@@ -70,6 +70,7 @@ function Sidebar() {
   const isProductDetail = location.pathname.startsWith("/item/") || location.pathname.startsWith("/product/");
   const pendingPanelRef = useRef(null);
   const searchWrapRef = useRef(null);
+  const searchFlyoutRef = useRef(null);
   const styleWrapRef = useRef(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -223,7 +224,9 @@ function Sidebar() {
   useEffect(() => {
     if (!searchOpen) return;
     const handleClickOutside = (e) => {
-      if (searchWrapRef.current && !searchWrapRef.current.contains(e.target)) {
+      const inWrap = searchWrapRef.current && searchWrapRef.current.contains(e.target);
+      const inFlyout = searchFlyoutRef.current && searchFlyoutRef.current.contains(e.target);
+      if (!inWrap && !inFlyout) {
         setSearchOpen(false);
       }
     };
@@ -422,40 +425,45 @@ function Sidebar() {
           >
             <LuSearch />
           </button>
-
-          {searchOpen && (
-            <div className="railSearchFlyout">
-              <input
-                type="text"
-                autoFocus
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={isKoreanHallZone ? "한국관 상품 검색" : "상품 검색"}
-                className="railSearchInput"
-              />
-              {searchQuery.trim() && (
-                <ul className="railSearchResults">
-                  {searchResults.length === 0 ? (
-                    <li className="railSearchEmpty">검색 결과가 없습니다</li>
-                  ) : (
-                    searchResults.map((p) => (
-                      <li key={p.id}>
-                        <button type="button" onClick={() => handleSearchSelect(p)}>
-                          <img src={p.image} alt="" />
-                          <span>
-                            <strong>{p.name}</strong>
-                            {p.desc && <small className="railSearchDesc">{p.desc}</small>}
-                            <em>{p.price.toLocaleString()}원</em>
-                          </span>
-                        </button>
-                      </li>
-                    ))
-                  )}
-                </ul>
-              )}
-            </div>
-          )}
         </div>
+
+        {/* railSearchWrap 안이 아니라 railItems 바로 아래 둔다 — railSearchWrap은
+            등장 애니메이션 때문에 transform이 걸려 있어서(scale(1)이라도) 그 안에
+            두면 absolute 자식의 기준 박스가 독 전체가 아니라 이 좁은 wrap이 돼버려
+            검색창이 독 왼쪽으로 치우쳐 뜨는 문제가 있었다. transform이 없는
+            railItems 아래로 옮겨 .sidebarRail(fixed) 기준으로 가로 중앙에 뜨게 함. */}
+        {searchOpen && (
+          <div className="railSearchFlyout" ref={searchFlyoutRef}>
+            <input
+              type="text"
+              autoFocus
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={isKoreanHallZone ? "한국관 상품 검색" : "상품 검색"}
+              className="railSearchInput"
+            />
+            {searchQuery.trim() && (
+              <ul className="railSearchResults">
+                {searchResults.length === 0 ? (
+                  <li className="railSearchEmpty">검색 결과가 없습니다</li>
+                ) : (
+                  searchResults.map((p) => (
+                    <li key={p.id}>
+                      <button type="button" onClick={() => handleSearchSelect(p)}>
+                        <img src={p.image} alt="" />
+                        <span>
+                          <strong>{p.name}</strong>
+                          {p.desc && <small className="railSearchDesc">{p.desc}</small>}
+                          <em>{p.price.toLocaleString()}원</em>
+                        </span>
+                      </button>
+                    </li>
+                  ))
+                )}
+              </ul>
+            )}
+          </div>
+        )}
 
         <span className="railDivider" />
 
