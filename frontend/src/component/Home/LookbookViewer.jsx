@@ -120,7 +120,7 @@ function LookbookViewer({ photos, index, onClose, onNavigate }) {
             <MoreHorizontal size={18} className="igMoreIcon" />
           </div>
 
-          <div className="igCommentsScroll">
+          <div className="igCommentsScroll" data-lenis-prevent>
             <div className="igCommentRow">
               <span className="igAvatar igAvatarSm"><img src={JDLogo} alt="" /></span>
               <p><span className="igUsername">jipdaum_official</span> {caption}</p>

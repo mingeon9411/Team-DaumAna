@@ -35,7 +35,7 @@ function TrackingModal({ order, onClose }) {
 
   return (
     <div className="trackingOverlay" onClick={onClose}>
-      <div className="trackingModal" onClick={(e) => e.stopPropagation()}>
+      <div className="trackingModal" data-lenis-prevent onClick={(e) => e.stopPropagation()}>
         <div className="trackingHeader">
           <p className="trackingSub">배송 조회</p>
           <h1 className="trackingOrderNo">주문번호 #{order.id}</h1>

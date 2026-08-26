@@ -443,7 +443,7 @@ function Sidebar() {
               className="railSearchInput"
             />
             {searchQuery.trim() && (
-              <ul className="railSearchResults">
+              <ul className="railSearchResults" data-lenis-prevent>
                 {searchResults.length === 0 ? (
                   <li className="railSearchEmpty">검색 결과가 없습니다</li>
                 ) : (

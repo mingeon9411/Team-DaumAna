@@ -11,7 +11,7 @@ function AuthModal() {
 
   return (
     <div className="authModalOverlay">
-      <div className="authModalPanel">
+      <div className="authModalPanel" data-lenis-prevent>
         {view === "login" ? <Login />
           : view === "register" ? <Register />
           : view === "findId" ? <FindAccount mode="id" />

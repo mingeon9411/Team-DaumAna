@@ -45,7 +45,7 @@ function WithdrawModal() {
 
   return (
     <div className="withdrawModalOverlay">
-      <div className="withdrawModalInner">
+      <div className="withdrawModalInner" data-lenis-prevent>
         <button
           type="button"
           className="withdrawModalClose"

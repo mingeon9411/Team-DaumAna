@@ -28,7 +28,7 @@ function AddressModal({ isOpen, onClose, onSave, initialData }) {
 
   return (
     <div className="addressModalOverlay" onClick={onClose}>
-      <div className="addressModalInner" onClick={(e) => e.stopPropagation()}>
+      <div className="addressModalInner" data-lenis-prevent onClick={(e) => e.stopPropagation()}>
         <button type="button" className="addressModalClose" onClick={onClose} aria-label="닫기">×</button>
 
         <h1>{initialData ? "배송지 수정" : "새 배송지 추가"}</h1>

@@ -33,7 +33,7 @@ function Receipt({ order, onClose }) {
 
   return (
     <div className="receiptOverlay" onClick={onClose}>
-      <div className="receiptModal" onClick={(e) => e.stopPropagation()}>
+      <div className="receiptModal" data-lenis-prevent onClick={(e) => e.stopPropagation()}>
 
         {/* 상단 헤더 — J.D + 집다움 한옥 로고 조합 */}
         <div className="receiptHeader">

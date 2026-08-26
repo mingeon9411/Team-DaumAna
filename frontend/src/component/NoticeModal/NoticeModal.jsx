@@ -76,7 +76,7 @@ function NoticeModal() {
           )}
         </div>
 
-        <div className="noticeModalResults">
+        <div className="noticeModalResults" data-lenis-prevent>
           {selected ? (
             <div className="noticeDetail">
               <div className="noticeItemHead">

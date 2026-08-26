@@ -28,7 +28,7 @@ function CouponDrawer({ coupons, onClose }) {
         </div>
 
         {/* 쿠폰 목록 */}
-        <div className="cdList">
+        <div className="cdList" data-lenis-prevent>
           {coupons.length === 0 ? (
             <div className="cdEmpty">
               <span className="cdEmptyIcon">🎫</span>
