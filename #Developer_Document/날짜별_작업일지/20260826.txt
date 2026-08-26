@@ -51,3 +51,56 @@
    커밋(51ff149, "이메일 SMTP 환경변수 주입 추가")에 같이 묶여 커밋/푸시됨.
    내용은 맞지만 커밋 메시지가 실제 변경과 안 맞으니 참고할 것 —
    jipdaum-spring 작업일지(같은 날짜)에도 별도로 기록해 둠
+
+✅ 프론트엔드 전반 점검 — "고쳐야 할 기능 없는지 체크" 요청으로 진행
+➡️ 인기검색어(PopularKeywordsSidebar.jsx) "우드 무드등"이 같은 날 앞서 진행된
+   무드등 상품 리네임("북유럽풍 우드 무드등" → "우드 롱 무드등")과 어긋나
+   더 이상 상품명의 연속 부분 문자열이 아니게 됨 — 클릭해도 검색 결과 0건이
+   뜨는 조용한 회귀 버그 발견/수정. 컴포넌트 자체 주석에 "PRODUCTS의
+   name/sub/label/brand에 실제로 포함되는 문자열이어야 한다"는 요구사항이
+   있었는데 리네임 작업 때 같이 안 챙겨진 케이스
+➡️ CLAUDE.md에 기록된 "Lenis 전역 스크롤 가로채기 + data-lenis-prevent 누락"
+   버그 패턴(MyPage에서 한 번 겪음)이 다른 모달 9곳에도 그대로 남아있는 걸
+   발견 — AuthModal, AddressModal, NoticeModal, WithdrawModal, TrackingModal,
+   Receipt, CouponDrawer, LookbookViewer(룩북 댓글창), Sidebar의 하단 독
+   검색 결과 목록. 전부 position:fixed 오버레이 + overflow-y:auto 내부
+   스크롤 구조인데 속성이 빠져 배경 페이지만 스크롤되던 상태 — 전부 수정
+
+✅ 챗봇(ChatBot.jsx) 전수 점검
+➡️ 빠른 답장 칩("배송 조회" 등) 노출 조건이 messages.length===1이었는데,
+   비회원 초기 메시지는 인사말+브랜드소개+가입유도 3개로 시작해 이 조건이
+   한 번도 참이 될 수 없었음 — 비회원(=대다수 신규 방문자)에게는 이 기능이
+   사실상 계속 죽어있던 상태. "유저가 메시지를 보낸 적 있는가" 기준으로
+   교체해 수정
+➡️ 그 외 논의만 하고 이번엔 적용 보류: 비회원 온보딩 문구 2개가 AI 대화
+   히스토리에 그대로 섞여 매 요청마다 전송되는 점, 챗봇 플로팅 버튼이
+   window resize에 반응하지 않아 창을 줄이면 화면 밖으로 밀릴 수 있는 점,
+   비로그인 상태에서 "회원탈퇴" 입력 시 프론트 단 안내 없이 LLM 응답에만
+   의존하는 점 — 세 가지는 다음 작업 후보로 기록만 해둠
+➡️ 두 카탈로그(Home.jsx PRODUCTS / data/products.js) 간 필드 불일치
+   리스크(label/spec/sub 등)도 같이 점검했으나, toBuyItem/BuyPanel이 이미
+   전부 옵셔널 처리돼 있어 실제 문제는 없음을 확인
+
+✅ 플로팅 독(Sidebar.jsx, 하단바 독) 애니메이션 재점검 — 중간발표 자료용
+➡️ 코드 변경 없이 분석만 진행. 스타일 프리셋(레인보우/메탈릭/파스텔) 전환
+   시 재생되는 페이드 애니메이션(railStyleSwap)이, 2초 안에 스타일을
+   연속으로 바꾸면 setStyleSwitching(true)가 이미 true인 상태라 React가
+   리렌더를 스킵해 클래스가 재부착되지 않고, 그 결과 CSS 애니메이션이
+   재시작되지 않아 두 번째 전환부터 페이드 없이 뚝 끊기는 문제를 근본 원인
+   까지 추적 — 같은 파일의 triggerPop(클릭 피드백)이 이미 classList
+   remove→reflow→add로 이 문제를 해결해둔 패턴이 있는데 스타일 전환 쪽엔
+   적용이 안 된 케이스로 파악
+➡️ 부수적으로 발견한 것: .sidebarRail의 transition: background-color/
+   border-color 선언이 실제로는 아무것도 보간하지 않는 죽은 코드(배경·
+   테두리가 전부 그러데이션이라 background-color/border-color 값 자체가
+   안 바뀜), nth-child 기반 stagger 딜레이가 조건부 렌더링되는 검색
+   플라이아웃이 끼어들면 순번이 밀리는 구조적 취약점, prefers-reduced-motion
+   대응이 railToggle/railItems 계열에만 걸려있고 khPetal·플라이아웃 등장·
+   railPop·styleSwitching은 빠져있는 점 — 전부 발표용으로 정리만 하고 실제
+   수정은 다음으로 미룸
+
+✅ 커밋/배포
+➡️ dac6878 "fix: 모달/독 내부 스크롤에 data-lenis-prevent 누락 수정"
+➡️ aedbda3 "fix: 인기검색어-상품명 불일치 및 챗봇 빠른답장 미노출 수정"
+➡️ 둘 다 main에 푸시 완료 — Cloudflare Pages가 자동 빌드/배포 (백엔드
+   변경 없음)
