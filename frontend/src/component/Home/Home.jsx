@@ -40,7 +40,7 @@ import nordicSofaInterior from "../../assets/interior/(소파) 북유럽 소파 
 import europeanWoodSofaInterior from "../../assets/interior/(소파) 유러피안 우드 소파 - 인테리어.jpg";
 import resortChairInterior from "../../assets/interior/(의자) 유럽풍 피서지 의자 - 인테리어.jpg";
 import nordicBedInterior from "../../assets/interior/(침대) 북유럽 침대 - 인테리어.jpg";
-import { getCartItems, getPhotoReviews } from "../../api";
+import { getCartItems, getPhotoReviews, getProductsByCollection } from "../../api";
 
 
 const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
@@ -180,6 +180,36 @@ function Home() {
   const [photoReviewViewerIndex, setPhotoReviewViewerIndex] = useState(null);
   const [showPhotoUploadModal, setShowPhotoUploadModal] = useState(false);
   const [cartCounts, setCartCounts] = useState({});
+
+  // 상품 이름/가격/설명은 더 이상 프론트에만 하드코딩돼 있지 않고, 백엔드
+  // JIPDAUM_PRODUCT(collection='main')에서 받아와 덮어쓴다. id로 매칭하고,
+  // 이미지/인테리어 컷/뱃지(label)/할인 전 가격/서브컬러/스펙처럼 DB 스키마에
+  // 아직 없는 필드는 계속 로컬 PRODUCTS 값을 쓴다 — Korean Hall의
+  // ProductDetail.jsx가 apiProduct를 localProduct 위에 덮어쓰는 것과 같은 패턴.
+  // API 호출이 실패하거나(오프라인, 백엔드 미기동) 아직 안 끝났을 때는 그냥
+  // 기존 하드코딩 값이 그대로 보이므로 화면이 비어 보이는 일은 없다.
+  const [apiProductsById, setApiProductsById] = useState({});
+  useEffect(() => {
+    getProductsByCollection("main")
+      .then((res) => {
+        if (!Array.isArray(res.data)) return;
+        const byId = {};
+        res.data.forEach((p) => { byId[p.id] = p; });
+        setApiProductsById(byId);
+      })
+      .catch(() => {});
+  }, []);
+
+  const mergedProducts = PRODUCTS.map((p) => {
+    const api = apiProductsById[p.id];
+    if (!api) return p;
+    return {
+      ...p,
+      name: api.name || p.name,
+      desc: api.description || p.desc,
+      price: typeof api.base_price === "number" ? api.base_price.toLocaleString() : p.price,
+    };
+  });
 
   // 구매자가 올린 포토리뷰(사진 첨부된 리뷰) — 룩북 갤러리 패널에 실제 데이터로 보여준다.
   const loadPhotoReviews = () => {
@@ -478,7 +508,7 @@ function Home() {
 
   const filteredProducts = (() => {
     const q = productSearchQuery.trim().toLowerCase();
-    return PRODUCTS.filter((p) => {
+    return mergedProducts.filter((p) => {
       const matchesCategory = selectedCategory === "전체" || p.category === selectedCategory;
       const matchesQuery =
         !q ||
@@ -500,7 +530,7 @@ function Home() {
     setWishlist((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
   // 인트로 영상 옆에 연결해 보여줄 상품 — 영상 속 거실 장면에 어울리는 북유럽 소파
-  const featuredProduct = PRODUCTS.find((p) => p.id === 5);
+  const featuredProduct = mergedProducts.find((p) => p.id === 5);
 
   // 도어인트로를 지나 홈에 들어오면 기본적으로 1번째 패널(에세이)에서 시작한다.
   // (HERO가 전체 상품 페이지 앞으로 옮겨가면서 에세이가 첫 패널이 됨)

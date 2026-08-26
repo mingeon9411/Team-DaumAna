@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft, Heart, Star, Sparkles, Ruler, ShieldCheck, ImagePlus, X } from "lucide-react";
 import { PRODUCTS } from "./Home";
-import { addToCart, getReviews, createReview, uploadReviewImage } from "../../api";
+import { addToCart, getReviews, createReview, uploadReviewImage, getProductDetail } from "../../api";
 import { isWished, toggleWish } from "../../utils/wishlist";
 import { addRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
@@ -40,7 +40,28 @@ function HomeProductDetail() {
   const { openLogin } = useAuthModal();
   const { openCart } = useCartModal();
 
-  const product = PRODUCTS.find((p) => p.id === Number(id));
+  const localProduct = PRODUCTS.find((p) => p.id === Number(id));
+  // 이름/가격/설명은 DB(JIPDAUM_PRODUCT, collection='main')에서 받아와 로컬 값
+  // 위에 덮어쓴다 — Korean Hall의 ProductDetail.jsx와 동일한 패턴. 이미지/
+  // 인테리어 컷/뱃지/할인 전 가격처럼 DB 스키마에 없는 필드는 로컬 값 그대로.
+  const [apiProduct, setApiProduct] = useState(null);
+  useEffect(() => {
+    if (!localProduct) return;
+    getProductDetail(localProduct.id)
+      .then((res) => setApiProduct(res.data))
+      .catch(() => setApiProduct(null));
+  }, [localProduct?.id]);
+
+  const product = localProduct
+    ? {
+        ...localProduct,
+        name: apiProduct?.name || localProduct.name,
+        desc: apiProduct?.description || localProduct.desc,
+        price: typeof apiProduct?.base_price === "number"
+          ? apiProduct.base_price.toLocaleString()
+          : localProduct.price,
+      }
+    : null;
 
   const [quantity, setQuantity] = useState(1);
   const [wished, setWished] = useState(false);
