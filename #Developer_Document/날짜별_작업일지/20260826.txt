@@ -104,3 +104,32 @@
 ➡️ aedbda3 "fix: 인기검색어-상품명 불일치 및 챗봇 빠른답장 미노출 수정"
 ➡️ 둘 다 main에 푸시 완료 — Cloudflare Pages가 자동 빌드/배포 (백엔드
    변경 없음)
+
+✅ 메인 상품 14종을 하드코딩 대신 백엔드 API+DB로 연동 (앞서 진단한 내용의 완결)
+➡️ backend에 reset_main_products.py 추가 — collection='main'의 옛 잔존
+   시드(린넨 암체어 등 7개)를 전부 삭제하고, Home.jsx PRODUCTS와 완전히
+   같은 14개(id 1~14, 이름/가격/설명)를 재입력. 로컬 Docker MySQL에 실행
+   완료
+➡️ 상품 이미지 14장을 frontend/public/products-main/product-01~14.jpg로
+   복사(한글 파일명 → ASCII) — DB thumbnail_url이 이 경로를 가리켜 로컬/
+   배포 어느 origin에서든 그대로 해석됨
+➡️ api.js에 getProductsByCollection(collection) 추가
+➡️ Home.jsx: mount 시 collection=main 상품을 fetch해 PRODUCTS 위에
+   name/desc/price만 덮어쓴 mergedProducts로 그리드 렌더 — 이미지/인테리어
+   컷/뱃지/할인 전 가격처럼 DB 스키마에 없는 필드는 로컬 값 유지. API
+   실패해도 기존 하드코딩 값이 그대로 보이는 폴백 구조
+➡️ HomeProductDetail.jsx: 한국관 ProductDetail.jsx와 동일한 패턴으로
+   getProductDetail(id) 단건 조회 후 로컬 데이터에 덮어씀
+➡️ Spring Boot를 로컬에서 처음 띄우려다 application.yml(gitignore 대상)에
+   최근 추가된 기능(파일 업로드/챗봇 rate-limit/Gemini)의 설정 키가
+   누락돼 부팅 실패 — .example 기준으로 누락 키를 채워 넣어 해결(코드
+   변경 아님, 로컬 설정 파일만 수정이라 커밋에는 안 잡힘)
+➡️ Playwright로 목록/상세 양쪽에서 API 응답(200)과 병합된 이름·가격 반영
+   확인
+➡️ 로컬(Docker MySQL)에만 반영된 상태 — 운영(EC2) DB는 아직 이 14개가
+   없어 실제 배포 사이트는 계속 하드코딩 값으로 폴백됨. 운영 반영 방법은
+   사용자에게 안내만 함: `docker exec -it jipdaum-django python manage.py
+   reset_main_products` (jipdaum-django 컨테이너가 --network jipdaum-net
+   으로 운영 MySQL과 이미 연결돼 있어 그대로 실행하면 됨)
+➡️ 커밋 3d57022 "feat: 메인 상품 14종을 하드코딩 대신 백엔드 API+DB로 연동"
+   푸시 완료 — Cloudflare Pages 자동 배포 성공 확인
