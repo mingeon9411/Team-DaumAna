@@ -12,7 +12,7 @@ import BusinessInfoPanel from "./BusinessInfoPanel";
 import { getRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS } from "../../utils/navFlags";
 import rugB from "../../assets/products/(러그) 북유럽풍 러그 B형.jpg";
-import woodMoodLamp from "../../assets/products/(무드등) 북유럽풍 우드 무드등.jpg";
+import woodMoodLamp from "../../assets/products/(무드등) 우드 롱 무드등.jpg";
 import smallMoodLamp from "../../assets/products/(무드등) 북유럽풍 침대 작은 무드등.jpg";
 import linenWoodSofa from "../../assets/products/(소파) 린넨 우드 소파.jpg";
 import nordicSofa from "../../assets/products/(소파) 북유럽 소파.jpg";
@@ -52,10 +52,10 @@ export const PRODUCTS = [
     desc: "크림 베이스 위에 블루·올리브·더스티핑크가 어우러진 추상 아라베스크 무늬 터프팅 러그입니다. 두툼한 울 파일감이 발끝에 포근하게 감기고, 어느 벽지·바닥재와도 무난하게 어울려 거실이나 침실 중심에 깔기 좋습니다.",
     spec: "SIZE : W160 D230 · MATERIAL : wool, cotton backing",
     image: rugB, interiorImage: rugBInterior, alt: "북유럽풍 러그 B형", brand: "집다움", category: "러그" },
-  { id: 2, no: "No.2", name: "북유럽풍 우드 무드등", sub: "내추럴 라탄", price: "118,000", label: "NEW",
+  { id: 2, no: "No.2", name: "우드 롱 무드등", sub: "내추럴 라탄", price: "118,000", label: "NEW",
     desc: "오크 원목 스탠드에 라탄 케인 원통 갓을 씌운 플로어 조명입니다. 불을 켜면 라탄 사이로 은은한 그물무늬 빛이 새어나와 저녁 시간 거실에 따뜻한 분위기를 더합니다.",
     spec: "SIZE : W38 D38 H118 · MATERIAL : oak, rattan cane",
-    image: woodMoodLamp, interiorImage: woodMoodLampInterior, alt: "북유럽풍 우드 무드등", brand: "집다움", category: "조명" },
+    image: woodMoodLamp, interiorImage: woodMoodLampInterior, alt: "우드 롱 무드등", brand: "집다움", category: "조명" },
   { id: 3, no: "No.3", name: "북유럽풍 침대 작은 무드등", sub: "내추럴 우드 & 자연사", price: "49,000", label: "NEW",
     desc: "원뿔형 원목 다리 위에 천연 마사(자연사)를 촘촘히 감아 만든 미니 무드등입니다. 침대 협탁이나 콘솔 위에 올려두면 아늑한 저녁 조명으로 제격입니다.",
     spec: "SIZE : W20 D20 H32 · MATERIAL : wood, jute rope",
