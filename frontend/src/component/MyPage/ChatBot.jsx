@@ -902,7 +902,7 @@ function ChatBot({
                 <div className="chatBubble chatTyping"><span /><span /><span /></div>
               </div>
             )}
-            {messages.length === 1 && !loading && (
+            {!messages.some((m) => m.role === "user") && !loading && (
               <div className="chatQuickReplies">
                 {QUICK_REPLIES.map((q) => (
                   <button key={q} className="chatQuickChip" onClick={() => sendText(q)}>{q}</button>

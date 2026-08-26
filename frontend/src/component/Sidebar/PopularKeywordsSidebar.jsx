@@ -22,7 +22,7 @@ const PREVIEW_INTERVAL_MS = 2500;
  * @type {KeywordItem[]} */
 export const MOCK_KEYWORDS = [
   { rank: 1, keyword: "북유럽 소파", status: "up" },
-  { rank: 2, keyword: "우드 무드등", status: "new" },
+  { rank: 2, keyword: "우드 롱 무드등", status: "new" },
   { rank: 3, keyword: "우드 의자", status: "new" },
   { rank: 4, keyword: "피서지 의자", status: "up" },
   { rank: 5, keyword: "북유럽 침대", status: "same" },
