@@ -18,6 +18,7 @@ import linenWoodSofa from "../../assets/products/(소파) 린넨 우드 소파.j
 import nordicSofa from "../../assets/products/(소파) 북유럽 소파.jpg";
 import europeanWoodSofa from "../../assets/products/(소파) 유러피안 우드 소파.jpg";
 import linenLaundryBasket from "../../assets/products/(소품) 린넨 빨래 바구니.jpg";
+import linenLaundryBasketInterior from "../../assets/interior/(소품) 린넨 빨래 바구니 - 인테리어.png";
 import patternLaundryBasket from "../../assets/products/(소품) 북유럽 문양 빨래 바구니.jpg";
 import rugA from "../../assets/products/(소품) 북유럽풍 러그 A형.jpg";
 import ecoWoodLaundryBasket from "../../assets/products/(소품) 친환경 우드 빨래 바구니.jpg";
@@ -74,7 +75,7 @@ export const PRODUCTS = [
   { id: 7, no: "No.7", name: "린넨 빨래 바구니", sub: "민트 그레이 컬러블록", price: "32,000", label: "ECO",
     desc: "민트, 블루, 아이보리가 컬러블록으로 나뉜 패브릭 빨래 바구니입니다. 가벼운 무광 소재에 메탈 손잡이를 달아 옷방과 욕실을 오가며 들고 다니기 편합니다.",
     spec: "SIZE : W36 D36 H40 · MATERIAL : coated fabric, metal handle",
-    image: linenLaundryBasket, alt: "린넨 빨래 바구니", brand: "집다움", category: "소품" },
+    image: linenLaundryBasket, interiorImage: linenLaundryBasketInterior, alt: "린넨 빨래 바구니", brand: "집다움", category: "소품" },
   { id: 8, no: "No.8", name: "북유럽 문양 빨래 바구니", sub: "내추럴 라탄", price: "45,000", label: "NEW",
     desc: "가는 라탄 가닥을 별무늬로 엮어 짠 바스켓으로, 가죽 손잡이가 포인트를 더합니다. 세탁물 정리는 물론 담요나 잡지꽂이로도 어울리는 다용도 소품입니다.",
     spec: "SIZE : W34 D34 H36 · MATERIAL : rattan, leather handle",
