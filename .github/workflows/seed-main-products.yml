@@ -1,0 +1,39 @@
+name: Seed Main Products (manual)
+
+# collection='main' 상품(메인 페이지 14종)을 운영 DB에 반영하기 위한 일회성 수동
+# 워크플로 — push로는 절대 안 걸리고 Actions 탭에서 "Run workflow"로만 실행된다.
+#
+# backend/Products/management/commands/reset_main_products.py는 기존 main 상품을
+# 전부 삭제하고 Home.jsx의 현재 14개로 재입력하는 파괴적 작업이라, 실수로 잘못
+# 실행되는 걸 막기 위해 정확한 문자열을 입력해야만 진행되게 확인 절차를 둔다.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: '정말 실행하려면 정확히 RESET 입력'
+        required: true
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 확인 문자열 검증
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "RESET" ]; then
+            echo "confirm 입력이 'RESET'이 아니라 중단합니다."
+            exit 1
+          fi
+
+      - name: EC2에서 시드 커맨드 실행
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "=== 실행 전 main 상품 ==="
+            docker exec jipdaum-django python manage.py shell -c "from Products.models import Product; print(list(Product.objects.filter(collection='main').values('id','name')))"
+            echo "=== reset_main_products 실행 ==="
+            docker exec jipdaum-django python manage.py reset_main_products
+            echo "=== 실행 후 main 상품 ==="
+            docker exec jipdaum-django python manage.py shell -c "from Products.models import Product; print(list(Product.objects.filter(collection='main').values('id','name')))"
