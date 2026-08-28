@@ -328,7 +328,10 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
   align-items: center;
   gap: 6px;
 
-  max-width: 640px;
+  /* 아이콘이 늘어날 때마다(현재 최대 구성 ≈ 744px: 버튼 15개+구분선 4개+gap 18개)
+     여기 값도 같이 올려야 한다 — 부족하면 overflow:visible이라 잘리지 않고
+     그냥 알약 배경 바깥으로 아이콘이 삐져나와 보인다(파스텔 톤 버튼 추가 후 발생했던 버그). */
+  max-width: 800px;
   opacity: 1;
   /* overflow는 일부러 hidden을 쓰지 않음 — 호버 툴팁/검색 플라이아웃이
      위쪽으로 튀어나가야 하므로, 접힘 처리는 opacity + pointer-events로만 */
