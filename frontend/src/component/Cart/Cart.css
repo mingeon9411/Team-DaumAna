@@ -10,12 +10,18 @@
   align-items: center;
   justify-content: center;
 
-  background: var(--background);
-
   padding: 130px 24px 40px;
   overflow-y: auto;
   overflow-x: hidden;
-  font-family: "Noto Sans KR", sans-serif;
+  font-family: "TwayFly", "Noto Sans KR", sans-serif;
+}
+
+/* 메인(비-한국관) 카트는 상품 목록 페이지(Home.jsx #home-products)와 같은
+   파스텔 배경(.metallicSilver, Home.css)을 그대로 씀 — 독의 "배경 톤" 설정도 같이 반응한다.
+   :not()으로 뺀 건 특정도(specificity)를 .metallicSilver보다 높여서, 파일 로드 순서와
+   무관하게 얘가 var(--background)로 덮어쓰지 않게 하기 위함. */
+.cartPage:not(.metallicSilver) {
+  background: var(--background);
 }
 
 /* 한국관 스코프 — ProductDetail.css(.pdPage)와 같은 한지 섬유질감 배경 */

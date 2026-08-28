@@ -20,12 +20,13 @@ function Cart() {
   const goBack = () => navigate(isKoreanHall ? "/korean-hall" : "/");
 
   // ProductDetail.jsx와 같은 신호 재사용 — 마운트 시점에 남겨둬야 닫기 버튼 클릭이든
-  // 브라우저 뒤로가기든 상관없이, "/korean-hall" 도착 시 DoorIntroController가 이 흔적을
-  // 보고 대문 애니메이션 없이 곧장 상품 목록으로 스크롤한다.
+  // 브라우저 뒤로가기든 상관없이, "/"·"/korean-hall" 도착 시 DoorIntroController가 이
+  // 흔적을 보고 대문 애니메이션·기본 패널 없이 곧장 상품 목록으로 스크롤한다.
   useEffect(() => {
-    if (isKoreanHall) {
-      sessionStorage.setItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE, NAV_ZONE.KOREAN_HALL);
-    }
+    sessionStorage.setItem(
+      NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE,
+      isKoreanHall ? NAV_ZONE.KOREAN_HALL : NAV_ZONE.HOME
+    );
   }, [isKoreanHall]);
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -141,7 +142,7 @@ function Cart() {
   };
 
   return (
-    <main className={`cartPage${isKoreanHall ? " koreanHallCart" : ""}`} data-hsnap data-lenis-prevent>
+    <main className={`cartPage${isKoreanHall ? " koreanHallCart" : " metallicSilver"}`} data-hsnap data-lenis-prevent>
       <div className={`cartInner${isKoreanHall ? " koreanHallCart" : ""}`}>
         <button type="button" className="cartModalClose" onClick={goBack} aria-label="닫기">
           ×
