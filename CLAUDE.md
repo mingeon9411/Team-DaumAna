@@ -25,7 +25,7 @@ React/Vite 프론트엔드(`frontend/`) + Spring Boot 백엔드(별도 저장소
 - **API는 Django → Spring Boot로 이관 완료됨** (`backend/config/urls.py` 참고). Django는 `/admin/`만 남아있고 회원/상품/쿠폰/결제/챗봇은 전부 별도 저장소 `jipdaum-spring`(포트 8081)이 처리. "장고 서버 실행해줘" 같은 요청에 Django만 띄우면 로그인/결제/챗봇 등 실제 기능은 다 실패한다 — Spring Boot도 같이 띄워야 함.
 - **상품 데이터가 두 개로 분리돼 있음**: `frontend/src/component/Home/Home.jsx`의 로컬 `PRODUCTS`(export됨, 메인 페이지 전용)와 `frontend/src/data/products.js`(한국관 페이지가 씀). id가 겹쳐도 서로 다른 상품이니 절대 섞어서 참조하면 안 됨. 챗봇처럼 두 카탈로그를 공유하는 로직이 특정 필드(label/spec 등)에 의존하면 양쪽에 다 있는지 확인할 것 — 한쪽에만 없으면 조용히 안 먹는다.
 - **챗봇(`ChatBot.jsx`)은 메인/한국관 공용 컴포넌트** — `catalog`/`variant` 등 props로만 갈라지고 결제·회원가입·탈퇴 패널 같은 기능 로직은 variant 분기 없이 자동으로 양쪽에 적용됨. 메인 챗봇을 고치면 보통 한국관도 같이 바뀐다.
-- **파비콘이 라우트별로 다름**: `App.jsx`의 `FaviconController`가 `/korean-hall`이면 한옥 로고, 그 외 전부 JD 로고로 자동 전환. `index.html`의 favicon 링크는 기본값(JD)일 뿐 실제로는 이 컨트롤러가 매 라우트 변경마다 덮어씀.
+- **파비콘은 라우트 무관하게 항상 JD 로고 고정**(`index.html`). 예전엔 `/korean-hall`에서 한옥 로고로 바꿔주는 `FaviconController`가 있었으나, 축소 렌더링 시 로고가 뭉개져 보여 2026-08-28 제거함.
 - **사이드바 검색**(`Sidebar.jsx`)은 현재 라우트에 맞는 카탈로그만 검색함(한국관이면 한국관 상품만, 그 외엔 메인 상품만).
 - **Lenis(스무스 스크롤)가 전역 휠 이벤트를 가로챔** — 모달처럼 내부 스크롤이 따로 필요한 요소는 `data-lenis-prevent` 속성을 반드시 달아야 스크롤이 먹힌다 (MyPage에서 이거 빠져서 스크롤 안 되던 버그 있었음). 화면에 고정으로 뜨는 외부 팝업(hCaptcha 챌린지, PortOne 결제창)이 떠 있는 동안은 `window.lenis?.stop()`/`start()`로 배경 스크롤 자체를 막아야 한다 — 안 그러면 팝업은 제자리에 있고 배경만 스크롤돼 서로 따로 노는 것처럼 보인다.
 

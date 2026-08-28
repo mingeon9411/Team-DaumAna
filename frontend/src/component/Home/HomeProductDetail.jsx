@@ -9,7 +9,6 @@ import { isWished, toggleWish } from "../../utils/wishlist";
 import { addRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 import { useAuthModal } from "../../context/AuthModalContext";
-import { useCartModal } from "../../context/CartModalContext";
 
 const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
 const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
@@ -38,7 +37,6 @@ function HomeProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
-  const { openCart } = useCartModal();
 
   const localProduct = PRODUCTS.find((p) => p.id === Number(id));
   // 이름/가격/설명은 DB(JIPDAUM_PRODUCT, collection='main')에서 받아와 로컬 값
@@ -165,7 +163,7 @@ function HomeProductDetail() {
       await addToCart({ product: product.id, quantity, option: null });
       window.dispatchEvent(new Event("cartchange"));
       alert("장바구니에 담았습니다.");
-      openCart();
+      navigate("/cart");
     } catch {
       alert("장바구니 추가에 실패했습니다. 다시 시도해주세요.");
     }

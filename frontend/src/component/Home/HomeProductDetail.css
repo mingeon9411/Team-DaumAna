@@ -46,6 +46,15 @@ body.dark .homeDetailGlassCard {
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(150, 185, 255, 0.16);
 }
 
+/* 이미지+텍스트 교차 블록의 설명 문단 가독성 보정 — leading-loose로 줄간격은
+   넓은데 얇은 폰트(font-light=300)+낮은 불투명도(text-foreground/80) 조합이라
+   잘 안 읽힘. 색은 불투명하게 두고 굵기/전체 불투명도만 살짝 올린다. */
+.homeDetailPage .text-foreground\/80.leading-loose.font-light {
+  color: var(--foreground);
+  opacity: 0.92;
+  font-weight: 400;
+}
+
 @media (max-width: 640px) {
   .homeDetailGlassCard {
     padding: 20px;

@@ -1,5 +1,5 @@
 import "./Login.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { SiKakaotalk, SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
 import { useState, useRef, useEffect } from "react";
@@ -19,6 +19,9 @@ const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 
 function Login() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  // 한국관 스코프에서 뜬 로그인창은 독바 스타일 프리셋 대신 한지 톤 + 오색띠 테두리로 고정
+  const isKoreanHall = pathname.startsWith("/korean-hall");
   const recaptchaRef = useRef(null);
   const { close, openRegister, openFindId, openFindPassword } = useAuthModal();
   const [darkMode, setDarkMode] = useState(
@@ -140,7 +143,7 @@ function Login() {
   };
 
   return (
-      <section className={`loginBox railStyle-${railStyle} ${styleSwitching ? "styleSwitching" : ""}`}>
+      <section className={`loginBox railStyle-${railStyle} ${styleSwitching ? "styleSwitching" : ""} ${isKoreanHall ? "koreanHallLogin" : ""}`}>
         <button type="button" className="authModalClose" aria-label="닫기" onClick={close}>×</button>
         <div className="loginLogoRow">
           <img src={JDLogo} alt="J.D" className="loginLogoJD" />

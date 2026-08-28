@@ -654,14 +654,11 @@ function ChatBot({
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [pos, setPos] = useState(null);
-  const [dragging, setDragging] = useState(false);
   const [panel, setPanel] = useState(null); // { title, items } | null — 질문에 맞는 상품 추천 패널
   const [buyItem, setBuyItem] = useState(null); // 옆 패널에서 "바로 구매" 누른 상품 — 있으면 추천 패널 대신 결제 패널을 보여준다
   const [showSignup, setShowSignup] = useState(false); // 회원가입 의도가 감지되면 다른 패널보다 우선해서 보여준다
   const [showWithdraw, setShowWithdraw] = useState(false); // 로그인 상태에서 탈퇴 의도가 감지되면 보여준다
   const messagesRef = useRef(null);
-  const dragData = useRef({ startX: 0, startY: 0, origX: 0, origY: 0, hasMoved: false });
-  const dragSource = useRef("fab");
   const wasLoggedInRef = useRef(loggedIn);
 
   // 로그인 계정의 대화 기록을 저장해뒀다가(챗봇 재오픈·페이지 이동에도 유지), 로그아웃
@@ -700,12 +697,30 @@ function ChatBot({
     return () => window.lenis?.start();
   }, [buyItem, showSignup]);
 
-  // 초기 위치: 오른쪽 6%, 수직 중앙
+  // 위치는 하단 플로팅 독(Sidebar) 바로 왼쪽에 고정 — 더 이상 드래그로 옮길 수 없고,
+  // 독이 접히거나/펼쳐지거나 화면 크기가 바뀌어 독의 위치·폭이 바뀔 때마다 다시 붙는다.
+  // 독을 못 찾으면(레이아웃 변경 등) 기존 방식(오른쪽 6%, 수직 중앙)으로 폴백한다.
   useEffect(() => {
-    setPos({
-      x: window.innerWidth - Math.floor(window.innerWidth * 0.06) - 64,
-      y: Math.floor(window.innerHeight * 0.48) - 32,
-    });
+    const dock = document.querySelector(".sidebarRail");
+    if (!dock) {
+      setPos({
+        x: window.innerWidth - Math.floor(window.innerWidth * 0.06) - 64,
+        y: Math.floor(window.innerHeight * 0.48) - 32,
+      });
+      return;
+    }
+    const reposition = () => {
+      const r = dock.getBoundingClientRect();
+      setPos({ x: r.left - 16 - 64, y: r.top + r.height / 2 - 32 });
+    };
+    reposition();
+    const ro = new ResizeObserver(reposition);
+    ro.observe(dock);
+    window.addEventListener("resize", reposition);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", reposition);
+    };
   }, []);
 
   // 스크롤 자동
@@ -713,60 +728,6 @@ function ChatBot({
     const el = messagesRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [messages, open]);
-
-  // 드래그 이벤트
-  useEffect(() => {
-    if (!dragging) return;
-
-    const onMove = (e) => {
-      const cx = e.touches ? e.touches[0].clientX : e.clientX;
-      const cy = e.touches ? e.touches[0].clientY : e.clientY;
-      const dx = cx - dragData.current.startX;
-      const dy = cy - dragData.current.startY;
-      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) dragData.current.hasMoved = true;
-      setPos({
-        x: Math.max(0, Math.min(window.innerWidth - 68, dragData.current.origX + dx)),
-        y: Math.max(0, Math.min(window.innerHeight - 68, dragData.current.origY + dy)),
-      });
-    };
-
-    const onUp = () => {
-      if (dragSource.current === "fab" && !dragData.current.hasMoved) setOpen((v) => !v);
-      setDragging(false);
-    };
-
-    document.addEventListener("mousemove", onMove);
-    document.addEventListener("mouseup", onUp);
-    document.addEventListener("touchmove", onMove, { passive: true });
-    document.addEventListener("touchend", onUp);
-    return () => {
-      document.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseup", onUp);
-      document.removeEventListener("touchmove", onMove);
-      document.removeEventListener("touchend", onUp);
-    };
-  }, [dragging]);
-
-  const beginDrag = (e, source) => {
-    e.preventDefault();
-    const cx = e.touches ? e.touches[0].clientX : e.clientX;
-    const cy = e.touches ? e.touches[0].clientY : e.clientY;
-    dragSource.current = source;
-    dragData.current = {
-      startX: cx, startY: cy,
-      origX: pos?.x ?? window.innerWidth - 100,
-      origY: pos?.y ?? window.innerHeight * 0.48 - 32,
-      hasMoved: false,
-    };
-    setDragging(true);
-  };
-
-  const handleFabDown = (e) => beginDrag(e, "fab");
-
-  const handleHeaderDown = (e) => {
-    if (e.target.closest(".chatBotClose")) return;
-    beginDrag(e, "header");
-  };
 
   const sendText = async (text) => {
     if (!text || loading) return;
@@ -825,9 +786,6 @@ function ChatBot({
 
   const send = () => sendText(input.trim());
 
-  // 버튼이 화면 왼쪽/오른쪽 중 어느 쪽인지 → 패널 방향 결정
-  const onRightHalf = !pos || pos.x > window.innerWidth / 2;
-
   const rootStyle = pos
     ? { left: pos.x, top: pos.y, right: "auto", bottom: "auto", transform: "none" }
     : {};
@@ -836,7 +794,6 @@ function ChatBot({
     <div
       className={
         "chatBotRoot" +
-        (onRightHalf ? "" : " chatBotRootLeft") +
         (variant === "korean-hall" ? " chatBotKoreanHall" : "")
       }
       style={rootStyle}
@@ -845,7 +802,7 @@ function ChatBot({
       {/* 채팅 패널 */}
       <div className={"chatBotPanel" + (open ? " chatBotPanelOpen" : "") + ((panel || buyItem || showSignup || showWithdraw) ? " chatBotPanelWithSide" : "")}>
         <div className="chatBotMain">
-          <div className="chatBotHeader" onMouseDown={handleHeaderDown} onTouchStart={handleHeaderDown}>
+          <div className="chatBotHeader">
             <div className="chatBotAvatar">
               <img
                 src={variant === "korean-hall" ? JipdaumHanokLogo : JDLogo}
@@ -1011,16 +968,17 @@ function ChatBot({
       {/* 플로팅 버튼 */}
       <div className={"chatBotFabWrap" + (open ? " chatBotFabWrapHidden" : "")}>
         <button
-          className={"chatBotFab" + (dragging ? " chatBotFabDragging" : "")}
-          onMouseDown={handleFabDown}
-          onTouchStart={handleFabDown}
+          type="button"
+          className="chatBotFab"
+          onClick={() => setOpen((v) => !v)}
           aria-label="AI 채팅 열기"
         >
           <svg className="chatBotFabIcon" viewBox="0 0 24 24" fill="none">
             <defs>
+              {/* 집다움(메인)만 파스텔 — 한국관은 원래 실버 톤 유지 (variant 공용 컴포넌트라 여기서 분기) */}
               <linearGradient id="chatBotFabGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stopColor="#eef0f2" />
-                <stop offset="1" stopColor="#8b9098" />
+                <stop offset="0" stopColor={variant === "korean-hall" ? "#eef0f2" : "#f7b8d8"} />
+                <stop offset="1" stopColor={variant === "korean-hall" ? "#8b9098" : "#c9baf7"} />
               </linearGradient>
             </defs>
             <path d="M4 5.5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H10l-4.4 3.3A.6.6 0 0 1 4.7 19.3V16.5H6a2 2 0 0 1-2-2z" fill="url(#chatBotFabGrad)" />

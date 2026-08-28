@@ -18,10 +18,10 @@ import {
   LuChevronsLeft,
   LuChevronsRight,
   LuInfo,
+  LuPalette,
 } from "react-icons/lu";
 import { logoutUser, getCartItems } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
-import { useCartModal } from "../../context/CartModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import { useNoticeModal } from "../../context/NoticeModalContext";
 import { PRODUCTS as HOME_PRODUCTS } from "../Home/Home";
@@ -32,6 +32,14 @@ const RAIL_STYLES = [
   { id: "glass", label: "레인보우" },
   { id: "metallic", label: "메탈릭" },
   { id: "pastel", label: "파스텔" },
+];
+
+// 상품 그리드(.metallicSilver)·인기 검색어 드롭다운(.popularKeywordDropdown) 배경의
+// 파스텔 진하기. body[data-pastel]로 CSS에서 읽는다 — 기본값 deep(현재 배포된 톤).
+const PASTEL_LEVELS = [
+  { id: "deep", label: "진하게", swatch: "pastelDeep" },
+  { id: "medium", label: "보통", swatch: "pastelMedium" },
+  { id: "light", label: "연하게", swatch: "pastelLight" },
 ];
 
 const KH_PETALS = Array.from({ length: 12 }, (_, i) => ({
@@ -56,7 +64,6 @@ function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
-  const { openCart } = useCartModal();
   const { openMyPage } = useMyPageModal();
   const { openNotice } = useNoticeModal();
   const isHome = location.pathname === "/";
@@ -72,12 +79,17 @@ function Sidebar() {
   const searchWrapRef = useRef(null);
   const searchFlyoutRef = useRef(null);
   const styleWrapRef = useRef(null);
+  const pastelWrapRef = useRef(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [homeEntering, setHomeEntering] = useState(false);
   const [styleOpen, setStyleOpen] = useState(false);
+  const [pastelOpen, setPastelOpen] = useState(false);
   const [railStyle, setRailStyle] = useState(
     () => localStorage.getItem("railStyle") || "glass"
+  );
+  const [pastelLevel, setPastelLevel] = useState(
+    () => localStorage.getItem("pastelLevel") || "deep"
   );
   const [styleSwitching, setStyleSwitching] = useState(false);
   const railStyleMounted = useRef(false);
@@ -98,6 +110,13 @@ function Sidebar() {
     const timer = setTimeout(() => setStyleSwitching(false), 2000);
     return () => clearTimeout(timer);
   }, [railStyle]);
+
+  // 상품 그리드/인기 검색어 드롭다운 배경 톤 — body 속성으로 내려주면 Home.css·
+  // PopularKeywordsSidebar.css의 body[data-pastel=...] 셀렉터가 알아서 반응한다.
+  useEffect(() => {
+    document.body.dataset.pastel = pastelLevel;
+    localStorage.setItem("pastelLevel", pastelLevel);
+  }, [pastelLevel]);
 
   // 메인 페이지로 넘어올 때마다 미니바를 접힌 상태로 뒀다가, 도어인트로가 끝나는
   // 시점(App의 "doorintroend" 이벤트)에 맞춰 펼쳐지는 연출을 재생한다.
@@ -246,11 +265,24 @@ function Sidebar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [styleOpen]);
 
+  // 배경 톤 선택 플라이아웃 바깥을 클릭하면 닫기
+  useEffect(() => {
+    if (!pastelOpen) return;
+    const handleClickOutside = (e) => {
+      if (pastelWrapRef.current && !pastelWrapRef.current.contains(e.target)) {
+        setPastelOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [pastelOpen]);
+
   // 페이지가 바뀌면 열려있던 검색창/스타일 선택창은 접어둔다
   useEffect(() => {
     setSearchOpen(false);
     setSearchQuery("");
     setStyleOpen(false);
+    setPastelOpen(false);
   }, [location.pathname]);
 
   const triggerPop = (e) => {
@@ -472,7 +504,7 @@ function Sidebar() {
           className="railBtn"
           aria-label="장바구니"
           data-tooltip="장바구니"
-          onClick={(e) => { triggerPop(e); openCart(); }}
+          onClick={(e) => { triggerPop(e); navigate(isKoreanHallZone ? "/korean-hall/cart" : "/cart"); }}
         >
           <LuShoppingBag />
           {cartCount > 0 && <span className="railBadge">{cartCount}</span>}
@@ -511,6 +543,36 @@ function Sidebar() {
                   >
                     <span className={`railStyleSwatch railStyleSwatch-${s.id}`} />
                     {s.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {!isKoreanHallZone && (
+          <div className="railStyleWrap" ref={pastelWrapRef}>
+            <button
+              type="button"
+              className="railBtn"
+              aria-label="배경 톤"
+              data-tooltip="배경 톤"
+              onClick={(e) => { triggerPop(e); setPastelOpen((v) => !v); }}
+            >
+              <LuPalette />
+            </button>
+
+            {pastelOpen && (
+              <div className="railStyleFlyout">
+                {PASTEL_LEVELS.map((p) => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    className={`railStyleOption${pastelLevel === p.id ? " active" : ""}`}
+                    onClick={() => { setPastelLevel(p.id); setPastelOpen(false); }}
+                  >
+                    <span className={`railStyleSwatch railStyleSwatch-${p.swatch}`} />
+                    {p.label}
                   </button>
                 ))}
               </div>
@@ -604,7 +666,7 @@ function Sidebar() {
 
         <button
           type="button"
-          className="railBtn"
+          className="railBtn railInfoBtn"
           aria-label="회사 정보"
           data-tooltip="회사 정보"
           onClick={(e) => {

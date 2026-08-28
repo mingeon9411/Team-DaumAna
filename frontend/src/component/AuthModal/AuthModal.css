@@ -23,18 +23,6 @@
      패딩만큼 안쪽으로 여유를 주고 같은 크기의 음수 마진으로 바깥 레이아웃은 그대로 유지한다. */
   padding: 10px;
   margin: -10px;
-  animation: authModalIn 0.25s ease;
-}
-
-@keyframes authModalIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
 }
 
 .authModalClose {

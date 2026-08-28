@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import * as PortOne from "@portone/browser-sdk/v2";
 import { createOrder, readyPayment, verifyPayment, getMyCoupons, validateCoupon } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
-import { useCartModal } from "../../context/CartModalContext";
 import "./Checkout.css";
 
 const PAYMENT_METHODS = [
@@ -14,7 +13,6 @@ function Checkout() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
-  const { openCart } = useCartModal();
 
   const items = state?.cartItems
     || (state?.product ? [{ ...state.product, quantity: state.quantity }] : null);
@@ -38,11 +36,10 @@ function Checkout() {
       .catch(() => setMyCoupons([]));
   }, []);
 
-  // 상품 없이 직접 접근 또는 새로고침 시 홈으로 보내고 장바구니 모달을 띄운다
+  // 상품 없이 직접 접근 또는 새로고침 시 장바구니 페이지로 보낸다
   useEffect(() => {
     if (!items || items.length === 0) {
-      navigate("/", { replace: true });
-      openCart();
+      navigate("/cart", { replace: true });
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 

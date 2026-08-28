@@ -6,16 +6,27 @@ import { getCartItems, updateCartItem, deleteCartItem } from "../../api";
 import koreanHallProducts from "../../data/products";
 import { PRODUCTS as homeProducts } from "../Home/Home";
 import { useAuthModal } from "../../context/AuthModalContext";
-import { useCartModal } from "../../context/CartModalContext";
+import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 
 function Cart() {
   const navigate = useNavigate();
   const location = useLocation();
-  const isKoreanHall = location.pathname === "/korean-hall";
+  // 모달 시절엔 현재 열려있는 페이지(/korean-hall)로 구역을 판단했지만, 이제 카트
+  // 자체가 페이지(/cart, /korean-hall/cart)라 자기 경로로 판단한다 — checkout과 동일한 규칙.
+  const isKoreanHall = location.pathname.startsWith("/korean-hall");
   // 한국관/메인은 상품 id가 겹쳐도 서로 다른 상품이므로, 현재 페이지에 맞는 목록에서만 대체 이미지를 찾는다.
   const products = isKoreanHall ? koreanHallProducts : homeProducts;
   const { openLogin } = useAuthModal();
-  const { isOpen, closeCart } = useCartModal();
+  const goBack = () => navigate(isKoreanHall ? "/korean-hall" : "/");
+
+  // ProductDetail.jsx와 같은 신호 재사용 — 마운트 시점에 남겨둬야 닫기 버튼 클릭이든
+  // 브라우저 뒤로가기든 상관없이, "/korean-hall" 도착 시 DoorIntroController가 이 흔적을
+  // 보고 대문 애니메이션 없이 곧장 상품 목록으로 스크롤한다.
+  useEffect(() => {
+    if (isKoreanHall) {
+      sessionStorage.setItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE, NAV_ZONE.KOREAN_HALL);
+    }
+  }, [isKoreanHall]);
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -38,8 +49,8 @@ function Cart() {
   }, []);
 
   useEffect(() => {
-    if (isOpen) fetchCart();
-  }, [isOpen, fetchCart]);
+    fetchCart();
+  }, [fetchCart]);
 
   const allChecked =
     cartItems.length > 0 && cartItems.every((item) => item.checked);
@@ -113,7 +124,6 @@ function Cart() {
   });
 
   const goToCheckout = (items) => {
-    closeCart();
     navigate(isKoreanHall ? "/korean-hall/checkout" : "/checkout", { state: { cartItems: items } });
   };
 
@@ -130,12 +140,10 @@ function Cart() {
     goToCheckout(selected.map(toCheckoutItem));
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="cartModalOverlay">
-      <div className="cartInner" data-lenis-prevent>
-        <button type="button" className="cartModalClose" onClick={closeCart} aria-label="닫기">
+    <main className={`cartPage${isKoreanHall ? " koreanHallCart" : ""}`} data-hsnap data-lenis-prevent>
+      <div className={`cartInner${isKoreanHall ? " koreanHallCart" : ""}`}>
+        <button type="button" className="cartModalClose" onClick={goBack} aria-label="닫기">
           ×
         </button>
 
@@ -173,7 +181,7 @@ function Cart() {
             <div className="emptyCart">
               <span className="emptyCartIcon"><ShoppingBag size={26} /></span>
               <p>장바구니에 담긴 상품이 없습니다.</p>
-              <button onClick={closeCart}>쇼핑 계속하기</button>
+              <button onClick={goBack}>쇼핑 계속하기</button>
             </div>
           ) : (
             cartItems.map((item) => (
@@ -272,7 +280,7 @@ function Cart() {
             </div>
 
             <div className="cartActions">
-              <button className="cartSecondaryBtn" onClick={closeCart}>
+              <button className="cartSecondaryBtn" onClick={goBack}>
                 쇼핑계속하기
               </button>
               <button className="cartOrderBtn" onClick={handleBuySelected}>
@@ -301,7 +309,7 @@ function Cart() {
                 </button>
                 <button
                   className="loginModalConfirm"
-                  onClick={() => { setShowLoginModal(false); closeCart(); openLogin(); }}
+                  onClick={() => { setShowLoginModal(false); openLogin(); }}
                 >
                   로그인하기
                 </button>
@@ -310,7 +318,7 @@ function Cart() {
           </div>
         )}
       </div>
-    </div>
+    </main>
   );
 }
 

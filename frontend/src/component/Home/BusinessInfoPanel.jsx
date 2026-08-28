@@ -11,8 +11,8 @@ const MONO = { fontFamily: "'TwayFly', 'DM Mono', monospace" };
 // 값은 전부 플레이스홀더 — 실제 값이 정해지면 이 배열만 채우면 된다.
 const BUSINESS_INFO = [
   ["상호", "집다움(JIPDAUM)"],
-  ["대표자", "000"],
-  ["사업자등록번호", "000-00-00000"],
+  ["대표자", "강민건"],
+  ["사업자등록번호", "테스트 개발용"],
   ["통신판매업 신고번호", "제0000-서울강남-00000호"],
   ["영업소 소재지", "서울특별시 강남구 테헤란로 123"],
   ["전화번호", "02-123-4567"],
@@ -28,7 +28,7 @@ function BusinessInfoPanel() {
       data-lenis-prevent
       onWheel={(e) => e.stopPropagation()}
       className="w-screen h-screen shrink-0 overflow-y-auto flex flex-col items-center justify-center px-6 text-foreground"
-      style={{ background: "linear-gradient(135deg, #e8e8ea 0%, #c9cacd 35%, #f4f4f6 55%, #b0b1b5 80%, #dcdde0 100%)" }}
+      style={{ background: "linear-gradient(135deg, #f7ddc9 0%, #cfe0f2 35%, #cdeed2 55%, #ddd3f2 80%, #f4d3e4 100%)" }}
     >
       <div className="w-full max-w-lg">
         <div className="flex items-center gap-3 mb-8">

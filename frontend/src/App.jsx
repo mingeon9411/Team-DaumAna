@@ -27,26 +27,12 @@ import CheckoutKoreanHall from "./component/Checkout/CheckoutKoreanHall";
 import OrderComplete from "./component/OrderComplete/OrderComplete";
 import AuthModal from "./component/AuthModal/AuthModal";
 import { AuthModalProvider } from "./context/AuthModalContext";
-import { CartModalProvider } from "./context/CartModalContext";
 import { MyPageModalProvider } from "./context/MyPageModalContext";
 import { NoticeModalProvider } from "./context/NoticeModalContext";
 import { WithdrawModalProvider } from "./context/WithdrawModalContext";
 import { createPagingController } from "./utils/snapSetup";
 import { NAV_FLAGS, NAV_ZONE } from "./utils/navFlags";
 import "./App.css";
-
-// 탭 파비콘 — 한국관("/korean-hall")에서는 집다움 한옥 로고, 그 외 페이지에서는 JD 로고를 사용한다.
-function FaviconController() {
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    const link = document.querySelector('link[rel="icon"]');
-    if (!link) return;
-    link.href = pathname === "/korean-hall" ? "/jipdaum-logo-light.png" : "/favicon-jd.png";
-  }, [pathname]);
-
-  return null;
-}
 
 function DoorIntroController() {
   const { pathname, key } = useLocation();
@@ -68,9 +54,14 @@ function DoorIntroController() {
     // 방문에 잘못 재사용되지 않도록 항상 지운다.
     const returnZone = sessionStorage.getItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE);
     sessionStorage.removeItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE);
-    const skip = returnZone === (isKoreanHall ? NAV_ZONE.KOREAN_HALL : NAV_ZONE.HOME);
+    // 독의 "회사 정보" 버튼으로 홈까지 넘어온 경우(Sidebar.jsx가 세팅, 아직 소비 전)도
+    // 대문 애니메이션 없이 곧장 BusinessInfoPanel로 스크롤되어야 하므로 스킵 대상.
+    // 값은 Sidebar.jsx가 마운트 후에 읽고 지우므로 여기서는 확인만 하고 지우지 않는다.
+    const pendingScrollToEnd = !isKoreanHall && sessionStorage.getItem(NAV_FLAGS.PENDING_SCROLL_TO_END);
+    const isProductDetailReturn = returnZone === (isKoreanHall ? NAV_ZONE.KOREAN_HALL : NAV_ZONE.HOME);
+    const skip = isProductDetailReturn || !!pendingScrollToEnd;
 
-    if (skip) {
+    if (isProductDetailReturn) {
       if (isKoreanHall) {
         sessionStorage.setItem(NAV_FLAGS.SKIP_KOREAN_HALL_INTRO, "1");
       } else {
@@ -160,17 +151,14 @@ function App() {
   return (
     <BrowserRouter>
     <AuthModalProvider>
-    <CartModalProvider>
     <MyPageModalProvider>
     <NoticeModalProvider>
     <WithdrawModalProvider>
     <ScrollToTop lenis={lenisRef} controller={controllerRef} panelsUnsub={panelsUnsubRef} />
-    <FaviconController />
     <DoorIntroController />
     <Header />
     <Sidebar />
     <AuthModal />
-    <Cart />
     <MyPage />
     <NoticeModal />
     <WithdrawModal />
@@ -188,6 +176,8 @@ function App() {
 
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/item/:id" element={<HomeProductDetail />} />
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/korean-hall/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/korean-hall/checkout" element={<CheckoutKoreanHall />} />
         <Route path="/order-complete" element={<OrderComplete />} />
@@ -197,7 +187,6 @@ function App() {
     </WithdrawModalProvider>
     </NoticeModalProvider>
     </MyPageModalProvider>
-    </CartModalProvider>
     </AuthModalProvider>
     </BrowserRouter>
   );

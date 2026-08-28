@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Lenis from "lenis";
 import "./KoreanHall.css";
 import products from "../../data/products";
 import ChatBot from "../MyPage/ChatBot";
@@ -26,6 +27,7 @@ const KH_POPULAR_KEYWORDS = [
 
 function KoreanHall() {
   const navigate = useNavigate();
+  const pageRef = useRef(null);
   const filmVideoRef = useRef(null);
   const gridRef = useRef(null);
   const [filmIndex, setFilmIndex] = useState(0);
@@ -84,8 +86,24 @@ function KoreanHall() {
     }
   };
 
+  // data-lenis-prevent로 전역 Lenis(App.jsx, 가로 패널 스냅용)는 이 페이지를 건너뛰고
+  // 브라우저 기본 스크롤에 맡겨져 있었다 — 그래서 휠 스크롤이 뚝뚝 끊기는 느낌이었다.
+  // 이 페이지 전용으로 별도 Lenis 인스턴스를 붙여 부드러운 관성 스크롤을 준다.
+  useEffect(() => {
+    const wrapper = pageRef.current;
+    if (!wrapper) return;
+    const lenis = new Lenis({
+      wrapper,
+      content: wrapper,
+      duration: 1.8,
+      smoothWheel: true,
+      autoRaf: true,
+    });
+    return () => lenis.destroy();
+  }, []);
+
   return (
-    <div className="khPage" data-hsnap data-lenis-prevent>
+    <div className="khPage" data-hsnap data-lenis-prevent ref={pageRef}>
       <img src={irworobongdo} alt="" aria-hidden="true" className="khWatermark" />
       <div className="khIntro">
         <span className="khLabel">KOREAN HALL</span>
@@ -123,6 +141,10 @@ function KoreanHall() {
 
       <section className="khGridSection" ref={gridRef}>
         <div className="khCategoryMenu">
+          <div className="khKeywordWrap">
+            <PopularKeywordsSidebar data={KH_POPULAR_KEYWORDS} onSelect={setProductSearchQuery} />
+          </div>
+
           <div className="khCategoryList">
             {PRODUCT_CATEGORIES.map((cat) => (
               <button
@@ -134,10 +156,6 @@ function KoreanHall() {
                 {cat}
               </button>
             ))}
-          </div>
-
-          <div className="khKeywordWrap">
-            <PopularKeywordsSidebar data={KH_POPULAR_KEYWORDS} onSelect={setProductSearchQuery} />
           </div>
         </div>
 

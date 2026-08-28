@@ -10,7 +10,6 @@ import { isWished, toggleWish } from "../../utils/wishlist";
 import { addRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 import { useAuthModal } from "../../context/AuthModalContext";
-import { useCartModal } from "../../context/CartModalContext";
 
 const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
 const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
@@ -46,7 +45,6 @@ function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
-  const { openCart } = useCartModal();
 
   const localProduct = products.find((p) => p.id === Number(id));
   const [apiProduct, setApiProduct] = useState(null);
@@ -130,7 +128,7 @@ function ProductDetail() {
       await addToCart({ product: product.id, quantity, option: null });
       window.dispatchEvent(new Event("cartchange"));
       alert("장바구니에 담았습니다.");
-      openCart();
+      navigate("/korean-hall/cart");
     } catch {
       alert("장바구니 추가에 실패했습니다. 다시 시도해주세요.");
     }
