@@ -191,20 +191,20 @@ body.dark .sparkleBg {
     linear-gradient(135deg, #171a20 0%, #21252d 45%, #171a20 100%);
 }
 
-/* 전체 상품 그리드 / 갤러리 — 메탈릭 실버 배경, 아주 은은하고 느리게 움직이는 광택 */
+/* 전체 상품 그리드 / 갤러리 — 파스텔 배경, 아주 은은하고 느리게 움직이는 광택 */
 .metallicSilver {
   position: relative;
   isolation: isolate;
   overflow-x: hidden;
   background: linear-gradient(
     115deg,
-    #f4f5f6 0%,
-    #d9dbde 20%,
-    #c3c6cb 35%,
-    #eef0f2 50%,
-    #b7bac0 65%,
-    #dfe1e4 80%,
-    #f4f5f6 100%
+    #f9f4ef 0%,
+    #eef2f7 20%,
+    #f0f7f0 35%,
+    #f9f4ef 50%,
+    #f2eef7 65%,
+    #f7f0f5 80%,
+    #f9f4ef 100%
   );
   background-size: 160% 160%;
   animation: metallicSheenSubtle 24s ease-in-out infinite;
