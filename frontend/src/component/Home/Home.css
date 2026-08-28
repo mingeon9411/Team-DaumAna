@@ -191,23 +191,23 @@ body.dark .sparkleBg {
     linear-gradient(135deg, #171a20 0%, #21252d 45%, #171a20 100%);
 }
 
-/* 전체 상품 그리드 / 갤러리 — 파스텔 배경, 아주 은은하고 느리게 움직이는 광택 */
+/* 전체 상품 그리드 / 갤러리 — 좀 더 선명한 파스텔 배경, 느리게 대각선으로 흐르는 광택 */
 .metallicSilver {
   position: relative;
   isolation: isolate;
   overflow-x: hidden;
   background: linear-gradient(
     115deg,
-    #f9f4ef 0%,
-    #eef2f7 20%,
-    #f0f7f0 35%,
-    #f9f4ef 50%,
-    #f2eef7 65%,
-    #f7f0f5 80%,
-    #f9f4ef 100%
+    #f7ddc9 0%,
+    #cfe0f2 20%,
+    #cdeed2 35%,
+    #f7ddc9 50%,
+    #ddd3f2 65%,
+    #f4d3e4 80%,
+    #f7ddc9 100%
   );
-  background-size: 160% 160%;
-  animation: metallicSheenSubtle 24s ease-in-out infinite;
+  background-size: 200% 200%;
+  animation: pastelSheenDrift 20s ease-in-out infinite;
 }
 
 body.dark .metallicSilver {
@@ -224,9 +224,9 @@ body.dark .metallicSilver {
   background-size: 160% 160%;
 }
 
-@keyframes metallicSheenSubtle {
-  0%, 100% { background-position: 0% 40%; }
-  50% { background-position: 100% 60%; }
+@keyframes pastelSheenDrift {
+  0%, 100% { background-position: 0% 30%; }
+  50% { background-position: 100% 70%; }
 }
 
 /* 상품 카드 좌상단 장바구니 수량 배지 — 호버 시 확대 + 안내 문구 */
