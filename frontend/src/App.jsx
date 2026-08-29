@@ -138,7 +138,30 @@ function App() {
 
     requestAnimationFrame(raf);
 
+    // 브라우저 창을 최소화/최대화/복원하면 패널(w-screen)의 실제 폭이 바뀌는데,
+    // 스크롤 좌표(px)는 리사이즈 전 값 그대로 남는다 — Snap은 resize 시 자기
+    // viewport 치수만 갱신할 뿐 현재 위치를 다시 스냅해주지 않아서(lenis-snap.mjs
+    // onWindowResize), 두 패널 사이 어중간한 지점에 멈춰 서로 겹쳐 보이는
+    // 원인이었다. 리사이즈가 끝나면 보고 있던 패널로 다시 스냅해 보정한다.
+    //
+    // 지연을 600ms로 둔 이유: Snap이 각 패널의 document 기준 left 좌표를 다시
+    // 재는 시점(SnapElement.onWrapperResize)이 자체적으로 500ms 디바운스라서
+    // (lenis-snap.mjs), 그보다 먼저 goTo를 부르면 아직 안 갱신된(리사이즈 전)
+    // 좌표로 계산해 엉뚱한 위치로 스냅해버려 증상이 오히려 재현된다 — 반드시
+    // 그 500ms보다 뒤에 실행되도록 여유를 둬야 한다.
+    let resizeTimer;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        lenis.resize();
+        snap.goTo(snap.currentSnapIndex ?? 0);
+      }, 600);
+    };
+    window.addEventListener("resize", handleResize);
+
     return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(resizeTimer);
       panelsUnsubRef.current?.();
       controller.destroy();
       snap.destroy();
