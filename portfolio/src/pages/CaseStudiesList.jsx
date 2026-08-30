@@ -6,7 +6,7 @@ export default function CaseStudiesList() {
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
-      <h1 className="text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-serif)" }}>
+      <h1 className="text-2xl font-medium tracking-tight" style={{ fontFamily: "var(--font-serif)" }}>
         Case Studies
       </h1>
       <p className="mt-3" style={{ color: "var(--color-muted)" }}>
@@ -20,30 +20,34 @@ export default function CaseStudiesList() {
             to={`/case-studies/${x.slug}`}
             className="card block p-6 hover:-translate-y-0.5 transition-transform"
           >
-            <p className="text-xs" style={{ color: "var(--color-accent)" }}>
-              {x.meta.date}
-              {x.meta.period?.start && x.meta.period?.end
-                ? ` · ${x.meta.period.start} ~ ${x.meta.period.end}`
-                : ""}
+            <p className="text-center text-sm font-semibold tracking-wide" style={{ color: "#000" }}>
+              집다움 프로젝트
             </p>
 
-            <p className="mt-1 text-lg font-semibold">{x.meta.title}</p>
+            {x.meta.role.length > 0 && (
+              <span className="mt-1 tag text-[11px]">{x.meta.role.join(" / ")}</span>
+            )}
 
-            {x.meta.summary ? (
-              <p className="mt-2" style={{ color: "var(--color-muted)" }}>
+            <p className="mt-2 text-lg font-semibold">{x.meta.title}</p>
+            {x.meta.summary && (
+              <p className="mt-1 text-sm leading-relaxed line-clamp-2" style={{ color: "var(--color-muted)" }}>
                 {x.meta.summary}
               </p>
-            ) : null}
+            )}
 
-            {x.meta.tags?.length ? (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {x.meta.tags.slice(0, 8).map((t) => (
-                  <span key={t} className="tag">
-                    {t}
+            {x.meta.stack.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {x.meta.stack.map((s) => (
+                  <span key={s} className="tag text-[11px]">
+                    {s}
                   </span>
                 ))}
               </div>
-            ) : null}
+            )}
+
+            {x.meta.highlights[0] && (
+              <p className="mt-3 text-sm leading-relaxed">💡 {x.meta.highlights[0]}</p>
+            )}
           </Link>
         ))}
       </div>

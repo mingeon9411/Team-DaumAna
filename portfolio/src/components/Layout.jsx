@@ -11,7 +11,7 @@ export default function Layout({ children }) {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="mx-auto max-w-3xl w-full px-6 pt-8">
-        <nav className="card flex items-center gap-1 px-2 py-2 text-sm">
+        <nav className="card flex items-center justify-center gap-1 px-2 py-2 text-sm">
           {NAV.map((item) => (
             <NavLink
               key={item.to}
@@ -32,8 +32,8 @@ export default function Layout({ children }) {
 
       <main className="flex-1">{children}</main>
 
-      <footer className="mx-auto max-w-3xl w-full px-6 py-10 text-xs" style={{ color: "var(--color-muted)" }}>
-        <Link to="/">© 2026 Portfolio</Link>
+      <footer className="mx-auto max-w-3xl w-full px-6 py-10 text-xs text-center" style={{ color: "var(--color-muted)" }}>
+        <Link to="/">© 2026 KANG Mingeon. Developer Portfolio.</Link>
       </footer>
     </div>
   );

@@ -1,30 +1,67 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap');
 @import "tailwindcss";
 
+/* 집다움 프론트(frontend/src/index.css)와 동일한 자체 호스팅 폰트 — 사이트 전체
+   워드마크·본문에 쓰는 브랜드 폰트라 여기서도 같은 파일을 그대로 재사용한다. */
+@font-face {
+  font-family: "TwayFly";
+  src: url("./assets/font/tway_fly.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  --color-bg: #fbf3ea;
-  --color-card: #fffaf3;
-  --color-ink: #3d2c21;
-  --color-muted: #8b7355;
-  --color-accent: #e07a5f;
-  --color-accent-soft: #f2cc8f;
-  --color-line: #e8d9c5;
-  --font-serif: "Fraunces", "Noto Serif KR", serif;
+  --color-bg: #f3ecff;
+  --color-card: rgba(255, 255, 255, 0.72);
+  --color-ink: #3d3358;
+  --color-muted: #8577a3;
+  --color-accent: #a184e8;
+  --color-accent-soft: #e4ecff;
+  --color-line: rgba(161, 132, 232, 0.22);
+  --font-serif: "TwayFly", "Noto Sans KR", serif;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background: var(--color-bg);
+  /* 집다움 사이드바의 "파스텔" 프리셋과 같은 팔레트 — 핑크·라벤더·민트를
+     대각선으로 흘려 브랜드 톤을 그대로 이어받는다. */
+  background: linear-gradient(120deg, #ffe4f0 0%, #e4ecff 50%, #d9fbea 100%);
+  background-attachment: fixed;
   color: var(--color-ink);
+  /* TwayFly는 워드마크/제목용 디스플레이 폰트라 굵고 커서, 본문에 깔면
+     가독성이 떨어진다 — frontend(SERIF/SANS/MONO 상수)처럼 제목에만
+     var(--font-serif)로 선택 적용하고, 본문 기본은 Noto Sans KR로 둔다. */
   font-family: "Noto Sans KR", system-ui, sans-serif;
+  /* 한글은 공백 없이도 아무 글자에서나 줄바꿈되는 게 기본값이라, 좁은 컬럼(표
+     라벨 등)에서 단어 중간이 잘려 보인다 — 어절 단위로만 줄바꿈되게 강제. */
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .card {
-  @apply rounded-3xl border shadow-[0_8px_24px_-12px_rgba(61,44,33,0.25)];
+  @apply relative rounded-3xl border shadow-[0_8px_24px_-12px_rgba(161,132,232,0.25)];
   background: var(--color-card);
   border-color: var(--color-line);
+  backdrop-filter: blur(20px) saturate(115%);
+  -webkit-backdrop-filter: blur(20px) saturate(115%);
+}
+
+/* 제미나이 검색창처럼 카드 테두리에 파스텔 톤을 칠한 듯한 그라데이션 보더 */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(120deg, #ffb6de, #c9b8ff, #9fe8c9, #a8d4ff);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 .tag {
@@ -33,9 +70,49 @@ body {
   color: var(--color-ink);
 }
 
+/* 홈 히어로/하이라이트 카드 진입 애니메이션 — 순서대로 살짝 떠오르며 등장 */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-in {
+  opacity: 0;
+  animation: fade-in-up 0.7s ease-out forwards;
+  /* 헤드라인이 글자 단위(RevealChars)로 최대 30여 개까지 쪼개져 각자 딜레이를
+     두고 애니메이션되는데, backdrop-filter가 걸린 .card 안이라 브라우저가
+     애니메이션 시작 시점마다 레이어를 새로 승격시키며 끊겨 보인다 — 미리
+     레이어를 예약해두게 힌트를 준다. */
+  will-change: opacity, transform;
+}
+.animate-float {
+  animation: float 3.2s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-in {
+    opacity: 1;
+    animation: none;
+  }
+  .animate-float {
+    animation: none;
+  }
+}
+
 /* 마크다운(케이스 스터디) 본문 스타일 — @tailwindcss/typography 없이 최소만 */
 .markdown h2 {
-  @apply mt-10 text-2xl font-bold tracking-tight;
+  @apply mt-10 text-xl font-medium tracking-tight;
   font-family: var(--font-serif);
 }
 .markdown h3 {
@@ -64,7 +141,7 @@ body {
 }
 .markdown th,
 .markdown td {
-  @apply align-top border-b px-4 py-3 text-left;
+  @apply align-top border-b px-4 py-3 text-left leading-relaxed;
   border-color: var(--color-line);
 }
 .markdown tr:last-child td {

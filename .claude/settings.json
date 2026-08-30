@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/Pro_Jipdaum/TEAM_CTRL-ALT-ELITE -maxdepth 5 \\\\\\( -iname \"pom.xml\" -o -iname \"build.gradle\" -o -iname \"build.gradle.kts\" -o -iname \"*.java\" \\\\\\) 2>/dev/null | head -50 *)",
+      "Read(//c/Pro_Jipdaum/TEAM_CTRL-ALT-ELITE/**)",
+      "Bash(git pull *)"
+    ]
+  }
+}

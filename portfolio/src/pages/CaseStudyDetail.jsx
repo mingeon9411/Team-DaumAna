@@ -9,7 +9,7 @@ export default function CaseStudyDetail() {
 
   if (!item) {
     return (
-      <div className="mx-auto max-w-3xl px-6 py-12">
+      <div className="mx-auto max-w-7xl px-6 py-12">
         <p>Not found</p>
         <Link className="underline" to="/case-studies">
           ← Back
@@ -19,7 +19,7 @@ export default function CaseStudyDetail() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-12">
+    <div className="mx-auto max-w-7xl px-6 py-12">
       <Link className="text-sm underline" style={{ color: "var(--color-muted)" }} to="/case-studies">
         ← Case Studies
       </Link>
@@ -32,7 +32,7 @@ export default function CaseStudyDetail() {
             : ""}
         </p>
 
-        <h1 className="mt-2 text-3xl font-bold tracking-tight" style={{ fontFamily: "var(--font-serif)" }}>
+        <h1 className="mt-2 text-2xl font-medium tracking-tight" style={{ fontFamily: "var(--font-serif)" }}>
           {item.meta.title}
         </h1>
 
