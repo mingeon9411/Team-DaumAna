@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Noto+Sans+KR:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #fbf3ea;
+  --color-card: #fffaf3;
+  --color-ink: #3d2c21;
+  --color-muted: #8b7355;
+  --color-accent: #e07a5f;
+  --color-accent-soft: #f2cc8f;
+  --color-line: #e8d9c5;
+  --font-serif: "Fraunces", "Noto Serif KR", serif;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: "Noto Sans KR", system-ui, sans-serif;
+}
+
+.card {
+  @apply rounded-3xl border shadow-[0_8px_24px_-12px_rgba(61,44,33,0.25)];
+  background: var(--color-card);
+  border-color: var(--color-line);
+}
+
+.tag {
+  @apply rounded-full px-3 py-1 text-xs font-medium;
+  background: var(--color-accent-soft);
+  color: var(--color-ink);
+}
+
+/* 마크다운(케이스 스터디) 본문 스타일 — @tailwindcss/typography 없이 최소만 */
+.markdown h2 {
+  @apply mt-10 text-2xl font-bold tracking-tight;
+  font-family: var(--font-serif);
+}
+.markdown h3 {
+  @apply mt-8 text-lg font-semibold;
+}
+.markdown p {
+  @apply mt-4 leading-relaxed;
+  color: var(--color-muted);
+}
+.markdown ul {
+  @apply mt-4 list-disc pl-5 space-y-1;
+  color: var(--color-muted);
+}
+.markdown code {
+  @apply rounded px-1.5 py-0.5 text-sm;
+  background: var(--color-accent-soft);
+}
+.markdown blockquote {
+  @apply mt-4 border-l-4 pl-4 italic;
+  border-color: var(--color-accent);
+  color: var(--color-muted);
+}
+.markdown table {
+  @apply mt-4 w-full rounded-2xl overflow-hidden border-collapse border;
+  border-color: var(--color-line);
+}
+.markdown th,
+.markdown td {
+  @apply align-top border-b px-4 py-3 text-left;
+  border-color: var(--color-line);
+}
+.markdown tr:last-child td {
+  @apply border-b-0;
+}
+.markdown thead th {
+  @apply font-semibold;
+  background: var(--color-accent-soft);
+}
