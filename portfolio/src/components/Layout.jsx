@@ -17,6 +17,7 @@ export default function Layout({ children }) {
               key={item.to}
               to={item.to}
               end={item.end}
+              viewTransition
               className={({ isActive }) =>
                 `rounded-full px-4 py-2 font-medium transition-colors ${
                   isActive ? "text-white" : "hover:bg-[var(--color-accent-soft)]"
@@ -33,7 +34,7 @@ export default function Layout({ children }) {
       <main className="flex-1">{children}</main>
 
       <footer className="mx-auto max-w-3xl w-full px-6 py-10 text-xs text-center" style={{ color: "var(--color-muted)" }}>
-        <Link to="/">© 2026 KANG Mingeon. Developer Portfolio.</Link>
+        <Link to="/" viewTransition>© 2026 KANG Mingeon. Developer Portfolio.</Link>
       </footer>
     </div>
   );

@@ -22,15 +22,28 @@ const LINKS = [
   },
 ];
 
+// Home의 진입 애니메이션(.animate-in, 순서대로 살짝 떠오르며 등장)과 같은 계단식 딜레이
+const STEP = 80;
+
 export default function Contact() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-12 space-y-4">
-      <h1 className="text-2xl font-medium tracking-tight" style={{ fontFamily: "var(--font-serif)" }}>
+      <h1
+        className="animate-in text-2xl font-medium tracking-tight"
+        style={{ fontFamily: "var(--font-serif)", animationDelay: "0ms" }}
+      >
         Contact
       </h1>
       <div className="grid gap-4 sm:grid-cols-2">
-        {LINKS.map((l) => (
-          <a key={l.label} href={l.href} target="_blank" rel="noreferrer" className="card block p-6 hover:-translate-y-0.5 transition-transform">
+        {LINKS.map((l, i) => (
+          <a
+            key={l.label}
+            href={l.href}
+            target="_blank"
+            rel="noreferrer"
+            className="animate-in card block p-6 hover:-translate-y-0.5 transition-transform"
+            style={{ animationDelay: `${STEP + i * STEP}ms` }}
+          >
             <div className="text-2xl">{l.icon}</div>
             <p className="mt-2 font-semibold">{l.label}</p>
             <p className="mt-1 text-sm break-all" style={{ color: "var(--color-muted)" }}>

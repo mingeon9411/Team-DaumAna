@@ -1,5 +1,4 @@
-import systemArchitecture from "../assets/diagrams/system-architecture.png";
-import teamRoles from "../assets/diagrams/team-roles.png";
+import canvaIcon from "../assets/icons/canva.png";
 
 // shields.io 배지 슬러그 — 루트 README의 Tech Stack 섹션과 동일한 값 사용
 const STACK_GROUPS = [
@@ -20,18 +19,13 @@ const STACK_GROUPS = [
       "Django-092E20?logo=django&logoColor=white",
       "DRF-ff1709?logo=django&logoColor=white",
       "JWT-000000?logo=jsonwebtokens&logoColor=white",
-    ],
-  },
-  { category: "Database", items: ["MySQL-4479A1?logo=mysql&logoColor=white"] },
-  {
-    category: "Auth",
-    items: [
       "Google-4285F4?logo=google&logoColor=white",
       "Kakao-FFCD00?logo=kakao&logoColor=black",
       "Naver-03C75A?logo=naver&logoColor=white",
+      "PortOne_V2-6C1EF2?logoColor=white",
     ],
   },
-  { category: "Payment", items: ["PortOne_V2-6C1EF2?logoColor=white"] },
+  { category: "Database", items: ["MySQL-4479A1?logo=mysql&logoColor=white"] },
   {
     category: "DevOps",
     items: [
@@ -42,6 +36,12 @@ const STACK_GROUPS = [
       "Cloudflare_Pages-F38020?logo=cloudflarepages&logoColor=white",
     ],
   },
+  {
+    category: "Tools",
+    // Claude/Gemini는 shields.io(simple-icons) 배지, Canva는 simple-icons에 없어
+    // Canva 공식 아이콘(static.canva.com)을 받아 로컬 자산으로 별도 렌더링.
+    items: ["Claude-D97757?logo=claude&logoColor=white", "Google_Gemini-8E75B2?logo=googlegemini&logoColor=white"],
+  },
 ];
 
 const badgeSrc = (slug) => `https://img.shields.io/badge/${slug}&style=flat-square`;
@@ -49,46 +49,61 @@ const badgeLabel = (slug) => decodeURIComponent(slug.split("-")[0]).replace(/_/g
 
 const STRENGTHS = [
   {
+    emoji: "🚨",
+    title: "현장형 장애 대응",
+    desc: "쿠팡풀필먼트서비스 CFS 출고 현장에서 관리자 없이 혼자 상온 챔버 마감을 책임지던 날 전산 서버가 마비되었다 — 복구를 기다리는 대신 지금 할 수 있는 일의 우선순위부터 정해 두 번의 마감을 모두 지켰다. 시스템이 멈춰도 현장은 멈추지 않는다는 감각을 개발에도 그대로 적용한다.",
+  },
+  {
     emoji: "🔍",
     title: "근본 원인 분석",
-    desc: "증상이 아니라 원인을 추적 — 배제법·코드 직접 추적으로 원인을 특정하고, 재발 시 이전 사례와 비교해 공통 패턴을 일반화.",
+    desc: "설정 키 하나에 기본값이 없던 것이 원인이 되어, 배포는 성공인데 프로덕션 API 전체가 3시간 9분 동안 502 에러로 중단된 장애 사고를 커밋 로그·코드 diff만으로 원인부터 추적해 해결.",
   },
   {
     emoji: "🛡️",
     title: "재발 방지 설계",
-    desc: "버그 하나를 고치는 데 그치지 않고 체크리스트·폴백 로직 등 프로세스/코드 레벨 안전장치로 확장.",
-  },
-  {
-    emoji: "🔗",
-    title: "이기종 시스템 통합",
-    desc: "서로 다른 프레임워크(Django/Spring)가 하나의 DB를 안전하게 공유하도록 소유권 경계를 설계 — 라이선스 비용 없이 동일 인스턴스를 두 백엔드가 공유하는 구조로 프로덕션까지 안정적으로 운영.",
+    desc: "인증 크래시를 진입점 하나만 막고 끝냈다가 20일 뒤 다른 경로로 재발 — 19개 엔드포인트를 전수 확인한 뒤 전역 처리로 일반화해 같은 유형이 다시 새지 않게 막았다.",
   },
   {
     emoji: "🗄️",
-    title: "DB 마이그레이션",
-    desc: "Oracle → MySQL 전환의 기술적 차이(네이밍, 문법, 드라이버)를 원인부터 파악해 해결.",
+    title: "DB & 아키텍처",
+    desc: "서로 다른 프레임워크(Django/Spring)가 하나의 DB를 안전하게 공유하도록 소유권 경계를 설계하고, 라이선스 비용 없이 동일 인스턴스를 두 백엔드가 공유하는 구조로 프로덕션까지 안정적으로 운영. Oracle → MySQL 전환 과정의 기술적 차이(네이밍, 문법, 드라이버)도 원인부터 파악해 해결.",
   },
 ];
+
+// Home의 진입 애니메이션(.animate-in, 순서대로 살짝 떠오르며 등장)과 같은 계단식 딜레이
+const STEP = 80;
 
 export default function About() {
   return (
     <div className="mx-auto max-w-7xl px-6 py-12 space-y-6">
-      <section className="card p-14">
+      <section className="animate-in card p-14" style={{ animationDelay: "0ms" }}>
         <h1 className="text-4xl font-medium tracking-tight" style={{ fontFamily: "var(--font-serif)" }}>
           About
         </h1>
+        <p className="mt-2 text-sm font-medium" style={{ color: "var(--color-accent)" }}>
+          쿠팡풀필먼트서비스 CFS 출고 현장 PS(problem solver - 출고 문제 해결 업무) 1년 7개월 → 웹 개발자 전환
+        </p>
         <p className="mt-5 text-lg leading-relaxed" style={{ color: "var(--color-muted)" }}>
-          장애가 나면 증상보다 근본 원인을 먼저 찾습니다. 커밋 로그와 코드 diff, 작업일지를
-          근거로 원인을 좁히고, 고쳐서 끝내는 게 아니라 같은 유형이 재발하지 않도록
-          코드·배포 파이프라인·팀 컨벤션까지 손을 댑니다.
+          WMS 기반 출고 문제 해결을 현장에서 직접 맡으며, 전산 장애가 현장에 미치는 파급을
+          몸으로 겪었습니다. 관리자 없이 혼자 마감을 책임지던 날 전산 서버가 마비되었을 때도
+          복구를 기다리는 대신 지금 할 수 있는 일의 우선순위부터 정해 마감을 지켰던 경험이,
+          지금 "장애가 나면 증상보다 근본 원인을 먼저 찾는" 개발 습관의 출발점입니다.
+          현장에서 전산 데이터 흐름만 보고도 앞으로 생길 문제를 예측하던 습관은 개발에서도
+          그대로 이어집니다 — 커밋 로그와 코드 diff, 작업일지를 근거로 원인을 좁히고,
+          문제 하나를 고치는 데 그치지 않고 같은 유형이 재발하지 않도록 코드·배포
+          파이프라인·팀 컨벤션까지 손을 댑니다.
         </p>
       </section>
 
-      <section className="card p-10">
+      <section className="animate-in card p-10" style={{ animationDelay: `${STEP}ms` }}>
         <h2 className="text-lg font-semibold">핵심 역량</h2>
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          {STRENGTHS.map((s) => (
-            <div key={s.title} className="rounded-2xl p-5" style={{ background: "var(--color-bg)" }}>
+          {STRENGTHS.map((s, i) => (
+            <div
+              key={s.title}
+              className="animate-in rounded-2xl p-5"
+              style={{ background: "var(--color-bg)", animationDelay: `${STEP * 2 + i * STEP}ms` }}
+            >
               <div className="text-2xl">{s.emoji}</div>
               <p className="mt-2 font-semibold">{s.title}</p>
               <p className="mt-1 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
@@ -99,42 +114,19 @@ export default function About() {
         </div>
       </section>
 
-      <section className="card p-10">
-        <h2 className="text-lg font-semibold">시스템 아키텍처</h2>
-        <p className="mt-1 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
-          React(Vite) → Spring Boot API → MySQL 구조. Django는 API 이관이 끝나 관리자 화면과 DB 스키마 마이그레이션 소유로 축소.
-        </p>
-        <a href={systemArchitecture} target="_blank" rel="noopener noreferrer" title="새 탭에서 원본 크기로 보기">
-          <img
-            src={systemArchitecture}
-            alt="집다움 시스템 아키텍처 다이어그램: React(Vite) 프론트엔드가 REST API로 Spring Boot 백엔드와 통신하고, Spring Boot가 MySQL 및 외부 연동(Gemini, OAuth, PortOne, hCaptcha, SMTP)을 처리하며, Django는 admin 화면과 DB 스키마 마이그레이션을 담당하는 구조도"
-            className="mt-4 w-full rounded-2xl border cursor-zoom-in"
-            style={{ borderColor: "var(--color-line)" }}
-            loading="lazy"
-          />
-        </a>
-      </section>
-
-      <section className="card p-10">
-        <h2 className="text-lg font-semibold">구성원 · 역할</h2>
-        <p className="mt-1 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
-          1인 풀스택 개발 — 프론트엔드 · 백엔드(Django/Spring Boot) · 데이터베이스 · 배포 전 영역을 강민건 혼자 담당.
-        </p>
-        <a href={teamRoles} target="_blank" rel="noopener noreferrer" title="새 탭에서 원본 크기로 보기">
-          <img
-            src={teamRoles}
-            alt="집다움 구성원 · 역할 다이어그램: 강민건(Full-Stack Developer, 1인 개발)이 프론트엔드(React/Vite), 백엔드(Django 관리자 전용, Spring Boot 핵심/부가 기능), 데이터베이스(MySQL), 배포까지 전 영역을 담당하는 역할 분담표"
-            className="mt-4 w-full rounded-2xl border cursor-zoom-in"
-            style={{ borderColor: "var(--color-line)" }}
-            loading="lazy"
-          />
-        </a>
-      </section>
-
-      <h2 className="text-lg font-semibold px-2">Stack</h2>
+      <h2
+        className="animate-in text-lg font-semibold px-2"
+        style={{ animationDelay: `${STEP * 2 + STRENGTHS.length * STEP}ms` }}
+      >
+        Stack
+      </h2>
       <div className="grid gap-6 sm:grid-cols-2">
-        {STACK_GROUPS.map((g) => (
-          <section key={g.category} className="card p-6">
+        {STACK_GROUPS.map((g, i) => (
+          <section
+            key={g.category}
+            className="animate-in card p-6"
+            style={{ animationDelay: `${STEP * 3 + STRENGTHS.length * STEP + i * STEP}ms` }}
+          >
             <p className="text-sm font-semibold" style={{ color: "var(--color-muted)" }}>
               {g.category}
             </p>
@@ -142,6 +134,15 @@ export default function About() {
               {g.items.map((s) => (
                 <img key={s} src={badgeSrc(s)} alt={badgeLabel(s)} height={20} />
               ))}
+              {g.category === "Tools" && (
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-xs pr-2 pl-1.5 text-white"
+                  style={{ background: "#00C4CC", height: 20, fontSize: 11, fontWeight: 700 }}
+                >
+                  <img src={canvaIcon} alt="" width={14} height={14} className="rounded-full" />
+                  Canva
+                </span>
+              )}
             </div>
           </section>
         ))}

@@ -3,7 +3,9 @@
     "allow": [
       "Bash(find /c/Pro_Jipdaum/TEAM_CTRL-ALT-ELITE -maxdepth 5 \\\\\\( -iname \"pom.xml\" -o -iname \"build.gradle\" -o -iname \"build.gradle.kts\" -o -iname \"*.java\" \\\\\\) 2>/dev/null | head -50 *)",
       "Read(//c/Pro_Jipdaum/TEAM_CTRL-ALT-ELITE/**)",
-      "Bash(git pull *)"
+      "Bash(git pull *)",
+      "Bash(node -e \"const m = require\\('lucide-react'\\); const names = Object.keys\\(m\\); const want = ['Sofa','Armchair','Bed','BedDouble','BedSingle','Lamp','LampFloor','LampDesk','Rug','Layers','LayoutGrid','Grid2x2','Package','Box','Blinds','Home','Palette'ing]; \")",
+      "Bash(npx eslint *)"
     ]
   }
 }

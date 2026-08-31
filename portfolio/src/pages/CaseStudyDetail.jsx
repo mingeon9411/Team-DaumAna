@@ -2,16 +2,42 @@ import { useParams, Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getCaseStudyBySlug } from "../lib/markdown.js";
+import systemArchitecture from "../assets/diagrams/system-architecture.png";
+import Redirect302Incident from "../components/Redirect302Incident.jsx";
+
+// "3. 인증 크래시..." 절만 마크다운 대신 Redirect302Incident 컴포넌트로 교체 —
+// 이 문서(jipdaum-incident-review)에서만 쓰는 상세판이라 슬러그로만 분기한다.
+const SECTION3_START = "## 3. 인증 크래시 버그가 20일 뒤 다른 경로로 재발";
+const SECTION3_END = "## 그 외 트러블슈팅";
+
+function splitAroundSection3(content) {
+  const start = content.indexOf(SECTION3_START);
+  const end = content.indexOf(SECTION3_END);
+  if (start === -1 || end === -1) return null;
+  return { before: content.slice(0, start), after: content.slice(end) };
+}
+
+// "2026-08-30" → "2026.08.30" (YYYY-MM 형태도 그대로 동작)
+const dot = (d) => d.replaceAll("-", ".");
+
+// 상단 날짜 한 줄: 기간이 있으면 기간만(단일일이면 하루만) 보여주고,
+// meta.date와 중복 표기하지 않는다.
+function formatDateLine(meta) {
+  const { start, end } = meta.period ?? {};
+  if (start && end) return start === end ? dot(start) : `${dot(start)} ~ ${dot(end)}`;
+  return meta.date ? dot(meta.date) : "";
+}
 
 export default function CaseStudyDetail() {
   const { slug } = useParams();
   const item = getCaseStudyBySlug(slug);
+  const split = slug === "jipdaum-incident-review" && item ? splitAroundSection3(item.content) : null;
 
   if (!item) {
     return (
       <div className="mx-auto max-w-7xl px-6 py-12">
         <p>Not found</p>
-        <Link className="underline" to="/case-studies">
+        <Link className="underline" to="/case-studies" viewTransition>
           ← Back
         </Link>
       </div>
@@ -20,21 +46,20 @@ export default function CaseStudyDetail() {
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-12">
-      <Link className="text-sm underline" style={{ color: "var(--color-muted)" }} to="/case-studies">
+      <Link className="text-sm underline" style={{ color: "var(--color-muted)" }} to="/case-studies" viewTransition>
         ← Case Studies
       </Link>
 
-      <header className="card mt-4 p-8">
-        <p className="text-xs" style={{ color: "var(--color-accent)" }}>
-          {item.meta.date}
-          {item.meta.period?.start && item.meta.period?.end
-            ? ` · ${item.meta.period.start} ~ ${item.meta.period.end}`
-            : ""}
-        </p>
+      <header className="animate-in card mt-4 p-8" style={{ animationDelay: "0ms" }}>
+        <p className="text-xs" style={{ color: "var(--color-accent)" }}>{formatDateLine(item.meta)}</p>
 
         <h1 className="mt-2 text-2xl font-medium tracking-tight" style={{ fontFamily: "var(--font-serif)" }}>
           {item.meta.title}
         </h1>
+
+        <p className="mt-2 text-sm" style={{ color: "var(--color-muted)" }}>
+          👤 1인 개발 — 기획 · 개발 · 배포 전담
+        </p>
 
         {item.meta.highlights?.length ? (
           <ul className="mt-4 list-disc pl-5 space-y-1" style={{ color: "var(--color-ink)" }}>
@@ -55,8 +80,41 @@ export default function CaseStudyDetail() {
         ) : null}
       </header>
 
-      <article className="card markdown mt-6 p-8">
-        <ReactMarkdown remarkPlugins={[remarkGfm]}>{item.content}</ReactMarkdown>
+      <details className="animate-in card group mt-6 p-6" style={{ animationDelay: "80ms" }}>
+        <summary
+          className="flex list-none cursor-pointer items-center gap-2 rounded-2xl px-5 py-3 text-sm font-semibold transition-transform duration-200 ease-out hover:scale-[1.03] active:scale-[0.98] [&::-webkit-details-marker]:hidden"
+          style={{ background: "var(--color-accent-soft)" }}
+        >
+          <span aria-hidden="true">🗂</span>
+          <span>시스템 아키텍처 — React → Spring Boot → MySQL 구조 보기</span>
+          <span
+            aria-hidden="true"
+            className="ml-auto text-xs text-[var(--color-muted)] transition-transform duration-200 group-open:rotate-180"
+          >
+            ▼
+          </span>
+        </summary>
+        <a href={systemArchitecture} target="_blank" rel="noopener noreferrer" title="새 탭에서 원본 크기로 보기">
+          <img
+            src={systemArchitecture}
+            alt="집다움 시스템 아키텍처 다이어그램: React(Vite) 프론트엔드가 REST API로 Spring Boot 백엔드와 통신하고, Spring Boot가 MySQL 및 외부 연동(Gemini, OAuth, PortOne, hCaptcha, SMTP)을 처리하며, Django는 admin 화면과 DB 스키마 마이그레이션을 담당하는 구조도"
+            className="mt-4 w-full rounded-2xl border cursor-zoom-in"
+            style={{ borderColor: "var(--color-line)" }}
+            loading="lazy"
+          />
+        </a>
+      </details>
+
+      <article className="animate-in card markdown mt-6 p-8" style={{ animationDelay: "160ms" }}>
+        {split ? (
+          <>
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{split.before}</ReactMarkdown>
+            <Redirect302Incident />
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>{split.after}</ReactMarkdown>
+          </>
+        ) : (
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{item.content}</ReactMarkdown>
+        )}
       </article>
     </div>
   );

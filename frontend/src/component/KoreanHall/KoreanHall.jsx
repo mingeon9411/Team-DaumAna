@@ -63,6 +63,21 @@ function KoreanHall() {
       ? []
       : [...new Set(products.filter((p) => p.category === selectedCategory).map((p) => p.midCategory))];
 
+  // 실시간 인기 검색어는 실제 상품명(또는 설명/카테고리/브랜드) 속 문구로만 골라둔
+  // 것들이라, 검색창에 채워 필터링만 하지 않고 그 상품 상세로 바로 넘어가게 한다.
+  // 겹치는 상품이 여럿이면 첫 번째로 매칭되는 상품으로 이동.
+  const handlePopularKeywordSelect = (keyword) => {
+    const q = keyword.trim().toLowerCase();
+    const match = products.find(
+      (p) => p.name.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q) || p.category.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q)
+    );
+    if (match) {
+      navigate(`/product/${match.id}`);
+    } else {
+      setProductSearchQuery(keyword);
+    }
+  };
+
   const filteredProducts = (() => {
     const q = productSearchQuery.trim().toLowerCase();
     return products.filter((p) => {
@@ -158,7 +173,7 @@ function KoreanHall() {
       <section className="khGridSection" ref={gridRef}>
         <div className="khCategoryMenu">
           <div className="khKeywordWrap">
-            <PopularKeywordsSidebar data={KH_POPULAR_KEYWORDS} onSelect={setProductSearchQuery} />
+            <PopularKeywordsSidebar data={KH_POPULAR_KEYWORDS} onSelect={handlePopularKeywordSelect} />
           </div>
 
           <div className="khCategoryList">

@@ -40,7 +40,9 @@ import nordicSofaInterior from "../../assets/interior/(소파) 북유럽 소파 
 import europeanWoodSofaInterior from "../../assets/interior/(소파) 유러피안 우드 소파 - 인테리어.jpg";
 import resortChairInterior from "../../assets/interior/(의자) 유럽풍 피서지 의자 - 인테리어.jpg";
 import nordicBedInterior from "../../assets/interior/(침대) 북유럽 침대 - 인테리어.jpg";
-import { getCartItems, getPhotoReviews, getProductsByCollection } from "../../api";
+import { getCartItems, getPhotoReviews, getProductsByCollection, logoutUser } from "../../api";
+import { useAuthModal } from "../../context/AuthModalContext";
+import { useMyPageModal } from "../../context/MyPageModalContext";
 
 
 const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
@@ -244,6 +246,29 @@ function Home() {
 
   const [recentlyViewed, setRecentlyViewed] = useState(() => withFreshProductData(getRecentlyViewed()));
   const navigate = useNavigate();
+
+  // 카테고리 위 유틸 링크(로그인/회원가입 · 마이페이지/로그아웃)용 — Sidebar의 독과
+  // 같은 기준(access_token)으로 로그인 상태를 판단하고, 같은 authchange 이벤트로 동기화한다.
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("access_token"));
+  const { openLogin, openRegister } = useAuthModal();
+  const { openMyPage } = useMyPageModal();
+  useEffect(() => {
+    const sync = () => setIsLoggedIn(!!localStorage.getItem("access_token"));
+    window.addEventListener("authchange", sync);
+    return () => window.removeEventListener("authchange", sync);
+  }, []);
+  const handleLogout = async () => {
+    const refresh = localStorage.getItem("refresh_token");
+    try {
+      if (refresh) await logoutUser({ refresh });
+    } catch (err) {
+      console.error("logout API failed:", err);
+    }
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("nickname");
+    window.location.replace("/");
+  };
 
   // 다른 탭/페이지에서 "최근 본 상품"이 바뀌면(상품 상세 진입, 삭제 등) 동기화한다.
   // 상품 그리드 패널까지 스크롤해야만 뜨게 해두면 인트로 영상 구간이 많아 체감상
@@ -521,6 +546,21 @@ function Home() {
     selectedCategory === "전체"
       ? []
       : [...new Set(PRODUCTS.filter((p) => p.category === selectedCategory).map((p) => p.midCategory))];
+
+  // 실시간 인기 검색어는 이미 실제 상품명(또는 부제/라벨/브랜드) 속 문구로만 골라둔
+  // 것들이라, 검색창에 채워 필터링만 하지 않고 그 상품 상세로 바로 넘어가게 한다.
+  // 겹치는 상품이 여럿이면(예: "빨래 바구니") 첫 번째로 매칭되는 상품으로 이동.
+  const handlePopularKeywordSelect = (keyword) => {
+    const q = keyword.trim().toLowerCase();
+    const match = mergedProducts.find(
+      (p) => p.name.toLowerCase().includes(q) || p.sub.toLowerCase().includes(q) || p.label.toLowerCase().includes(q) || p.brand.toLowerCase().includes(q)
+    );
+    if (match) {
+      navigate(`/item/${match.id}`);
+    } else {
+      setProductSearchQuery(keyword);
+    }
+  };
 
   const filteredProducts = (() => {
     const q = productSearchQuery.trim().toLowerCase();
@@ -826,11 +866,42 @@ function Home() {
             </div>
 
             {/* 검색창 바로 아래 항상 붙어있는 인기 검색어 미니바(자동 롤링) */}
-            <PopularKeywordsSidebar onSelect={setProductSearchQuery} />
+            <PopularKeywordsSidebar onSelect={handlePopularKeywordSelect} />
           </div>
         </div>
 
         <div className="relative z-10 max-w-7xl mx-auto w-full mb-2">
+          {/* 29CM류 유틸 링크 — 왼쪽 사이드 독(아이콘 전용)에 이미 있는 필수 기능을
+              누구나 바로 알아볼 수 있게 텍스트로도 노출한다. 카테고리 라벨 바로 위. */}
+          <div className="mb-3 flex items-center justify-end gap-3 text-xs text-muted-foreground" style={SANS}>
+            {isLoggedIn ? (
+              <>
+                <button type="button" onClick={openMyPage} className="hover:text-foreground transition-colors">
+                  마이페이지
+                </button>
+                <span aria-hidden="true" className="text-border">|</span>
+                <button type="button" onClick={handleLogout} className="hover:text-foreground transition-colors">
+                  로그아웃
+                </button>
+              </>
+            ) : (
+              <>
+                <button type="button" onClick={openLogin} className="hover:text-foreground transition-colors">
+                  로그인
+                </button>
+                <span aria-hidden="true" className="text-border">|</span>
+                <button type="button" onClick={openRegister} className="hover:text-foreground transition-colors">
+                  회원가입
+                </button>
+              </>
+            )}
+            <span aria-hidden="true" className="text-border">|</span>
+            <button type="button" onClick={() => navigate("/cart")} className="hover:text-foreground transition-colors">
+              장바구니{Object.values(cartCounts).reduce((sum, n) => sum + n, 0) > 0 &&
+                ` (${Object.values(cartCounts).reduce((sum, n) => sum + n, 0)})`}
+            </button>
+          </div>
+
           <p className="mb-3 text-sm font-semibold text-foreground" style={SANS}>카테고리</p>
           <div className="flex items-start gap-5 overflow-x-auto pb-1">
             {PRODUCT_CATEGORIES.map((cat) => {

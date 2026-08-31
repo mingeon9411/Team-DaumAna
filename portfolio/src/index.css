@@ -11,6 +11,14 @@
   font-display: swap;
 }
 
+/* Link의 viewTransition prop이 켜는 페이지 전환 — 기본 브라우저 크로스페이드(0.25s)보다
+   살짝 느리고 부드럽게 */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.35s;
+  animation-timing-function: ease-in-out;
+}
+
 @theme {
   --color-bg: #f3ecff;
   --color-card: rgba(255, 255, 255, 0.72);
@@ -150,4 +158,30 @@ body {
 .markdown thead th {
   @apply font-semibold;
   background: var(--color-accent-soft);
+}
+
+/* 지표 표(지표/수정 전/수정 후 3열)는 값 컬럼이 짧아 기본 auto 레이아웃대로
+   두면 오른쪽에 빈 여백만 넓게 뜬다 — 값 컬럼만 내용 폭에 맞춰 좁히고
+   오른쪽 정렬해 숫자 표답게 정리 (해당 조건에 안 걸리는 2열 요약 표는
+   기존 스타일 그대로 유지). */
+.markdown table:has(thead th:nth-child(3)) {
+  table-layout: fixed;
+}
+.markdown table:has(thead th:nth-child(3)) th:first-child,
+.markdown table:has(thead th:nth-child(3)) td:first-child {
+  width: 46%;
+}
+.markdown table:has(thead th:nth-child(3)) th:not(:first-child),
+.markdown table:has(thead th:nth-child(3)) td:not(:first-child) {
+  @apply py-2.5 text-right;
+  font-variant-numeric: tabular-nums;
+}
+.markdown pre {
+  @apply mt-4 overflow-x-auto rounded-2xl p-4 text-sm leading-relaxed;
+  background: #1e1b2e;
+  color: #e2e0f0;
+}
+.markdown pre code {
+  background: transparent;
+  padding: 0;
 }
