@@ -15,6 +15,8 @@ import {
   LuLogOut,
   LuChevronLeft,
   LuChevronRight,
+  LuChevronUp,
+  LuChevronDown,
   LuChevronsLeft,
   LuChevronsRight,
   LuInfo,
@@ -389,6 +391,7 @@ function Sidebar() {
   };
 
   return (
+    <>
     <aside className={`sidebarRail ${(collapsed || homeEntering) ? "collapsed" : ""} ${isKoreanHallZone ? "koreanHallRail" : `railStyle-${railStyle}`} ${styleSwitching ? "styleSwitching" : ""}`}>
       {isKoreanHallZone && (
         <div className="khPetals" aria-hidden="true">
@@ -413,7 +416,7 @@ function Sidebar() {
         aria-expanded={!collapsed}
         onClick={() => setCollapsed(!collapsed)}
       >
-        {collapsed ? <LuChevronRight /> : <LuChevronLeft />}
+        {collapsed ? <LuChevronDown /> : <LuChevronUp />}
       </button>
 
       <div className="railItems">
@@ -616,52 +619,6 @@ function Sidebar() {
           </button>
         )}
 
-        {!isKoreanHallZone && !isProductDetail && (
-          <>
-            <span className="railDivider" />
-
-            <button
-              type="button"
-              className="railBtn"
-              aria-label="처음으로"
-              data-tooltip="처음으로"
-              onClick={(e) => { triggerPop(e); scrollToTop(); }}
-            >
-              <LuChevronsLeft />
-            </button>
-
-            <button
-              type="button"
-              className="railBtn"
-              aria-label="이전 페이지"
-              data-tooltip="이전 페이지"
-              onClick={(e) => { triggerPop(e); goToPrevPanel(); }}
-            >
-              <LuChevronLeft />
-            </button>
-
-            <button
-              type="button"
-              className="railBtn"
-              aria-label="다음 페이지"
-              data-tooltip="다음 페이지"
-              onClick={(e) => { triggerPop(e); goToNextPanel(); }}
-            >
-              <LuChevronRight />
-            </button>
-
-            <button
-              type="button"
-              className="railBtn"
-              aria-label="끝으로"
-              data-tooltip="끝으로"
-              onClick={(e) => { triggerPop(e); scrollToBottom(); }}
-            >
-              <LuChevronsRight />
-            </button>
-          </>
-        )}
-
         <span className="railDivider" />
 
         <button
@@ -683,6 +640,54 @@ function Sidebar() {
         </button>
       </div>
     </aside>
+
+    {/* 패널 이동 화살표 — 왼쪽 사이드바(.sidebarRail)와는 별도로 오른쪽 하단에
+        독립된 작은 독으로 띄운다. 왼쪽 독의 접힘/스타일 상태와 무관하게 항상
+        같은 자리에 있어야 하므로 .sidebarRail 바깥의 형제로 둔다. */}
+    {!isKoreanHallZone && !isProductDetail && (
+      <div className="railArrowDock">
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="처음으로"
+          data-tooltip="처음으로"
+          onClick={(e) => { triggerPop(e); scrollToTop(); }}
+        >
+          <LuChevronsLeft />
+        </button>
+
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="이전 페이지"
+          data-tooltip="이전 페이지"
+          onClick={(e) => { triggerPop(e); goToPrevPanel(); }}
+        >
+          <LuChevronLeft />
+        </button>
+
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="다음 페이지"
+          data-tooltip="다음 페이지"
+          onClick={(e) => { triggerPop(e); goToNextPanel(); }}
+        >
+          <LuChevronRight />
+        </button>
+
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="끝으로"
+          data-tooltip="끝으로"
+          onClick={(e) => { triggerPop(e); scrollToBottom(); }}
+        >
+          <LuChevronsRight />
+        </button>
+      </div>
+    )}
+    </>
   );
 }
 
