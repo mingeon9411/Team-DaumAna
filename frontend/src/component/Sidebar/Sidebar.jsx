@@ -19,6 +19,7 @@ import {
   LuChevronDown,
   LuChevronsLeft,
   LuChevronsRight,
+  LuChevronsUp,
   LuInfo,
   LuPalette,
 } from "react-icons/lu";
@@ -390,6 +391,10 @@ function Sidebar() {
     navigate(`/item/${product.id}`);
   };
 
+  // 화살표 독·맨 위로 버튼은 한국관에서 렌더링 자체가 안 되니(조건부 렌더)
+  // koreanHallRail 분기 없이 항상 왼쪽 독과 같은 railStyle 프리셋 클래스만 준다.
+  const presetClass = `railStyle-${railStyle} ${styleSwitching ? "styleSwitching" : ""}`;
+
   return (
     <>
     <aside className={`sidebarRail ${(collapsed || homeEntering) ? "collapsed" : ""} ${isKoreanHallZone ? "koreanHallRail" : `railStyle-${railStyle}`} ${styleSwitching ? "styleSwitching" : ""}`}>
@@ -641,11 +646,12 @@ function Sidebar() {
       </div>
     </aside>
 
-    {/* 패널 이동 화살표 — 왼쪽 사이드바(.sidebarRail)와는 별도로 오른쪽 하단에
-        독립된 작은 독으로 띄운다. 왼쪽 독의 접힘/스타일 상태와 무관하게 항상
-        같은 자리에 있어야 하므로 .sidebarRail 바깥의 형제로 둔다. */}
+    {/* 패널 이동 화살표 — 왼쪽 사이드바(.sidebarRail)와는 별도로 하단 중앙에
+        독립된 작은 독으로 띄운다. 왼쪽 독의 접힘 상태와 무관하게 항상 같은
+        자리에 있어야 하므로 .sidebarRail 바깥의 형제로 두되, 배경 스타일
+        프리셋(presetClass)만은 왼쪽 독과 항상 같게 맞춘다. */}
     {!isKoreanHallZone && !isProductDetail && (
-      <div className="railArrowDock">
+      <div className={`railArrowDock ${presetClass}`}>
         <button
           type="button"
           className="railBtn"
@@ -684,6 +690,23 @@ function Sidebar() {
           onClick={(e) => { triggerPop(e); scrollToBottom(); }}
         >
           <LuChevronsRight />
+        </button>
+      </div>
+    )}
+
+    {/* 맨 위로 버튼 — 화살표 독과 별개로 오른쪽 하단 모서리에 단독으로 띄운다.
+        기능은 "처음으로"와 같은 scrollToTop 재사용(이 앱은 가로 패널 스냅이라
+        "맨 위"=첫 패널). 배경 스타일 프리셋은 여기도 왼쪽 독과 동일하게. */}
+    {!isKoreanHallZone && !isProductDetail && (
+      <div className={`railTopBtnWrap ${presetClass}`}>
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="맨 위로"
+          data-tooltip="맨 위로"
+          onClick={(e) => { triggerPop(e); scrollToTop(); }}
+        >
+          <LuChevronsUp />
         </button>
       </div>
     )}

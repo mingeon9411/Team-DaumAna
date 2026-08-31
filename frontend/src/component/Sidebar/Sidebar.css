@@ -40,7 +40,29 @@
   100% { opacity: 1;    transform: translateY(-50%) scale(1); }
 }
 
-/* 한국관 하단 기능바는 유리 대신 한지 톤의 따뜻한 배경 적용 */
+/* 화살표 독(하단 중앙, translateX(-50%))·맨 위로 버튼(모서리 고정, transform 없음)은
+   같은 페이드-스케일이라도 각자의 고정 transform을 유지해야 하므로 키프레임을 따로 둔다. */
+.railArrowDock.styleSwitching {
+  animation: railStyleSwapCenterX 2s ease;
+}
+@keyframes railStyleSwapCenterX {
+  0%   { opacity: 1;    transform: translateX(-50%) scale(1); }
+  40%  { opacity: 0.45; transform: translateX(-50%) scale(0.97); }
+  100% { opacity: 1;    transform: translateX(-50%) scale(1); }
+}
+
+.railTopBtnWrap.styleSwitching {
+  animation: railStyleSwapPlain 2s ease;
+}
+@keyframes railStyleSwapPlain {
+  0%   { opacity: 1;    transform: scale(1); }
+  40%  { opacity: 0.45; transform: scale(0.97); }
+  100% { opacity: 1;    transform: scale(1); }
+}
+
+/* 한국관 하단 기능바는 유리 대신 한지 톤의 따뜻한 배경 적용 — 화살표 독/맨 위로
+   버튼은 한국관에서 애초에 렌더링되지 않으므로(Sidebar.jsx 조건부 렌더) 여기엔
+   포함하지 않는다. */
 .sidebarRail.koreanHallRail {
   background: linear-gradient(135deg, #f8f1e3 0%, #efe2c9 100%);
   border-color: rgba(180, 132, 74, 0.28);
@@ -48,10 +70,15 @@
   -webkit-backdrop-filter: none;
 }
 
-/* ── 사이드바 스타일 프리셋 (팔레트 아이콘으로 선택) ──────────────── */
+/* ── 사이드바 스타일 프리셋 (팔레트 아이콘으로 선택) ──────────────────
+   왼쪽 독(.sidebarRail)·하단 중앙 화살표 독(.railArrowDock)·우하단 맨 위로
+   버튼(.railTopBtnWrap)이 항상 같은 값을 쓰도록 selector를 묶어서 선언한다 —
+   따로 적으면 셋 중 하나만 고치고 나머지를 깜빡했을 때 스타일이 갈라진다. */
 
 /* 메탈릭 — 원래 있던, 반짝임이 흐르는 실버 그러데이션 */
-.sidebarRail.railStyle-metallic {
+.sidebarRail.railStyle-metallic,
+.railArrowDock.railStyle-metallic,
+.railTopBtnWrap.railStyle-metallic {
   border-width: 6px;
   background:
     linear-gradient(120deg, #f4f4f6 0%, #d7d9dc 20%, #ececed 40%, #b8bcc2 55%, #e6e7e9 70%, #cfd1d4 85%, #f4f4f6 100%) padding-box,
@@ -64,9 +91,16 @@
 
 /* 메탈릭 스타일에서 전환 애니메이션이 재생 중일 땐 반짝임 애니메이션과
    페이드-스케일 애니메이션을 함께(동시에) 재생한다 — animation 속성은
-   합쳐 쓰지 않으면 뒤에 선언된 쪽이 통째로 덮어써버리기 때문 */
+   합쳐 쓰지 않으면 뒤에 선언된 쪽이 통째로 덮어써버리기 때문. 독마다 페이드
+   키프레임이 달라(위 참고) 이 결합 규칙만은 셋을 따로 적는다. */
 .sidebarRail.railStyle-metallic.styleSwitching {
   animation: metallicShine 11s ease-in-out infinite, railStyleSwap 2s ease;
+}
+.railArrowDock.railStyle-metallic.styleSwitching {
+  animation: metallicShine 11s ease-in-out infinite, railStyleSwapCenterX 2s ease;
+}
+.railTopBtnWrap.railStyle-metallic.styleSwitching {
+  animation: metallicShine 11s ease-in-out infinite, railStyleSwapPlain 2s ease;
 }
 
 @keyframes metallicShine {
@@ -75,7 +109,9 @@
   100% { background-position: 0% 50%; }
 }
 
-body.dark .sidebarRail.railStyle-metallic {
+body.dark .sidebarRail.railStyle-metallic,
+body.dark .railArrowDock.railStyle-metallic,
+body.dark .railTopBtnWrap.railStyle-metallic {
   background:
     linear-gradient(120deg, #1b1d21 0%, #2a2d33 20%, #35383f 40%, #1b1d21 55%, #35383f 70%, #2a2d33 85%, #1b1d21 100%) padding-box,
     linear-gradient(150deg, #4a4f58 0%, #8b929b 50%, #4a4f58 100%) border-box;
@@ -83,7 +119,9 @@ body.dark .sidebarRail.railStyle-metallic {
 }
 
 /* 파스텔 — 로그인창/버튼과 같은 톤의 정적인 파스텔 채움 */
-.sidebarRail.railStyle-pastel {
+.sidebarRail.railStyle-pastel,
+.railArrowDock.railStyle-pastel,
+.railTopBtnWrap.railStyle-pastel {
   border-width: 4px;
   background:
     linear-gradient(120deg, #ffe4f0 0%, #e4ecff 50%, #d9fbea 100%) padding-box,
@@ -92,7 +130,9 @@ body.dark .sidebarRail.railStyle-metallic {
   -webkit-backdrop-filter: none;
 }
 
-body.dark .sidebarRail.railStyle-pastel {
+body.dark .sidebarRail.railStyle-pastel,
+body.dark .railArrowDock.railStyle-pastel,
+body.dark .railTopBtnWrap.railStyle-pastel {
   background:
     linear-gradient(120deg, #3a2f4a 0%, #2a3550 50%, #223d38 100%) padding-box,
     linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
@@ -517,13 +557,15 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
   transform: translateY(-50%) translateX(0);
 }
 
-.railArrowDock .railBtn::after {
+.railArrowDock .railBtn::after,
+.railTopBtnWrap .railBtn::after {
   left: 50%;
   bottom: calc(100% + 12px);
   transform: translateX(-50%) translateY(4px);
 }
 
-.railArrowDock .railBtn:hover::after {
+.railArrowDock .railBtn:hover::after,
+.railTopBtnWrap .railBtn:hover::after {
   transform: translateX(-50%) translateY(0);
 }
 
@@ -756,8 +798,11 @@ body.dark .railSearchResults button:hover {
   background: rgba(150, 185, 255, 0.12);
 }
 
-/* 다크모드 — 같은 글래스 느낌을 어두운 톤으로 */
-body.dark .sidebarRail {
+/* 다크모드 — 같은 글래스 느낌을 어두운 톤으로. 기본(유리) 프리셋의 다크모드
+   값이라 화살표 독·맨 위로 버튼도 같이 묶는다(메탈릭/파스텔과 같은 원칙). */
+body.dark .sidebarRail,
+body.dark .railArrowDock,
+body.dark .railTopBtnWrap {
   background:
     linear-gradient(rgba(6, 13, 30, 0.38), rgba(6, 13, 30, 0.38)) padding-box,
     linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
@@ -807,21 +852,24 @@ body.dark .sidebarRail.koreanHallRail .railBtn::after {
   background: rgba(6, 13, 30, 0.96);
 }
 
-/* 패널 이동 화살표 전용 독 — 왼쪽 세로 독(.sidebarRail)과 분리된 별도 컨트롤이라
-   메탈릭/파스텔 스타일 프리셋 시스템은 가져오지 않고, 기본 유리 톤 하나로 고정.
-   한국관/상품 상세에서는 애초에 렌더링되지 않는다(Sidebar.jsx의 조건부 렌더). */
+/* 패널 이동 화살표 전용 독 — 왼쪽 세로 독(.sidebarRail)과는 분리된 별도
+   컨트롤(하단 중앙 고정)이지만, 배경 프리셋(유리/메탈릭/파스텔)은 위에서 왼쪽
+   독과 값을 공유해 항상 같은 스타일로 보이게 한다. 한국관/상품 상세에서는
+   애초에 렌더링되지 않는다(Sidebar.jsx의 조건부 렌더). */
 .railArrowDock {
   position: fixed;
-  right: 20px;
+  left: 50%;
+  right: auto;
   bottom: 20px;
+  transform: translateX(-50%);
   z-index: 940;
 
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   gap: 6px;
 
-  padding: 10px 8px;
+  padding: 8px 10px;
   border-radius: 999px;
 
   border: 1.5px solid transparent;
@@ -835,11 +883,31 @@ body.dark .sidebarRail.koreanHallRail .railBtn::after {
   transition: background-color 2.8s ease, border-color 2.1s ease;
 }
 
-body.dark .railArrowDock {
+/* 맨 위로 버튼 — .railBtn 하나를 감싸는 캡슐 하나만큼의 작은 독. 아이콘 자체의
+   호버/툴팁/크기는 .railBtn 스타일을 그대로 물려받고, 여기서는 바깥 유리 캡슐
+   껍데기와 위치만 담당한다. */
+.railTopBtnWrap {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 940;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px;
+  border-radius: 999px;
+
+  border: 1.5px solid transparent;
   background:
-    linear-gradient(rgba(6, 13, 30, 0.38), rgba(6, 13, 30, 0.38)) padding-box,
-    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(150, 185, 255, 0.16);
+    linear-gradient(rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.32)) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  backdrop-filter: blur(30px) saturate(115%);
+  -webkit-backdrop-filter: blur(30px) saturate(115%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+
+  transition: background-color 2.8s ease, border-color 2.1s ease;
 }
 
 /* 좁은 화면: 여백만 살짝 축소 */
@@ -902,10 +970,15 @@ body.dark .railArrowDock {
   }
 
   .railArrowDock {
-    right: 12px;
     bottom: 12px;
     padding: 6px 8px;
     gap: 4px;
+  }
+
+  .railTopBtnWrap {
+    right: 12px;
+    bottom: 12px;
+    padding: 6px;
   }
 
   /* 검색 플라이아웃(440px 고정폭)은 버튼 위치 기준 중앙정렬이라, 좁은 화면에서
