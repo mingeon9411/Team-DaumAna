@@ -140,12 +140,17 @@ body.dark .chatBotKoreanHall .chatBotSideDiscount {
    루트는 FAB 크기(60x60)에 딱 맞는 앵커일 뿐이고, 패널은 이 앵커를 기준으로
    position:absolute로 붙인다. 예전엔 flex row-reverse로 패널을 나란히 배치했는데,
    루트 자체가 화면 오른쪽 6% 지점에 앵커되다 보니 패널(336px)까지 더한 너비가
-   뷰포트를 넘어가 패널이 화면 밖으로 잘려 보이는 문제가 있었다. */
+   뷰포트를 넘어가 패널이 화면 밖으로 잘려 보이는 문제가 있었다.
+   위치는 왼쪽 세로 독(Sidebar.jsx .sidebarRail, left:20px)과 같은 x축에 맞춰
+   왼쪽 하단에 둔다 — 독은 세로 중앙에 떠 있어서 화면 하단은 항상 비어 있다.
+   데스크탑에서 패널은 어차피 뷰포트 정중앙 고정(아래 901px 미디어쿼리)이라
+   FAB 위치를 옮겨도 패널 위치엔 영향이 없다. */
 .chatBotRoot {
   position: fixed;
-  top: 48%;
-  left: 6%;
-  transform: translateY(-50%);
+  top: auto;
+  bottom: 20px;
+  left: 20px;
+  transform: none;
   z-index: 900;
   width: 60px;
   height: 60px;

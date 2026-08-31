@@ -653,7 +653,6 @@ function ChatBot({
   });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [pos, setPos] = useState(null);
   const [panel, setPanel] = useState(null); // { title, items } | null — 질문에 맞는 상품 추천 패널
   const [buyItem, setBuyItem] = useState(null); // 옆 패널에서 "바로 구매" 누른 상품 — 있으면 추천 패널 대신 결제 패널을 보여준다
   const [showSignup, setShowSignup] = useState(false); // 회원가입 의도가 감지되면 다른 패널보다 우선해서 보여준다
@@ -696,32 +695,6 @@ function ChatBot({
     window.lenis?.stop();
     return () => window.lenis?.start();
   }, [buyItem, showSignup]);
-
-  // 위치는 하단 플로팅 독(Sidebar) 바로 왼쪽에 고정 — 더 이상 드래그로 옮길 수 없고,
-  // 독이 접히거나/펼쳐지거나 화면 크기가 바뀌어 독의 위치·폭이 바뀔 때마다 다시 붙는다.
-  // 독을 못 찾으면(레이아웃 변경 등) 기존 방식(오른쪽 6%, 수직 중앙)으로 폴백한다.
-  useEffect(() => {
-    const dock = document.querySelector(".sidebarRail");
-    if (!dock) {
-      setPos({
-        x: window.innerWidth - Math.floor(window.innerWidth * 0.06) - 64,
-        y: Math.floor(window.innerHeight * 0.48) - 32,
-      });
-      return;
-    }
-    const reposition = () => {
-      const r = dock.getBoundingClientRect();
-      setPos({ x: r.left - 16 - 64, y: r.top + r.height / 2 - 32 });
-    };
-    reposition();
-    const ro = new ResizeObserver(reposition);
-    ro.observe(dock);
-    window.addEventListener("resize", reposition);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", reposition);
-    };
-  }, []);
 
   // 스크롤 자동
   useEffect(() => {
@@ -786,17 +759,12 @@ function ChatBot({
 
   const send = () => sendText(input.trim());
 
-  const rootStyle = pos
-    ? { left: pos.x, top: pos.y, right: "auto", bottom: "auto", transform: "none" }
-    : {};
-
   return (
     <div
       className={
         "chatBotRoot" +
         (variant === "korean-hall" ? " chatBotKoreanHall" : "")
       }
-      style={rootStyle}
       onWheel={(e) => e.stopPropagation()}
     >
       {/* 채팅 패널 */}
