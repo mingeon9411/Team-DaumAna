@@ -3,7 +3,7 @@ import "../Home/HomeProductDetail.css";
 import "./ProductDetail.css";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronLeft, Heart, Star } from "lucide-react";
+import { ChevronLeft, Heart, Star, Share2, Truck } from "lucide-react";
 import { getProductDetail, addToCart, getReviews, createReview } from "../../api";
 import products from "../../data/products";
 import { isWished, toggleWish } from "../../utils/wishlist";
@@ -65,6 +65,7 @@ function ProductDetail() {
     : null;
 
   const [quantity, setQuantity] = useState(1);
+  const [activeImage, setActiveImage] = useState(0);
   const [wished, setWished] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
@@ -76,6 +77,7 @@ function ProductDetail() {
     if (!product) return;
     window.scrollTo(0, 0);
     setQuantity(1);
+    setActiveImage(0);
     setWished(isWished(product.id));
     setReviewRating(5);
     setReviewComment("");
@@ -105,6 +107,15 @@ function ProductDetail() {
   }
 
   const priceNum = Number(product.price);
+  // 오늘의집류 커머스 상세페이지와 같은 정보 구조(할인율 배지, 별점, 배송 안내 등)를
+  // 쓰기 위한 파생값들 — Home.jsx 쪽 HomeProductDetail.jsx와 동일한 공식.
+  const originalNum = product.originalPrice ? Number(product.originalPrice) : 0;
+  const hasDiscount = originalNum > priceNum;
+  const discountPct = hasDiscount ? Math.round((1 - priceNum / originalNum) * 100) : 0;
+  const avgRating = reviews.length
+    ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
+    : null;
+  const galleryImages = [product.image, product.hoverImage].filter(Boolean);
 
   const handleWish = () => {
     toggleWish({
@@ -116,6 +127,24 @@ function ProductDetail() {
       review: reviews.length,
     });
     setWished(isWished(product.id));
+  };
+
+  const handleShare = async () => {
+    const shareData = { title: product.name, text: product.desc, url: window.location.href };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch {
+        // 공유 시트에서 취소한 경우 등 — 무시
+      }
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      alert("상품 링크가 복사되었습니다.");
+    } catch {
+      alert("링크 복사에 실패했습니다.");
+    }
   };
 
   const handleAddToCart = async () => {
@@ -211,19 +240,96 @@ function ProductDetail() {
         </button>
 
         <div className="homeDetailGlassCard grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 mb-20">
-          <div className="overflow-hidden bg-muted aspect-[5/6]">
-            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+          {/* 왼쪽: 썸네일 레일 + 메인 이미지 — 오늘의집 등 상용 커머스 상세페이지의
+              공통 갤러리 구조. 촬영 컷이 1장뿐인 상품은 레일 없이 이미지 하나만 보인다. */}
+          <div className="pdGallery">
+            {galleryImages.length > 1 && (
+              <div className="pdThumbRail">
+                {galleryImages.map((src, i) => (
+                  <button
+                    key={src}
+                    type="button"
+                    onClick={() => setActiveImage(i)}
+                    className={`pdThumbBtn${activeImage === i ? " active" : ""}`}
+                    aria-label={`상품 이미지 ${i + 1}`}
+                  >
+                    <img src={src} alt="" />
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className="overflow-hidden bg-muted aspect-5/6 flex-1 min-w-0">
+              <img src={galleryImages[activeImage]} alt={product.name} className="w-full h-full object-cover" />
+            </div>
           </div>
 
+          {/* 오른쪽: 구매 정보 패널 — 브랜드/카테고리 → 제목+찜/공유 → 별점 → 가격
+              → 배송 → 수량/주문금액 → 장바구니/바로구매 순서로, 국내 커머스에서
+              가장 익숙한 상세페이지 정보 순서를 그대로 따른다. */}
           <div className="flex flex-col justify-center">
-            <span className="text-[10px] text-muted-foreground block mb-3" style={MONO}>
-              KOREAN HALL · {product.brand}
-            </span>
-            <h1 className="text-3xl font-light text-foreground mb-4" style={SERIF}>{product.name}</h1>
-            <p className="text-sm text-foreground/80 font-light leading-relaxed mb-6">{product.desc}</p>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-[11px] text-muted-foreground tracking-wide" style={MONO}>
+                KOREAN HALL · {[product.category, product.midCategory].filter(Boolean).join(" · ")}
+              </span>
+              {product.label && (
+                <span className="text-[10px] font-semibold text-foreground/70 border border-border rounded px-1.5 py-0.5" style={MONO}>
+                  {product.label}
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-start justify-between gap-4 mb-3">
+              <h1 className="text-3xl font-light text-foreground" style={SERIF}>{product.name}</h1>
+              <div className="flex items-center gap-1.5 shrink-0 pt-1">
+                <button
+                  onClick={handleWish}
+                  className="w-8 h-8 flex items-center justify-center border border-border rounded-full hover:border-foreground transition-colors"
+                  aria-label="찜 리스트에 담기"
+                >
+                  <Heart size={14} className={wished ? "fill-foreground text-foreground" : "text-foreground"} />
+                </button>
+                <button
+                  onClick={handleShare}
+                  className="w-8 h-8 flex items-center justify-center border border-border rounded-full hover:border-foreground transition-colors"
+                  aria-label="상품 공유하기"
+                >
+                  <Share2 size={14} className="text-foreground" />
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5 mb-5">
+              {avgRating ? (
+                <>
+                  <Star size={13} className="fill-foreground text-foreground" />
+                  <span className="text-sm font-medium text-foreground" style={MONO}>{avgRating}</span>
+                  <span className="text-xs text-muted-foreground">리뷰 {reviews.length}개</span>
+                </>
+              ) : (
+                <span className="text-xs text-muted-foreground">아직 리뷰가 없어요</span>
+              )}
+            </div>
+
+            <div className="mb-5">
+              {hasDiscount && (
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-[13px] font-bold text-white bg-[#c0392b] rounded px-1.5 py-0.5 tracking-wide" style={MONO}>
+                    {discountPct}% OFF
+                  </span>
+                  <span className="text-sm text-muted-foreground line-through" style={MONO}>₩{originalNum.toLocaleString()}</span>
+                </div>
+              )}
+              <span className="text-3xl font-bold text-foreground" style={MONO}>₩{priceNum.toLocaleString()}</span>
+            </div>
+
+            <div className="flex items-center gap-2 text-xs text-muted-foreground border border-border rounded-lg px-3.5 py-2.5 mb-6">
+              <Truck size={14} className="text-foreground shrink-0" />
+              <span>무료배송</span>
+            </div>
+
             <Hairline className="mb-6 w-16" />
 
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between mb-4">
               <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>수량</span>
               <div className="flex items-center gap-4 border border-border px-3 py-1.5">
                 <button
@@ -246,34 +352,27 @@ function ProductDetail() {
               </div>
             </div>
 
-            <div className="flex items-baseline justify-between mb-8">
-              <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>TOTAL</span>
-              <span className="text-3xl font-semibold text-foreground" style={MONO}>
+            <div className="flex items-baseline justify-between mb-6 pb-6 border-b border-border">
+              <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>주문금액</span>
+              <span className="text-2xl font-semibold text-foreground" style={MONO}>
                 ₩{(priceNum * quantity).toLocaleString()}
               </span>
             </div>
 
             <div className="flex gap-3">
               <button
-                onClick={handleWish}
-                className="w-11 h-11 shrink-0 border border-border flex items-center justify-center text-foreground hover:border-foreground transition-colors"
-                aria-label="찜 리스트에 담기"
+                onClick={handleAddToCart}
+                className="flex-1 border border-foreground text-foreground text-xs tracking-widest py-3.5 hover:bg-foreground/5 transition-colors"
+                style={SANS}
               >
-                <Heart size={16} className={wished ? "fill-foreground text-foreground" : "text-foreground"} />
+                장바구니
               </button>
               <button
                 onClick={handleKakaoPay}
-                className="flex-1 border border-foreground text-foreground text-xs tracking-widest hover:bg-foreground hover:text-background transition-colors"
+                className="flex-1 bg-foreground text-background text-xs tracking-widest py-3.5 hover:opacity-85 transition-opacity"
                 style={SANS}
               >
                 바로 구매하기
-              </button>
-              <button
-                onClick={handleAddToCart}
-                className="flex-1 bg-foreground text-background text-xs tracking-widest hover:opacity-85 transition-opacity"
-                style={SANS}
-              >
-                담기
               </button>
             </div>
           </div>
@@ -350,12 +449,10 @@ function ProductDetail() {
                 REVIEW ({reviews.length})
               </span>
             </div>
-            {reviews.length > 0 && (
+            {avgRating && (
               <div className="flex items-center gap-1.5 border border-border rounded-full px-3 py-1.5">
                 <Star size={13} className="fill-foreground text-foreground" />
-                <span className="text-sm font-medium text-foreground" style={MONO}>
-                  {(reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)}
-                </span>
+                <span className="text-sm font-medium text-foreground" style={MONO}>{avgRating}</span>
               </div>
             )}
           </div>

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Lenis from "lenis";
+import { LayoutGrid, Sofa, Table, Lamp, Archive, Package } from "lucide-react";
 import "./KoreanHall.css";
 import products from "../../data/products";
 import ChatBot from "../MyPage/ChatBot";
@@ -11,7 +12,14 @@ import { NAV_FLAGS } from "../../utils/navFlags";
 import irworobongdo from "../../assets/decor/irworobongdo.svg";
 
 const FILM_SOURCES = ["/videos/jipdaum-hanok.mp4", "/videos/jipdaum-kor.mp4"];
-const PRODUCT_CATEGORIES = ["전체", "소파", "테이블", "조명", "수납", "소품"];
+const PRODUCT_CATEGORIES = [
+  { label: "전체", Icon: LayoutGrid },
+  { label: "소파", Icon: Sofa },
+  { label: "테이블", Icon: Table },
+  { label: "조명", Icon: Lamp },
+  { label: "수납", Icon: Archive },
+  { label: "소품", Icon: Package },
+];
 
 // 한국관 전용 인기 검색어 — Home.jsx의 MOCK_KEYWORDS와 마찬가지로 실제 products(위 배열)
 // 상품명 속 문구로만 골랐다. 클릭하면 productSearchQuery로 들어가 아래 그리드가 바로 필터링된다.
@@ -156,15 +164,16 @@ function KoreanHall() {
           <div className="khCategoryList">
             {PRODUCT_CATEGORIES.map((cat) => (
               <button
-                key={cat}
+                key={cat.label}
                 type="button"
-                className={`khCategoryBtn${selectedCategory === cat ? " active" : ""}`}
+                className={`khCategoryBtn${selectedCategory === cat.label ? " active" : ""}`}
                 onClick={() => {
-                  setSelectedCategory(cat);
+                  setSelectedCategory(cat.label);
                   setSelectedMid("전체");
                 }}
               >
-                {cat}
+                <cat.Icon size={13} strokeWidth={1.75} />
+                {cat.label}
               </button>
             ))}
           </div>

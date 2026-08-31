@@ -340,6 +340,9 @@ body.dark .khCategoryMenu {
 }
 
 .khCategoryBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     padding: 5px 14px;
     border-radius: 999px;
     border: 1px solid rgba(180, 132, 74, 0.28);
@@ -352,10 +355,14 @@ body.dark .khCategoryMenu {
     transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 
+.khCategoryBtn svg {
+    flex-shrink: 0;
+}
+
 .khCategoryBtn:hover {
     color: var(--foreground);
     border-color: rgba(166, 52, 42, 0.4);
-    transform: translateY(-1px);
+    transform: translateY(-1px) scale(1.06);
 }
 
 .khCategoryBtn.active {
