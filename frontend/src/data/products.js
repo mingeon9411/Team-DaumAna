@@ -24,6 +24,8 @@ export const products = [
     review: 4.8,
     brand: "집다움",
     category: "테이블",
+    midCategory: "사이드테이블",
+    subCategory: "월넛원목",
   },
   {
     id: 12,
@@ -38,6 +40,8 @@ export const products = [
     review: 4.9,
     brand: "집다움",
     category: "조명",
+    midCategory: "테이블조명",
+    subCategory: "한지",
   },
   {
     id: 13,
@@ -52,6 +56,8 @@ export const products = [
     review: 4.7,
     brand: "집다움",
     category: "소품",
+    midCategory: "화병",
+    subCategory: "백자(무자기)",
   },
   {
     id: 14,
@@ -66,6 +72,8 @@ export const products = [
     review: 4.8,
     brand: "집다움",
     category: "수납",
+    midCategory: "수납장",
+    subCategory: "원목 브라스",
   },
   {
     id: 15,
@@ -80,6 +88,8 @@ export const products = [
     review: 4.9,
     brand: "집다움",
     category: "조명",
+    midCategory: "펜던트조명",
+    subCategory: "한지 메탈프레임",
   },
   {
     id: 16,
@@ -93,6 +103,8 @@ export const products = [
     review: 4.8,
     brand: "집다움",
     category: "소파",
+    midCategory: "좌식소파",
+    subCategory: "원목 리넨",
   },
   {
     id: 17,
@@ -106,6 +118,8 @@ export const products = [
     review: 4.8,
     brand: "집다움",
     category: "수납",
+    midCategory: "책장",
+    subCategory: "원목(짜맞춤)",
   },
 ];
 

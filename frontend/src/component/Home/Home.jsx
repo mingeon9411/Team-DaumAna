@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag, Plus, LayoutGrid, Sofa, Armchair, Bed, Lamp, Square, Package } from "lucide-react";
 import "./Home.css";
 import ChatBot from "../MyPage/ChatBot";
 import LookbookViewer from "./LookbookViewer";
@@ -51,62 +51,71 @@ export const PRODUCTS = [
   { id: 1, no: "No.1", name: "북유럽풍 러그 B형", sub: "멀티 파스텔 아브스트랙트", price: "168,000", originalPrice: "198,000", label: "BESTSELLER",
     desc: "크림 베이스 위에 블루·올리브·더스티핑크가 어우러진 추상 아라베스크 무늬 터프팅 러그입니다. 두툼한 울 파일감이 발끝에 포근하게 감기고, 어느 벽지·바닥재와도 무난하게 어울려 거실이나 침실 중심에 깔기 좋습니다.",
     spec: "SIZE : W160 D230 · MATERIAL : wool, cotton backing",
-    image: rugB, interiorImage: rugBInterior, alt: "북유럽풍 러그 B형", brand: "집다움", category: "러그" },
+    image: rugB, interiorImage: rugBInterior, alt: "북유럽풍 러그 B형", brand: "집다움", category: "러그", midCategory: "패턴러그", subCategory: "울 아브스트랙트" },
   { id: 2, no: "No.2", name: "우드 롱 무드등", sub: "내추럴 라탄", price: "118,000", label: "NEW",
     desc: "오크 원목 스탠드에 라탄 케인 원통 갓을 씌운 플로어 조명입니다. 불을 켜면 라탄 사이로 은은한 그물무늬 빛이 새어나와 저녁 시간 거실에 따뜻한 분위기를 더합니다.",
     spec: "SIZE : W38 D38 H118 · MATERIAL : oak, rattan cane",
-    image: woodMoodLamp, interiorImage: woodMoodLampInterior, alt: "우드 롱 무드등", brand: "집다움", category: "조명" },
+    image: woodMoodLamp, interiorImage: woodMoodLampInterior, alt: "우드 롱 무드등", brand: "집다움", category: "조명", midCategory: "플로어조명", subCategory: "오크 라탄" },
   { id: 3, no: "No.3", name: "북유럽풍 침대 작은 무드등", sub: "내추럴 우드 & 자연사", price: "49,000", label: "NEW",
     desc: "원뿔형 원목 다리 위에 천연 마사(자연사)를 촘촘히 감아 만든 미니 무드등입니다. 침대 협탁이나 콘솔 위에 올려두면 아늑한 저녁 조명으로 제격입니다.",
     spec: "SIZE : W20 D20 H32 · MATERIAL : wood, jute rope",
-    image: smallMoodLamp, interiorImage: smallMoodLampInterior, alt: "북유럽풍 침대 작은 무드등", brand: "집다움", category: "조명" },
+    image: smallMoodLamp, interiorImage: smallMoodLampInterior, alt: "북유럽풍 침대 작은 무드등", brand: "집다움", category: "조명", midCategory: "테이블조명", subCategory: "우드 자연사" },
   { id: 4, no: "No.4", name: "린넨 우드 소파", sub: "샌드 베이지", price: "498,000", originalPrice: "560,000", label: "BESTSELLER",
     desc: "오크 프레임 팔걸이를 자연사로 엮고, 두툼한 린넨 쿠션을 올린 2인용 소파입니다. 담백한 프레임과 부드러운 쿠션감이 균형을 이뤄 거실 어디에 두어도 편안한 무게중심이 됩니다.",
     spec: "SIZE : W165 D80 H78 · MATERIAL : linen, oak, rope",
-    image: linenWoodSofa, interiorImage: linenWoodSofaInterior, alt: "린넨 우드 소파", brand: "집다움", category: "소파" },
+    image: linenWoodSofa, interiorImage: linenWoodSofaInterior, alt: "린넨 우드 소파", brand: "집다움", category: "소파", midCategory: "2인소파", subCategory: "리넨 오크" },
   { id: 5, no: "No.5", name: "북유럽 소파", sub: "아이보리 부클", price: "780,000", originalPrice: "890,000", label: "NEW",
     desc: "곡선을 그리며 이어지는 프레임에 부클 원단을 두른 라운지형 3인 소파입니다. 낮은 좌면과 넉넉한 팔걸이가 몸을 편안히 감싸 주고, 오브제 같은 실루엣이 거실의 시선을 자연스럽게 붙잡습니다.",
     spec: "SIZE : W240 D95 H70 · MATERIAL : boucle, ash wood",
-    image: nordicSofa, interiorImage: nordicSofaInterior, alt: "북유럽 소파", brand: "집다움", category: "소파" },
+    image: nordicSofa, interiorImage: nordicSofaInterior, alt: "북유럽 소파", brand: "집다움", category: "소파", midCategory: "3인소파", subCategory: "부클 애쉬우드" },
   { id: 6, no: "No.6", name: "유러피안 우드 소파", sub: "머스터드 옐로우", price: "560,000", label: "NEW",
     desc: "라탄 케인을 짜 넣은 등받이와 월넛 톤 원목 프레임이 클래식한 무드를 더하는 3인용 소파입니다. 머스터드 컬러 쿠션이 포인트가 되어 차분한 공간에 생기를 불어넣습니다.",
     spec: "SIZE : W205 D85 H82 · MATERIAL : rattan cane, walnut, cotton",
-    image: europeanWoodSofa, interiorImage: europeanWoodSofaInterior, alt: "유러피안 우드 소파", brand: "집다움", category: "소파" },
+    image: europeanWoodSofa, interiorImage: europeanWoodSofaInterior, alt: "유러피안 우드 소파", brand: "집다움", category: "소파", midCategory: "3인소파", subCategory: "라탄 월넛" },
   { id: 7, no: "No.7", name: "린넨 빨래 바구니", sub: "민트 그레이 컬러블록", price: "32,000", label: "ECO",
     desc: "민트, 블루, 아이보리가 컬러블록으로 나뉜 패브릭 빨래 바구니입니다. 가벼운 무광 소재에 메탈 손잡이를 달아 옷방과 욕실을 오가며 들고 다니기 편합니다.",
     spec: "SIZE : W36 D36 H40 · MATERIAL : coated fabric, metal handle",
-    image: linenLaundryBasket, interiorImage: linenLaundryBasketInterior, alt: "린넨 빨래 바구니", brand: "집다움", category: "소품" },
+    image: linenLaundryBasket, interiorImage: linenLaundryBasketInterior, alt: "린넨 빨래 바구니", brand: "집다움", category: "소품", midCategory: "수납바구니", subCategory: "패브릭 메탈핸들" },
   { id: 8, no: "No.8", name: "북유럽 문양 빨래 바구니", sub: "내추럴 라탄", price: "45,000", label: "NEW",
     desc: "가는 라탄 가닥을 별무늬로 엮어 짠 바스켓으로, 가죽 손잡이가 포인트를 더합니다. 세탁물 정리는 물론 담요나 잡지꽂이로도 어울리는 다용도 소품입니다.",
     spec: "SIZE : W34 D34 H36 · MATERIAL : rattan, leather handle",
-    image: patternLaundryBasket, interiorImage: patternLaundryBasketInterior, alt: "북유럽 문양 빨래 바구니", brand: "집다움", category: "소품" },
+    image: patternLaundryBasket, interiorImage: patternLaundryBasketInterior, alt: "북유럽 문양 빨래 바구니", brand: "집다움", category: "소품", midCategory: "수납바구니", subCategory: "라탄 레더핸들" },
   { id: 9, no: "No.9", name: "북유럽풍 러그 A형", sub: "아이보리 지오메트릭", price: "128,000", label: "NEW",
     desc: "삼각·다이아몬드 패턴을 세이지, 블루그레이 톤으로 촘촘히 터프팅한 러그입니다. 기하학적인 패턴이 공간에 리듬감을 더해 소파 앞이나 침대 곁 포인트 러그로 잘 어울립니다.",
     spec: "SIZE : W140 D200 · MATERIAL : wool, cotton backing",
-    image: rugA, interiorImage: rugAInterior, alt: "북유럽풍 러그 A형", brand: "집다움", category: "소품" },
+    // 실제로는 소품이 아니라 러그다 — 대분류 오태그를 이번 정리에서 함께 바로잡음.
+    image: rugA, interiorImage: rugAInterior, alt: "북유럽풍 러그 A형", brand: "집다움", category: "러그", midCategory: "패턴러그", subCategory: "울 지오메트릭" },
   { id: 10, no: "No.10", name: "친환경 우드 빨래 바구니", sub: "내추럴 라탄 & 가죽", price: "39,000", label: "ECO",
     desc: "천연 라탄을 촘촘히 엮고 가죽 손잡이를 덧댄 친환경 소재 바구니입니다. 옷방, 욕실, 아이 방 등 어디에 두어도 자연스럽게 스며드는 내추럴한 분위기를 냅니다.",
     spec: "SIZE : W38 D38 H40 · MATERIAL : rattan, leather handle",
-    image: ecoWoodLaundryBasket, interiorImage: ecoWoodLaundryBasketInterior, alt: "친환경 우드 빨래 바구니", brand: "집다움", category: "소품" },
+    image: ecoWoodLaundryBasket, interiorImage: ecoWoodLaundryBasketInterior, alt: "친환경 우드 빨래 바구니", brand: "집다움", category: "소품", midCategory: "수납바구니", subCategory: "친환경 라탄" },
   { id: 11, no: "No.11", name: "우드 의자", sub: "내추럴 라탄 케인", price: "219,000", label: "NEW",
     desc: "둥근 라탄 케인 등받이와 오크 프레임이 만나는 자그마한 암체어입니다. 넉넉한 리넨 쿠션을 더해 식탁 의자로도, 침실 코너 체어로도 편안하게 쓸 수 있습니다.",
     spec: "SIZE : W64 D58 H74 · MATERIAL : oak, rattan cane, linen",
-    image: woodChair, alt: "우드 의자", brand: "집다움", category: "의자" },
+    image: woodChair, alt: "우드 의자", brand: "집다움", category: "의자", midCategory: "암체어", subCategory: "오크 라탄" },
   { id: 12, no: "No.12", name: "유럽풍 피서지 의자", sub: "코냑 브라운 레더 스트랩", price: "268,000", originalPrice: "298,000", label: "BESTSELLER",
     desc: "티크 원목 프레임에 가죽 스트랩을 교차로 엮어 만든 로우 라운지 체어입니다. 낮은 좌면과 여유로운 각도가 휴양지에 온 듯한 편안함을 주어, 테라스나 창가 자리에 잘 어울립니다.",
     spec: "SIZE : W68 D75 H68 · MATERIAL : teak wood, leather strap",
-    image: resortChair, interiorImage: resortChairInterior, alt: "유럽풍 피서지 의자", brand: "집다움", category: "의자" },
+    image: resortChair, interiorImage: resortChairInterior, alt: "유럽풍 피서지 의자", brand: "집다움", category: "의자", midCategory: "라운지체어", subCategory: "티크 레더" },
   { id: 13, no: "No.13", name: "북유럽 침대", sub: "내추럴 오크", price: "890,000", originalPrice: "1,250,000", label: "BESTSELLER",
     desc: "원목의 결과 라이브 엣지를 살린 헤드보드가 인상적인 플랫폼 침대 프레임입니다. 군더더기 없는 낮은 구조로 침실을 한층 넓고 차분하게 만들어 줍니다.",
     spec: "SIZE : W160 D200 H85 (Q) · MATERIAL : solid oak",
-    image: nordicBed, interiorImage: nordicBedInterior, alt: "북유럽 침대", brand: "집다움", category: "침대" },
+    image: nordicBed, interiorImage: nordicBedInterior, alt: "북유럽 침대", brand: "집다움", category: "침대", midCategory: "프레임침대", subCategory: "솔리드 오크" },
   { id: 14, no: "No.14", name: "북유럽풍 파스텔 문양 침대", sub: "멀티 파스텔 아브스트랙트", price: "950,000", label: "NEW",
     desc: "블루, 세이지, 로즈 톤의 추상 패턴 패브릭으로 감싼 업홀스터리 침대입니다. 높은 헤드보드가 침실의 포인트가 되어 주고, 부드러운 패딩감이 등을 편안하게 받쳐줍니다.",
     spec: "SIZE : W165 D210 H130 (Q) · MATERIAL : polyester fabric, wood frame",
-    image: pastelPatternBed, interiorImage: pastelPatternBedInterior, alt: "북유럽풍 파스텔 문양 침대", brand: "집다움", category: "침대" },
+    image: pastelPatternBed, interiorImage: pastelPatternBedInterior, alt: "북유럽풍 파스텔 문양 침대", brand: "집다움", category: "침대", midCategory: "업홀스터리침대", subCategory: "패브릭 우드프레임" },
 ];
 
-const PRODUCT_CATEGORIES = ["전체", "소파", "의자", "침대", "조명", "러그", "소품"];
+const PRODUCT_CATEGORIES = [
+  { label: "전체", Icon: LayoutGrid },
+  { label: "소파", Icon: Sofa },
+  { label: "의자", Icon: Armchair },
+  { label: "침대", Icon: Bed },
+  { label: "조명", Icon: Lamp },
+  { label: "러그", Icon: Square },
+  { label: "소품", Icon: Package },
+];
 
 const LOOKBOOK_PHOTOS = [
   "photo-1484101403633-562f891dc89a",
@@ -174,6 +183,7 @@ function Home() {
   const [wishlist, setWishlist] = useState([]);
   const [productSearchQuery, setProductSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("전체");
+  const [selectedMid, setSelectedMid] = useState("전체");
   const [lookbookPage, setLookbookPage] = useState(0);
   const [lookbookViewerIndex, setLookbookViewerIndex] = useState(null);
   const [photoReviews, setPhotoReviews] = useState([]);
@@ -506,17 +516,24 @@ function Home() {
     }
   };
 
+  // 대분류를 고를 때만 그 안의 중분류 목록이 의미가 있다 — 전체 보기에선 중분류 탭 자체를 숨긴다.
+  const midOptions =
+    selectedCategory === "전체"
+      ? []
+      : [...new Set(PRODUCTS.filter((p) => p.category === selectedCategory).map((p) => p.midCategory))];
+
   const filteredProducts = (() => {
     const q = productSearchQuery.trim().toLowerCase();
     return mergedProducts.filter((p) => {
       const matchesCategory = selectedCategory === "전체" || p.category === selectedCategory;
+      const matchesMid = selectedMid === "전체" || p.midCategory === selectedMid;
       const matchesQuery =
         !q ||
         p.name.toLowerCase().includes(q) ||
         p.sub.toLowerCase().includes(q) ||
         p.label.toLowerCase().includes(q) ||
         p.brand.toLowerCase().includes(q);
-      return matchesCategory && matchesQuery;
+      return matchesCategory && matchesMid && matchesQuery;
     });
   })();
 
@@ -813,23 +830,63 @@ function Home() {
           </div>
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto w-full mb-8 flex items-center gap-2 flex-wrap">
-          {PRODUCT_CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
-                selectedCategory === cat
-                  ? "bg-foreground text-background border-foreground"
-                  : "bg-transparent text-muted-foreground border-border hover:border-foreground hover:text-foreground"
-              }`}
-              style={SANS}
-            >
-              {cat}
-            </button>
-          ))}
+        <div className="relative z-10 max-w-7xl mx-auto w-full mb-2">
+          <p className="mb-3 text-sm font-semibold text-foreground" style={SANS}>카테고리</p>
+          <div className="flex items-start gap-5 overflow-x-auto pb-1">
+            {PRODUCT_CATEGORIES.map((cat) => {
+              const selected = selectedCategory === cat.label;
+              return (
+                <button
+                  key={cat.label}
+                  type="button"
+                  onClick={() => {
+                    setSelectedCategory(cat.label);
+                    setSelectedMid("전체");
+                  }}
+                  className="flex shrink-0 flex-col items-center gap-1.5"
+                >
+                  <span
+                    className={`flex h-14 w-14 items-center justify-center rounded-full border transition-all duration-200 ease-out hover:scale-110 active:scale-95 ${
+                      selected
+                        ? "bg-foreground text-background border-foreground"
+                        : "bg-transparent text-muted-foreground border-border hover:border-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <cat.Icon size={22} strokeWidth={1.75} />
+                  </span>
+                  <span
+                    className={`text-xs font-medium ${selected ? "text-foreground" : "text-muted-foreground"}`}
+                    style={SANS}
+                  >
+                    {cat.label}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
+
+        {/* 중분류 탭 — 대분류를 하나 고르고, 그 안에 세부 유형이 둘 이상일 때만 뜬다 */}
+        {midOptions.length > 1 && (
+          <div className="relative z-10 max-w-7xl mx-auto w-full mb-8 flex items-center gap-1.5 flex-wrap">
+            {["전체", ...midOptions].map((mid) => (
+              <button
+                key={mid}
+                type="button"
+                onClick={() => setSelectedMid(mid)}
+                className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                  selectedMid === mid
+                    ? "bg-muted-foreground/20 text-foreground border-muted-foreground/40"
+                    : "bg-transparent text-muted-foreground/70 border-border/60 hover:text-foreground"
+                }`}
+                style={SANS}
+              >
+                {mid}
+              </button>
+            ))}
+          </div>
+        )}
+        {midOptions.length <= 1 && <div className="mb-8" />}
 
         {filteredProducts.length === 0 ? (
           <p className="relative z-10 max-w-7xl mx-auto w-full text-center text-sm text-muted-foreground py-16" style={SANS}>

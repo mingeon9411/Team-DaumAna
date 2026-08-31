@@ -135,7 +135,7 @@ function HomeProductDetail() {
 
   const specRows = [
     ["브랜드", product.brand],
-    ["카테고리", product.category],
+    ["카테고리", [product.category, product.midCategory, product.subCategory].filter(Boolean).join(" > ")],
     ["컬러", product.sub],
     ["사이즈", sizeText],
     ["소재", materialText],

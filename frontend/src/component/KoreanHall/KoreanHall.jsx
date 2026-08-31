@@ -33,6 +33,7 @@ function KoreanHall() {
   const [filmIndex, setFilmIndex] = useState(0);
   const [filmEnded, setFilmEnded] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("전체");
+  const [selectedMid, setSelectedMid] = useState("전체");
   const [productSearchQuery, setProductSearchQuery] = useState("");
   const [recentlyViewed, setRecentlyViewed] = useState(() => getRecentlyViewed("korean-hall"));
 
@@ -48,17 +49,24 @@ function KoreanHall() {
     };
   }, []);
 
+  // 대분류를 고를 때만 그 안의 중분류 목록이 의미가 있다 — 전체 보기에선 중분류 탭 자체를 숨긴다.
+  const midOptions =
+    selectedCategory === "전체"
+      ? []
+      : [...new Set(products.filter((p) => p.category === selectedCategory).map((p) => p.midCategory))];
+
   const filteredProducts = (() => {
     const q = productSearchQuery.trim().toLowerCase();
     return products.filter((p) => {
       const matchesCategory = selectedCategory === "전체" || p.category === selectedCategory;
+      const matchesMid = selectedMid === "전체" || p.midCategory === selectedMid;
       const matchesQuery =
         !q ||
         p.name.toLowerCase().includes(q) ||
         p.desc.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q) ||
         p.brand.toLowerCase().includes(q);
-      return matchesCategory && matchesQuery;
+      return matchesCategory && matchesMid && matchesQuery;
     });
   })();
 
@@ -151,12 +159,32 @@ function KoreanHall() {
                 key={cat}
                 type="button"
                 className={`khCategoryBtn${selectedCategory === cat ? " active" : ""}`}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => {
+                  setSelectedCategory(cat);
+                  setSelectedMid("전체");
+                }}
               >
                 {cat}
               </button>
             ))}
           </div>
+
+          {/* 중분류 탭 — 대분류 안에 세부 유형이 둘 이상일 때만 뜬다. khCategoryMenu 안에 둬야
+              sticky 헤더와 같이 붙어 움직인다(밖에 두면 스크롤 시 헤더 밑으로 가려짐). */}
+          {midOptions.length > 1 && (
+            <div className="khCategoryList khCategoryList--sub">
+              {["전체", ...midOptions].map((mid) => (
+                <button
+                  key={mid}
+                  type="button"
+                  className={`khCategoryBtn khCategoryBtn--sub${selectedMid === mid ? " active" : ""}`}
+                  onClick={() => setSelectedMid(mid)}
+                >
+                  {mid}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {productSearchQuery && (

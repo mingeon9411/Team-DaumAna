@@ -282,6 +282,25 @@ body.dark .khKeywordWrap .popularKeywordDropdown {
     box-shadow: 0 16px 44px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(214, 168, 106, 0.1);
 }
 
+.khCategoryList--sub {
+    grid-column: 1 / -1;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 4px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(180, 132, 74, 0.2);
+}
+
+body.dark .khCategoryList--sub {
+    border-top-color: rgba(214, 168, 106, 0.18);
+}
+
+.khCategoryBtn--sub {
+    padding: 3px 11px;
+    font-size: 10px;
+    opacity: 0.85;
+}
+
 .khSearchNotice {
     display: flex;
     align-items: center;
