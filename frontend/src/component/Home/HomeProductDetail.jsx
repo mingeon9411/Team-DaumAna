@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft, Heart, Star, Sparkles, Ruler, ShieldCheck, ImagePlus, X, Share2, Truck } from "lucide-react";
 import { PRODUCTS } from "./Home";
+import KorLogo from "../../assets/logo/Kor_logo.png";
+import WhiteLogo from "../../assets/logo/white_logo.png";
 import { addToCart, getReviews, createReview, uploadReviewImage, getProductDetail } from "../../api";
 import { isWished, toggleWish } from "../../utils/wishlist";
 import { addRecentlyViewed } from "../../utils/recentlyViewed";
@@ -64,6 +66,16 @@ function HomeProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [wished, setWished] = useState(false);
+  // 헤더의 J.D 로고와는 별개로, 상세페이지 자체에 한글 워드마크를 하나 더 둔다.
+  // 초기값은 body.dark 클래스가 아니라 localStorage(Sidebar.jsx가 쓰는 것과 동일한
+  // 키)에서 직접 읽는다 — 마운트 시점엔 Sidebar의 다크모드 useEffect가 아직 body에
+  // 클래스를 붙이기 전이라, body 클래스를 읽으면 새로고침 때마다 라이트로 오판했다.
+  const [darkMode, setDarkMode] = useState(() => localStorage.getItem("darkMode") === "1");
+  useEffect(() => {
+    const syncDarkMode = () => setDarkMode(document.body.classList.contains("dark"));
+    window.addEventListener("darkmodechange", syncDarkMode);
+    return () => window.removeEventListener("darkmodechange", syncDarkMode);
+  }, []);
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
@@ -275,7 +287,19 @@ function HomeProductDetail() {
 
   return (
     <main className="homeDetailPage" data-lenis-prevent data-hsnap>
-      <div className="max-w-6xl mx-auto w-full px-6 md:px-10">
+      <div className="max-w-7xl mx-auto w-full px-6 md:px-10">
+        {/* 헤더의 J.D 로고와 별개로, 상세페이지 안에서도 한글 워드마크로 바로
+            메인 상품페이지("/")로 돌아갈 수 있게 둔다 — 아래 "목록으로"는 원래
+            보던 목록(한국관이면 한국관)으로 돌아가는 것과는 다른 동작. */}
+        <button
+          type="button"
+          onClick={() => navigate("/")}
+          aria-label="집다움 메인으로"
+          className="detailLogoLink"
+        >
+          <img src={darkMode ? WhiteLogo : KorLogo} alt="집다움" className="detailLogoImg" />
+        </button>
+
         {/* 대문 애니메이션 스킵 + 상품 그리드로 바로 점프는 App.jsx의
             DoorIntroController가 productDetailReturnZone(마운트 시 기록)을 보고
             처리한다 — 브라우저 뒤로가기로 돌아갈 때도 똑같이 적용된다. */}
@@ -288,7 +312,7 @@ function HomeProductDetail() {
           <ChevronLeft size={14} /> 목록으로
         </button>
 
-        <div className="homeDetailGlassCard grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 mb-20">
+        <div className="homeDetailGlassCard grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 mb-20">
           {/* 왼쪽: 썸네일 레일 + 메인 이미지 — 오늘의집 등 상용 커머스 상세페이지의
               공통 갤러리 구조. 촬영 컷이 1장뿐인 상품은 레일 없이 이미지 하나만 보인다. */}
           <div className="pdGallery">
