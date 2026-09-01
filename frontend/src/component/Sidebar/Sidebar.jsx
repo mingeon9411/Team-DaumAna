@@ -470,7 +470,11 @@ function Sidebar() {
 
   return (
     <>
-    <aside className={`sidebarRail ${(collapsed || homeEntering) ? "collapsed" : ""} ${isKoreanHallZone ? "koreanHallRail" : `railStyle-${railStyle}`} ${styleSwitching ? "styleSwitching" : ""}`}>
+    {/* data-lenis-prevent — 이 독은 클릭 전용 내비게이션이라, 위에서 스크롤해도
+        페이지 본문처럼 가로 패널 전환으로 먹히면 안 된다. 독 위에서 휠을 굴리면
+        Lenis가 이 dock을 그냥 지나쳐 배경(가로 트랙)을 스크롤해버려서 상품 목록
+        같은 페이지를 보다가 옆 패널로 튕겨나가는 원인이었다. */}
+    <aside className={`sidebarRail ${(collapsed || homeEntering) ? "collapsed" : ""} ${isKoreanHallZone ? "koreanHallRail" : `railStyle-${railStyle}`} ${styleSwitching ? "styleSwitching" : ""}`} data-lenis-prevent>
       {isKoreanHallZone && (
         <div className="khPetals" aria-hidden="true">
           {KH_PETALS.map((p, i) => (
@@ -762,7 +766,7 @@ function Sidebar() {
         자리에 있어야 하므로 .sidebarRail 바깥의 형제로 두되, 배경 스타일
         프리셋(presetClass)만은 왼쪽 독과 항상 같게 맞춘다. */}
     {!isKoreanHallZone && !isProductDetail && (
-      <div className={`railArrowDock ${presetClass}`}>
+      <div className={`railArrowDock ${presetClass}`} data-lenis-prevent>
         <button
           type="button"
           className="railBtn"
@@ -809,7 +813,7 @@ function Sidebar() {
         기능은 "처음으로"와 같은 scrollToTop 재사용(이 앱은 가로 패널 스냅이라
         "맨 위"=첫 패널). 배경 스타일 프리셋은 여기도 왼쪽 독과 동일하게. */}
     {!isKoreanHallZone && !isProductDetail && (
-      <div className={`railTopBtnWrap ${presetClass}`}>
+      <div className={`railTopBtnWrap ${presetClass}`} data-lenis-prevent>
         <button
           type="button"
           className="railBtn"
@@ -825,7 +829,7 @@ function Sidebar() {
     {/* 상품 목록(한국관)·상세 페이지 전용 맨 위/맨 아래 버튼 — 위 railTopBtnWrap과
         정확히 반대 조건(그쪽은 이 페이지들에서 숨김)이라 겹치지 않는다. */}
     {(isKoreanHall || isProductDetail) && (
-      <div className={`railTopBtnWrap railTopBtnWrap--pair ${presetClass}`}>
+      <div className={`railTopBtnWrap railTopBtnWrap--pair ${presetClass}`} data-lenis-prevent>
         <button
           type="button"
           className="railBtn"
