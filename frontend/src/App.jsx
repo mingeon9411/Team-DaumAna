@@ -23,6 +23,7 @@ import EmailVerify from "./component/EmailVerify/EmailVerify";
 import SearchResults from "./component/SearchResults/SearchResults";
 import KoreanHall from "./component/KoreanHall/KoreanHall";
 import CustomerCenter from "./component/CustomerCenter/CustomerCenter";
+import Settings from "./component/Settings/Settings";
 import Checkout from "./component/Checkout/Checkout";
 import CheckoutKoreanHall from "./component/Checkout/CheckoutKoreanHall";
 import OrderComplete from "./component/OrderComplete/OrderComplete";
@@ -94,6 +95,14 @@ function App() {
     const lenisRef = useRef(null);
     const controllerRef = useRef(null);
     const panelsUnsubRef = useRef(null);
+
+  // 다크모드는 예전엔 Sidebar.jsx(왼쪽 독)가 항상 마운트돼 있다는 전제로 그
+  // 컴포넌트의 useEffect가 초기 body.dark 클래스를 적용했다 — 그 독이
+  // 사라지고 다크모드 토글이 /settings로 옮겨간 지금은, 사용자가 /settings를
+  // 아직 안 들어간 세션에서도 저장된 값이 바로 적용되도록 여기서 한 번 적용한다.
+  useEffect(() => {
+    document.body.classList.toggle("dark", localStorage.getItem("darkMode") === "1");
+  }, []);
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -198,6 +207,7 @@ function App() {
         <Route path="/search" element={<SearchResults />} />
         <Route path="/korean-hall" element={<KoreanHall />} />
         <Route path="/customer-center" element={<CustomerCenter />} />
+        <Route path="/settings" element={<Settings />} />
 
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/item/:id" element={<HomeProductDetail />} />

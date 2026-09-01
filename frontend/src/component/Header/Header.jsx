@@ -8,8 +8,9 @@ import IlwolobongdoDark from "../../assets/decor/ilwolobongdo-dark.png";
 import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
 import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent-sm.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search, Clock, X } from "lucide-react";
+import { Search, Clock, X, Settings as SettingsIcon } from "lucide-react";
 import { getCartItems, logoutUser } from "../../api";
+import { NAV_FLAGS } from "../../utils/navFlags";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import { useNoticeModal } from "../../context/NoticeModalContext";
@@ -30,13 +31,15 @@ function Header() {
   const isHome = location.pathname === "/";
   const isKoreanHall = location.pathname === "/korean-hall";
   const isItemDetail = location.pathname.startsWith("/item/");
-  // 스크롤 시 배너가 생기는 효과는 우선 상품목록(홈)·상품상세 페이지에만 적용.
+  // 스크롤 시 배너가 생기는 효과(::before 반투명→불투명 전환)는 상품목록(홈)·
+  // 상품상세 페이지에만 적용 — showExpandedNav(아래)와는 별개 스타일 관심사.
   const isProductPage = isHome || isItemDetail;
 
-  // 상품목록(홈)·상품상세 배너가 뜬 상태(scrolled) 한정 — 로그인/장바구니 등
-  // 유틸 링크와 검색을 배너 자체에 펼쳐 보여준다. 다른 페이지(한국관 등)는
-  // 기존 배너 그대로 둔다.
-  const showExpandedNav = isProductPage && scrolled;
+  // 로그인/장바구니/한국관/공지사항/고객센터 등 유틸 링크와 검색을 페이지·스크롤
+  // 여부와 무관하게 항상 배너에 펼쳐 보여준다 — 왼쪽 사이드바 독을 없애면서
+  // 헤더가 유일한 상시 내비게이션이 됐기 때문(이전엔 상품목록/상세 페이지를
+  // 스크롤했을 때만 떴었음).
+  const showExpandedNav = true;
 
   // 유틸 링크(로그인/회원가입 · 마이페이지/로그아웃 · 장바구니)용 — Home.jsx의
   // 카테고리 위 유틸 링크와 같은 기준(access_token)·같은 이벤트로 동기화한다.
@@ -73,6 +76,20 @@ function Header() {
       window.removeEventListener("authchange", fetchCartCount);
     };
   }, [isProductPage]);
+
+  // 예전엔 왼쪽 사이드바 독의 "회사 정보" 버튼이 하던 일 — 전자상거래법상 사업자
+  // 정보 표시 요건 때문에 어느 페이지에서든 닿을 수 있어야 한다. 홈이면 바로
+  // 맨 끝(BusinessInfoPanel)까지 스크롤, 다른 페이지면 홈으로 이동 후 Sidebar.jsx가
+  // PENDING_SCROLL_TO_END 신호를 보고 이어서 스크롤한다.
+  const goToBusinessInfo = () => {
+    if (isHome) {
+      window.lenis?.resize();
+      window.lenis?.scrollTo("end");
+      return;
+    }
+    sessionStorage.setItem(NAV_FLAGS.PENDING_SCROLL_TO_END, "1");
+    navigate("/");
+  };
 
   const handleLogout = async () => {
     const refresh = localStorage.getItem("refresh_token");
@@ -315,6 +332,17 @@ function Header() {
           <button type="button" onClick={openNotice} className="headerNavLink">공지사항</button>
           <span aria-hidden="true" className="headerNavDivider">|</span>
           <button type="button" onClick={() => navigate("/customer-center")} className="headerNavLink">고객센터</button>
+          <span aria-hidden="true" className="headerNavDivider">|</span>
+          <button type="button" onClick={goToBusinessInfo} className="headerNavLink">회사 정보</button>
+          <button
+            type="button"
+            onClick={() => navigate("/settings")}
+            className="headerSettingsBtn"
+            aria-label="설정"
+            data-tooltip="설정"
+          >
+            <SettingsIcon size={15} />
+          </button>
         </div>
       )}
     </header>

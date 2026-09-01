@@ -37,7 +37,22 @@ function RecentlyViewedSidebar({
     localStorage.setItem("recentDockCollapsed", collapsed ? "1" : "0");
   }, [collapsed]);
 
-  if (items.length === 0) return null;
+  // /settings(Settings.jsx)에서 통째로 껐을 수 있다 — 값이 없으면(기존 사용자)
+  // 기본 켬으로 취급. "dockvisibilitychange" 이벤트로 즉시 반영.
+  const [dockEnabled, setDockEnabled] = useState(() => {
+    const raw = localStorage.getItem("showRecentDock");
+    return raw === null ? true : raw === "1";
+  });
+  useEffect(() => {
+    const sync = () => {
+      const raw = localStorage.getItem("showRecentDock");
+      setDockEnabled(raw === null ? true : raw === "1");
+    };
+    window.addEventListener("dockvisibilitychange", sync);
+    return () => window.removeEventListener("dockvisibilitychange", sync);
+  }, []);
+
+  if (!dockEnabled || items.length === 0) return null;
 
   const visible = items.slice(0, MAX_VISIBLE);
   const overflowCount = items.length - visible.length;

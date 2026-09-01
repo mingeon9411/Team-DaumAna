@@ -242,6 +242,30 @@ body.dark .header.koreanHallHeader::before {
   font-size: 13px;
 }
 
+/* 설정(/settings) 진입점 — 왼쪽 사이드바 독을 없애면서, 다크모드·독 스타일
+   같은 화면 설정 토글로 들어가는 유일한 입구가 됐다. 텍스트 링크들 사이에서도
+   바로 눈에 띄도록 아이콘 전용 원형 버튼으로 분리. */
+.headerSettingsBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: none;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+.headerSettingsBtn:hover {
+  color: var(--foreground);
+  border-color: var(--foreground);
+  transform: rotate(45deg);
+}
+
 /* 검색 입력줄과 그 아래 인기검색어 티커(PopularKeywordsSidebar, 자체 mt-2로
    바로 아래 붙음)를 세로로 쌓는 바깥 껍데기 — 이전엔 이 컴포넌트를 입력줄과
    나란히 한 줄(flex row)에 넣어서 좁은 폭 안에서 서로 겹쳐 보였다. */
@@ -455,6 +479,26 @@ body.dark .header.koreanHallHeader::before {
 .logoImgHanok {
   height: 37px;
   filter: none;
+}
+
+/* 한국관 로고는 그리드 흐름 밖(position:absolute, 항상 화면 정중앙)이라, 헤더
+   내비게이션이 모든 페이지에 항상 뜨게 되면서(showExpandedNav) headerLeft/Right가
+   중앙까지 뻗어와 로고 그림과 겹치는 문제가 생겼다 — 좌우 폭을 제한해 중앙
+   로고 구역을 비켜가게 한다. */
+.header.koreanHallHeader .headerLeft,
+.header.koreanHallHeader .headerRight {
+  max-width: 32%;
+}
+
+/* .header.koreanHallHeader { height: 72px }와 .header.expanded { height: auto;
+   min-height: 120px }는 특이도가 같아서(클래스 2개씩) 파일에서 나중에 나오는
+   koreanHallHeader가 항상 이겨 높이가 72px로 고정돼버렸다 — 내비 링크가 여러
+   줄로 접히면서 로고 위로 겹쳐 보이던 진짜 원인. 두 클래스가 동시에 붙는
+   경우(showExpandedNav가 항상 true라 이제 항상 그렇다) 전용 규칙으로 넉넉한
+   높이를 확보한다. */
+.header.koreanHallHeader.expanded {
+  height: auto;
+  min-height: 130px;
 }
 
 /* 한국관 — 해/달을 봉우리 위로 살짝 띄워 겹치지 않게 배치.
