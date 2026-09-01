@@ -1,12 +1,18 @@
 .ccPage {
-  position: relative;
+  /* 배경은 .metallicSilver(Home.css)가 담당 — 여기서 또 깔면 두 배경이 겹친다. */
   width: 100vw;
   height: 100vh;
   flex-shrink: 0;
   overflow-y: auto;
-  background: var(--background);
-  font-family: "Noto Sans KR", sans-serif;
-  animation: ccFadeIn 0.8s ease-out forwards;
+  font-family: "TwayFly", "Noto Sans KR", sans-serif;
+}
+
+/* animation은 .metallicSilver(Home.css)도 pastelSheenDrift를 걸어두는데, 같은
+   프로퍼티라 나중 규칙이 앞 규칙을 통째로 덮어써버린다(합쳐지지 않음) — 로드
+   순서에 기대지 않도록 .metallicSilver보다 더 구체적인 선택자로 두 애니메이션을
+   한 선언에 같이 나열해 항상 이긴다(등장 페이드인 + 배경 드리프트 둘 다 재생). */
+.ccPage.metallicSilver {
+  animation: ccFadeIn 0.8s ease-out forwards, pastelSheenDrift 48s ease-in-out infinite;
 }
 
 @keyframes ccFadeIn {
@@ -20,12 +26,18 @@
   padding: 120px 24px 100px;
 }
 
+/* 사이드바 파스텔 프리셋(railStyle-pastel)·로그인 패널과 같은 레시피 —
+   연한 핑크→블루→민트 채움 + 보라→그린→핑크 그러데이션 테두리 */
 .ccHero {
   padding: 56px 40px;
   margin-bottom: 56px;
   text-align: center;
-  background: linear-gradient(160deg, #2b4a3f 0%, #3d5f4f 55%, #6b8f7a 100%);
-  color: #f4f0e8;
+  border-radius: 20px;
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(120deg, #ffe4f0 0%, #e4ecff 50%, #d9fbea 100%) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  color: var(--foreground);
 }
 
 .ccHeroGreeting {
@@ -36,7 +48,7 @@
 
 .ccHeroTitle {
   margin: 0 0 14px;
-  font-family: "Noto Serif KR", serif;
+  font-family: "TwayFly", "Noto Serif KR", serif;
   font-weight: 500;
   font-size: 28px;
   letter-spacing: -0.3px;
@@ -46,12 +58,12 @@
   margin: 0;
   font-size: 14px;
   line-height: 1.6;
-  color: #dce6de;
+  color: var(--muted-foreground);
 }
 
 .ccSectionTitle {
   margin: 0 0 20px;
-  font-family: "Noto Serif KR", serif;
+  font-family: "TwayFly", "Noto Serif KR", serif;
   font-weight: 500;
   font-size: 18px;
   color: var(--foreground);
@@ -82,8 +94,16 @@
   background: none;
   border: none;
   text-align: left;
-  font-size: 15px;
+  font-family: inherit;
+  font-size: 15.5px;
+  font-weight: 500;
   color: var(--foreground);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.ccFaqQ:hover {
+  color: #a184e8;
 }
 
 .ccFaqChevron {
@@ -94,13 +114,14 @@
 
 .ccFaqItemOpen .ccFaqChevron {
   transform: rotate(180deg);
+  color: #a184e8;
 }
 
 .ccFaqA {
   margin: 0;
-  padding: 0 4px 20px;
-  font-size: 13px;
-  line-height: 1.7;
+  padding: 0 4px 22px;
+  font-size: 14px;
+  line-height: 1.8;
   color: var(--muted-foreground);
 }
 
@@ -115,17 +136,31 @@
   flex-direction: column;
   gap: 6px;
   padding: 24px 18px;
-  background: var(--card);
-  border: 1px solid var(--border);
+  border-radius: 16px;
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
   color: inherit;
   text-decoration: none;
+  font-family: "TwayFly", "Noto Sans KR", sans-serif;
+  transition: transform 0.15s ease;
+}
+
+/* "1:1 문의"/"채팅 상담"은 <button> — <a> 카드와 달리 UA 기본 스타일(가운데 정렬,
+   폰트 미상속)이 끼어들어 별도로 리셋해줘야 한다. */
+.ccConsultCardBtn {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
 }
 
 .ccConsultIcon {
   width: 20px;
   height: 20px;
   margin-bottom: 8px;
-  color: var(--accent);
+  color: #a184e8;
 }
 
 .ccConsultCard h3 {
@@ -144,8 +179,8 @@
 
 .ccConsultMeta {
   margin-top: 6px;
-  font-family: "DM Mono", monospace;
-  font-size: 10.5px;
+  font-family: "TwayFly", "DM Mono", monospace;
+  font-size: 11px;
   color: var(--muted-foreground);
 }
 
@@ -153,8 +188,9 @@
   opacity: 0.7;
 }
 
+.ccConsultCard:hover,
 .ccConsultCardLink:hover {
-  border-color: var(--accent);
+  transform: translateY(-2px);
 }
 
 @media (max-width: 640px) {
@@ -163,14 +199,15 @@
   .ccConsultGrid { grid-template-columns: 1fr; }
 }
 
-/* ── 다크모드 ── */
+/* ── 다크모드 ── (배경은 body.dark .metallicSilver가 처리) */
 body.dark .ccPage {
-  background-color: #060d1e;
   color: #bfcbec;
 }
 
 body.dark .ccHero {
-  background: linear-gradient(160deg, #0b1430 0%, #16264a 55%, #1f3a30 100%);
+  background:
+    linear-gradient(rgba(6, 13, 30, 0.75), rgba(6, 13, 30, 0.75)) padding-box,
+    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
   color: #dbe6f7;
 }
 
@@ -184,6 +221,14 @@ body.dark .ccConsultCard h3 {
   color: #bfcbec;
 }
 
+body.dark .ccFaqQ:hover {
+  color: #b9a3f0;
+}
+
+body.dark .ccFaqItemOpen .ccFaqChevron {
+  color: #b9a3f0;
+}
+
 body.dark .ccFaqA,
 body.dark .ccConsultCard p,
 body.dark .ccConsultMeta,
@@ -192,14 +237,11 @@ body.dark .ccFaqChevron {
 }
 
 body.dark .ccConsultCard {
-  background: #0b1430;
-  border-color: rgba(150, 185, 255, 0.16);
+  background:
+    linear-gradient(rgba(6, 13, 30, 0.75), rgba(6, 13, 30, 0.75)) padding-box,
+    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
 }
 
 body.dark .ccConsultIcon {
-  color: #dbe6f7;
-}
-
-body.dark .ccConsultCardLink:hover {
-  border-color: #1f3a30;
+  color: #b9a3f0;
 }

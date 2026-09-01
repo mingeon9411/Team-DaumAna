@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { LuMessageSquare, LuMessageCircle, LuPhone, LuChevronDown } from "react-icons/lu";
 import "./CustomerCenter.css";
+import { useAuthModal } from "../../context/AuthModalContext";
+import { NAV_FLAGS } from "../../utils/navFlags";
 
 // 실제 상담 티켓/실시간 상담 시스템은 없는 포트폴리오 프로젝트라(BusinessInfoPanel.jsx 참고),
 // FAQ 답변과 연락처는 BusinessInfoPanel.jsx의 사업자 정보와 맞춘 플레이스홀더.
@@ -21,13 +24,37 @@ const FAQS = [
     q: "쿠폰은 어떻게 적용하나요?",
     a: "장바구니 또는 결제 화면에서 보유 쿠폰을 선택하면 결제 금액에 바로 적용돼요.",
   },
+  {
+    q: "회원 탈퇴는 어떻게 하나요?",
+    a: "마이페이지 > 회원정보에서 탈퇴를 신청할 수 있어요. 탈퇴 시 보유 쿠폰·적립 혜택은 함께 소멸되니 참고해 주세요.",
+  },
 ];
 
 function CustomerCenter() {
   const [openIdx, setOpenIdx] = useState(null);
+  const navigate = useNavigate();
+  const { openLogin } = useAuthModal();
 
+  // 홈으로 이동한 뒤 챗봇을 자동으로 여는 신호를 남긴다 — 실제 챗봇 위젯은
+  // Home.jsx에서만 마운트되므로(ChatBot.jsx가 이 신호를 소비) 여기선 이동만.
+  const openChatbot = () => {
+    sessionStorage.setItem(NAV_FLAGS.PENDING_OPEN_CHATBOT, "1");
+    navigate("/");
+  };
+
+  // "1:1 문의"는 로그인 계정 대화 기록 기준이라 비회원이면 챗봇 대신 로그인부터 유도.
+  const handleOneOnOne = () => {
+    if (!localStorage.getItem("access_token")) {
+      openLogin();
+      return;
+    }
+    openChatbot();
+  };
+
+  // metallicSilver — 상품 목록 그리드(Home.jsx #home-products)와 같은 파스텔 배경
+  // 클래스. 독의 "배경 톤"(pastelLevel)·다크모드 설정을 그대로 따라간다.
   return (
-    <div className="ccPage" data-hsnap data-lenis-prevent>
+    <div className="ccPage metallicSilver" data-hsnap data-lenis-prevent>
       <div className="ccWrap">
         <section className="ccHero">
           <p className="ccHeroGreeting">안녕하세요 👋</p>
@@ -58,20 +85,20 @@ function CustomerCenter() {
         <section className="ccConsult">
           <h2 className="ccSectionTitle">상담하기</h2>
           <div className="ccConsultGrid">
-            <div className="ccConsultCard">
+            <button type="button" className="ccConsultCard ccConsultCardBtn" onClick={handleOneOnOne}>
               <LuMessageSquare className="ccConsultIcon" />
               <h3>1:1 문의</h3>
               <p>챗봇 상담창에 남겨주시면<br />확인 후 답변드려요</p>
               <span className="ccConsultMeta">접수 24시간 · 답변 평일 09:00~18:00</span>
               <span className="ccConsultMeta ccConsultMuted">로그인 후 이용 가능</span>
-            </div>
+            </button>
 
-            <div className="ccConsultCard">
+            <button type="button" className="ccConsultCard ccConsultCardBtn" onClick={openChatbot}>
               <LuMessageCircle className="ccConsultIcon" />
               <h3>채팅 상담</h3>
               <p>메인·한국관 화면의<br />채팅 아이콘을 눌러주세요</p>
               <span className="ccConsultMeta">평일 09:00~18:00</span>
-            </div>
+            </button>
 
             <a href="tel:02-123-4567" className="ccConsultCard ccConsultCardLink">
               <LuPhone className="ccConsultIcon" />
