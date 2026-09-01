@@ -82,6 +82,8 @@ function Sidebar() {
   // 상품 상세 페이지는 Home의 가로 패널 흐름에 속하지 않는 독립된 페이지라,
   // 한국관과 마찬가지로 "다음/이전 페이지" 같은 패널 이동 버튼이 의미가 없다.
   const isProductDetail = location.pathname.startsWith("/item/") || location.pathname.startsWith("/product/");
+  // 고객센터는 가로 패널 흐름 바깥의 독립 페이지라 "이전/다음 패널" 화살표 독이 의미가 없다.
+  const isCustomerCenter = location.pathname === "/customer-center";
   const pendingPanelRef = useRef(null);
   const searchWrapRef = useRef(null);
   const searchFlyoutRef = useRef(null);
@@ -765,7 +767,7 @@ function Sidebar() {
         독립된 작은 독으로 띄운다. 왼쪽 독의 접힘 상태와 무관하게 항상 같은
         자리에 있어야 하므로 .sidebarRail 바깥의 형제로 두되, 배경 스타일
         프리셋(presetClass)만은 왼쪽 독과 항상 같게 맞춘다. */}
-    {!isKoreanHallZone && !isProductDetail && (
+    {!isKoreanHallZone && !isProductDetail && !isCustomerCenter && (
       <div className={`railArrowDock ${presetClass}`} data-lenis-prevent>
         <button
           type="button"

@@ -26,6 +26,25 @@
   padding: 120px 24px 100px;
 }
 
+.ccBackBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 24px;
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: "TwayFly", "DM Mono", monospace;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.ccBackBtn:hover {
+  color: var(--foreground);
+}
+
 /* 사이드바 파스텔 프리셋(railStyle-pastel)·로그인 패널과 같은 레시피 —
    연한 핑크→블루→민트 채움 + 보라→그린→핑크 그러데이션 테두리 */
 .ccHero {

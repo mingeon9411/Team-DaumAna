@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LuMessageSquare, LuMessageCircle, LuPhone, LuChevronDown } from "react-icons/lu";
+import { LuChevronLeft, LuMessageSquare, LuMessageCircle, LuPhone, LuChevronDown } from "react-icons/lu";
 import "./CustomerCenter.css";
 import { useAuthModal } from "../../context/AuthModalContext";
-import { NAV_FLAGS } from "../../utils/navFlags";
+import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 
 // 실제 상담 티켓/실시간 상담 시스템은 없는 포트폴리오 프로젝트라(BusinessInfoPanel.jsx 참고),
 // FAQ 답변과 연락처는 BusinessInfoPanel.jsx의 사업자 정보와 맞춘 플레이스홀더.
@@ -35,6 +35,15 @@ function CustomerCenter() {
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
 
+  // Cart.jsx와 동일한 신호 — 마운트 시점에 남겨둬야 "뒤로가기" 버튼 클릭이든 브라우저
+  // 뒤로가기든 상관없이, "/" 도착 시 App.jsx의 DoorIntroController가 이 흔적을 보고
+  // 대문 애니메이션·인트로 영상 패널 없이 곧장 상품 목록 패널로 스크롤한다.
+  useEffect(() => {
+    sessionStorage.setItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE, NAV_ZONE.HOME);
+  }, []);
+
+  const goBack = () => navigate("/");
+
   // 홈으로 이동한 뒤 챗봇을 자동으로 여는 신호를 남긴다 — 실제 챗봇 위젯은
   // Home.jsx에서만 마운트되므로(ChatBot.jsx가 이 신호를 소비) 여기선 이동만.
   const openChatbot = () => {
@@ -56,6 +65,10 @@ function CustomerCenter() {
   return (
     <div className="ccPage metallicSilver" data-hsnap data-lenis-prevent>
       <div className="ccWrap">
+        <button type="button" className="ccBackBtn" onClick={goBack}>
+          <LuChevronLeft size={14} /> 목록으로
+        </button>
+
         <section className="ccHero">
           <p className="ccHeroGreeting">안녕하세요 👋</p>
           <h1 className="ccHeroTitle">집다움 고객센터입니다.</h1>
