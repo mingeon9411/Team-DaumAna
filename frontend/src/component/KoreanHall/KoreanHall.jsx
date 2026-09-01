@@ -130,7 +130,12 @@ function KoreanHall() {
       smoothWheel: true,
       autoRaf: true,
     });
-    return () => lenis.destroy();
+    // Sidebar의 맨 위로/맨 아래로 버튼이 이 페이지 전용 세로 스크롤을 제어할 수 있게 노출.
+    window.khLenis = lenis;
+    return () => {
+      lenis.destroy();
+      window.khLenis = null;
+    };
   }, []);
 
   return (

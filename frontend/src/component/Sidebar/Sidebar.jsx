@@ -20,8 +20,12 @@ import {
   LuChevronsLeft,
   LuChevronsRight,
   LuChevronsUp,
+  LuChevronsDown,
   LuInfo,
   LuPalette,
+  LuHeadset,
+  LuClock,
+  LuX,
 } from "react-icons/lu";
 import { logoutUser, getCartItems } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
@@ -85,6 +89,16 @@ function Sidebar() {
   const pastelWrapRef = useRef(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  // 최근 검색어 — 브라우저(localStorage)에만 남기고 서버로는 보내지 않는다.
+  // 한국관/메인 카탈로그가 달라도 "검색했던 단어" 자체는 하나의 목록으로 공유한다
+  // (오늘의집도 검색 영역을 구분하지 않음).
+  const [recentSearches, setRecentSearches] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("recentSearches") || "[]");
+    } catch {
+      return [];
+    }
+  });
   const [homeEntering, setHomeEntering] = useState(false);
   const [styleOpen, setStyleOpen] = useState(false);
   const [pastelOpen, setPastelOpen] = useState(false);
@@ -310,6 +324,7 @@ function Sidebar() {
   };
 
   const goToKoreanHall = () => navigate("/korean-hall");
+  const goToCustomerCenter = () => navigate("/customer-center");
 
   const scrollToTop = () => {
     if (window.lenis) window.lenis.scrollTo(0);
@@ -330,6 +345,19 @@ function Sidebar() {
   const scrollToBottom = () => {
     if (window.lenis) window.lenis.scrollTo("end");
     else window.scrollTo({ left: document.body.scrollWidth, behavior: "smooth" });
+  };
+
+  // 상품 목록(한국관)·상세 페이지 전용 맨 위/맨 아래 버튼 — 이 페이지들은 Home의
+  // 가로 패널 흐름 바깥이라 위 scrollToTop/Bottom(가로 스크롤)과는 다르게 세로로
+  // 움직여야 한다. 한국관은 자체 세로 Lenis 인스턴스(KoreanHall.jsx가 노출)를,
+  // 나머지(상품 상세)는 일반 브라우저 세로 스크롤을 그대로 쓴다.
+  const scrollListPageTop = () => {
+    if (isKoreanHall && window.khLenis) window.khLenis.scrollTo("top");
+    else window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const scrollListPageBottom = () => {
+    if (isKoreanHall && window.khLenis) window.khLenis.scrollTo("bottom");
+    else window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   };
 
   // 현재 뷰포트에 가장 가까운 [data-hsnap] 패널을 기준으로 한 칸 앞/뒤 패널로 이동
@@ -369,19 +397,51 @@ function Sidebar() {
     window.location.replace("/");
   };
 
+  // 최근 검색어 max 8개, 중복 입력 시 맨 앞으로 재정렬
+  const addRecentSearch = (term) => {
+    const trimmed = term.trim();
+    if (!trimmed) return;
+    setRecentSearches((prev) => {
+      const next = [trimmed, ...prev.filter((t) => t !== trimmed)].slice(0, 8);
+      localStorage.setItem("recentSearches", JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const removeRecentSearch = (term) => {
+    setRecentSearches((prev) => {
+      const next = prev.filter((t) => t !== term);
+      localStorage.setItem("recentSearches", JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const clearRecentSearches = () => {
+    setRecentSearches([]);
+    localStorage.removeItem("recentSearches");
+  };
+
   // 검색은 현재 있는 페이지에 맞는 상품 목록만 대상으로 한다 — 한국관이면 한국관
   // 큐레이션, 그 외(메인 포함)에는 메인 상품 목록.
   const searchCatalog = isKoreanHallZone ? KOREAN_HALL_PRODUCTS : HOME_PRODUCTS;
+  // "가림" → "인덕션가림막" 같은 연관 검색어 매칭이 되도록 name/brand뿐 아니라
+  // 카테고리·설명까지 한데 합쳐서 훑는다 — 두 카탈로그가 필드 구성이 달라도
+  // (한국관엔 midCategory/subCategory가 없음) 없는 필드는 그냥 빈 문자열로 빠진다.
   const searchResults = searchQuery.trim()
     ? searchCatalog
         .filter((p) => {
           const q = searchQuery.trim().toLowerCase();
-          return p.name.toLowerCase().includes(q) || (p.brand || "").toLowerCase().includes(q);
+          const haystack = [p.name, p.brand, p.category, p.midCategory, p.subCategory, p.desc]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+          return haystack.includes(q);
         })
         .slice(0, 8)
     : [];
 
   const handleSearchSelect = (product) => {
+    addRecentSearch(searchQuery);
     setSearchOpen(false);
     setSearchQuery("");
     if (isKoreanHallZone) {
@@ -455,6 +515,16 @@ function Sidebar() {
           <LuMegaphone />
         </button>
 
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="고객센터"
+          data-tooltip="고객센터"
+          onClick={(e) => { triggerPop(e); goToCustomerCenter(); }}
+        >
+          <LuHeadset />
+        </button>
+
         <div className="railSearchWrap" ref={searchWrapRef}>
           <button
             type="button"
@@ -479,10 +549,11 @@ function Sidebar() {
               autoFocus
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") addRecentSearch(searchQuery); }}
               placeholder={isKoreanHallZone ? "한국관 상품 검색" : "상품 검색"}
               className="railSearchInput"
             />
-            {searchQuery.trim() && (
+            {searchQuery.trim() ? (
               <ul className="railSearchResults" data-lenis-prevent>
                 {searchResults.length === 0 ? (
                   <li className="railSearchEmpty">검색 결과가 없습니다</li>
@@ -501,6 +572,33 @@ function Sidebar() {
                   ))
                 )}
               </ul>
+            ) : (
+              recentSearches.length > 0 && (
+                <div className="railRecentSearches">
+                  <div className="railRecentSearchesHead">
+                    <span>최근 검색어</span>
+                    <button type="button" onClick={clearRecentSearches}>전체 삭제</button>
+                  </div>
+                  <ul data-lenis-prevent>
+                    {recentSearches.map((term) => (
+                      <li key={term}>
+                        <button type="button" onClick={() => setSearchQuery(term)}>
+                          <LuClock aria-hidden="true" />
+                          {term}
+                        </button>
+                        <button
+                          type="button"
+                          className="railRecentSearchRemove"
+                          aria-label={`"${term}" 검색어 삭제`}
+                          onClick={() => removeRecentSearch(term)}
+                        >
+                          <LuX aria-hidden="true" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
             )}
           </div>
         )}
@@ -707,6 +805,31 @@ function Sidebar() {
           onClick={(e) => { triggerPop(e); scrollToTop(); }}
         >
           <LuChevronsUp />
+        </button>
+      </div>
+    )}
+
+    {/* 상품 목록(한국관)·상세 페이지 전용 맨 위/맨 아래 버튼 — 위 railTopBtnWrap과
+        정확히 반대 조건(그쪽은 이 페이지들에서 숨김)이라 겹치지 않는다. */}
+    {(isKoreanHall || isProductDetail) && (
+      <div className={`railTopBtnWrap railTopBtnWrap--pair ${presetClass}`}>
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="맨 위로"
+          data-tooltip="맨 위로"
+          onClick={(e) => { triggerPop(e); scrollListPageTop(); }}
+        >
+          <LuChevronsUp />
+        </button>
+        <button
+          type="button"
+          className="railBtn"
+          aria-label="맨 아래로"
+          data-tooltip="맨 아래로"
+          onClick={(e) => { triggerPop(e); scrollListPageBottom(); }}
+        >
+          <LuChevronsDown />
         </button>
       </div>
     )}

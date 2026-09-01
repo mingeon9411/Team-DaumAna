@@ -22,6 +22,7 @@ import SocialCallback from "./component/SocialCallback/SocialCallback";
 import EmailVerify from "./component/EmailVerify/EmailVerify";
 import SearchResults from "./component/SearchResults/SearchResults";
 import KoreanHall from "./component/KoreanHall/KoreanHall";
+import CustomerCenter from "./component/CustomerCenter/CustomerCenter";
 import Checkout from "./component/Checkout/Checkout";
 import CheckoutKoreanHall from "./component/Checkout/CheckoutKoreanHall";
 import OrderComplete from "./component/OrderComplete/OrderComplete";
@@ -196,6 +197,7 @@ function App() {
         <Route path="/email-verify" element={<EmailVerify />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/korean-hall" element={<KoreanHall />} />
+        <Route path="/customer-center" element={<CustomerCenter />} />
 
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/item/:id" element={<HomeProductDetail />} />

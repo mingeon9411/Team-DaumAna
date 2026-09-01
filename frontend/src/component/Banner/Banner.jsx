@@ -5,7 +5,7 @@ function Banner() {
   const slides = [
     {
       image: "/banner1.jpg",
-      title: "ZIPDAUM",
+      title: "JIPDAUM",
       text: "취향이 머무는 집",
     },
     {
