@@ -55,7 +55,18 @@ function RecentlyViewedSidebar({
 
   return (
     <div
-      className={`recentDock railStyle-${railStyle} ${variant === "korean-hall" ? "recentDockKoreanHall" : ""} ${styleSwitching ? "styleSwitching" : ""} ${collapsed ? "collapsed" : ""} fixed right-24 top-32 z-40 flex flex-col items-center ${collapsed ? "gap-0" : "gap-2.5"} p-2.5 rounded-[22px]`}
+      // right-1.5(6px)는 임의값이 아니라 하단 우측의 railTopBtnWrap(맨 위로 버튼,
+      // Sidebar.css: right 20px + padding 8px + border 1.5px → 폭 59px)과 가로
+      // 중심이 맞도록 역산한 값 — 이 독(폭 87px)의 중심도 화면 오른쪽 끝에서
+      // 약 49.5px이 되게 맞춘다. 둘 중 하나 폭이 바뀌면 다시 계산해야 한다.
+      //
+      // top은 반대로 고정값을 안 쓴다 — Header.jsx가 fixed+height:auto라 상태에
+      // 따라 실제 높이가 바뀌는데(검색창 포커스로 최근 검색어가 펼쳐질 때 등),
+      // "top-32(128px)" 같은 어림값은 헤더가 그보다 조금만 더 자라도 이 독의
+      // 윗부분이 z-index 더 높은 헤더 배너에 가려 안 보이는 원인이었다.
+      // Header.jsx가 ResizeObserver로 공개하는 --header-h를 그대로 따라간다.
+      className={`recentDock railStyle-${railStyle} ${variant === "korean-hall" ? "recentDockKoreanHall" : ""} ${styleSwitching ? "styleSwitching" : ""} ${collapsed ? "collapsed" : ""} fixed right-1.5 z-40 flex flex-col items-center ${collapsed ? "gap-0" : "gap-2.5"} p-2.5 rounded-[22px]`}
+      style={{ top: "calc(var(--header-h, 128px) + 8px)" }}
       data-lenis-prevent
     >
       <button

@@ -85,7 +85,7 @@
   }
 
   .registerForm input::placeholder {
-    color: var(--muted-foreground);
+  color: var(--muted-foreground);
   }
 
   .registerForm input:focus {

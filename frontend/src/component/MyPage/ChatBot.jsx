@@ -8,6 +8,7 @@ import { Sparkles, Ruler, ShieldCheck, UserPlus, UserX, Mail, User, Lock, Chevro
 import "./ChatBot.css";
 import { sendChatMessage, createOrder, readyPayment, verifyPayment, registerUser, loginUser, checkNicknameAPI, requestSocialCaptchaTicket, withdrawUser } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
+import { NAV_FLAGS } from "../../utils/navFlags";
 import { PRODUCTS } from "../Home/Home";
 import JDLogo from "../../assets/J.D 로고.svg";
 import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
@@ -696,6 +697,15 @@ function ChatBot({
     return () => window.lenis?.start();
   }, [buyItem, showSignup]);
 
+  // CustomerCenter의 "1:1 문의"/"채팅 상담" 카드를 눌러 홈으로 넘어온 경우 —
+  // 챗봇을 자동으로 펼쳐서 바로 대화를 시작할 수 있게 한다.
+  useEffect(() => {
+    if (sessionStorage.getItem(NAV_FLAGS.PENDING_OPEN_CHATBOT)) {
+      sessionStorage.removeItem(NAV_FLAGS.PENDING_OPEN_CHATBOT);
+      setOpen(true);
+    }
+  }, []);
+
   // 스크롤 자동
   useEffect(() => {
     const el = messagesRef.current;
@@ -765,6 +775,11 @@ function ChatBot({
         "chatBotRoot" +
         (variant === "korean-hall" ? " chatBotKoreanHall" : "")
       }
+      // data-lenis-prevent — onWheel stopPropagation만으로는 부족했다(Sidebar.jsx의
+      // sidebarRail/recentDock/railTopBtnWrap과 같은 이유). 이 FAB은 상품 목록
+      // 페이지 위에 fixed로 떠 있어서, 이 위에서 휠을 굴리면 Lenis가 이 버튼을
+      // 그냥 지나쳐 배경(가로 트랙)을 스크롤해버려 페이지가 옆 패널로 튕겨나갔다.
+      data-lenis-prevent
       onWheel={(e) => e.stopPropagation()}
     >
       {/* 채팅 패널 */}

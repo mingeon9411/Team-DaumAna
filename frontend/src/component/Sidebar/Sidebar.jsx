@@ -34,6 +34,12 @@ import { useNoticeModal } from "../../context/NoticeModalContext";
 import { PRODUCTS as HOME_PRODUCTS } from "../Home/Home";
 import { products as KOREAN_HALL_PRODUCTS } from "../../data/products";
 import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
+import {
+  getRecentSearches,
+  addRecentSearch as addRecentSearchStore,
+  removeRecentSearch as removeRecentSearchStore,
+  clearRecentSearches as clearRecentSearchesStore,
+} from "../../utils/recentSearches";
 
 const RAIL_STYLES = [
   { id: "glass", label: "레인보우" },
@@ -93,14 +99,14 @@ function Sidebar() {
   const [searchQuery, setSearchQuery] = useState("");
   // 최근 검색어 — 브라우저(localStorage)에만 남기고 서버로는 보내지 않는다.
   // 한국관/메인 카탈로그가 달라도 "검색했던 단어" 자체는 하나의 목록으로 공유한다
-  // (오늘의집도 검색 영역을 구분하지 않음).
-  const [recentSearches, setRecentSearches] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("recentSearches") || "[]");
-    } catch {
-      return [];
-    }
-  });
+  // (오늘의집도 검색 영역을 구분하지 않음). Header.jsx의 홈 배너 검색과도 같은
+  // localStorage 키(utils/recentSearches.js)를 공유 — recentsearchchange 이벤트로 동기화.
+  const [recentSearches, setRecentSearches] = useState(getRecentSearches);
+  useEffect(() => {
+    const sync = () => setRecentSearches(getRecentSearches());
+    window.addEventListener("recentsearchchange", sync);
+    return () => window.removeEventListener("recentsearchchange", sync);
+  }, []);
   const [homeEntering, setHomeEntering] = useState(false);
   const [styleOpen, setStyleOpen] = useState(false);
   const [pastelOpen, setPastelOpen] = useState(false);
@@ -412,28 +418,11 @@ function Sidebar() {
     window.location.replace("/");
   };
 
-  // 최근 검색어 max 8개, 중복 입력 시 맨 앞으로 재정렬
-  const addRecentSearch = (term) => {
-    const trimmed = term.trim();
-    if (!trimmed) return;
-    setRecentSearches((prev) => {
-      const next = [trimmed, ...prev.filter((t) => t !== trimmed)].slice(0, 8);
-      localStorage.setItem("recentSearches", JSON.stringify(next));
-      return next;
-    });
-  };
-
-  const removeRecentSearch = (term) => {
-    setRecentSearches((prev) => {
-      const next = prev.filter((t) => t !== term);
-      localStorage.setItem("recentSearches", JSON.stringify(next));
-      return next;
-    });
-  };
-
+  const addRecentSearch = (term) => setRecentSearches(addRecentSearchStore(term));
+  const removeRecentSearch = (term) => setRecentSearches(removeRecentSearchStore(term));
   const clearRecentSearches = () => {
+    clearRecentSearchesStore();
     setRecentSearches([]);
-    localStorage.removeItem("recentSearches");
   };
 
   // 검색은 현재 있는 페이지에 맞는 상품 목록만 대상으로 한다 — 한국관이면 한국관

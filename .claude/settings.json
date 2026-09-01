@@ -5,7 +5,32 @@
       "Read(//c/Pro_Jipdaum/TEAM_CTRL-ALT-ELITE/**)",
       "Bash(git pull *)",
       "Bash(node -e \"const m = require\\('lucide-react'\\); const names = Object.keys\\(m\\); const want = ['Sofa','Armchair','Bed','BedDouble','BedSingle','Lamp','LampFloor','LampDesk','Rug','Layers','LayoutGrid','Grid2x2','Package','Box','Blinds','Home','Palette'ing]; \")",
-      "Bash(npx eslint *)"
+      "Bash(npx eslint *)",
+      "Bash(NODE_PATH=\"C:/Users/M/AppData/Local/npm-cache/_npx/5c6d8c4f680fcd0a/node_modules\" node \"C:/Users/M/AppData/Local/Temp/claude/d--Team-DaumAna/97b4348a-896f-419c-bc5b-4d64938aa572/scratchpad/scroll-buttons-inspect.cjs\")",
+      "Bash(git check-ignore *)",
+      "Bash(echo \"ignore-exit:$?\")",
+      "Bash(NODE_PATH=\"C:/Users/M/AppData/Local/npm-cache/_npx/5c6d8c4f680fcd0a/node_modules\" node \"C:/Users/M/AppData/Local/Temp/claude/d--Team-DaumAna/97b4348a-896f-419c-bc5b-4d64938aa572/scratchpad/scroll-buttons-check2.cjs\")",
+      "Bash(lsof -ti:5173 -sTCP:LISTEN)",
+      "Bash(xargs -r kill)",
+      "Bash(git commit -m ' *)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 5173 -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique | ForEach-Object { Stop-Process -Id $_ -Force })",
+      "PowerShell(Get-NetTCPConnection -LocalPort 5173 -State Listen -ErrorAction SilentlyContinue)",
+      "Bash(netstat -ano)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object LocalPort,OwningProcess | ForEach-Object { $_; Get-Process -Id $_.OwningProcess | Select-Object Id,ProcessName,Path })",
+      "Bash(curl -s -o /dev/null -w \"Vite\\(5173\\): %{http_code}\\\\n\" http://127.0.0.1:5173/)",
+      "Bash(grep -n \"^import\\\\|PRODUCTS as\\\\|from \\\\\"\\\\\\\\.\\\\\\\\./Home\" d:/Team-DaumAna/frontend/src/component/MyPage/ChatBot.jsx)",
+      "WebSearch",
+      "Bash(curl -sI \"https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_tway@1.0/twayfly.woff\")",
+      "Bash(curl -sI \"https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_tway@1.0/twayfly.woff2\")",
+      "Bash(sort -u -t: -k3)",
+      "Bash(awk -F'category: \"' '{print $2}')",
+      "Bash(awk -F'\"' '{print $1}')",
+      "Bash(grep -n \"navigate\\(\\\\`/search\\\\|useSearchParams\\\\|searchParams\\\\|cartCounts\\\\s*=\\\\|cartCounts,\" \"d:\\\\Team-DaumAna\\\\frontend\\\\src\\\\component\\\\Home\\\\Home.jsx\")",
+      "Bash(python3 -c ' *)",
+      "Bash(node -e ' *)",
+      "Bash(git diff *)",
+      "Bash(wc -l /tmp_diff.txt)",
+      "Bash(git stash *)"
     ]
   }
 }

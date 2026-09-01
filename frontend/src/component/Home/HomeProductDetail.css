@@ -62,26 +62,6 @@ body.dark .homeDetailGlassCard {
   }
 }
 
-/* 상세페이지 전용 한글 워드마크 — 헤더의 J.D 로고와 별개로 상품 상세 콘텐츠
-   안에서도 바로 메인으로 돌아갈 수 있게. Kor_logo.png/white_logo.png는 검정
-   실루엣이라 다크모드에서 흰색 버전으로 바꿔 낀다(Header.jsx의 로고 스왑과 동일 패턴). */
-.detailLogoLink {
-  display: inline-flex;
-  margin-bottom: 18px;
-  opacity: 0.92;
-  transition: opacity 0.2s ease;
-}
-
-.detailLogoLink:hover {
-  opacity: 1;
-}
-
-.detailLogoImg {
-  height: 24px;
-  width: auto;
-  display: block;
-}
-
 /* 상용 커머스 상세페이지의 공통 갤러리 구조 — 왼쪽 세로 썸네일 레일 + 메인 이미지.
    촬영 컷이 한 장뿐인 상품은 pdThumbRail 자체가 렌더링되지 않아 이미지 하나만 보인다. */
 .pdGallery {

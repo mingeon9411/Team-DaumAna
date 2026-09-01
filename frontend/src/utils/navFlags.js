@@ -14,6 +14,9 @@ export const NAV_FLAGS = {
   // 다른 라우트에서 독의 "회사 정보" 버튼을 눌렀을 때 — 홈으로 이동한 뒤
   // 마지막 패널(BusinessInfoPanel)까지 스크롤하도록 Sidebar.jsx가 소비.
   PENDING_SCROLL_TO_END: "pendingScrollToEnd",
+  // CustomerCenter의 "1:1 문의"/"채팅 상담" 카드가 세팅 — 홈으로 이동한 뒤
+  // 챗봇을 자동으로 열어주도록 ChatBot.jsx가 소비.
+  PENDING_OPEN_CHATBOT: "pendingOpenChatbot",
 };
 
 // PRODUCT_DETAIL_RETURN_ZONE에 실제로 들어가는 값들.

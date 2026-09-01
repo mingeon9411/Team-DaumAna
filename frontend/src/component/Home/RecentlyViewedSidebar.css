@@ -217,14 +217,19 @@ body.dark .recentDockKoreanHall .recentDockItems > button:hover {
   color: #d98a7a;
 }
 
-/* 좁은 화면에서는 right-24(96px)/top-32(128px)로 떠 있으면 화면 오른쪽에
-   붕 뜬 것처럼 보이고, 아이템 이미지(64px)도 과하게 크다 — 가장자리에 붙이고
-   살짝 축소한다. Tailwind 유틸리티 클래스와 동일한 특이도라 순서 보장을 위해
-   !important 사용(ChatBot.css의 모바일 FAB 재배치와 같은 패턴). */
+/* 좁은 화면에서는 헤더 바로 아래(예전엔 top-32=128px 고정값)에 떠 있으면 화면
+   위쪽에 붕 뜬 것처럼 보이고, 아이템 이미지(64px)도 과하게 크다 — 가장자리에
+   붙이고 살짝 축소한다. right는 데스크톱(right-1.5, railTopBtnWrap과 중심
+   정렬용)과 이미 비슷해 그대로 둬도 되지만, 이미지 축소로 폭이 줄어드니 10px로
+   재계산해 맞춘다. top은 인라인 style의 --header-h 기반 calc()와 마찬가지로
+   헤더 실제 높이를 따라가되(이 폭에서는 확장 배너가 꺼지므로 보통 80px 고정),
+   더해주는 여백만 4px로 좁힌다. Tailwind 유틸리티 클래스와 동일한 특이도라
+   순서 보장을 위해 !important 사용(ChatBot.css의 모바일 FAB 재배치와 같은 패턴) —
+   !important는 인라인 style보다도 우선하므로 이 값이 그대로 이긴다. */
 @media (max-width: 480px) {
   .recentDock {
     right: 10px !important;
-    top: 84px !important;
+    top: calc(var(--header-h, 80px) + 4px) !important;
     padding: 6px !important;
   }
 

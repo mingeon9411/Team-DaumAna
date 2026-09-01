@@ -115,7 +115,7 @@ export const PRODUCTS = [
 // 또 만들면 트리를 고칠 때 두 곳을 같이 손봐야 해서 어긋나기 쉽다).
 // 소(小)카테고리는 트리가 아니라 product.midCategory 값 자체를 그대로 쓴다
 // (기존 "중분류 탭"과 동일한 방식 — 상품마다 이미 붙어있어 별도 정의가 필요 없음).
-const CATEGORY_TREE = [
+export const CATEGORY_TREE = [
   {
     label: "가구",
     children: [
@@ -310,6 +310,21 @@ function Home() {
     return () => {
       window.removeEventListener("recentlyviewedchange", sync);
       window.removeEventListener("storage", sync);
+    };
+  }, []);
+
+  // Header.jsx(스크롤 시 나타나는 배너)의 검색창은 이 페이지 상태를 직접 들고
+  // 있지 않다 — 대신 이 파일이 이미 쓰는 커스텀 이벤트 패턴(recentlyviewedchange/
+  // cartchange/authchange와 동일)으로 신호만 보내면 여기서 받아 기존 검색
+  // 필터 상태에 그대로 반영하고 상품 그리드로 스크롤한다.
+  useEffect(() => {
+    const onHeaderSearch = (e) => {
+      setProductSearchQuery(e.detail?.query ?? "");
+      scrollToProductGrid();
+    };
+    window.addEventListener("headerProductSearch", onHeaderSearch);
+    return () => {
+      window.removeEventListener("headerProductSearch", onHeaderSearch);
     };
   }, []);
 
