@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag, Plus, LayoutGrid, Sofa, Armchair, Bed, Lamp, Square, Package } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag, Plus } from "lucide-react";
 import "./Home.css";
 import ChatBot from "../MyPage/ChatBot";
 import LookbookViewer from "./LookbookViewer";
@@ -78,11 +78,11 @@ export const PRODUCTS = [
   { id: 7, no: "No.7", name: "린넨 빨래 바구니", sub: "민트 그레이 컬러블록", price: "32,000", label: "ECO",
     desc: "민트, 블루, 아이보리가 컬러블록으로 나뉜 패브릭 빨래 바구니입니다. 가벼운 무광 소재에 메탈 손잡이를 달아 옷방과 욕실을 오가며 들고 다니기 편합니다.",
     spec: "SIZE : W36 D36 H40 · MATERIAL : coated fabric, metal handle",
-    image: linenLaundryBasket, interiorImage: linenLaundryBasketInterior, alt: "린넨 빨래 바구니", brand: "집다움", category: "소품", midCategory: "수납바구니", subCategory: "패브릭 메탈핸들" },
+    image: linenLaundryBasket, interiorImage: linenLaundryBasketInterior, alt: "린넨 빨래 바구니", brand: "집다움", category: "수납", midCategory: "수납바구니", subCategory: "패브릭 메탈핸들" },
   { id: 8, no: "No.8", name: "북유럽 문양 빨래 바구니", sub: "내추럴 라탄", price: "45,000", label: "NEW",
     desc: "가는 라탄 가닥을 별무늬로 엮어 짠 바스켓으로, 가죽 손잡이가 포인트를 더합니다. 세탁물 정리는 물론 담요나 잡지꽂이로도 어울리는 다용도 소품입니다.",
     spec: "SIZE : W34 D34 H36 · MATERIAL : rattan, leather handle",
-    image: patternLaundryBasket, interiorImage: patternLaundryBasketInterior, alt: "북유럽 문양 빨래 바구니", brand: "집다움", category: "소품", midCategory: "수납바구니", subCategory: "라탄 레더핸들" },
+    image: patternLaundryBasket, interiorImage: patternLaundryBasketInterior, alt: "북유럽 문양 빨래 바구니", brand: "집다움", category: "수납", midCategory: "수납바구니", subCategory: "라탄 레더핸들" },
   { id: 9, no: "No.9", name: "북유럽풍 러그 A형", sub: "아이보리 지오메트릭", price: "128,000", label: "NEW",
     desc: "삼각·다이아몬드 패턴을 세이지, 블루그레이 톤으로 촘촘히 터프팅한 러그입니다. 기하학적인 패턴이 공간에 리듬감을 더해 소파 앞이나 침대 곁 포인트 러그로 잘 어울립니다.",
     spec: "SIZE : W140 D200 · MATERIAL : wool, cotton backing",
@@ -91,7 +91,7 @@ export const PRODUCTS = [
   { id: 10, no: "No.10", name: "친환경 우드 빨래 바구니", sub: "내추럴 라탄 & 가죽", price: "39,000", label: "ECO",
     desc: "천연 라탄을 촘촘히 엮고 가죽 손잡이를 덧댄 친환경 소재 바구니입니다. 옷방, 욕실, 아이 방 등 어디에 두어도 자연스럽게 스며드는 내추럴한 분위기를 냅니다.",
     spec: "SIZE : W38 D38 H40 · MATERIAL : rattan, leather handle",
-    image: ecoWoodLaundryBasket, interiorImage: ecoWoodLaundryBasketInterior, alt: "친환경 우드 빨래 바구니", brand: "집다움", category: "소품", midCategory: "수납바구니", subCategory: "친환경 라탄" },
+    image: ecoWoodLaundryBasket, interiorImage: ecoWoodLaundryBasketInterior, alt: "친환경 우드 빨래 바구니", brand: "집다움", category: "수납", midCategory: "수납바구니", subCategory: "친환경 라탄" },
   { id: 11, no: "No.11", name: "우드 의자", sub: "내추럴 라탄 케인", price: "219,000", label: "NEW",
     desc: "둥근 라탄 케인 등받이와 오크 프레임이 만나는 자그마한 암체어입니다. 넉넉한 리넨 쿠션을 더해 식탁 의자로도, 침실 코너 체어로도 편안하게 쓸 수 있습니다.",
     spec: "SIZE : W64 D58 H74 · MATERIAL : oak, rattan cane, linen",
@@ -110,15 +110,42 @@ export const PRODUCTS = [
     image: pastelPatternBed, interiorImage: pastelPatternBedInterior, alt: "북유럽풍 파스텔 문양 침대", brand: "집다움", category: "침대", midCategory: "업홀스터리침대", subCategory: "패브릭 우드프레임" },
 ];
 
-const PRODUCT_CATEGORIES = [
-  { label: "전체", Icon: LayoutGrid },
-  { label: "소파", Icon: Sofa },
-  { label: "의자", Icon: Armchair },
-  { label: "침대", Icon: Bed },
-  { label: "조명", Icon: Lamp },
-  { label: "러그", Icon: Square },
-  { label: "소품", Icon: Package },
+// 대(大)카테고리 아래 중(中)카테고리를 묶어두는 트리 — product.category(중)가
+// 어느 대카테고리에 속하는지는 이 트리 하나에서 뽑아 쓴다(따로 매핑 상수를
+// 또 만들면 트리를 고칠 때 두 곳을 같이 손봐야 해서 어긋나기 쉽다).
+// 소(小)카테고리는 트리가 아니라 product.midCategory 값 자체를 그대로 쓴다
+// (기존 "중분류 탭"과 동일한 방식 — 상품마다 이미 붙어있어 별도 정의가 필요 없음).
+const CATEGORY_TREE = [
+  {
+    label: "가구",
+    children: [
+      { label: "소파" },
+      { label: "의자" },
+      { label: "침대" },
+    ],
+  },
+  {
+    label: "소품",
+    children: [
+      { label: "조명" },
+      { label: "러그" },
+    ],
+  },
+  {
+    label: "생활용품",
+    children: [
+      { label: "수납" },
+      { label: "발매트" },
+      { label: "수건" },
+    ],
+  },
 ];
+
+// product.category(중카테고리) → 그 부모 대카테고리 라벨. CATEGORY_TREE에서 매번
+// find로 뒤지지 않도록 모듈 로드 시 한 번만 펼쳐둔다.
+const CATEGORY_PARENT = Object.fromEntries(
+  CATEGORY_TREE.flatMap((top) => top.children.map((mid) => [mid.label, top.label]))
+);
 
 const LOOKBOOK_PHOTOS = [
   "photo-1484101403633-562f891dc89a",
@@ -185,6 +212,7 @@ function Label({ children, className = "" }) {
 function Home() {
   const [wishlist, setWishlist] = useState([]);
   const [productSearchQuery, setProductSearchQuery] = useState("");
+  const [selectedTop, setSelectedTop] = useState("전체");
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [selectedMid, setSelectedMid] = useState("전체");
   const [lookbookPage, setLookbookPage] = useState(0);
@@ -543,7 +571,13 @@ function Home() {
     }
   };
 
-  // 대분류를 고를 때만 그 안의 중분류 목록이 의미가 있다 — 전체 보기에선 중분류 탭 자체를 숨긴다.
+  // 대카테고리를 고르면 그 안의 중카테고리만 보여준다 — "전체"면 전 카테고리를 합쳐서 보여준다.
+  const categoryOptions =
+    selectedTop === "전체"
+      ? CATEGORY_TREE.flatMap((top) => top.children)
+      : CATEGORY_TREE.find((top) => top.label === selectedTop)?.children ?? [];
+
+  // 중카테고리를 고를 때만 그 안의 소카테고리 목록이 의미가 있다 — 전체 보기에선 탭 자체를 숨긴다.
   const midOptions =
     selectedCategory === "전체"
       ? []
@@ -567,6 +601,7 @@ function Home() {
   const filteredProducts = (() => {
     const q = productSearchQuery.trim().toLowerCase();
     return mergedProducts.filter((p) => {
+      const matchesTop = selectedTop === "전체" || CATEGORY_PARENT[p.category] === selectedTop;
       const matchesCategory = selectedCategory === "전체" || p.category === selectedCategory;
       const matchesMid = selectedMid === "전체" || p.midCategory === selectedMid;
       const matchesQuery =
@@ -575,7 +610,7 @@ function Home() {
         p.sub.toLowerCase().includes(q) ||
         p.label.toLowerCase().includes(q) ||
         p.brand.toLowerCase().includes(q);
-      return matchesCategory && matchesMid && matchesQuery;
+      return matchesTop && matchesCategory && matchesMid && matchesQuery;
     });
   })();
 
@@ -910,44 +945,62 @@ function Home() {
             <button type="button" onClick={openNotice} className="hover:text-foreground transition-colors">
               공지사항
             </button>
+            <span aria-hidden="true" className="text-border">|</span>
+            <button type="button" onClick={() => navigate("/customer-center")} className="hover:text-foreground transition-colors">
+              고객센터
+            </button>
           </div>
 
           <p className="mb-3 text-sm font-semibold text-foreground" style={SANS}>카테고리</p>
-          <div className="flex items-start gap-5 overflow-x-auto pb-1">
-            {PRODUCT_CATEGORIES.map((cat) => {
-              const selected = selectedCategory === cat.label;
+          <div className="flex items-center gap-7 overflow-x-auto pb-1 border-b border-border">
+            {[{ label: "전체" }, ...CATEGORY_TREE].map((top) => {
+              const selected = selectedTop === top.label;
               return (
                 <button
-                  key={cat.label}
+                  key={top.label}
                   type="button"
                   onClick={() => {
-                    setSelectedCategory(cat.label);
+                    setSelectedTop(top.label);
+                    setSelectedCategory("전체");
                     setSelectedMid("전체");
                   }}
-                  className="flex shrink-0 flex-col items-center gap-1.5"
+                  className={`shrink-0 pb-3 text-base font-semibold tracking-tight border-b-2 -mb-px transition-colors duration-200 ${
+                    selected
+                      ? "text-foreground border-foreground"
+                      : "text-muted-foreground border-transparent hover:text-foreground"
+                  }`}
+                  style={SANS}
                 >
-                  <span
-                    className={`flex h-14 w-14 items-center justify-center rounded-full border transition-all duration-200 ease-out hover:scale-110 active:scale-95 ${
-                      selected
-                        ? "bg-foreground text-background border-foreground"
-                        : "bg-transparent text-muted-foreground border-border hover:border-foreground hover:text-foreground"
-                    }`}
-                  >
-                    <cat.Icon size={22} strokeWidth={1.75} />
-                  </span>
-                  <span
-                    className={`text-xs font-medium ${selected ? "text-foreground" : "text-muted-foreground"}`}
-                    style={SANS}
-                  >
-                    {cat.label}
-                  </span>
+                  {top.label}
                 </button>
               );
             })}
           </div>
+
+          {/* 중카테고리 탭 — 고른 대카테고리 안의 항목만(전체면 전 항목을 합쳐서) 보여준다 */}
+          <div className="mt-4 flex items-center gap-1.5 flex-wrap">
+            {[{ label: "전체" }, ...categoryOptions].map((cat) => (
+              <button
+                key={cat.label}
+                type="button"
+                onClick={() => {
+                  setSelectedCategory(cat.label);
+                  setSelectedMid("전체");
+                }}
+                className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                  selectedCategory === cat.label
+                    ? "bg-muted-foreground/20 text-foreground border-muted-foreground/40"
+                    : "bg-transparent text-muted-foreground/70 border-border/60 hover:text-foreground"
+                }`}
+                style={SANS}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* 중분류 탭 — 대분류를 하나 고르고, 그 안에 세부 유형이 둘 이상일 때만 뜬다 */}
+        {/* 소카테고리 탭 — 중카테고리를 하나 고르고, 그 안에 세부 유형이 둘 이상일 때만 뜬다 */}
         {midOptions.length > 1 && (
           <div className="relative z-10 max-w-7xl mx-auto w-full mb-8 flex items-center gap-1.5 flex-wrap">
             {["전체", ...midOptions].map((mid) => (
