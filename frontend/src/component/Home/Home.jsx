@@ -643,18 +643,46 @@ function Home() {
 
   // 도어인트로를 지나 홈에 들어오면 기본적으로 1번째 패널(에세이)에서 시작한다.
   // (HERO가 전체 상품 페이지 앞으로 옮겨가면서 에세이가 첫 패널이 됨)
-  // 사이드바의 "홈"/"상품" 버튼으로 진입한 경우엔 각자 원하는 패널로 직접 이동하므로 건너뛴다.
+  //
+  // 다른 페이지(상품 상세의 "목록으로", 고객센터/설정의 뒤로가기 등)에서 돌아온
+  // 경우엔 App.jsx의 DoorIntroController가 SKIP_HOME_DEFAULT_PANEL과 함께
+  // PENDING_HOME_PANEL_INDEX(보통 4=상품 그리드)를 세팅해둔다 — 여기서 그 값을
+  // 읽어 지정된 패널로 바로 이동한다. 값이 없으면(예: 로고 클릭으로 그냥 홈에
+  // 온 경우) 원래대로 기본 패널(0번, 에세이)로 이동한다.
+  //
+  // ⚠️ sessionStorage 플래그는 반드시 setTimeout 콜백 "안에서"(실제로 실행될
+  // 때) 읽고 지워야 한다 — StrictMode는 개발 모드에서 마운트마다 effect를
+  // setup→cleanup→setup 두 번 실행하는데, 이 컴포넌트는 라우트 이동마다 매번
+  // 새로 마운트되니(Home.jsx는 <Routes>가 스왑하는 컴포넌트) 매번 이 더블
+  // 실행을 겪는다. effect 본문에서 곧장 플래그를 읽어 지워버리면, 첫 번째
+  // 실행이 플래그를 이미 소비한 채로 예약한 타이머가 cleanup에 의해 취소되고
+  // (StrictMode가 즉시 cleanup을 부름), 두 번째 실행은 이미 지워진 플래그를
+  // 보고 아무 것도 예약하지 않아 스크롤이 영영 안 일어난다 — 실제로 이 버그로
+  // "목록으로" 버튼들이 전부 인트로 영상에서 멈춰 있었다. 타이머가 실제로
+  // 발화하는 시점(취소되지 않고 살아남은 마지막 실행)에 읽으면 이 레이스가
+  // 사라진다.
   useEffect(() => {
-    if (sessionStorage.getItem(NAV_FLAGS.SKIP_HOME_DEFAULT_PANEL)) {
-      sessionStorage.removeItem(NAV_FLAGS.SKIP_HOME_DEFAULT_PANEL);
-      return;
-    }
-    const target = document.querySelectorAll("[data-hsnap]")[0];
-    if (!target) return;
     const timer = setTimeout(() => {
+      let targetIndex = 0;
+      let immediate = false;
+
+      if (sessionStorage.getItem(NAV_FLAGS.SKIP_HOME_DEFAULT_PANEL)) {
+        sessionStorage.removeItem(NAV_FLAGS.SKIP_HOME_DEFAULT_PANEL);
+        const stored = sessionStorage.getItem(NAV_FLAGS.PENDING_HOME_PANEL_INDEX);
+        if (stored !== null) {
+          sessionStorage.removeItem(NAV_FLAGS.PENDING_HOME_PANEL_INDEX);
+          targetIndex = Number(stored);
+          // 뒤로가기 복귀는 인트로 영상을 스쳐 지나가는 스크롤 애니메이션
+          // 없이 즉시 전환해야 "화면이 훑고 지나간다"는 위화감이 없다.
+          immediate = true;
+        }
+      }
+
+      const target = document.querySelectorAll("[data-hsnap]")[targetIndex];
+      if (!target) return;
       if (window.lenis) {
         window.lenis.resize();
-        window.lenis.scrollTo(target, { immediate: true });
+        window.lenis.scrollTo(target, { immediate });
       } else {
         target.scrollIntoView();
       }
