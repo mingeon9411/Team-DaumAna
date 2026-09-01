@@ -11,6 +11,7 @@ import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import BusinessInfoPanel from "./BusinessInfoPanel";
 import { getRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS } from "../../utils/navFlags";
+import { useNoticeModal } from "../../context/NoticeModalContext";
 import rugB from "../../assets/products/(러그) 북유럽풍 러그 B형.jpg";
 import woodMoodLamp from "../../assets/products/(무드등) 우드 롱 무드등.jpg";
 import smallMoodLamp from "../../assets/products/(무드등) 북유럽풍 침대 작은 무드등.jpg";
@@ -246,6 +247,7 @@ function Home() {
 
   const [recentlyViewed, setRecentlyViewed] = useState(() => withFreshProductData(getRecentlyViewed()));
   const navigate = useNavigate();
+  const { openNotice } = useNoticeModal();
 
   // 카테고리 위 유틸 링크(로그인/회원가입 · 마이페이지/로그아웃)용 — Sidebar의 독과
   // 같은 기준(access_token)으로 로그인 상태를 판단하고, 같은 authchange 이벤트로 동기화한다.
@@ -899,6 +901,14 @@ function Home() {
             <button type="button" onClick={() => navigate("/cart")} className="hover:text-foreground transition-colors">
               장바구니{Object.values(cartCounts).reduce((sum, n) => sum + n, 0) > 0 &&
                 ` (${Object.values(cartCounts).reduce((sum, n) => sum + n, 0)})`}
+            </button>
+            <span aria-hidden="true" className="text-border">|</span>
+            <button type="button" onClick={() => navigate("/korean-hall")} className="hover:text-foreground transition-colors">
+              한국관
+            </button>
+            <span aria-hidden="true" className="text-border">|</span>
+            <button type="button" onClick={openNotice} className="hover:text-foreground transition-colors">
+              공지사항
             </button>
           </div>
 
