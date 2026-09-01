@@ -33,7 +33,7 @@ import { useMyPageModal } from "../../context/MyPageModalContext";
 import { useNoticeModal } from "../../context/NoticeModalContext";
 import { PRODUCTS as HOME_PRODUCTS } from "../Home/Home";
 import { products as KOREAN_HALL_PRODUCTS } from "../../data/products";
-import { NAV_FLAGS } from "../../utils/navFlags";
+import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 
 const RAIL_STYLES = [
   { id: "glass", label: "레인보우" },
@@ -331,8 +331,21 @@ function Sidebar() {
     else window.scrollTo({ left: 0, behavior: "smooth" });
   };
 
-  // "홈" 아이콘은 1번째 패널(에세이)로 이동
+  // "홈" 아이콘은 보통 1번째 패널(에세이)로 이동. 다만 장바구니·상품 상세처럼
+  // "목록으로 돌아가기" 의도가 남아있는 페이지(PRODUCT_DETAIL_RETURN_ZONE 플래그가
+  // 아직 안 지워진 상태)에서는 그 의도를 우선한다 — 안 그러면 아래 pendingPanelRef=0이
+  // 무조건 패널 0을 예약해버려서, DoorIntroController가 세팅하는 상품 목록 패널(4번)
+  // 지정을 덮어써버린다(Sidebar의 다른 useEffect가 ref를 sessionStorage보다 먼저 봄).
   const goHome = () => {
+    const returnZone = sessionStorage.getItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE);
+    if (returnZone === NAV_ZONE.KOREAN_HALL) {
+      navigate("/korean-hall");
+      return;
+    }
+    if (returnZone === NAV_ZONE.HOME) {
+      navigate("/"); // 플래그는 그대로 둬 DoorIntroController가 상품 목록 패널로 보내게 한다
+      return;
+    }
     if (isHome) {
       scrollToPanel(0);
     } else {
