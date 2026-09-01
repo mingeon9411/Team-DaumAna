@@ -35,6 +35,13 @@ export default function Layout({ children }) {
 
       <footer className="mx-auto max-w-3xl w-full px-6 py-10 text-xs text-center" style={{ color: "var(--color-muted)" }}>
         <Link to="/" viewTransition>© 2026 KANG Mingeon. Developer Portfolio.</Link>
+        {/* 방문자 IP 기준(일 1회) 중복 방지 조회수 — 외부 무료 뱃지 서비스, 자체 서버/DB 불필요 */}
+        <div className="mt-3">
+          <img
+            src="https://visitor-badge.laobi.icu/badge?page_id=mingeon9411.jipdaum-portfolio&color=a184e8"
+            alt="조회수"
+          />
+        </div>
       </footer>
     </div>
   );
