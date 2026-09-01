@@ -34,3 +34,12 @@ React/Vite 프론트엔드(`frontend/`) + Spring Boot 백엔드(별도 저장소
 - **Team-DaumAna**(이 저장소): 프론트(`frontend/`)는 2026-08부터 EC2가 아니라 **Cloudflare Pages**로 배포 — Cloudflare 대시보드가 이 저장소를 직접 Git 연동해서 push마다 자체 빌드/배포함(Root: `frontend`, Build: `npm run build`, Output: `dist`). 환경변수(`VITE_PORTONE_STORE_ID` 등)는 GitHub Secrets가 아니라 **Cloudflare Pages 프로젝트 설정에 따로** 등록해야 함. `.github/workflows/deploy.yml`은 이제 Django(Docker Hub → EC2 컨테이너)만 배포 — 프론트 빌드/배포 job은 삭제됨. React Router(`BrowserRouter`)를 쓰므로 `frontend/public/_redirects`(`/* /index.html 200`)가 SPA 폴백에 필수 — 지우면 새로고침 시 라우트가 다 404 남.
 - **jipdaum-spring**: `main` 푸시 시 그쪽 저장소의 `.github/workflows/docker-publish.yml`이 Docker Hub → EC2 컨테이너로 배포. Spring Boot의 `application.yml`은 저장소에 없고 **EC2 서버의 `/opt/jipdaum/config/application.yml`을 컨테이너에 마운트**해서 씀 — 그 값을 바꾸려면 EC2에 직접 SSH로 들어가 파일을 고쳐야 하고, GitHub Secrets로는 안 됨.
 - 둘 다 솔로 개발이라 브랜치/PR 없이 `main`에 직접 커밋 후 푸시하는 게 곧 배포 트리거. `gh workflow run deploy.yml`(또는 `docker-publish.yml`)로 코드 변경 없이 수동 재배포도 가능(예: GitHub Secret 값만 바꿨을 때).
+
+## 작업 원칙 (Andrej Karpathy 가이드라인 기반)
+
+출처: [forrestchang/andrej-karpathy-skills](https://github.com/forrestchang/andrej-karpathy-skills). 속도보다 신중함 쪽으로 치우친 원칙이니 사소한 작업엔 유연하게 판단할 것.
+
+1. **코딩 전에 먼저 생각하기** — 가정을 숨기지 말고 드러낼 것. 확신 없으면 넘겨짚지 말고 물어볼 것. 해석이 여러 갈래면 조용히 하나 골라서 진행하지 말고 선택지를 제시할 것. 더 단순한 방법이 있으면 짚고 넘어갈 것.
+2. **단순함 우선** — 요청한 것 이상의 기능/추상화/설정 옵션/예외 처리를 만들지 말 것. 200줄로 짰는데 50줄로 될 것 같으면 다시 짤 것.
+3. **외과수술식 변경** — 요청과 무관한 인접 코드·주석·포맷은 건드리지 말 것. 망가지지 않은 걸 리팩터링하지 말 것. 기존 스타일을 따를 것(내 취향과 달라도). 이번 변경으로 안 쓰게 된 import/변수/함수만 정리하고, 원래 있던 죽은 코드는 지우지 말고 언급만 할 것. 바뀐 줄 하나하나가 사용자 요청과 직접 연결돼야 함.
+4. **목표 지향적 실행** — 작업을 검증 가능한 기준으로 바꿀 것("버그 수정" → "재현하는 테스트 작성 후 통과시키기"). 여러 단계 작업이면 `단계 → 검증 방법` 형태로 짧게 계획을 먼저 제시할 것.
