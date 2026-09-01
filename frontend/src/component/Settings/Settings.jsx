@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LuChevronLeft, LuSun, LuMoon, LuLayers, LuPalette, LuCompass, LuArrowUpToLine, LuClock } from "react-icons/lu";
+import { LuChevronLeft, LuSun, LuMoon, LuLayers, LuPalette, LuArrowUpToLine, LuClock } from "react-icons/lu";
 import "./Settings.css";
 import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 
@@ -18,8 +18,8 @@ const PASTEL_LEVELS = [
 
 // 예전엔 왼쪽 사이드바 독(Sidebar.jsx)의 아이콘 버튼으로 즉석에서 바꾸던 값들을
 // 이 설정 페이지로 옮겼다. localStorage 키/이벤트 이름은 전부 왼쪽 독이 쓰던 것을
-// 그대로 재사용 — 다른 컴포넌트(우측 독, 화살표 독, 상품 그리드 등)는 수정 없이
-// 그대로 이 페이지가 쓰는 신호를 계속 따라간다.
+// 그대로 재사용 — 다른 컴포넌트(우측 독, 페이지 이동 버튼, 상품 그리드 등)는 수정
+// 없이 그대로 이 페이지가 쓰는 신호를 계속 따라간다.
 function readFlag(key, fallback = true) {
   const raw = localStorage.getItem(key);
   return raw === null ? fallback : raw === "1";
@@ -37,9 +37,8 @@ function Settings() {
   const [pastelLevel, setPastelLevelState] = useState(
     () => localStorage.getItem("pastelLevel") || "deep"
   );
-  // 화살표 이동 독 / 맨 위로 버튼 / 우측 "최근 본 상품" 독 — 새로 추가한 on/off
-  // 토글. 값이 아예 없으면(기존 사용자) 기본 켬(true)으로 취급해 이전과 동일하게 보인다.
-  const [showArrowDock, setShowArrowDockState] = useState(() => readFlag("showArrowDock"));
+  // 맨 위/맨 아래로 버튼 / 우측 "최근 본 상품" 독 — 새로 추가한 on/off 토글. 값이
+  // 아예 없으면(기존 사용자) 기본 켬(true)으로 취급해 이전과 동일하게 보인다.
   const [showTopButton, setShowTopButtonState] = useState(() => readFlag("showTopButton"));
   const [showRecentDock, setShowRecentDockState] = useState(() => readFlag("showRecentDock"));
 
@@ -117,7 +116,7 @@ function Settings() {
               <LuLayers className="ssRowIcon" />
               <div>
                 <p className="ssRowTitle">독 스타일</p>
-                <p className="ssRowDesc">화살표 독·최근 본 상품 독의 테두리 스타일입니다.</p>
+                <p className="ssRowDesc">페이지 이동 버튼·최근 본 상품 독의 테두리 스타일입니다.</p>
               </div>
             </div>
             <div className="ssChipRow">
@@ -169,29 +168,10 @@ function Settings() {
 
           <div className="ssRow">
             <div className="ssRowLabel">
-              <LuCompass className="ssRowIcon" />
-              <div>
-                <p className="ssRowTitle">페이지 이동 화살표 독</p>
-                <p className="ssRowDesc">화면 하단 중앙에 이전/다음 페이지 이동 버튼을 띄웁니다.</p>
-              </div>
-            </div>
-            <button
-              type="button"
-              role="switch"
-              aria-checked={showArrowDock}
-              className={`ssSwitch${showArrowDock ? " on" : ""}`}
-              onClick={() => setDockFlag("showArrowDock", setShowArrowDockState, !showArrowDock)}
-            >
-              <span className="ssSwitchKnob" />
-            </button>
-          </div>
-
-          <div className="ssRow">
-            <div className="ssRowLabel">
               <LuArrowUpToLine className="ssRowIcon" />
               <div>
-                <p className="ssRowTitle">맨 위로 버튼</p>
-                <p className="ssRowDesc">화면 우하단에 맨 위로 이동 버튼을 띄웁니다.</p>
+                <p className="ssRowTitle">페이지 이동 버튼</p>
+                <p className="ssRowDesc">화면 우하단에 맨 위로/맨 아래로 이동 버튼을 띄웁니다.</p>
               </div>
             </div>
             <button

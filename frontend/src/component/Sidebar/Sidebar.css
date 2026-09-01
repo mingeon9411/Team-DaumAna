@@ -40,17 +40,8 @@
   100% { opacity: 1;    transform: translateY(-50%) scale(1); }
 }
 
-/* 화살표 독(하단 중앙, translateX(-50%))·맨 위로 버튼(모서리 고정, transform 없음)은
-   같은 페이드-스케일이라도 각자의 고정 transform을 유지해야 하므로 키프레임을 따로 둔다. */
-.railArrowDock.styleSwitching {
-  animation: railStyleSwapCenterX 2s ease;
-}
-@keyframes railStyleSwapCenterX {
-  0%   { opacity: 1;    transform: translateX(-50%) scale(1); }
-  40%  { opacity: 0.45; transform: translateX(-50%) scale(0.97); }
-  100% { opacity: 1;    transform: translateX(-50%) scale(1); }
-}
-
+/* 맨 위로/맨 아래로 버튼(모서리 고정, transform 없음)은 같은 페이드-스케일이라도
+   고정 transform을 유지해야 하므로 키프레임을 따로 둔다. */
 .railTopBtnWrap.styleSwitching {
   animation: railStyleSwapPlain 2s ease;
 }
@@ -60,7 +51,7 @@
   100% { opacity: 1;    transform: scale(1); }
 }
 
-/* 한국관 하단 기능바는 유리 대신 한지 톤의 따뜻한 배경 적용 — 화살표 독/맨 위로
+/* 한국관 하단 기능바는 유리 대신 한지 톤의 따뜻한 배경 적용 — 맨 위로/맨 아래로
    버튼은 한국관에서 애초에 렌더링되지 않으므로(Sidebar.jsx 조건부 렌더) 여기엔
    포함하지 않는다. */
 .sidebarRail.koreanHallRail {
@@ -71,13 +62,12 @@
 }
 
 /* ── 사이드바 스타일 프리셋 (팔레트 아이콘으로 선택) ──────────────────
-   왼쪽 독(.sidebarRail)·하단 중앙 화살표 독(.railArrowDock)·우하단 맨 위로
-   버튼(.railTopBtnWrap)이 항상 같은 값을 쓰도록 selector를 묶어서 선언한다 —
-   따로 적으면 셋 중 하나만 고치고 나머지를 깜빡했을 때 스타일이 갈라진다. */
+   왼쪽 독(.sidebarRail)·우하단 맨 위로/맨 아래로 버튼(.railTopBtnWrap)이 항상
+   같은 값을 쓰도록 selector를 묶어서 선언한다 — 따로 적으면 하나만 고치고
+   나머지를 깜빡했을 때 스타일이 갈라진다. */
 
 /* 메탈릭 — 원래 있던, 반짝임이 흐르는 실버 그러데이션 */
 .sidebarRail.railStyle-metallic,
-.railArrowDock.railStyle-metallic,
 .railTopBtnWrap.railStyle-metallic {
   border-width: 6px;
   background:
@@ -96,9 +86,6 @@
 .sidebarRail.railStyle-metallic.styleSwitching {
   animation: metallicShine 11s ease-in-out infinite, railStyleSwap 2s ease;
 }
-.railArrowDock.railStyle-metallic.styleSwitching {
-  animation: metallicShine 11s ease-in-out infinite, railStyleSwapCenterX 2s ease;
-}
 .railTopBtnWrap.railStyle-metallic.styleSwitching {
   animation: metallicShine 11s ease-in-out infinite, railStyleSwapPlain 2s ease;
 }
@@ -110,7 +97,6 @@
 }
 
 body.dark .sidebarRail.railStyle-metallic,
-body.dark .railArrowDock.railStyle-metallic,
 body.dark .railTopBtnWrap.railStyle-metallic {
   background:
     linear-gradient(120deg, #1b1d21 0%, #2a2d33 20%, #35383f 40%, #1b1d21 55%, #35383f 70%, #2a2d33 85%, #1b1d21 100%) padding-box,
@@ -120,7 +106,6 @@ body.dark .railTopBtnWrap.railStyle-metallic {
 
 /* 파스텔 — 로그인창/버튼과 같은 톤의 정적인 파스텔 채움 */
 .sidebarRail.railStyle-pastel,
-.railArrowDock.railStyle-pastel,
 .railTopBtnWrap.railStyle-pastel {
   border-width: 4px;
   background:
@@ -131,7 +116,6 @@ body.dark .railTopBtnWrap.railStyle-metallic {
 }
 
 body.dark .sidebarRail.railStyle-pastel,
-body.dark .railArrowDock.railStyle-pastel,
 body.dark .railTopBtnWrap.railStyle-pastel {
   background:
     linear-gradient(120deg, #3a2f4a 0%, #2a3550 50%, #223d38 100%) padding-box,
@@ -519,8 +503,8 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
 
 /* 호버 시 뜨는 라벨 툴팁 — 공통 스타일만 여기서 정의하고, 방향(위/오른쪽)은
    독마다 아래에서 따로 준다: 왼쪽 세로 독(.sidebarRail)은 옆으로 긴 형태라
-   오른쪽으로, 오른쪽 하단 모서리에 붙는 화살표 독(.railArrowDock)은 화면
-   가장자리에 가까워 오른쪽으로 띄우면 잘릴 수 있어 원래대로 위로 띄운다. */
+   오른쪽으로, 오른쪽 하단 모서리에 붙는 맨 위로/맨 아래로 버튼(.railTopBtnWrap)은
+   화면 가장자리에 가까워 오른쪽으로 띄우면 잘릴 수 있어 원래대로 위로 띄운다. */
 .railBtn::after {
   content: attr(data-tooltip);
   position: absolute;
@@ -557,14 +541,12 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
   transform: translateY(-50%) translateX(0);
 }
 
-.railArrowDock .railBtn::after,
 .railTopBtnWrap .railBtn::after {
   left: 50%;
   bottom: calc(100% + 12px);
   transform: translateX(-50%) translateY(4px);
 }
 
-.railArrowDock .railBtn:hover::after,
 .railTopBtnWrap .railBtn:hover::after {
   transform: translateX(-50%) translateY(0);
 }
@@ -891,9 +873,8 @@ body.dark .railSearchResults button:hover {
 }
 
 /* 다크모드 — 같은 글래스 느낌을 어두운 톤으로. 기본(유리) 프리셋의 다크모드
-   값이라 화살표 독·맨 위로 버튼도 같이 묶는다(메탈릭/파스텔과 같은 원칙). */
+   값이라 맨 위로/맨 아래로 버튼도 같이 묶는다(메탈릭/파스텔과 같은 원칙). */
 body.dark .sidebarRail,
-body.dark .railArrowDock,
 body.dark .railTopBtnWrap {
   background:
     linear-gradient(rgba(6, 13, 30, 0.38), rgba(6, 13, 30, 0.38)) padding-box,
@@ -944,40 +925,9 @@ body.dark .sidebarRail.koreanHallRail .railBtn::after {
   background: rgba(6, 13, 30, 0.96);
 }
 
-/* 패널 이동 화살표 전용 독 — 왼쪽 세로 독(.sidebarRail)과는 분리된 별도
-   컨트롤(하단 중앙 고정)이지만, 배경 프리셋(유리/메탈릭/파스텔)은 위에서 왼쪽
-   독과 값을 공유해 항상 같은 스타일로 보이게 한다. 한국관/상품 상세에서는
-   애초에 렌더링되지 않는다(Sidebar.jsx의 조건부 렌더). */
-.railArrowDock {
-  position: fixed;
-  left: 50%;
-  right: auto;
-  bottom: 20px;
-  transform: translateX(-50%);
-  z-index: 940;
-
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 6px;
-
-  padding: 8px 10px;
-  border-radius: 999px;
-
-  border: 1.5px solid transparent;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.32)) padding-box,
-    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
-  backdrop-filter: blur(30px) saturate(115%);
-  -webkit-backdrop-filter: blur(30px) saturate(115%);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.55);
-
-  transition: background-color 2.8s ease, border-color 2.1s ease;
-}
-
-/* 맨 위로 버튼 — .railBtn 하나를 감싸는 캡슐 하나만큼의 작은 독. 아이콘 자체의
-   호버/툴팁/크기는 .railBtn 스타일을 그대로 물려받고, 여기서는 바깥 유리 캡슐
-   껍데기와 위치만 담당한다. */
+/* 맨 위로/맨 아래로 버튼 — .railBtn 두 개를 감싸는 캡슐 하나만큼의 작은 독.
+   아이콘 자체의 호버/툴팁/크기는 .railBtn 스타일을 그대로 물려받고, 여기서는
+   바깥 유리 캡슐 껍데기와 위치만 담당한다. */
 .railTopBtnWrap {
   position: fixed;
   right: 20px;
@@ -1081,12 +1031,6 @@ body.dark .sidebarRail.koreanHallRail .railBtn::after {
 
   .railDivider {
     flex-shrink: 0;
-  }
-
-  .railArrowDock {
-    bottom: 12px;
-    padding: 6px 8px;
-    gap: 4px;
   }
 
   .railTopBtnWrap {
