@@ -1,11 +1,3 @@
-/* 로그인 뷰일 때는 상위 패널(.authModalPanel — 예전 모달 / .authPagePanel —
-   지금의 /login 페이지)의 위→아래 페이드도 .loginBox의 좌우 슬라이드와 같은
-   방향으로 맞춰, 사이드바처럼 옆에서 깔끔하게 열리는 느낌을 준다 */
-.authModalPanel:has(> .loginBox),
-.authPagePanel:has(> .loginBox) {
-  animation: loginSlideIn 2.6s ease;
-}
-
 .loginBox {
     position: relative;
     z-index: 2;
@@ -61,7 +53,7 @@
       ) padding-box,
       linear-gradient(150deg, #d3d6da 0%, #8b929b 50%, #d3d6da 100%) border-box;
     background-size: 160% 160%, 100% 100%;
-    animation: loginSlideIn 2.6s ease, loginMetallicSheen 24s ease-in-out infinite;
+    animation: loginMetallicSheen 24s ease-in-out infinite;
   }
 
   body.dark .loginBox.railStyle-metallic {
@@ -106,7 +98,6 @@
     background-size: 100% 100%, 100% 100%;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    animation: loginSlideIn 2.6s ease;
   }
 
   body.dark .loginBox.koreanHallLogin,
@@ -158,36 +149,6 @@
 
   body.dark .loginLogoHanok {
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
-  }
-
-  .loginBox {
-    /* transform-origin을 정중앙에 둬서, 가운데를 기준으로 위/아래
-       양쪽으로 동시에 천천히 펼쳐지는 것처럼 보이게 한다.
-       셰인 애니메이션(loginMetallicSheen)은 railStyle-metallic 프리셋 쪽에서만 추가한다. */
-    transform-origin: center center;
-    animation: loginSlideIn 2.6s ease;
-  }
-
-  /* 가로가 아니라 세로로 천천히 펼쳐지는 연출 — clip-path로 위아래에서
-     동시에 폭(높이)이 드러나게 하고, scaleY로 완전히 접힌 상태에서
-     시작해 은은하게 펼쳐지는 리듬을 더한다 */
-  @keyframes loginSlideIn {
-    0% {
-      opacity: 0;
-      clip-path: inset(50% 0 50% 0 round 25px);
-      transform: scaleY(0.85);
-    }
-
-    55% {
-      opacity: 1;
-      transform: scaleY(1.01);
-    }
-
-    100% {
-      opacity: 1;
-      clip-path: inset(0 0 0 0 round 25px);
-      transform: scaleY(1);
-    }
   }
 
   @keyframes loginMetallicSheen {
