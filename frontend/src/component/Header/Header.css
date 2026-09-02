@@ -167,7 +167,9 @@ body.dark .header.productPageHeader.scrolled .logoImg {
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
   opacity: 0;
   transform: translateY(-10px);
-  transition: opacity 0.45s ease, transform 0.45s ease, backdrop-filter 0.45s ease;
+  /* 상품목록·상품상세·설정 배너(::before, 위)와 같은 감속 곡선·속도로 맞춘다 —
+     한국관만 훨씬 빠르고 딱딱한 ease 0.45s라 나올 때 뚝 끊기는 느낌이 있었다. */
+  transition: opacity 0.9s cubic-bezier(0.05, 0.7, 0.1, 1), transform 0.9s cubic-bezier(0.05, 0.7, 0.1, 1), backdrop-filter 0.9s cubic-bezier(0.05, 0.7, 0.1, 1);
 }
 
 .header.koreanHallHeader.scrolled::before {
@@ -209,6 +211,16 @@ body.dark .header.koreanHallHeader::before {
   column-gap: 24px;
 }
 
+/* headerLeft/headerRight/설정 버튼은 showExpandedNav 조건부 렌더라 마운트되는
+   순간 화면에 바로 나타난다 — transition은 상태 변화가 있어야 움직이므로 이렇게
+   "없다가 생기는" 요소엔 안 먹는다. 배경(::before)이 부드럽게 페이드인하는
+   동안 내용물만 뚝 튀어나오면 전체적으로 안 부드러워 보이니, 배경과 같은
+   감속 곡선으로 살짝 아래에서 떠오르며 나타나는 애니메이션을 따로 준다. */
+@keyframes headerContentIn {
+  0% { opacity: 0; transform: translateY(-8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
 .headerLeft,
 .headerRight {
   position: relative;
@@ -217,6 +229,7 @@ body.dark .header.koreanHallHeader::before {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  animation: headerContentIn 0.7s cubic-bezier(0.05, 0.7, 0.1, 1) both;
 }
 
 .headerRight {
@@ -258,6 +271,7 @@ body.dark .header.koreanHallHeader::before {
   right: 20px;
   z-index: 1001;
   pointer-events: auto;
+  animation: headerContentIn 0.7s cubic-bezier(0.05, 0.7, 0.1, 1) both;
 
   display: flex;
   align-items: center;
