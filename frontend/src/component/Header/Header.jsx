@@ -154,7 +154,16 @@ function Header() {
 
     const handleScroll = () => {
       if (isHome) {
-        setScrolled((productListEl?.scrollTop ?? 0) > 50);
+        // 홈은 상품 그리드(#home-products) 말고도 에세이·룩북·사업자정보 같은
+        // 가로 스냅 패널이 여러 개 더 있다 — 상품 그리드를 한 번 내려서 배너가
+        // 뜬 뒤 오른쪽/왼쪽 다른 패널로 넘어가도 그 엘리먼트의 scrollTop 값은
+        // 그대로 남아있어(가로 이동은 세로 스크롤을 초기화하지 않음), 배너가
+        // 계속 고정돼 보이는 버그가 있었다. isFooterPanel과 같은 방식으로
+        // "지금 실제로 보이는 패널이 상품 그리드인지"부터 확인한다.
+        const isProductGridActive = productListEl
+          ? Math.abs(productListEl.getBoundingClientRect().left) < window.innerWidth / 2
+          : false;
+        setScrolled(isProductGridActive && (productListEl?.scrollTop ?? 0) > 50);
       } else if (isKoreanHall) {
         setScrolled((koreanHallEl?.scrollTop ?? 0) > 50);
       } else if (isItemDetail) {
