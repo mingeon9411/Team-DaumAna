@@ -109,7 +109,27 @@
       linear-gradient(150deg, #2a4d8f 0%, #f5f1ea 25%, #a6342a 50%, #1c1a16 75%, #c9a227 100%) border-box;
   }
 
-  .loginLogoRow {
+    /* CustomerCenter.css의 .ccBackBtn과 같은 레시피 — 텍스트 링크 톤의 얇은 뒤로가기 */
+  .loginBackBtn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 0 14px;
+    padding: 0;
+    background: none;
+    border: none;
+    font-family: "TwayFly", "DM Mono", monospace;
+    font-size: 12px;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .loginBackBtn:hover {
+    color: var(--foreground);
+  }
+
+.loginLogoRow {
     display: flex;
     align-items: center;
     justify-content: center;

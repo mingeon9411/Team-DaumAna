@@ -2,6 +2,7 @@ import "./Login.css";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import { SiKakaotalk, SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
+import { LuChevronLeft } from "react-icons/lu";
 import { useState, useRef, useEffect } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { loginUser, requestSocialCaptchaTicket } from "../../api";
@@ -23,7 +24,7 @@ function Login() {
   // 한국관 스코프에서 뜬 로그인창은 독바 스타일 프리셋 대신 한지 톤 + 오색띠 테두리로 고정
   const isKoreanHall = pathname.startsWith("/korean-hall");
   const recaptchaRef = useRef(null);
-  const { openRegister, openFindId, openFindPassword } = useAuthModal();
+  const { openRegister, openFindId, openFindPassword, closeAuthPage } = useAuthModal();
   const [darkMode, setDarkMode] = useState(
     () => document.body.classList.contains("dark")
   );
@@ -143,7 +144,13 @@ function Login() {
 
   return (
       <section className={`loginBox railStyle-${railStyle} ${styleSwitching ? "styleSwitching" : ""} ${isKoreanHall ? "koreanHallLogin" : ""}`}>
-        {/* 독립 페이지라 "닫기(X)"는 없고, 로고를 누르면 홈으로 돌아간다. */}
+        {/* 독립 페이지라 CustomerCenter의 "목록으로"와 같은 패턴으로 돌아가기 버튼을 둔다
+            (closeAuthPage는 항상 홈으로 보낸다 — AuthModalContext.jsx 참고). 로고를
+            눌러도 같은 곳(홈)으로 가지만, 이 버튼이 더 명확한 이탈 동선이다. */}
+        <button type="button" className="loginBackBtn" onClick={closeAuthPage}>
+          <LuChevronLeft size={14} /> 돌아가기
+        </button>
+
         <Link to="/" className="loginLogoRow" aria-label="집다움 홈으로">
           <img src={JDLogo} alt="J.D" className="loginLogoJD" />
           <span className="loginLogoDivider" />
