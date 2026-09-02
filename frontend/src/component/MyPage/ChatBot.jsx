@@ -4,12 +4,13 @@ import * as PortOne from "@portone/browser-sdk/v2";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { SiKakaotalk, SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
-import { Sparkles, Ruler, ShieldCheck, UserPlus, UserX, Mail, User, Lock, ChevronDown, CheckCircle2, AlertCircle, AlertTriangle, ArrowRight, LogIn } from "lucide-react";
+import { Sparkles, Ruler, ShieldCheck, UserPlus, UserX, Mail, User, Lock, ChevronDown, CheckCircle2, AlertCircle, AlertTriangle, ArrowRight, ArrowLeft, LogIn } from "lucide-react";
 import "./ChatBot.css";
 import { sendChatMessage, createOrder, readyPayment, verifyPayment, registerUser, loginUser, checkNicknameAPI, requestSocialCaptchaTicket, withdrawUser } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { NAV_FLAGS } from "../../utils/navFlags";
 import { PRODUCTS } from "../Home/Home";
+import { TERMS_OF_SERVICE, PRIVACY_POLICY } from "../../data/legalContent";
 import JDLogo from "../../assets/J.D 로고.svg";
 import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
 
@@ -124,12 +125,15 @@ function SignupPanel({ onClose, onDone }) {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [agree, setAgree] = useState(false);
+  const [ageConfirm, setAgeConfirm] = useState(false);
+  const [marketingAgree, setMarketingAgree] = useState(false);
 
   const [emailError, setEmailError] = useState("");
   const [nicknameError, setNicknameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordConfirmError, setPasswordConfirmError] = useState("");
   const [agreeError, setAgreeError] = useState("");
+  const [ageConfirmError, setAgeConfirmError] = useState("");
   const [captchaError, setCaptchaError] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [nicknameChecked, setNicknameChecked] = useState(false);
@@ -173,6 +177,9 @@ function SignupPanel({ onClose, onDone }) {
 
     if (!agree) { setAgreeError("필수 약관에 동의해주세요."); isValid = false; }
     else setAgreeError("");
+
+    if (!ageConfirm) { setAgeConfirmError("만 14세 이상만 가입할 수 있습니다."); isValid = false; }
+    else setAgeConfirmError("");
 
     if (!isValid) return;
 
@@ -276,6 +283,34 @@ function SignupPanel({ onClose, onDone }) {
     setSubmitting(false);
   };
 
+  // "약관 보기"는 이제 폼 안 220px짜리 좁은 스크롤박스 대신, 챗봇 오른쪽 패널
+  // 전체를 약관 전용 화면으로 바꿔서 보여준다 — 글이 길어서 좁은 박스로는 읽기
+  // 불편했음. 뒤로가기를 누르면 입력하던 폼 내용은 그대로 유지된 채 돌아온다.
+  if (showTerms) {
+    return (
+      <div className="chatBotSidePanel chatBotSignupPanel">
+        <div className="chatBotSideHeader">
+          <button className="chatBotSideBack" onClick={() => setShowTerms(false)} aria-label="회원가입으로 돌아가기">
+            <ArrowLeft size={15} />
+          </button>
+          <p className="chatBotSideTitle">이용약관 · 개인정보 처리방침</p>
+          <button className="chatBotSideClose" onClick={onClose} aria-label="회원가입 패널 닫기">✕</button>
+        </div>
+        <div className="chatBotSignupTermsFull" data-lenis-prevent>
+          <h4>이용약관</h4>
+          {TERMS_OF_SERVICE.map((paragraph, i) => <p key={i}>{paragraph}</p>)}
+          <h4>개인정보 처리방침</h4>
+          {PRIVACY_POLICY.map((paragraph, i) => <p key={i}>{paragraph}</p>)}
+        </div>
+        <div className="chatBotSignupTermsFooter">
+          <button type="button" className="chatBotSignupSubmit" onClick={() => setShowTerms(false)}>
+            확인했습니다
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="chatBotSidePanel chatBotSignupPanel">
       <div className="chatBotSideHeader">
@@ -346,23 +381,26 @@ function SignupPanel({ onClose, onDone }) {
         </div>
         {passwordConfirmError && <p className="chatBotSignupError"><AlertCircle size={12} />{passwordConfirmError}</p>}
 
-        <button type="button" className="chatBotSignupTermsBtn" onClick={() => setShowTerms((v) => !v)}>
-          약관 보기 <ChevronDown size={13} className={"chatBotSignupChevron" + (showTerms ? " chatBotSignupChevronOpen" : "")} />
+        <button type="button" className="chatBotSignupTermsBtn" onClick={() => setShowTerms(true)}>
+          약관 보기 <ChevronDown size={13} />
         </button>
-        {showTerms && (
-          <div className="chatBotSignupTerms" data-lenis-prevent>
-            <h4>이용약관</h4>
-            <p>집다움은 회원에게 한국적인 라이프스타일 큐레이션 서비스를 제공합니다. 회원은 서비스 이용 시 관련 법령 및 본 약관을 준수해야 합니다.</p>
-            <h4>개인정보 처리방침</h4>
-            <p>집다움은 회원가입, 서비스 제공 및 고객 문의 응대를 위해 이메일, 닉네임 등의 개인정보를 수집합니다. 수집된 정보는 서비스 제공 목적 외에는 사용되지 않습니다.</p>
-          </div>
-        )}
 
         <label className="chatBotSignupAgree">
           <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} disabled={submitting} />
           <span>이용약관 및 개인정보 처리방침에 동의합니다 <em>(필수)</em></span>
         </label>
         {agreeError && <p className="chatBotSignupError"><AlertCircle size={12} />{agreeError}</p>}
+
+        <label className="chatBotSignupAgree">
+          <input type="checkbox" checked={ageConfirm} onChange={(e) => setAgeConfirm(e.target.checked)} disabled={submitting} />
+          <span>만 14세 이상입니다 <em>(필수)</em></span>
+        </label>
+        {ageConfirmError && <p className="chatBotSignupError"><AlertCircle size={12} />{ageConfirmError}</p>}
+
+        <label className="chatBotSignupAgree">
+          <input type="checkbox" checked={marketingAgree} onChange={(e) => setMarketingAgree(e.target.checked)} disabled={submitting} />
+          <span>이벤트·혜택 정보 수신에 동의합니다 (선택)</span>
+        </label>
 
         <HCaptcha
           ref={recaptchaRef}
