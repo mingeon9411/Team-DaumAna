@@ -484,10 +484,17 @@ body.dark .header.koreanHallHeader::before {
 }
 
 /* 한국관 — 일월오봉도 + 로고 + 해/달 전체를 헤더 가로 중앙(50%)에 배치.
-   아래 각 규칙들은 모두 이 기준점(--khAnchorX)을 공유해서 위치를 맞춘다. */
+   아래 각 규칙들은 모두 이 기준점(--khAnchorX)을 공유해서 위치를 맞춘다.
+   로고는 예전엔 position:absolute로 화면 정중앙에 직접 박아뒀었는데, 내비
+   게이션이 모든 페이지에 항상 뜨게 되면서(showExpandedNav) headerLeft/Right가
+   중앙까지 뻗어와 로고와 겹치는 문제가 있었다 — 지금은 메인 페이지와 똑같이
+   .header.expanded의 그리드(1fr auto 1fr)에 맡긴다. 로고는 그리드 흐름 안의
+   보통 아이템(.logo 기본 규칙)이 되어 항상 로고 폭만큼만 가운데 칸을 차지하고,
+   좌우 1fr 칸은 로고 칸을 침범하지 않으니 폭 제한(max-width) 없이도 안 겹친다.
+   두 1fr 칸이 같은 비율이라 가운데 칸은 항상 정확히 50%에 오므로, 해/달
+   위치 계산(아래 --khAnchorX 기준)도 그대로 유효하다. */
 .header.koreanHallHeader {
   --khAnchorX: 50%;
-  height: 72px;
 }
 
 .header.koreanHallHeader .headerIlwol {
@@ -495,37 +502,9 @@ body.dark .header.koreanHallHeader::before {
   bottom: 12px;
 }
 
-.header.koreanHallHeader .logo {
-  position: absolute;
-  left: var(--khAnchorX);
-  bottom: 25px;
-  transform: translateX(-50%);
-  z-index: 2;
-}
-
 .logoImgHanok {
   height: 37px;
   filter: none;
-}
-
-/* 한국관 로고는 그리드 흐름 밖(position:absolute, 항상 화면 정중앙)이라, 헤더
-   내비게이션이 모든 페이지에 항상 뜨게 되면서(showExpandedNav) headerLeft/Right가
-   중앙까지 뻗어와 로고 그림과 겹치는 문제가 생겼다 — 좌우 폭을 제한해 중앙
-   로고 구역을 비켜가게 한다. */
-.header.koreanHallHeader .headerLeft,
-.header.koreanHallHeader .headerRight {
-  max-width: 32%;
-}
-
-/* .header.koreanHallHeader { height: 72px }와 .header.expanded { height: auto;
-   min-height: 120px }는 특이도가 같아서(클래스 2개씩) 파일에서 나중에 나오는
-   koreanHallHeader가 항상 이겨 높이가 72px로 고정돼버렸다 — 내비 링크가 여러
-   줄로 접히면서 로고 위로 겹쳐 보이던 진짜 원인. 두 클래스가 동시에 붙는
-   경우(showExpandedNav가 항상 true라 이제 항상 그렇다) 전용 규칙으로 넉넉한
-   높이를 확보한다. */
-.header.koreanHallHeader.expanded {
-  height: auto;
-  min-height: 130px;
 }
 
 /* 한국관 — 해/달을 봉우리 위로 살짝 띄워 겹치지 않게 배치.

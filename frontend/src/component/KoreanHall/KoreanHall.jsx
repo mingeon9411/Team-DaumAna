@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Lenis from "lenis";
-import { LayoutGrid, Sofa, Table, Lamp, Archive, Package } from "lucide-react";
+import { LayoutGrid, Sofa, Table, Lamp, Archive, Package, Heart, ShoppingBag } from "lucide-react";
 import "./KoreanHall.css";
 import products from "../../data/products";
 import ChatBot from "../MyPage/ChatBot";
@@ -9,6 +9,10 @@ import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import RecentlyViewedSidebar from "../Home/RecentlyViewedSidebar";
 import { getRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS } from "../../utils/navFlags";
+import { getCartItems, logoutUser } from "../../api";
+import { useAuthModal } from "../../context/AuthModalContext";
+import { useMyPageModal } from "../../context/MyPageModalContext";
+import { useNoticeModal } from "../../context/NoticeModalContext";
 import irworobongdo from "../../assets/decor/irworobongdo.svg";
 
 const FILM_SOURCES = ["/videos/jipdaum-hanok.mp4", "/videos/jipdaum-kor.mp4"];
@@ -44,6 +48,61 @@ function KoreanHall() {
   const [selectedMid, setSelectedMid] = useState("전체");
   const [productSearchQuery, setProductSearchQuery] = useState("");
   const [recentlyViewed, setRecentlyViewed] = useState(() => getRecentlyViewed("korean-hall"));
+
+  // 메인 상품목록(Home.jsx)과 같은 형태 — 찜(하트)·장바구니 담긴 개수 배지·
+  // 로그인 등 유틸 링크 줄을 이 페이지 카드/카테고리 메뉴 위에도 그대로 맞춘다.
+  const [wishlist, setWishlist] = useState([]);
+  const toggleWish = (id) =>
+    setWishlist((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+
+  const [cartCounts, setCartCounts] = useState({});
+  const fetchCartCounts = () => {
+    if (!localStorage.getItem("access_token")) {
+      setCartCounts({});
+      return;
+    }
+    getCartItems()
+      .then((res) =>
+        setCartCounts(
+          res.data.reduce((acc, item) => {
+            acc[item.product_id] = (acc[item.product_id] || 0) + (item.quantity || 1);
+            return acc;
+          }, {})
+        )
+      )
+      .catch(() => setCartCounts({}));
+  };
+  useEffect(() => {
+    fetchCartCounts();
+    window.addEventListener("cartchange", fetchCartCounts);
+    window.addEventListener("authchange", fetchCartCounts);
+    return () => {
+      window.removeEventListener("cartchange", fetchCartCounts);
+      window.removeEventListener("authchange", fetchCartCounts);
+    };
+  }, []);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("access_token"));
+  const { openLogin, openRegister } = useAuthModal();
+  const { openMyPage } = useMyPageModal();
+  const { openNotice } = useNoticeModal();
+  useEffect(() => {
+    const sync = () => setIsLoggedIn(!!localStorage.getItem("access_token"));
+    window.addEventListener("authchange", sync);
+    return () => window.removeEventListener("authchange", sync);
+  }, []);
+  const handleLogout = async () => {
+    const refresh = localStorage.getItem("refresh_token");
+    try {
+      if (refresh) await logoutUser({ refresh });
+    } catch (err) {
+      console.error("logout API failed:", err);
+    }
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("nickname");
+    window.location.replace("/korean-hall");
+  };
 
   // Home.jsx와 동일한 패턴 — 상품 상세 진입/삭제 등으로 다른 곳에서 바뀌면 동기화한다.
   // namespace가 분리돼 있어(recentlyViewedKoreanHall) 메인 페이지 기록과 섞이지 않는다.
@@ -176,6 +235,35 @@ function KoreanHall() {
       </div>
 
       <section className="khGridSection" ref={gridRef}>
+        {/* 29CM류 유틸 링크 — Home.jsx 상품 그리드의 카테고리 메뉴 바로 위 줄과
+            동일한 구성(헤더에도 같은 링크가 있지만, 메인처럼 여기도 노출). */}
+        <div className="khUtilLinks">
+          {isLoggedIn ? (
+            <>
+              <button type="button" onClick={openMyPage}>마이페이지</button>
+              <span aria-hidden="true" className="khUtilDivider">|</span>
+              <button type="button" onClick={handleLogout}>로그아웃</button>
+            </>
+          ) : (
+            <>
+              <button type="button" onClick={openLogin}>로그인</button>
+              <span aria-hidden="true" className="khUtilDivider">|</span>
+              <button type="button" onClick={openRegister}>회원가입</button>
+            </>
+          )}
+          <span aria-hidden="true" className="khUtilDivider">|</span>
+          <button type="button" onClick={() => navigate("/korean-hall/cart")}>
+            장바구니{Object.values(cartCounts).reduce((sum, n) => sum + n, 0) > 0 &&
+              ` (${Object.values(cartCounts).reduce((sum, n) => sum + n, 0)})`}
+          </button>
+          <span aria-hidden="true" className="khUtilDivider">|</span>
+          <button type="button" onClick={() => navigate("/")}>메인 상품</button>
+          <span aria-hidden="true" className="khUtilDivider">|</span>
+          <button type="button" onClick={openNotice}>공지사항</button>
+          <span aria-hidden="true" className="khUtilDivider">|</span>
+          <button type="button" onClick={() => navigate("/customer-center")}>고객센터</button>
+        </div>
+
         <div className="khCategoryMenu">
           <div className="khKeywordWrap">
             <PopularKeywordsSidebar data={KH_POPULAR_KEYWORDS} onSelect={handlePopularKeywordSelect} />
@@ -226,24 +314,57 @@ function KoreanHall() {
         )}
 
         <ul className="khGrid">
-          {filteredProducts.map((product) => (
-            <li key={product.id} className="khCard">
-              <button
-                type="button"
-                className="khCardLink"
-                onClick={() => navigate(`/product/${product.id}`)}
-              >
-                <div className="khImgWrap">
-                  <img src={product.image} alt={product.name} className="khImg" />
+          {filteredProducts.map((product) => {
+            const hasDiscount = product.originalPrice > product.price;
+            const discountPct = hasDiscount
+              ? Math.round((1 - product.price / product.originalPrice) * 100)
+              : 0;
+
+            return (
+              <li key={product.id} className="khCard">
+                {/* 카드 전체가 상세 이동 버튼 역할이라, 안에 찜(하트) 버튼을 따로
+                    두려면 button 안에 button을 못 넣는 제약상 div+role="button"으로 둔다. */}
+                <div
+                  className="khCardLink"
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => navigate(`/product/${product.id}`)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") navigate(`/product/${product.id}`);
+                  }}
+                >
+                  <div className="khImgWrap">
+                    <img src={product.image} alt={product.name} className="khImg" />
+                    {cartCounts[product.id] > 0 && (
+                      <span className="khCartBadge">
+                        <ShoppingBag size={10} />
+                        {cartCounts[product.id]}
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      className={`khWishBtn${wishlist.includes(product.id) ? " khWishActive" : ""}`}
+                      onClick={(e) => { e.stopPropagation(); toggleWish(product.id); }}
+                      aria-label="찜하기"
+                    >
+                      <Heart size={13} fill={wishlist.includes(product.id) ? "currentColor" : "none"} />
+                    </button>
+                  </div>
+                  <div className="khInfo">
+                    <p className="khName">{product.name}</p>
+                    <p className="khProductDesc">{product.desc}</p>
+                    {hasDiscount && (
+                      <div className="khDiscountRow">
+                        <span className="khDiscountBadge">{discountPct}% OFF</span>
+                        <span className="khOriginalPrice">{product.originalPrice.toLocaleString()}원</span>
+                      </div>
+                    )}
+                    <p className="khPrice">{product.price.toLocaleString()}원</p>
+                  </div>
                 </div>
-                <div className="khInfo">
-                  <p className="khName">{product.name}</p>
-                  <p className="khProductDesc">{product.desc}</p>
-                  <p className="khPrice">{product.price.toLocaleString()}원</p>
-                </div>
-              </button>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       </section>
 

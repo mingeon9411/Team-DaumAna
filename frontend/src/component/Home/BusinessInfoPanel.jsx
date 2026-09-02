@@ -9,7 +9,7 @@ const MONO = { fontFamily: "'TwayFly', 'DM Mono', monospace" };
 // 전자상거래 등에서의 소비자보호에 관한 법률 제10조 — 사이버몰 초기화면에 표시해야
 // 하는 사업자 정보. 아직 실제 사업자등록이 없는 학습/포트폴리오 프로젝트라
 // 값은 전부 플레이스홀더 — 실제 값이 정해지면 이 배열만 채우면 된다.
-const BUSINESS_INFO = [
+export const BUSINESS_INFO = [
   ["상호", "집다움(JIPDAUM)"],
   ["대표자", "강민건"],
   ["사업자등록번호", "테스트 개발용"],

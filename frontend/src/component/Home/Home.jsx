@@ -9,6 +9,7 @@ import PhotoReviewUploadModal from "./PhotoReviewUploadModal";
 import RecentlyViewedSidebar from "./RecentlyViewedSidebar";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import BusinessInfoPanel from "./BusinessInfoPanel";
+import ProductListFooter from "./ProductListFooter";
 import { getRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS } from "../../utils/navFlags";
 import { useNestedLenis } from "../../hooks/useNestedLenis";
@@ -1140,6 +1141,8 @@ function Home() {
           })}
         </div>
         )}
+
+        <ProductListFooter />
       </section>
 
       {/* LOOKBOOK */}
