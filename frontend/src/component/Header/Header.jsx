@@ -32,9 +32,12 @@ function Header() {
   const isKoreanHall = location.pathname === "/korean-hall";
   const isItemDetail = location.pathname.startsWith("/item/");
   const isSettingsPage = location.pathname === "/settings";
+  const isCustomerCenterPage = location.pathname === "/customer-center";
   // 스크롤 시 배너가 생기는 효과(::before 반투명→불투명 전환)는 상품목록(홈)·
-  // 상품상세·설정 페이지에만 적용 — showExpandedNav(아래)와는 별개 스타일 관심사.
-  const isProductPage = isHome || isItemDetail || isSettingsPage;
+  // 상품상세·설정·고객센터 페이지에만 적용 — showExpandedNav(아래)와는 별개
+  // 스타일 관심사(고객센터는 나머지 유틸 링크 페이지처럼 내비는 항상 펼쳐져
+  // 있고, 배너만 스크롤에 반응한다).
+  const isProductPage = isHome || isItemDetail || isSettingsPage || isCustomerCenterPage;
 
   // 로그인/장바구니/한국관/공지사항/고객센터 등 유틸 링크와 검색은 왼쪽 사이드바
   // 독이 사라지며 헤더가 유일한 상시 내비게이션이 된 페이지(한국관·장바구니·
@@ -133,16 +136,17 @@ function Header() {
   const showRecentSearches = headerSearchFocused && !headerSearchQuery.trim() && recentSearches.length > 0;
 
   // 한국관(.khPage)·상품상세(.homeDetailPage)·상품목록(#home-products)·설정
-  // (.ssPage)은 전부 Lenis의 가로 스크롤에서 제외된(data-lenis-prevent) 자기만의
-  // 세로 스크롤(overflow-y: auto) 영역이라 window에는 scroll 이벤트가 전혀
-  // 발생하지 않는다 — 그래서 리스너를 window가 아니라 해당 엘리먼트에 따로
-  // 붙여야 하고, "최상단"도 window가 아니라 그 엘리먼트 자신의 scrollTop
-  // 기준으로 판단해야 한다.
+  // (.ssPage)·고객센터(.ccPage)는 전부 Lenis의 가로 스크롤에서 제외된
+  // (data-lenis-prevent) 자기만의 세로 스크롤(overflow-y: auto) 영역이라
+  // window에는 scroll 이벤트가 전혀 발생하지 않는다 — 그래서 리스너를 window가
+  // 아니라 해당 엘리먼트에 따로 붙여야 하고, "최상단"도 window가 아니라 그
+  // 엘리먼트 자신의 scrollTop 기준으로 판단해야 한다.
   useEffect(() => {
     const koreanHallEl = isKoreanHall ? document.querySelector(".khPage") : null;
     const itemDetailEl = isItemDetail ? document.querySelector(".homeDetailPage") : null;
     const productListEl = isHome ? document.querySelector("#home-products") : null;
     const settingsEl = isSettingsPage ? document.querySelector(".ssPage") : null;
+    const customerCenterEl = isCustomerCenterPage ? document.querySelector(".ccPage") : null;
 
     const handleScroll = () => {
       if (isHome) {
@@ -153,6 +157,8 @@ function Header() {
         setScrolled((itemDetailEl?.scrollTop ?? 0) > 50);
       } else if (isSettingsPage) {
         setScrolled((settingsEl?.scrollTop ?? 0) > 50);
+      } else if (isCustomerCenterPage) {
+        setScrolled((customerCenterEl?.scrollTop ?? 0) > 50);
       } else {
         setScrolled(window.scrollX > 50);
       }
@@ -171,6 +177,7 @@ function Header() {
     itemDetailEl?.addEventListener("scroll", handleScroll);
     productListEl?.addEventListener("scroll", handleScroll);
     settingsEl?.addEventListener("scroll", handleScroll);
+    customerCenterEl?.addEventListener("scroll", handleScroll);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -178,8 +185,9 @@ function Header() {
       itemDetailEl?.removeEventListener("scroll", handleScroll);
       productListEl?.removeEventListener("scroll", handleScroll);
       settingsEl?.removeEventListener("scroll", handleScroll);
+      customerCenterEl?.removeEventListener("scroll", handleScroll);
     };
-  }, [isHome, isKoreanHall, isItemDetail, isSettingsPage]);
+  }, [isHome, isKoreanHall, isItemDetail, isSettingsPage, isCustomerCenterPage]);
 
   // 다크모드는 Sidebar가 소유 — body.dark 클래스 변경을 이벤트로 전달받아 일월오봉도만 동기화
   useEffect(() => {
