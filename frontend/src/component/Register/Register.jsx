@@ -1,7 +1,7 @@
 // #회원가입 페이지
 import "./Register.css";
 import "../Login/Login.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { registerUser, checkNicknameAPI } from "../../api";
@@ -17,7 +17,7 @@ const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 function Register() {
   const navigate = useNavigate();
   const recaptchaRef = useRef(null);
-  const { closeAuthPage, openLogin } = useAuthModal();
+  const { openLogin } = useAuthModal();
   const [darkMode, setDarkMode] = useState(
     () => document.body.classList.contains("dark")
   );
@@ -189,9 +189,8 @@ function Register() {
 
   return (
       <section className="registerBox">
-        <button type="button" className="authModalClose" aria-label="닫기" onClick={closeAuthPage}>×</button>
-
-        <div className="loginLogoRow">
+        {/* 독립 페이지라 "닫기(X)"는 없고, 로고를 누르면 홈으로 돌아간다. */}
+        <Link to="/" className="loginLogoRow" aria-label="집다움 홈으로">
           <img src={JDLogo} alt="J.D" className="loginLogoJD" />
           <span className="loginLogoDivider" />
           <img
@@ -199,7 +198,7 @@ function Register() {
             alt="집다움"
             className="loginLogoHanok"
           />
-        </div>
+        </Link>
 
         <h1>회원가입</h1>
         <p className="registerDesc">

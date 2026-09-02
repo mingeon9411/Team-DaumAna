@@ -33,6 +33,10 @@ function Header() {
   const isItemDetail = location.pathname.startsWith("/item/");
   const isSettingsPage = location.pathname === "/settings";
   const isCustomerCenterPage = location.pathname === "/customer-center";
+  // 로그인/회원가입은 이제 모달이 아니라 독립 페이지(/login, /register)라, 사이트
+  // 공용 헤더(검색·로그인/회원가입 링크 등)가 같이 떠 있으면 오히려 모달처럼
+  // 보인다 — 이 두 라우트에서는 헤더 자체를 렌더링하지 않는다.
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
   // 스크롤 시 배너가 생기는 효과(::before 반투명→불투명 전환)는 상품목록(홈)·
   // 상품상세·설정·고객센터 페이지에만 적용 — showExpandedNav(아래)와는 별개
   // 스타일 관심사(고객센터는 나머지 유틸 링크 페이지처럼 내비는 항상 펼쳐져
@@ -216,6 +220,8 @@ function Header() {
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
+
+  if (isAuthPage) return null;
 
   return (
 
