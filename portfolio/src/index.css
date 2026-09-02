@@ -160,6 +160,15 @@ body {
   background: var(--color-accent-soft);
 }
 
+/* "항목/내용" 2열 요약 표(Summary)는 auto 레이아웃이 첫 열 라벨을 단어 단위로
+   쪼개 "가장" / "심각했던 건"처럼 어중간하게 두 줄로 접어버린다 — 라벨은 짧은
+   구(句)라 한 줄로 두는 게 스캔하기 쉽다. 3열 지표 표(위 규칙)와 안 겹치게
+   정확히 2열 표에만 건다. */
+.markdown table:has(thead th:nth-child(2)):not(:has(thead th:nth-child(3))) th:first-child,
+.markdown table:has(thead th:nth-child(2)):not(:has(thead th:nth-child(3))) td:first-child {
+  white-space: nowrap;
+}
+
 /* 지표 표(지표/수정 전/수정 후 3열)는 값 컬럼이 짧아 기본 auto 레이아웃대로
    두면 오른쪽에 빈 여백만 넓게 뜬다 — 값 컬럼만 내용 폭에 맞춰 좁히고
    오른쪽 정렬해 숫자 표답게 정리 (해당 조건에 안 걸리는 2열 요약 표는

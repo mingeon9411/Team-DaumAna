@@ -35,7 +35,7 @@ export default function CaseStudyDetail() {
 
   if (!item) {
     return (
-      <div className="mx-auto max-w-7xl px-6 py-12">
+      <div className="mx-auto max-w-4xl px-6 py-12">
         <p>Not found</p>
         <Link className="underline" to="/case-studies" viewTransition>
           ← Back
@@ -45,7 +45,7 @@ export default function CaseStudyDetail() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-6 py-12">
+    <div className="mx-auto max-w-4xl px-6 py-12">
       <Link className="text-sm underline" style={{ color: "var(--color-muted)" }} to="/case-studies" viewTransition>
         ← Case Studies
       </Link>
