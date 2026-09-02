@@ -248,9 +248,17 @@ body.dark .header.koreanHallHeader::before {
 }
 
 /* 설정(/settings) 진입점 — 왼쪽 사이드바 독을 없애면서, 다크모드·독 스타일
-   같은 화면 설정 토글로 들어가는 유일한 입구가 됐다. 텍스트 링크들 사이에서도
-   바로 눈에 띄도록 아이콘 전용 원형 버튼으로 분리. */
+   같은 화면 설정 토글로 들어가는 유일한 입구가 됐다. headerRight 링크 줄에
+   섞이지 않고 배너(.header, position: fixed) 우상단 모서리에 고정 배지처럼
+   붙인다 — .header 자체가 pointer-events: none이라 이 버튼만 auto로 되돌려야
+   클릭이 먹는다. */
 .headerSettingsBtn {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  z-index: 1001;
+  pointer-events: auto;
+
   display: flex;
   align-items: center;
   justify-content: center;

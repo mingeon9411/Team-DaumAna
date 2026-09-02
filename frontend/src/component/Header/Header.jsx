@@ -344,17 +344,21 @@ function Header() {
           <button type="button" onClick={() => navigate("/customer-center")} className="headerNavLink">고객센터</button>
           <span aria-hidden="true" className="headerNavDivider">|</span>
           <button type="button" onClick={goToBusinessInfo} className="headerNavLink">회사 정보</button>
-          <span aria-hidden="true" className="headerNavDivider">|</span>
-          <button
-            type="button"
-            onClick={() => navigate("/settings")}
-            className="headerSettingsBtn"
-            aria-label="설정"
-            data-tooltip="설정"
-          >
-            <SettingsIcon size={15} />
-          </button>
         </div>
+      )}
+
+      {/* 링크 줄과 같이 흘러가지 않고 배너 우상단 모서리에 고정 — 다른 항목보다
+          한 단 위(코너 배지)로 항상 눈에 띄는 자리를 준다. */}
+      {showExpandedNav && (
+        <button
+          type="button"
+          onClick={() => navigate("/settings")}
+          className="headerSettingsBtn"
+          aria-label="설정"
+          data-tooltip="설정"
+        >
+          <SettingsIcon size={15} />
+        </button>
       )}
     </header>
   );
