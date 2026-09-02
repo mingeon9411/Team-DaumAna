@@ -1,16 +1,8 @@
 import "./DoorIntro.css";
 import { useEffect, useMemo, useState } from "react";
 import JDLogo from "../../assets/J.D 로고.svg";
-// 문 양쪽에 서로 다른 인테리어 사진을 얹는다 — 메인은 상품 이미지 배너 사진,
-// 한국관은 실제 한옥 문·궁중풍 거실 톤으로 테마에 맞춰 다른 사진을 쓴다.
-import doorPhotoHolo from "../../assets/scenes/product-banner-bedroom.jpg";
-import doorPhotoHanjiLeft from "../../assets/scenes/hanok-bedroom-doorway.jpg";
-import doorPhotoHanjiRight from "../../assets/scenes/korean-royal-modern-interior.jpg";
 
 function DoorIntro({ logoLight = JDLogo, logoDark = JDLogo, lightEffect = "petals", theme = "holo" }) {
-  const [doorPhotoLeft, doorPhotoRight] =
-    theme === "hanji" ? [doorPhotoHanjiLeft, doorPhotoHanjiRight] : [doorPhotoHolo, doorPhotoHolo];
-
   const [darkMode, setDarkMode] = useState(
     () => document.body.classList.contains("dark")
   );
@@ -73,11 +65,6 @@ function DoorIntro({ logoLight = JDLogo, logoDark = JDLogo, lightEffect = "petal
           ))}
         </div>
       )}
-
-      {/* 실제로 두 짝의 문이 갈라져 열리는 연출 — 컴포넌트 이름값을 하게 만든다.
-          사진은 CSS 변수로 넘겨서 틴트/테마 그라디언트는 CSS가 계속 관장하게 한다. */}
-      <div className="doorPanel doorPanelLeft" style={{ "--door-photo": `url(${doorPhotoLeft})` }} />
-      <div className="doorPanel doorPanelRight" style={{ "--door-photo": `url(${doorPhotoRight})` }} />
 
       <div className="introLogo">
         <img src={darkMode ? logoDark : logoLight} alt="집다움" />

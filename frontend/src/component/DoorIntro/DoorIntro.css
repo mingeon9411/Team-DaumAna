@@ -40,57 +40,6 @@
   100% { background-position: 100% 70%; }
 }
 
-/* 실제로 갈라져 열리는 두 짝의 문 — 안개/로고가 서서히 드러나는 것보다 먼저,
-   문이 열리는 순간의 무게감을 준다. 로고는 이 문이 다 열릴 즈음(약 1.6s)
-   fade-in을 시작하도록 이미 타이밍이 맞아 떨어져 있음(logoFade 20% ≈ 1.5s). */
-.doorPanel {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 50%;
-  z-index: 10000;
-  /* 맨 아래 레이어(사진)는 JSX가 --door-photo로 넘겨준다 — 양쪽 문에 서로
-     다른 인테리어 사진을 깔고, 그 위에 밝은 펄 실버 톤을 반투명하게 얹어
-     "사진이 비치는 문짝" 느낌을 낸다(어두운 금속 톤 대신 밝게). */
-  background-image:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 32%),
-    linear-gradient(160deg, rgba(244, 245, 246, 0.55) 0%, rgba(217, 219, 222, 0.4) 45%, rgba(196, 200, 206, 0.55) 100%),
-    var(--door-photo, none);
-  background-size: auto, auto, cover;
-  background-position: center, center, center;
-  background-repeat: no-repeat;
-}
-.doorPanelLeft {
-  left: 0;
-  border-right: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 8px 0 32px rgba(120, 110, 90, 0.18);
-  animation: doorOpenLeft 1.7s cubic-bezier(0.76, 0, 0.24, 1) forwards;
-}
-.doorPanelRight {
-  right: 0;
-  border-left: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: -8px 0 32px rgba(120, 110, 90, 0.18);
-  animation: doorOpenRight 1.7s cubic-bezier(0.76, 0, 0.24, 1) forwards;
-}
-@keyframes doorOpenLeft {
-  0%, 16% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-@keyframes doorOpenRight {
-  0%, 16% { transform: translateX(0); }
-  100% { transform: translateX(100%); }
-}
-
-/* 한국관 — 문은 밝은 한지/원목 톤으로(어두운 월넛 대신) */
-.doorIntro.hanji:not(.dark) .doorPanel {
-  background-image:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 32%),
-    linear-gradient(160deg, rgba(243, 234, 210, 0.6) 0%, rgba(232, 220, 184, 0.48) 55%, rgba(211, 192, 146, 0.62) 100%),
-    var(--door-photo, none);
-  background-size: auto, auto, cover;
-  background-position: center, center, center;
-}
-
 /* 한국관 — 라이트모드에서만 홀로그램 대신 한지 질감 배경 (다크모드는 기존 홀로그램 유지) */
 .doorIntro.hanji:not(.dark) {
   background:
