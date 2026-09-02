@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { X, Clock, ChevronDown, Trash2 } from "lucide-react";
 import { removeRecentlyViewed, clearRecentlyViewed } from "../../utils/recentlyViewed";
@@ -24,6 +24,21 @@ function RecentlyViewedSidebar({
   variant = "default",
 }) {
   const navigate = useNavigate();
+
+  // 이름/가격 툴팁의 위치 기준(dock 자신의 좌표)과 현재 hover 중인 아이템.
+  // .recentDockItems가 접기/펼치기 애니메이션 때문에 overflow:hidden이라
+  // 툴팁을 그 안(items 배열 map 안)에 두면 옆으로 튀어나오는 부분이 잘려서
+  // 안 보인다 — 그래서 툴팁 하나만 .recentDockItems 바깥(형제)에 두고,
+  // hover된 아이템의 화면 좌표를 읽어 세로 위치만 맞춰서 띄운다.
+  const dockRef = useRef(null);
+  const [tooltip, setTooltip] = useState(null); // { item, top } | null
+
+  const handleItemEnter = (item, e) => {
+    const itemRect = e.currentTarget.getBoundingClientRect();
+    const dockRect = dockRef.current.getBoundingClientRect();
+    setTooltip({ item, top: itemRect.top - dockRect.top + itemRect.height / 2 });
+  };
+  const handleItemLeave = () => setTooltip(null);
 
   // 하단 독바(Sidebar)와 같은 glass/메탈릭/파스텔 스타일을 공유한다.
   const { railStyle, styleSwitching } = useRailStyle();
@@ -60,16 +75,19 @@ function RecentlyViewedSidebar({
   const handleRemove = (e, id) => {
     e.stopPropagation();
     removeRecentlyViewed(id, namespace);
+    setTooltip(null); // 삭제된 아이템이 hover 중이던 채로 사라지면 툴팁이 남는 것 방지
     onChange();
   };
 
   const handleClear = () => {
     clearRecentlyViewed(namespace);
+    setTooltip(null);
     onChange();
   };
 
   return (
     <div
+      ref={dockRef}
       // right-[22px]는 임의값이 아니라 하단 우측의 railTopBtnWrap--cross(십자
       // 패드, Sidebar.css: right 20px + padding 5px + border 1.5px + 콘텐츠
       // 66px → 폭 79px)와 가로 중심이 맞도록 역산한 값 — 이 독(폭 75px)의
@@ -97,7 +115,12 @@ function RecentlyViewedSidebar({
 
       <div className="recentDockItems flex flex-col items-center gap-2 w-full">
         {visible.map((item) => (
-          <div key={item.id} className="relative group">
+          <div
+            key={item.id}
+            className="relative group"
+            onMouseEnter={(e) => handleItemEnter(item, e)}
+            onMouseLeave={handleItemLeave}
+          >
             <button
               type="button"
               onClick={() => navigate(`${detailBasePath}/${item.id}`)}
@@ -106,12 +129,6 @@ function RecentlyViewedSidebar({
             >
               <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
             </button>
-
-            {/* 왼쪽으로 뜨는 이름/가격 툴팁 */}
-            <div className="pointer-events-none absolute right-full top-1/2 -translate-y-1/2 mr-2.5 whitespace-nowrap px-2.5 py-1 rounded-lg bg-foreground text-background text-[11px] opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
-              <p style={SANS}>{item.name}</p>
-              <p className="text-background/70" style={MONO}>₩{item.price.toLocaleString()}</p>
-            </div>
 
             <button
               type="button"
@@ -137,6 +154,18 @@ function RecentlyViewedSidebar({
           <Trash2 size={11} />
         </button>
       </div>
+
+      {/* 이름/가격 툴팁 — .recentDockItems의 overflow:hidden(접기 애니메이션용) 밖에
+          형제로 둬서 잘리지 않게 하고, hover된 아이템의 세로 위치만 따라간다. */}
+      {tooltip && (
+        <div
+          className="pointer-events-none absolute right-full mr-2.5 whitespace-nowrap px-2.5 py-1 rounded-lg bg-foreground text-background text-[11px] shadow-lg"
+          style={{ top: tooltip.top, transform: "translateY(-50%)" }}
+        >
+          <p style={SANS}>{tooltip.item.name}</p>
+          <p className="text-background/70" style={MONO}>₩{tooltip.item.price.toLocaleString()}</p>
+        </div>
+      )}
     </div>
   );
 }
