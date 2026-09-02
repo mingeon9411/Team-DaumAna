@@ -88,18 +88,20 @@ function RecentlyViewedSidebar({
   return (
     <div
       ref={dockRef}
-      // right-[22px]는 임의값이 아니라 하단 우측의 railTopBtnWrap--cross(십자
-      // 패드, Sidebar.css: right 20px + padding 5px + border 1.5px + 콘텐츠
-      // 66px → 폭 79px)와 가로 중심이 맞도록 역산한 값 — 이 독(폭 75px)의
-      // 중심도 화면 오른쪽 끝에서 약 59.5px이 되게 맞춘다. 둘 중 하나 폭이
-      // 바뀌면 다시 계산해야 한다.
+      // 십자 패드(Sidebar.css .railTopBtnWrap--cross)와 폭·중심을 맞춘 값 —
+      // "십자 버튼을 최근 본 상품 독 크기에 맞춰달라"는 요청으로 그쪽 폭을
+      // 이 독(썸네일 56px + padding 16px + border ≈ 74px)에 맞춰 줄였고,
+      // right 오프셋은 반대로 여기서 그 폭에 맞춰 역산했다. 십자 패드는
+      // right:20px + 폭 72px → 중심이 화면 오른쪽 끝에서 56px, 이 독(폭
+      // 74px)도 같은 중심이 되려면 right = 56 - 74/2 = 19px. 둘 중 하나
+      // 폭이 바뀌면 이 값도 다시 계산해야 한다.
       //
       // top은 반대로 고정값을 안 쓴다 — Header.jsx가 fixed+height:auto라 상태에
       // 따라 실제 높이가 바뀌는데(검색창 포커스로 최근 검색어가 펼쳐질 때 등),
       // "top-32(128px)" 같은 어림값은 헤더가 그보다 조금만 더 자라도 이 독의
       // 윗부분이 z-index 더 높은 헤더 배너에 가려 안 보이는 원인이었다.
       // Header.jsx가 ResizeObserver로 공개하는 --header-h를 그대로 따라간다.
-      className={`recentDock railStyle-${railStyle} ${variant === "korean-hall" ? "recentDockKoreanHall" : ""} ${styleSwitching ? "styleSwitching" : ""} ${collapsed ? "collapsed" : ""} fixed right-[22px] z-40 flex flex-col items-center ${collapsed ? "gap-0" : "gap-2"} p-2 rounded-[18px]`}
+      className={`recentDock railStyle-${railStyle} ${variant === "korean-hall" ? "recentDockKoreanHall" : ""} ${styleSwitching ? "styleSwitching" : ""} ${collapsed ? "collapsed" : ""} fixed right-[19px] z-40 flex flex-col items-center ${collapsed ? "gap-0" : "gap-2"} p-2 rounded-[18px]`}
       style={{ top: "calc(var(--header-h, 128px) + 8px)" }}
       data-lenis-prevent
     >

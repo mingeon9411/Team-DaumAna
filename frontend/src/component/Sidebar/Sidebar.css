@@ -954,28 +954,29 @@ body.dark .sidebarRail.koreanHallRail .railBtn::after {
 
 /* 맨 위로/맨 아래로/이전/다음 4버튼 십자(+) 패드 — 캡슐이 아니라 좁은 사각형
    안에 3x3 그리드로 배치하고 가운데·네 모서리 칸은 비워서 "+" 모양만 남긴다.
-   요청대로 아주 작게(버튼 20px) 잡는다 — RecentlyViewedSidebar.jsx의 right
-   오프셋(22px)이 이 패드의 실제 폭(66px 콘텐츠 + padding 10px + border 3px
-   = 79px)을 기준으로 역산돼 있으니, 이 크기를 바꾸면 그쪽 주석의 계산도 같이
-   맞춰야 한다. */
+   전체 폭을 RecentlyViewedSidebar.jsx의 "최근 본 상품" 독(썸네일 56px +
+   padding 16px + border ≈ 74px)과 같게 맞춘다 — 버튼 18px 기준 콘텐츠
+   54px + padding 10px + border 3px = 67px에 gap 6px을 더해 74px에 맞춤.
+   RecentlyViewedSidebar.jsx의 right 오프셋(22px)이 이 폭을 기준으로
+   역산돼 있으니, 이 크기를 바꾸면 그쪽 주석의 계산도 같이 맞춰야 한다. */
 .railTopBtnWrap--cross {
   display: grid;
-  grid-template-columns: repeat(3, 20px);
-  grid-template-rows: repeat(3, 20px);
+  grid-template-columns: repeat(3, 18px);
+  grid-template-rows: repeat(3, 18px);
   gap: 3px;
   padding: 5px;
   border-radius: 16px;
 }
 
 .railTopBtnWrap--cross .railBtn {
-  width: 20px;
-  height: 20px;
-  font-size: 11px;
+  width: 18px;
+  height: 18px;
+  font-size: 10px;
 }
 
 .railTopBtnWrap--cross .railBtn svg {
-  width: 11px;
-  height: 11px;
+  width: 10px;
+  height: 10px;
 }
 
 .railBtnUp { grid-column: 2; grid-row: 1; }
