@@ -11,6 +11,7 @@ import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import BusinessInfoPanel from "./BusinessInfoPanel";
 import { getRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS } from "../../utils/navFlags";
+import { useNestedLenis } from "../../hooks/useNestedLenis";
 import { useNoticeModal } from "../../context/NoticeModalContext";
 import rugB from "../../assets/products/(러그) 북유럽풍 러그 B형.jpg";
 import woodMoodLamp from "../../assets/products/(무드등) 우드 롱 무드등.jpg";
@@ -452,6 +453,12 @@ function Home() {
   const introVideo4Ref = useRef(null);
   const [introVideo4Ended, setIntroVideo4Ended] = useState(false);
   const introVideo4Started = useRef(false);
+
+  // #home-products는 App.jsx의 가로 Lenis를 안 타는 패널이라(data-lenis-prevent)
+  // 기본값이 네이티브 스크롤이다 — 나머지 사이트와 같은 부드러운 관성 스크롤을
+  // 주기 위해 이 패널 하나에만 스코프된 두 번째 Lenis를 붙인다.
+  const productGridRef = useRef(null);
+  useNestedLenis(productGridRef);
 
   useEffect(() => {
     const el = document.getElementById("home-essay-4");
@@ -912,6 +919,7 @@ function Home() {
       {/* PRODUCT GRID */}
       <section
         id="home-products"
+        ref={productGridRef}
         data-hsnap
         data-lenis-prevent
         onWheel={(e) => e.stopPropagation()}
