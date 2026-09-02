@@ -344,6 +344,7 @@ function Header() {
           <button type="button" onClick={() => navigate("/customer-center")} className="headerNavLink">고객센터</button>
           <span aria-hidden="true" className="headerNavDivider">|</span>
           <button type="button" onClick={goToBusinessInfo} className="headerNavLink">회사 정보</button>
+          <span aria-hidden="true" className="headerNavDivider">|</span>
           <button
             type="button"
             onClick={() => navigate("/settings")}
