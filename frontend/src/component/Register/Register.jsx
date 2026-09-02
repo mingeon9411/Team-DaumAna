@@ -10,13 +10,14 @@ import JDLogo from "../../assets/J.D 로고.svg";
 // -sm: 48px로만 쓰여서 원본(1015x600, 750KB) 대신 축소본을 쓴다.
 import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
 import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent-sm.png";
+import { TERMS_OF_SERVICE, PRIVACY_POLICY } from "../../data/legalContent";
 
 const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 
 function Register() {
   const navigate = useNavigate();
   const recaptchaRef = useRef(null);
-  const { close, openLogin } = useAuthModal();
+  const { closeAuthPage, openLogin } = useAuthModal();
   const [darkMode, setDarkMode] = useState(
     () => document.body.classList.contains("dark")
   );
@@ -49,6 +50,9 @@ function Register() {
   const [nicknameChecked, setNicknameChecked] = useState(false);
   const [termsAgree, setTermsAgree] = useState(false);
   const [privacyAgree, setPrivacyAgree] = useState(false);
+  const [ageConfirm, setAgeConfirm] = useState(false);
+  const [ageConfirmError, setAgeConfirmError] = useState("");
+  const [marketingAgree, setMarketingAgree] = useState(false);
 
   const checkNickname = async () => {
     if (!nickname) {
@@ -127,6 +131,13 @@ function Register() {
       setAgreeError("");
     }
 
+    if (!ageConfirm) {
+      setAgeConfirmError("만 14세 이상만 가입할 수 있습니다.");
+      isValid = false;
+    } else {
+      setAgeConfirmError("");
+    }
+
     if (!isValid) return;
 
     setCaptchaError("");
@@ -145,7 +156,6 @@ function Register() {
         recaptcha_token: token,
       });
       localStorage.setItem("nickname", nickname);
-      close();
       navigate("/welcome");
     } catch (err) {
       const data = err.response?.data;
@@ -179,7 +189,7 @@ function Register() {
 
   return (
       <section className="registerBox">
-        <button type="button" className="authModalClose" aria-label="닫기" onClick={close}>×</button>
+        <button type="button" className="authModalClose" aria-label="닫기" onClick={closeAuthPage}>×</button>
 
         <div className="loginLogoRow">
           <img src={JDLogo} alt="J.D" className="loginLogoJD" />
@@ -273,18 +283,14 @@ function Register() {
           {showTerms && (
             <div className="termsBox" data-lenis-prevent>
               <h4>이용약관</h4>
-              <p>
-                집다움은 회원에게 한국적인 라이프스타일 큐레이션 서비스를
-                제공합니다. 회원은 서비스 이용 시 관련 법령 및 본 약관을
-                준수해야 합니다.
-              </p>
+              {TERMS_OF_SERVICE.map((paragraph, i) => (
+                <p key={i}>{paragraph}</p>
+              ))}
 
               <h4>개인정보 처리방침</h4>
-              <p>
-                집다움은 회원가입, 서비스 제공 및 고객 문의 응대를 위해 이메일,
-                닉네임 등의 개인정보를 수집합니다. 수집된 정보는 서비스 제공
-                목적 외에는 사용되지 않습니다.
-              </p>
+              {PRIVACY_POLICY.map((paragraph, i) => (
+                <p key={i}>{paragraph}</p>
+              ))}
             </div>
           )}
 
@@ -308,6 +314,25 @@ function Register() {
             </label>
 
             {agreeError && <p className="errorText">{agreeError}</p>}
+
+            <label className="agreeCheck">
+              <input
+                type="checkbox"
+                checked={ageConfirm}
+                onChange={(e) => setAgeConfirm(e.target.checked)}
+              />
+              만 14세 이상입니다 (필수)
+            </label>
+            {ageConfirmError && <p className="errorText">{ageConfirmError}</p>}
+
+            <label className="agreeCheck">
+              <input
+                type="checkbox"
+                checked={marketingAgree}
+                onChange={(e) => setMarketingAgree(e.target.checked)}
+              />
+              이벤트·혜택 정보 수신에 동의합니다 (선택)
+            </label>
           </div>
 
           <HCaptcha

@@ -63,8 +63,9 @@ const handle401 = async (error) => {
   if (!refreshToken) {
     isRefreshing = false;
     localStorage.removeItem('access_token');
-    sessionStorage.setItem('open_login_modal', '1');
-    window.location.href = '/';
+    // 로그인이 독립 페이지(/login)로 바뀌기 전엔 "/"로 보낸 뒤 sessionStorage
+    // 플래그로 모달을 다시 띄웠다 — 이제 /login이 실제 라우트라 곧장 보내면 된다.
+    window.location.href = '/login';
     return Promise.reject(error);
   }
 
@@ -82,8 +83,7 @@ const handle401 = async (error) => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('nickname');
-    sessionStorage.setItem('open_login_modal', '1');
-    window.location.href = '/';
+    window.location.href = '/login';
     return Promise.reject(error);
   } finally {
     isRefreshing = false;

@@ -1,7 +1,8 @@
-/* 로그인 뷰일 때는 상위 오버레이 패널(.authModalPanel)의 위→아래 페이드도
-   .loginBox의 좌우 슬라이드와 같은 방향으로 맞춰, 사이드바처럼 옆에서
-   깔끔하게 열리는 느낌을 준다 */
-.authModalPanel:has(> .loginBox) {
+/* 로그인 뷰일 때는 상위 패널(.authModalPanel — 예전 모달 / .authPagePanel —
+   지금의 /login 페이지)의 위→아래 페이드도 .loginBox의 좌우 슬라이드와 같은
+   방향으로 맞춰, 사이드바처럼 옆에서 깔끔하게 열리는 느낌을 준다 */
+.authModalPanel:has(> .loginBox),
+.authPagePanel:has(> .loginBox) {
   animation: loginSlideIn 2.6s ease;
 }
 

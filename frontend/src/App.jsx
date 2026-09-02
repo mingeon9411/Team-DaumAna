@@ -28,6 +28,7 @@ import Checkout from "./component/Checkout/Checkout";
 import CheckoutKoreanHall from "./component/Checkout/CheckoutKoreanHall";
 import OrderComplete from "./component/OrderComplete/OrderComplete";
 import AuthModal from "./component/AuthModal/AuthModal";
+import AuthPage from "./component/AuthModal/AuthPage";
 import { AuthModalProvider } from "./context/AuthModalContext";
 import { MyPageModalProvider } from "./context/MyPageModalContext";
 import { NoticeModalProvider } from "./context/NoticeModalContext";
@@ -208,6 +209,8 @@ function App() {
         <Route path="/korean-hall" element={<KoreanHall />} />
         <Route path="/customer-center" element={<CustomerCenter />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/login" element={<AuthPage />} />
+        <Route path="/register" element={<AuthPage />} />
 
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/item/:id" element={<HomeProductDetail />} />

@@ -23,7 +23,7 @@ function Login() {
   // 한국관 스코프에서 뜬 로그인창은 독바 스타일 프리셋 대신 한지 톤 + 오색띠 테두리로 고정
   const isKoreanHall = pathname.startsWith("/korean-hall");
   const recaptchaRef = useRef(null);
-  const { close, openRegister, openFindId, openFindPassword } = useAuthModal();
+  const { closeAuthPage, openRegister, openFindId, openFindPassword } = useAuthModal();
   const [darkMode, setDarkMode] = useState(
     () => document.body.classList.contains("dark")
   );
@@ -120,7 +120,6 @@ function Login() {
       sessionStorage.setItem("pending_access_token", res.data.access);
       sessionStorage.setItem("pending_refresh_token", res.data.refresh);
       sessionStorage.setItem("pending_nickname", res.data.user.nickname);
-      close();
       navigate("/email-verify");
     } catch (err) {
       const msg = err.response?.data?.error || "로그인에 실패했습니다. 다시 시도해주세요.";
@@ -144,7 +143,7 @@ function Login() {
 
   return (
       <section className={`loginBox railStyle-${railStyle} ${styleSwitching ? "styleSwitching" : ""} ${isKoreanHall ? "koreanHallLogin" : ""}`}>
-        <button type="button" className="authModalClose" aria-label="닫기" onClick={close}>×</button>
+        <button type="button" className="authModalClose" aria-label="닫기" onClick={closeAuthPage}>×</button>
         <div className="loginLogoRow">
           <img src={JDLogo} alt="J.D" className="loginLogoJD" />
           <span className="loginLogoDivider" />
