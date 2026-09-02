@@ -47,9 +47,10 @@ body.dark {
   pointer-events: none;
 }
 
-/* 상품목록(홈 "/")·상품상세("/item") 페이지 한정 — 맨 위에서는 투명, 스크롤이
-   내려가면 로고 뒤로 배너 배경이 생긴다. 페이지 배경과 동일한 var(--background)를
-   그대로 써서(불투명) 라이트/다크 모두 실제 콘텐츠 톤과 어긋나지 않게 한다. */
+/* 상품목록(홈 "/")·상품상세("/item")·설정("/settings") 페이지 한정 — 맨 위에서는
+   투명, 스크롤이 내려가면 로고 뒤로 배너 배경이 생긴다. 페이지 배경과 동일한
+   var(--background)를 그대로 써서(불투명) 라이트/다크 모두 실제 콘텐츠 톤과
+   어긋나지 않게 한다. */
 .header.productPageHeader::before {
   content: "";
   position: absolute;
@@ -68,11 +69,12 @@ body.dark {
   transform: translateY(0);
 }
 
-/* 상품목록(홈)·상품상세 배너 공통 — 상품목록 페이지 배경이 var(--background)가
+/* 상품목록(홈)·상품상세·설정 배너 공통 — 상품목록 페이지 배경이 var(--background)가
    아니라 파스텔 그러데이션(Home.css .metallicSilver)이라, 배너도 같은 그러데이션·
    같은 애니메이션을 그대로 가져와 색이 어긋나지 않게 한다. 상품상세 페이지 배경은
    여전히 흰색/var(--background) 그대로지만, 배너는 목록 페이지와 똑같이 보이도록
-   맞춘다(요청: 상세페이지 배너도 목록 페이지 배너와 동일하게). 진하기(deep/medium/
+   맞춘다(요청: 상세페이지 배너도 목록 페이지 배너와 동일하게). 설정 페이지는 실제로
+   같은 .metallicSilver 배경을 쓰므로 자연스럽게 맞아떨어진다. 진하기(deep/medium/
    light)는 독의 "배경 톤" 설정(body[data-pastel])을 .metallicSilver와 동일하게 따라간다. */
 .header.homePageHeader::before {
   background: linear-gradient(
