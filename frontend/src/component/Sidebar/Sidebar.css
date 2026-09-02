@@ -952,26 +952,54 @@ body.dark .sidebarRail.koreanHallRail .railBtn::after {
   transition: background-color 2.8s ease, border-color 2.1s ease;
 }
 
-/* 맨 위로+맨 아래로 버튼 쌍 — 위 캡슐에 버튼 하나가 더 들어가는 변형이라
-   세로로 쌓기만 하면 된다(가로 폭은 그대로 railBtn 하나 크기). */
-.railTopBtnWrap--pair {
-  flex-direction: column;
-  gap: 6px;
+/* 맨 위로/맨 아래로/이전/다음 4버튼 십자(+) 패드 — 캡슐이 아니라 좁은 사각형
+   안에 3x3 그리드로 배치하고 가운데·네 모서리 칸은 비워서 "+" 모양만 남긴다.
+   요청대로 아주 작게(버튼 20px) 잡는다 — RecentlyViewedSidebar.jsx의 right
+   오프셋(22px)이 이 패드의 실제 폭(66px 콘텐츠 + padding 10px + border 3px
+   = 79px)을 기준으로 역산돼 있으니, 이 크기를 바꾸면 그쪽 주석의 계산도 같이
+   맞춰야 한다. */
+.railTopBtnWrap--cross {
+  display: grid;
+  grid-template-columns: repeat(3, 20px);
+  grid-template-rows: repeat(3, 20px);
+  gap: 3px;
+  padding: 5px;
+  border-radius: 16px;
 }
 
-/* 두 버튼이 세로로 붙어있어 기본 툴팁 방향(버튼 위쪽)을 그대로 쓰면 아래 버튼의
-   툴팁이 바로 위 버튼을 덮어버린다 — 왼쪽 세로 독(.sidebarRail)과 같은 패턴으로
-   옆(왼쪽)에 뜨게 방향만 바꾼다. */
-.railTopBtnWrap--pair .railBtn::after {
-  left: auto;
-  right: calc(100% + 12px);
-  top: 50%;
+.railTopBtnWrap--cross .railBtn {
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+}
+
+.railTopBtnWrap--cross .railBtn svg {
+  width: 11px;
+  height: 11px;
+}
+
+.railBtnUp { grid-column: 2; grid-row: 1; }
+.railBtnLeft { grid-column: 1; grid-row: 2; }
+.railBtnRight { grid-column: 3; grid-row: 2; }
+.railBtnDown { grid-column: 2; grid-row: 3; }
+
+/* 4버튼이 좁은 십자 모양으로 촘촘히 붙어있어, 기본 툴팁 방향(버튼 위쪽)을
+   그대로 쓰면 아래/좌/우 버튼 툴팁이 위 버튼과 겹친다. 맨 위로 버튼만 원래대로
+   위쪽에 띄우고(.railTopBtnWrap .railBtn::after 기본 규칙 그대로 적용), 나머지
+   세 방향은 패드 아래쪽으로 통일한다. */
+.railTopBtnWrap--cross .railBtnDown::after,
+.railTopBtnWrap--cross .railBtnLeft::after,
+.railTopBtnWrap--cross .railBtnRight::after {
+  left: 50%;
+  top: calc(100% + 8px);
   bottom: auto;
-  transform: translateY(-50%) translateX(4px);
+  transform: translateX(-50%) translateY(-4px);
 }
 
-.railTopBtnWrap--pair .railBtn:hover::after {
-  transform: translateY(-50%) translateX(0);
+.railTopBtnWrap--cross .railBtnDown:hover::after,
+.railTopBtnWrap--cross .railBtnLeft:hover::after,
+.railTopBtnWrap--cross .railBtnRight:hover::after {
+  transform: translateX(-50%) translateY(0);
 }
 
 /* 좁은 화면: 여백만 살짝 축소 */
