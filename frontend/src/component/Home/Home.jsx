@@ -357,11 +357,13 @@ function Home() {
       window.removeEventListener("authchange", fetchCartCounts);
     };
   }, []);
-  // 인트로 영상 — 도어인트로가 끝나기 전엔 재생하지 않는다. 그 뒤로는 이 페이지에
-  // 들어올 때마다(스크롤로 다시 돌아와도) 처음부터 재생하고, 끝나면 소파 사진으로 전환한다.
+  // 인트로 영상 — 도어인트로가 끝나기 전엔 재생하지 않는다. 페이지에 들어와 처음
+  // 화면에 잡힐 때 딱 한 번만 재생하고, 끝나면 소파 사진으로 전환한 채 고정된다.
+  // 이후 스크롤로 다시 돌아와도 재생하지 않는다(패널3·4와 동일한 패턴).
   const introVideoRef = useRef(null);
   const [introVideoEnded, setIntroVideoEnded] = useState(false);
   const [doorIntroDone, setDoorIntroDone] = useState(false);
+  const introVideoStarted = useRef(false);
 
   useEffect(() => {
     const onDoorIntroEnd = () => setDoorIntroDone(true);
@@ -375,17 +377,14 @@ function Home() {
 
     const io = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          if (!doorIntroDone) return;
-          setIntroVideoEnded(false);
-          const v = introVideoRef.current;
-          if (v) {
-            v.currentTime = 0;
-            v.play().catch(() => {});
-          }
-        } else {
-          setIntroVideoEnded(false);
+        if (!entry.isIntersecting || !doorIntroDone || introVideoStarted.current) return;
+        introVideoStarted.current = true;
+        const v = introVideoRef.current;
+        if (v) {
+          v.currentTime = 0;
+          v.play().catch(() => {});
         }
+        io.disconnect();
       },
       { threshold: 0.5 }
     );
@@ -395,9 +394,11 @@ function Home() {
   }, [doorIntroDone]);
 
   // 두 번째(복제) 페이지 — 영상 없이 소파 사진에 켄 번즈 확대 연출만 준다. 페이지에
-  // 들어올 때마다 연출을 처음부터 다시 보여준 뒤, 눈에 들어올 시간이 지나면 에세이를 펼친다.
+  // 처음 들어와 화면에 잡힐 때 딱 한 번만 연출을 보여준 뒤, 눈에 들어올 시간이
+  // 지나면 에세이를 펼친다. 이후 스크롤로 다시 돌아와도 재생하지 않는다.
   const [introVideo2Ended, setIntroVideo2Ended] = useState(false);
   const [essay2PlayKey, setEssay2PlayKey] = useState(0);
+  const introVideo2Started = useRef(false);
 
   useEffect(() => {
     const el = document.getElementById("home-essay-2");
@@ -406,14 +407,11 @@ function Home() {
     let revealTimer;
     const io = new IntersectionObserver(
       ([entry]) => {
-        clearTimeout(revealTimer);
-        if (entry.isIntersecting) {
-          setIntroVideo2Ended(false);
-          setEssay2PlayKey((k) => k + 1);
-          revealTimer = setTimeout(() => setIntroVideo2Ended(true), 3000);
-        } else {
-          setIntroVideo2Ended(false);
-        }
+        if (!entry.isIntersecting || introVideo2Started.current) return;
+        introVideo2Started.current = true;
+        setEssay2PlayKey((k) => k + 1);
+        revealTimer = setTimeout(() => setIntroVideo2Ended(true), 3000);
+        io.disconnect();
       },
       { threshold: 0.5 }
     );
