@@ -188,50 +188,76 @@
 
 **🎨 Frontend**
 
-[![](https://skillicons.dev/icons?i=react,vite)](https://skillicons.dev)
-<br/>
-![React Router](https://img.shields.io/badge/React_Router-CA4245?style=flat-square&logo=reactrouter&logoColor=white)
-![Axios](https://img.shields.io/badge/Axios-5A29E4?style=flat-square&logo=axios&logoColor=white)
-![hCaptcha](https://img.shields.io/badge/hCaptcha-006BFF?style=flat-square&logoColor=white)
+| | 기술 | 설명 |
+|---|---|---|
+| ![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black) | React 19 | 컴포넌트 기반 SPA UI |
+| ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white) | Vite | 개발 서버 · 번들러 (HMR) |
+| ![React Router](https://img.shields.io/badge/React_Router-CA4245?style=flat-square&logo=reactrouter&logoColor=white) | React Router | 클라이언트 라우팅(SPA 페이지 전환) |
+| ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=flat-square&logo=axios&logoColor=white) | Axios | Django · Spring Boot API 호출 |
+| ![Lenis](https://img.shields.io/badge/Lenis-111111?style=flat-square&logoColor=white) | Lenis | 스무스 스크롤(전역 휠 이벤트 인터셉트) |
 
 <br/>
 
 **🛠 Backend**
 
-[![](https://skillicons.dev/icons?i=python,django,spring,java)](https://skillicons.dev)
+| | 기술 | 설명 |
+|---|---|---|
+| ![Django](https://img.shields.io/badge/Django-092E20?style=flat-square&logo=django&logoColor=white) | Django | 관리자 화면(admin) · JWT 인증 · 상품/카테고리/리뷰 조회 API |
+| ![DRF](https://img.shields.io/badge/DRF-ff1709?style=flat-square&logo=django&logoColor=white) | Django REST Framework | Django 쪽 REST API |
+| ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white) | Spring Boot | 장바구니 · 주문 · 결제 · 쿠폰 · 소셜로그인 · 챗봇 전담(별도 저장소 `jipdaum-spring`) |
+| ![Spring Security](https://img.shields.io/badge/Spring_Security-6DB33F?style=flat-square&logo=springsecurity&logoColor=white) | Spring Security | OAuth2 클라이언트, 인증/인가 필터 체인 |
+| ![Spring Data JPA](https://img.shields.io/badge/Spring_Data_JPA-6DB33F?style=flat-square&logo=spring&logoColor=white) | Spring Data JPA | 엔티티 매핑, 원자적 조건부 UPDATE 쿼리(재고 · 쿠폰 동시성 제어) |
+| ![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=jsonwebtokens&logoColor=white) | JWT | Django · Spring Boot가 secret을 공유해 단일 토큰으로 양쪽 인증 |
+
 <br/>
-![DRF](https://img.shields.io/badge/DRF-ff1709?style=flat-square&logo=django&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=jsonwebtokens&logoColor=white)
+
+**🤖 AI 챗봇**
+
+| | 기술 | 설명 |
+|---|---|---|
+| ![Gemini](https://img.shields.io/badge/Gemini_API-8E75B2?style=flat-square&logo=googlegemini&logoColor=white) | Gemini API | `gemini-3.6-flash` 대화 + `gemini-embedding-001` 기반 RAG 의미 검색, 함수 호출로 상품 추천 |
+| ![Bucket4j](https://img.shields.io/badge/Bucket4j-2C3E50?style=flat-square&logoColor=white) | Bucket4j | IP · 계정 단위 챗봇 API 요청 제한 |
+| ![Caffeine](https://img.shields.io/badge/Caffeine-6F4E37?style=flat-square&logoColor=white) | Caffeine | 인메모리 캐시(Rate-limit 버킷 보관) |
 
 <br/>
 
 **🗄 Database**
 
-[![](https://skillicons.dev/icons?i=mysql)](https://skillicons.dev)
-<br/>
-<sub>MySQL — Django(v1) · Spring Boot(v2) 공용 데이터베이스로 통합</sub>
+| | 기술 | 설명 |
+|---|---|---|
+| ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white) | MySQL (Docker) | Django · Spring Boot 공용 DB, 스키마는 Django 마이그레이션이 소유(`ddl-auto: none`) |
 
 <br/>
 
 **🔐 Auth**
 
-[![](https://skillicons.dev/icons?i=google)](https://skillicons.dev)
-<br/>
-![Google](https://img.shields.io/badge/Google-4285F4?style=flat-square&logo=google&logoColor=white)
-![Kakao](https://img.shields.io/badge/Kakao-FFCD00?style=flat-square&logo=kakao&logoColor=black)
-![Naver](https://img.shields.io/badge/Naver-03C75A?style=flat-square&logo=naver&logoColor=white)
+| | 기술 | 설명 |
+|---|---|---|
+| ![Google](https://img.shields.io/badge/Google-4285F4?style=flat-square&logo=google&logoColor=white) | Google OAuth2 | 소셜 로그인 |
+| ![Kakao](https://img.shields.io/badge/Kakao-FFCD00?style=flat-square&logo=kakao&logoColor=black) | Kakao OAuth2 | 소셜 로그인 |
+| ![Naver](https://img.shields.io/badge/Naver-03C75A?style=flat-square&logo=naver&logoColor=white) | Naver OAuth2 | 소셜 로그인 |
+| ![hCaptcha](https://img.shields.io/badge/hCaptcha-006BFF?style=flat-square&logoColor=white) | hCaptcha | 회원가입 · 로그인 봇 방지 캡차 |
 
 <br/>
 
 **💳 Payment**
 
-![PortOne V2](https://img.shields.io/badge/PortOne_V2-6C1EF2?style=flat-square&logoColor=white)
+| | 기술 | 설명 |
+|---|---|---|
+| ![PortOne V2](https://img.shields.io/badge/PortOne_V2-6C1EF2?style=flat-square&logoColor=white) | PortOne V2 | 결제 연동 — 프론트(browser-sdk)와 Spring Boot(API Secret) 양쪽에서 검증 |
 
 <br/>
 
 **⚙️ DevOps**
 
-[![](https://skillicons.dev/icons?i=git,github,githubactions)](https://skillicons.dev)
+| | 기술 | 설명 |
+|---|---|---|
+| ![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white) | Git | 형상 관리 |
+| ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white) | GitHub | 저장소 3개(프론트+Django / Spring Boot / 포트폴리오) 관리 |
+| ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white) | GitHub Actions | Django · Spring Boot CI/CD(Docker Hub 빌드 → EC2 배포) |
+| ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white) | Docker | Django · Spring Boot 컨테이너화 배포 단위 |
+| ![Amazon EC2](https://img.shields.io/badge/Amazon_EC2-FF9900?style=flat-square&logo=amazonec2&logoColor=white) | Amazon EC2 | Django · Spring Boot 컨테이너 호스팅 |
+| ![Cloudflare Pages](https://img.shields.io/badge/Cloudflare_Pages-F38020?style=flat-square&logo=cloudflarepages&logoColor=white) | Cloudflare Pages | 프론트엔드 Git 연동 자동 빌드 · 배포 |
 
 </div>
 
