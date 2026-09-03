@@ -17,7 +17,7 @@ const STACK_GROUPS = [
     items: [
       { slug: "Django-092E20?logo=django&logoColor=white", name: "Django", desc: "관리자 화면(admin) · JWT 인증 · 상품/카테고리/리뷰 조회 API" },
       { slug: "DRF-ff1709?logo=django&logoColor=white", name: "Django REST Framework", desc: "Django 쪽 REST API" },
-      { slug: "Spring_Boot-6DB33F?logo=springboot&logoColor=white", name: "Spring Boot", desc: "장바구니 · 주문 · 결제 · 쿠폰 · 소셜로그인 · 챗봇 전담(별도 저장소 jipdaum-spring)" },
+      { slug: "Spring_Boot-6DB33F?logo=springboot&logoColor=white", name: "Spring Boot", desc: "장바구니 · 주문 · 결제 · 쿠폰 · 소셜로그인 · 챗봇 전담(별도 저장소 jipdaum_Springboot)" },
       { slug: "Spring_Security-6DB33F?logo=springsecurity&logoColor=white", name: "Spring Security", desc: "OAuth2 클라이언트, 인증/인가 필터 체인" },
       { slug: "Spring_Data_JPA-6DB33F?logo=spring&logoColor=white", name: "Spring Data JPA", desc: "엔티티 매핑, 원자적 조건부 UPDATE로 재고 · 쿠폰 동시성 제어" },
       { slug: "JWT-000000?logo=jsonwebtokens&logoColor=white", name: "JWT", desc: "Django · Spring Boot가 secret 공유, 단일 토큰으로 양쪽 인증" },
