@@ -67,7 +67,7 @@ const STACK_GROUPS = [
     category: "Tools",
     items: [
       { slug: "Claude-D97757?logo=claude&logoColor=white", name: "Claude", desc: "AI 페어 프로그래밍" },
-      { slug: "Google_Gemini-8E75B2?logo=googlegemini&logoColor=white", name: "Gemini", desc: "AI 페어 프로그래밍" },
+      { slug: "Google_Gemini-8E75B2?logo=googlegemini&logoColor=white", name: "Gemini", desc: "AI 페어 프로그래밍 · 상품 이미지 생성" },
       { slug: "Figma-F24E1E?logo=figma&logoColor=white", name: "Figma", desc: "상품 목업 · UI 디자인 제작" },
     ],
   },
