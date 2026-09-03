@@ -12,7 +12,6 @@ import SiteFooter from "../SiteFooter";
 import { getRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS } from "../../utils/navFlags";
 import { useNestedLenis } from "../../hooks/useNestedLenis";
-import { useNoticeModal } from "../../context/NoticeModalContext";
 import rugB from "../../assets/products/(러그) 북유럽풍 러그 B형.jpg";
 import woodMoodLamp from "../../assets/products/(무드등) 우드 롱 무드등.jpg";
 import smallMoodLamp from "../../assets/products/(무드등) 북유럽풍 침대 작은 무드등.jpg";
@@ -106,19 +105,22 @@ export const PRODUCTS = [
     desc: "천연 라탄을 촘촘히 엮고 가죽 손잡이를 덧댄 친환경 소재 바구니입니다. 옷방, 욕실, 아이 방 등 어디에 두어도 자연스럽게 스며드는 내추럴한 분위기를 냅니다.",
     spec: "SIZE : W38 D38 H40 · MATERIAL : rattan, leather handle",
     image: ecoWoodLaundryBasket, interiorImage: ecoWoodLaundryBasketInterior, alt: "친환경 우드 빨래 바구니", brand: "집다움", category: "수납", midCategory: "수납바구니", subCategory: "친환경 라탄" },
-  { id: 11, no: "No.11", name: "우드 의자", sub: "내추럴 라탄 케인", price: "219,000", label: "NEW",
+  // id 11~14는 원래 이 자리였으나 한국관(korean_hall) 상품이 전역 PK 11~17을 이미 쓰고
+  // 있어 charset 충돌(IntegrityError)이 나서 31~34로 옮겼다 — Product.id가 컬렉션 무관하게
+  // 전역 유니크해야 하기 때문. reset_main_products.py도 반드시 같이 맞출 것.
+  { id: 31, no: "No.31", name: "우드 의자", sub: "내추럴 라탄 케인", price: "219,000", label: "NEW",
     desc: "둥근 라탄 케인 등받이와 오크 프레임이 만나는 자그마한 암체어입니다. 넉넉한 리넨 쿠션을 더해 식탁 의자로도, 침실 코너 체어로도 편안하게 쓸 수 있습니다.",
     spec: "SIZE : W64 D58 H74 · MATERIAL : oak, rattan cane, linen",
     image: woodChair, alt: "우드 의자", brand: "집다움", category: "의자", midCategory: "암체어", subCategory: "오크 라탄" },
-  { id: 12, no: "No.12", name: "유럽풍 피서지 의자", sub: "코냑 브라운 레더 스트랩", price: "268,000", originalPrice: "298,000", label: "BESTSELLER",
+  { id: 32, no: "No.32", name: "유럽풍 피서지 의자", sub: "코냑 브라운 레더 스트랩", price: "268,000", originalPrice: "298,000", label: "BESTSELLER",
     desc: "티크 원목 프레임에 가죽 스트랩을 교차로 엮어 만든 로우 라운지 체어입니다. 낮은 좌면과 여유로운 각도가 휴양지에 온 듯한 편안함을 주어, 테라스나 창가 자리에 잘 어울립니다.",
     spec: "SIZE : W68 D75 H68 · MATERIAL : teak wood, leather strap",
     image: resortChair, interiorImage: resortChairInterior, alt: "유럽풍 피서지 의자", brand: "집다움", category: "의자", midCategory: "라운지체어", subCategory: "티크 레더" },
-  { id: 13, no: "No.13", name: "북유럽 침대", sub: "내추럴 오크", price: "890,000", originalPrice: "1,250,000", label: "BESTSELLER",
+  { id: 33, no: "No.33", name: "북유럽 침대", sub: "내추럴 오크", price: "890,000", originalPrice: "1,250,000", label: "BESTSELLER",
     desc: "원목의 결과 라이브 엣지를 살린 헤드보드가 인상적인 플랫폼 침대 프레임입니다. 군더더기 없는 낮은 구조로 침실을 한층 넓고 차분하게 만들어 줍니다.",
     spec: "SIZE : W160 D200 H85 (Q) · MATERIAL : solid oak",
     image: nordicBed, interiorImage: nordicBedInterior, alt: "북유럽 침대", brand: "집다움", category: "침대", midCategory: "프레임침대", subCategory: "솔리드 오크" },
-  { id: 14, no: "No.14", name: "북유럽풍 파스텔 문양 침대", sub: "멀티 파스텔 아브스트랙트", price: "950,000", label: "NEW",
+  { id: 34, no: "No.34", name: "북유럽풍 파스텔 문양 침대", sub: "멀티 파스텔 아브스트랙트", price: "950,000", label: "NEW",
     desc: "블루, 세이지, 로즈 톤의 추상 패턴 패브릭으로 감싼 업홀스터리 침대입니다. 높은 헤드보드가 침실의 포인트가 되어 주고, 부드러운 패딩감이 등을 편안하게 받쳐줍니다.",
     spec: "SIZE : W165 D210 H130 (Q) · MATERIAL : polyester fabric, wood frame",
     image: pastelPatternBed, interiorImage: pastelPatternBedInterior, alt: "북유럽풍 파스텔 문양 침대", brand: "집다움", category: "침대", midCategory: "업홀스터리침대", subCategory: "패브릭 우드프레임" },
@@ -142,22 +144,20 @@ export const PRODUCTS = [
     desc: "베이지 톤 와플 문양으로 짠 순면 수건입니다. 도톰하게 짜인 조직이 통기성이 좋아 잘 마르고, 은은한 컬러로 어떤 욕실에도 무난히 어울립니다.",
     spec: "SIZE : W40 D80 · MATERIAL : cotton waffle weave",
     image: waffleTowel, alt: "와플 문양 수건", brand: "집다움", category: "수건", midCategory: "세면타월", subCategory: "와플 베이지" },
-  { id: 23, no: "No.23", name: "부드러운 털 실내화 그레이", sub: "차콜 그레이 스트라이프", price: "16,000", label: "NEW",
-    desc: "부드러운 극세사로 안팎을 감싼 슬리퍼형 실내화입니다. 두툼한 안창이 발끝을 포근하게 받쳐주고, 차콜 스트라이프가 차분하게 어우러져 침실이나 거실 어디에 두어도 잘 어울립니다.",
+  // 4개 색상(그레이/그린/브라운/네이비)을 한 상품으로 묶고 colors[]로 옵션 처리한다
+  // (id는 기존 그레이 상품의 23을 그대로 씀 — 그린/브라운/네이비였던 24~26은 폐기).
+  // colors[].value는 DB(JIPDAUM_PRODUCT_OPTION.option_value)의 색상 옵션 값과 반드시 일치해야
+  // 상세페이지가 고른 색상을 실제 주문 가능한 옵션 id로 매칭할 수 있다.
+  { id: 23, no: "No.23", name: "부드러운 털 실내화", sub: "차콜 그레이 스트라이프", price: "16,000", label: "BESTSELLER",
+    desc: "부드러운 극세사로 안팎을 감싼 슬리퍼형 실내화입니다. 두툼한 안창이 발끝을 포근하게 받쳐주고, 컬러별로 각기 다른 무드를 더해줍니다.",
     spec: "SIZE : 250-270mm (Free) · MATERIAL : fleece, EVA sole",
-    image: furrySlipperGray, alt: "부드러운 털 실내화 그레이", brand: "집다움", category: "실내화", midCategory: "극세사 실내화", subCategory: "그레이 스트라이프" },
-  { id: 24, no: "No.24", name: "부드러운 털 실내화 그린", sub: "세이지 그린", price: "16,000", label: "NEW",
-    desc: "부드러운 극세사로 안팎을 감싼 슬리퍼형 실내화입니다. 두툼한 안창이 발끝을 포근하게 받쳐주고, 세이지 그린 컬러가 은은한 포인트를 더해줍니다.",
-    spec: "SIZE : 250-270mm (Free) · MATERIAL : fleece, EVA sole",
-    image: furrySlipperGreen, alt: "부드러운 털 실내화 그린", brand: "집다움", category: "실내화", midCategory: "극세사 실내화", subCategory: "세이지 그린" },
-  { id: 25, no: "No.25", name: "부드러운 털 실내화 브라운", sub: "웜 브라운", price: "16,000", label: "NEW",
-    desc: "부드러운 극세사로 안팎을 감싼 슬리퍼형 실내화입니다. 두툼한 안창이 발끝을 포근하게 받쳐주고, 브라운 톤이 따뜻한 무드를 더해줍니다.",
-    spec: "SIZE : 250-270mm (Free) · MATERIAL : fleece, EVA sole",
-    image: furrySlipperBrown, alt: "부드러운 털 실내화 브라운", brand: "집다움", category: "실내화", midCategory: "극세사 실내화", subCategory: "브라운" },
-  { id: 26, no: "No.26", name: "부드러운 털 실내화 네이비", sub: "딥 네이비", price: "16,000", label: "BESTSELLER",
-    desc: "부드러운 극세사로 안팎을 감싼 슬리퍼형 실내화입니다. 두툼한 안창이 발끝을 포근하게 받쳐주고, 네이비 컬러가 차분한 포인트를 더해줍니다.",
-    spec: "SIZE : 250-270mm (Free) · MATERIAL : fleece, EVA sole",
-    image: furrySlipperNavy, alt: "부드러운 털 실내화 네이비", brand: "집다움", category: "실내화", midCategory: "극세사 실내화", subCategory: "네이비" },
+    image: furrySlipperGray, alt: "부드러운 털 실내화", brand: "집다움", category: "실내화", midCategory: "극세사 실내화", subCategory: "그레이 스트라이프",
+    colors: [
+      { value: "그레이", label: "차콜 그레이 스트라이프", image: furrySlipperGray, alt: "부드러운 털 실내화 그레이" },
+      { value: "그린", label: "세이지 그린", image: furrySlipperGreen, alt: "부드러운 털 실내화 그린" },
+      { value: "브라운", label: "웜 브라운", image: furrySlipperBrown, alt: "부드러운 털 실내화 브라운" },
+      { value: "네이비", label: "딥 네이비", image: furrySlipperNavy, alt: "부드러운 털 실내화 네이비" },
+    ] },
   { id: 27, no: "No.27", name: "물이 잘 빠지는 욕실화 레드", sub: "레드", price: "10,000", label: "NEW",
     desc: "배수 슬릿을 낸 쿠션 소재 욕실화입니다. 도톰한 EVA 밑창이 푹신하게 발을 받쳐주고, 미끄럼을 줄여주는 표면 처리로 젖은 바닥에서도 안심하고 신을 수 있습니다. 레드 컬러가 욕실에 산뜻한 포인트를 더합니다.",
     spec: "SIZE : 250-270mm (Free) · MATERIAL : EVA",
@@ -277,6 +277,92 @@ function Label({ children, className = "" }) {
   );
 }
 
+// 상품 그리드 카드 — colors[]가 있는 상품(예: 부드러운 털 실내화)은 카드에 커서를
+// 올리면 하단에 색상 스와치가 뜨고, 스와치에 커서를 올리면 그 색상 사진으로 바뀐다.
+// 스와치 클릭은 상세페이지 이동(카드 전체 onClick)을 막기만 하고 실제 옵션 선택은
+// 상세페이지에서 한다 — 목록에서는 "미리보기"만 제공.
+function ProductCard({ p, wished, cartCount, onToggleWish, onClick }) {
+  const [colorIdx, setColorIdx] = useState(0);
+  const priceNum = Number(p.price.replace(/,/g, ""));
+  const originalNum = p.originalPrice ? Number(p.originalPrice.replace(/,/g, "")) : 0;
+  const hasDiscount = originalNum > priceNum;
+  const discountPct = hasDiscount ? Math.round((1 - priceNum / originalNum) * 100) : 0;
+  const displayImage = p.colors ? p.colors[colorIdx].image : p.image;
+  const displayAlt = p.colors ? p.colors[colorIdx].alt : p.alt;
+
+  return (
+    <article className="group cursor-pointer" onClick={onClick}>
+      <div
+        className="relative overflow-hidden bg-muted mb-3 aspect-5/6"
+        onMouseLeave={() => setColorIdx(0)}
+      >
+        {/* 상품 목록은 비교 스캔이 목적이라 카드 크기를 통일한다.
+            사진마다 비율이 달라 5:6 박스에 안 맞으면 object-cover로 채운다
+            (세로로 긴 사진은 좌우가 살짝 잘릴 수 있음). */}
+        <img src={displayImage} alt={displayAlt} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+        {/* 인테리어 컷이 있는 상품만 — 커서를 올리면 스튜디오 사진 위로 방에 놓인
+            모습이 서서히 겹쳐지며 "- 인테리어" 버전으로 잠깐 전환된다. */}
+        {p.interiorImage && (
+          <>
+            <img
+              src={p.interiorImage}
+              alt={`${p.alt} - 인테리어`}
+              className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            />
+            <span
+              className="absolute bottom-3 left-3 rounded-full bg-foreground/70 px-2.5 py-1 text-[10px] font-semibold tracking-wide text-background opacity-0 backdrop-blur-sm transition-opacity duration-500 group-hover:opacity-100"
+              style={MONO}
+            >
+              – 인테리어
+            </span>
+          </>
+        )}
+        {p.colors && p.colors.length > 1 && (
+          <div className="absolute bottom-3 left-3 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+            {p.colors.map((c, i) => (
+              <button
+                key={c.value}
+                type="button"
+                onMouseEnter={() => setColorIdx(i)}
+                onClick={(e) => e.stopPropagation()}
+                title={c.label}
+                aria-label={`${c.value} 색상 미리보기`}
+                className={`w-4 h-4 rounded-full border bg-cover bg-center transition-transform ${i === colorIdx ? "border-background scale-125 shadow-sm" : "border-white/70"}`}
+                style={{ backgroundImage: `url(${c.image})` }}
+              />
+            ))}
+          </div>
+        )}
+        <button onClick={(e) => { e.stopPropagation(); onToggleWish(p.id); }}
+          className="absolute top-3 right-3 w-7 h-7 bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <Heart size={12} className={wished ? "fill-foreground text-foreground" : "text-foreground"} />
+        </button>
+        {cartCount > 0 && (
+          <span
+            className="cartCountBadge absolute top-3 left-3 min-w-[20px] h-[20px] px-1.5 rounded-full bg-foreground text-background text-[10px] font-semibold flex items-center gap-1 justify-center"
+            style={MONO}
+            data-tooltip={`현재 장바구니에 ${cartCount}개의 상품이 담겨 있습니다.`}
+          >
+            <ShoppingBag size={9} />
+            {cartCount}
+          </span>
+        )}
+      </div>
+      <span className="text-[10px] text-muted-foreground block mb-1" style={MONO}>{p.no} · {p.label}</span>
+      <h4 className="text-sm font-medium text-foreground mb-0.5" style={SANS}>{p.name}</h4>
+      <div className="mt-1 flex flex-col items-end gap-1">
+        <div className={`flex items-center gap-1.5 ${hasDiscount ? "" : "invisible"}`}>
+          <span className="text-[10px] font-bold text-white bg-[#c0392b] rounded px-1.5 py-0.5 tracking-wide" style={MONO}>
+            {discountPct}% OFF
+          </span>
+          <span className="text-xs text-muted-foreground line-through" style={MONO}>₩{p.originalPrice || p.price}</span>
+        </div>
+        <span className="text-right text-2xl font-bold text-foreground" style={MONO}>₩{p.price}</span>
+      </div>
+    </article>
+  );
+}
+
 function Home() {
   const [wishlist, setWishlist] = useState([]);
   const [productSearchQuery, setProductSearchQuery] = useState("");
@@ -345,7 +431,6 @@ function Home() {
 
   const [recentlyViewed, setRecentlyViewed] = useState(() => withFreshProductData(getRecentlyViewed()));
   const navigate = useNavigate();
-  const { openNotice } = useNoticeModal();
 
   // 카테고리 위 유틸 링크(로그인/회원가입 · 마이페이지/로그아웃)용 — Sidebar의 독과
   // 같은 기준(access_token)으로 로그인 상태를 판단하고, 같은 authchange 이벤트로 동기화한다.
@@ -995,13 +1080,15 @@ function Home() {
         {/* z-30 — 아래 상품 그리드 래퍼도 z-10이라, 같은 값이면 DOM 순서상 나중에 오는
             그리드가 인기 검색어 드롭다운을 덮어버린다(같은 값끼리는 각자 안의 z-index가
             아니라 그냥 뒤에 오는 요소가 이긴다). 확실히 더 높여서 덮이지 않게 함. */}
-        {/* Header.jsx 검색창과 동일한 스크림 — 확대된 검색창에 시선을 모은다. */}
+        {/* Header.jsx 검색창과 동일한 스크림 — 확대된 검색창에 시선을 모은다.
+            이 패널은 배경이 밝은 파스텔 톤이라 헤더 배너(짙은 이미지/영상 위)와 같은
+            35%로는 딤이 거의 안 보여서, 여기만 더 짙게 준다. */}
         <div
-          className={`fixed inset-0 z-30 bg-black/35 transition-opacity duration-300 ${productSearchFocused ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          className={`fixed inset-0 z-30 bg-black/55 transition-opacity duration-300 ${productSearchFocused ? "opacity-100" : "opacity-0 pointer-events-none"}`}
           aria-hidden="true"
         />
         <div className="relative z-40 max-w-7xl mx-auto w-full mb-10 flex items-end justify-end gap-4 flex-wrap">
-          <div className={`relative w-full transition-all duration-300 ${productSearchFocused ? "sm:w-[420px]" : "sm:w-[280px]"}`}>
+          <div className={`relative w-full origin-top-right transition-all duration-300 ${productSearchFocused ? "sm:w-[420px] sm:scale-105" : "sm:w-[280px]"}`}>
             <div className="flex items-center gap-2 border-b border-foreground pb-2">
               <Search size={productSearchFocused ? 18 : 15} className="text-muted-foreground shrink-0 transition-all duration-300" />
               <input
@@ -1068,7 +1155,7 @@ function Home() {
               한국관
             </button>
             <span aria-hidden="true" className="text-border">|</span>
-            <button type="button" onClick={openNotice} className="hover:text-foreground transition-colors">
+            <button type="button" onClick={() => navigate("/notice")} className="hover:text-foreground transition-colors">
               공지사항
             </button>
             <span aria-hidden="true" className="text-border">|</span>
@@ -1155,65 +1242,16 @@ function Home() {
           </p>
         ) : (
         <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-3 gap-8">
-          {filteredProducts.map((p) => {
-            const priceNum = Number(p.price.replace(/,/g, ""));
-            const originalNum = p.originalPrice ? Number(p.originalPrice.replace(/,/g, "")) : 0;
-            const hasDiscount = originalNum > priceNum;
-            const discountPct = hasDiscount ? Math.round((1 - priceNum / originalNum) * 100) : 0;
-
-            return (
-              <article key={p.id} className="group cursor-pointer" onClick={() => navigate(`/item/${p.id}`)}>
-                <div className="relative overflow-hidden bg-muted mb-3 aspect-5/6">
-                  {/* 상품 목록은 비교 스캔이 목적이라 카드 크기를 통일한다.
-                      사진마다 비율이 달라 5:6 박스에 안 맞으면 object-cover로 채운다
-                      (세로로 긴 사진은 좌우가 살짝 잘릴 수 있음). */}
-                  <img src={p.image} alt={p.alt} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
-                  {/* 인테리어 컷이 있는 상품만 — 커서를 올리면 스튜디오 사진 위로 방에 놓인
-                      모습이 서서히 겹쳐지며 "- 인테리어" 버전으로 잠깐 전환된다. */}
-                  {p.interiorImage && (
-                    <>
-                      <img
-                        src={p.interiorImage}
-                        alt={`${p.alt} - 인테리어`}
-                        className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                      />
-                      <span
-                        className="absolute bottom-3 left-3 rounded-full bg-foreground/70 px-2.5 py-1 text-[10px] font-semibold tracking-wide text-background opacity-0 backdrop-blur-sm transition-opacity duration-500 group-hover:opacity-100"
-                        style={MONO}
-                      >
-                        – 인테리어
-                      </span>
-                    </>
-                  )}
-                  <button onClick={(e) => { e.stopPropagation(); toggleWish(p.id); }}
-                    className="absolute top-3 right-3 w-7 h-7 bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                    <Heart size={12} className={wishlist.includes(p.id) ? "fill-foreground text-foreground" : "text-foreground"} />
-                  </button>
-                  {cartCounts[p.id] > 0 && (
-                    <span
-                      className="cartCountBadge absolute top-3 left-3 min-w-[20px] h-[20px] px-1.5 rounded-full bg-foreground text-background text-[10px] font-semibold flex items-center gap-1 justify-center"
-                      style={MONO}
-                      data-tooltip={`현재 장바구니에 ${cartCounts[p.id]}개의 상품이 담겨 있습니다.`}
-                    >
-                      <ShoppingBag size={9} />
-                      {cartCounts[p.id]}
-                    </span>
-                  )}
-                </div>
-                <span className="text-[10px] text-muted-foreground block mb-1" style={MONO}>{p.no} · {p.label}</span>
-                <h4 className="text-sm font-medium text-foreground mb-0.5" style={SANS}>{p.name}</h4>
-                <div className="mt-1 flex flex-col items-end gap-1">
-                  <div className={`flex items-center gap-1.5 ${hasDiscount ? "" : "invisible"}`}>
-                    <span className="text-[10px] font-bold text-white bg-[#c0392b] rounded px-1.5 py-0.5 tracking-wide" style={MONO}>
-                      {discountPct}% OFF
-                    </span>
-                    <span className="text-xs text-muted-foreground line-through" style={MONO}>₩{p.originalPrice || p.price}</span>
-                  </div>
-                  <span className="text-right text-2xl font-bold text-foreground" style={MONO}>₩{p.price}</span>
-                </div>
-              </article>
-            );
-          })}
+          {filteredProducts.map((p) => (
+            <ProductCard
+              key={p.id}
+              p={p}
+              wished={wishlist.includes(p.id)}
+              cartCount={cartCounts[p.id] || 0}
+              onToggleWish={toggleWish}
+              onClick={() => navigate(`/item/${p.id}`)}
+            />
+          ))}
         </div>
         )}
 

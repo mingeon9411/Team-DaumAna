@@ -1,7 +1,7 @@
 import "../Home/Home.css";
 import "../Home/HomeProductDetail.css";
 import "./ProductDetail.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft, Heart, Star, Share2, Truck } from "lucide-react";
 import { getProductDetail, addToCart, getReviews, createReview } from "../../api";
@@ -12,6 +12,7 @@ import { isWished, toggleWish } from "../../utils/wishlist";
 import { addRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 import { useAuthModal } from "../../context/AuthModalContext";
+import { useNestedLenis } from "../../hooks/useNestedLenis";
 import SiteFooter from "../SiteFooter";
 
 const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
@@ -48,6 +49,11 @@ function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
+
+  // data-lenis-prevent로 전역 가로 Lenis(App.jsx)는 건너뛰므로, 이 페이지 전용
+  // 세로 스크롤에도 KoreanHall.jsx와 같은 부드러운 관성을 붙인다.
+  const pageRef = useRef(null);
+  useNestedLenis(pageRef);
 
   const localProduct = products.find((p) => p.id === Number(id));
   const [apiProduct, setApiProduct] = useState(null);
@@ -223,7 +229,7 @@ function ProductDetail() {
   };
 
   return (
-    <main className="homeDetailPage pdPage" data-lenis-prevent data-hsnap>
+    <main className="homeDetailPage pdPage" data-lenis-prevent data-hsnap ref={pageRef}>
       <div className="pdPetals" aria-hidden="true">
         {PETALS.map((p, i) => (
           <span

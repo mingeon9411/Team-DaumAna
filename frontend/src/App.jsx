@@ -14,7 +14,7 @@ import WithdrawModal from "./component/WithDraw/WithdrawModal";
 import Home from "./component/Home/Home";
 
 import Cart from "./component/Cart/Cart";
-import NoticeModal from "./component/NoticeModal/NoticeModal";
+import Notice from "./component/Notice/Notice";
 import Welcome from "./component/Welcome/Welcome";
 import ProductDetail from "./component/ProductDetail/ProductDetail";
 import HomeProductDetail from "./component/Home/HomeProductDetail";
@@ -31,7 +31,6 @@ import AuthModal from "./component/AuthModal/AuthModal";
 import AuthPage from "./component/AuthModal/AuthPage";
 import { AuthModalProvider } from "./context/AuthModalContext";
 import { MyPageModalProvider } from "./context/MyPageModalContext";
-import { NoticeModalProvider } from "./context/NoticeModalContext";
 import { WithdrawModalProvider } from "./context/WithdrawModalContext";
 import { createPagingController } from "./utils/snapSetup";
 import { NAV_FLAGS, NAV_ZONE } from "./utils/navFlags";
@@ -186,15 +185,12 @@ function App() {
     <BrowserRouter>
     <AuthModalProvider>
     <MyPageModalProvider>
-    <NoticeModalProvider>
     <WithdrawModalProvider>
     <ScrollToTop lenis={lenisRef} controller={controllerRef} panelsUnsub={panelsUnsubRef} />
     <DoorIntroController />
     <Header />
     <Sidebar />
     <AuthModal />
-    <MyPage />
-    <NoticeModal />
     <WithdrawModal />
 
     <div className="hTrack">
@@ -208,7 +204,9 @@ function App() {
         <Route path="/search" element={<SearchResults />} />
         <Route path="/korean-hall" element={<KoreanHall />} />
         <Route path="/customer-center" element={<CustomerCenter />} />
+        <Route path="/notice" element={<Notice />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/mypage" element={<MyPage />} />
         <Route path="/login" element={<AuthPage />} />
         <Route path="/register" element={<AuthPage />} />
 
@@ -223,7 +221,6 @@ function App() {
       </Routes>
     </div>
     </WithdrawModalProvider>
-    </NoticeModalProvider>
     </MyPageModalProvider>
     </AuthModalProvider>
     </BrowserRouter>

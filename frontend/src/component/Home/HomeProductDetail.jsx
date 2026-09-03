@@ -1,6 +1,6 @@
 import "./Home.css";
 import "./HomeProductDetail.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft, Heart, Star, Sparkles, Ruler, ShieldCheck, ImagePlus, X, Share2, Truck } from "lucide-react";
 import { PRODUCTS } from "./Home";
@@ -9,6 +9,7 @@ import { isWished, toggleWish } from "../../utils/wishlist";
 import { addRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 import { useAuthModal } from "../../context/AuthModalContext";
+import { useNestedLenis } from "../../hooks/useNestedLenis";
 import SiteFooter from "../SiteFooter";
 
 const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
@@ -39,6 +40,11 @@ function HomeProductDetail() {
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
 
+  // data-lenis-prevent로 전역 가로 Lenis(App.jsx)는 건너뛰므로, 이 페이지 전용
+  // 세로 스크롤에도 KoreanHall.jsx와 같은 부드러운 관성을 붙인다.
+  const pageRef = useRef(null);
+  useNestedLenis(pageRef);
+
   const localProduct = PRODUCTS.find((p) => p.id === Number(id));
   // 이름/가격/설명은 DB(JIPDAUM_PRODUCT, collection='main')에서 받아와 로컬 값
   // 위에 덮어쓴다 — Korean Hall의 ProductDetail.jsx와 동일한 패턴. 이미지/
@@ -64,6 +70,7 @@ function HomeProductDetail() {
 
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
+  const [colorIdx, setColorIdx] = useState(0);
   const [wished, setWished] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
@@ -79,6 +86,7 @@ function HomeProductDetail() {
     window.scrollTo(0, 0);
     setQuantity(1);
     setActiveImage(0);
+    setColorIdx(0);
     setWished(isWished(product.id));
     setReviewRating(5);
     setReviewTitle("");
@@ -121,7 +129,19 @@ function HomeProductDetail() {
   const avgRating = reviews.length
     ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
     : null;
-  const galleryImages = [product.image, product.interiorImage].filter(Boolean);
+  // 색상 옵션(colors)이 있는 상품은 고른 색상의 사진을 갤러리로, sub 문구도 그 색상 것으로 보여준다.
+  // 실제 주문 가능한 옵션 id는 DB(apiProduct.options)에서 option_value가 같은 것을 찾아 매칭한다 —
+  // 로컬 colors[]는 사진/문구용이고, 재고·가격 등 실데이터는 백엔드 옵션 쪽이 갖고 있다.
+  const selectedColor = product.colors ? product.colors[colorIdx] : null;
+  const selectedOptionId = selectedColor
+    ? apiProduct?.options?.find((o) => o.option_value === selectedColor.value)?.id ?? null
+    : null;
+  const displaySub = selectedColor ? selectedColor.label : product.sub;
+  const galleryImages = product.colors
+    ? product.colors.map((c) => c.image)
+    : [product.image, product.interiorImage].filter(Boolean);
+  // 상세정보 섹션(히어로 배너, 이미지+텍스트 블록)도 고른 색상 사진을 그대로 쓴다.
+  const heroImage = galleryImages[activeImage] || product.image;
 
   // 실제 촬영 이미지가 한 장뿐이라 상세페이지 구간마다 같은 사진을 다른 비율/포커스로
   // 재사용한다 — 상품별 추가 사진을 받으면 여기 image 값만 교체하면 됨.
@@ -136,8 +156,8 @@ function HomeProductDetail() {
 
   const detailBlocks = [
     {
-      title: `${product.sub}, 공간에 자연스럽게 스며드는 컬러`,
-      text: `${product.desc} 은은한 ${product.sub} 톤은 화이트, 우드, 그레이 등 어떤 인테리어 베이스와도 무리 없이 어우러져 공간의 톤을 해치지 않습니다.`,
+      title: `${displaySub}, 공간에 자연스럽게 스며드는 컬러`,
+      text: `${product.desc} 은은한 ${displaySub} 톤은 화이트, 우드, 그레이 등 어떤 인테리어 베이스와도 무리 없이 어우러져 공간의 톤을 해치지 않습니다.`,
     },
     {
       title: "매일 마주해도 질리지 않는 디테일",
@@ -148,7 +168,7 @@ function HomeProductDetail() {
   const specRows = [
     ["브랜드", product.brand],
     ["카테고리", [product.category, product.midCategory, product.subCategory].filter(Boolean).join(" > ")],
-    ["컬러", product.sub],
+    ["컬러", displaySub],
     ["사이즈", sizeText],
     ["소재", materialText],
   ];
@@ -190,7 +210,7 @@ function HomeProductDetail() {
       return;
     }
     try {
-      await addToCart({ product: product.id, quantity, option: null });
+      await addToCart({ product: product.id, quantity, option: selectedOptionId });
       window.dispatchEvent(new Event("cartchange"));
       alert("장바구니에 담았습니다.");
       navigate("/cart");
@@ -211,9 +231,9 @@ function HomeProductDetail() {
           id: product.id,
           name: product.name,
           price: priceNum,
-          image: product.image,
+          image: galleryImages[activeImage] || product.image,
           quantity,
-          option_id: null,
+          option_id: selectedOptionId,
         }],
       },
     });
@@ -275,7 +295,7 @@ function HomeProductDetail() {
   };
 
   return (
-    <main className="homeDetailPage" data-lenis-prevent data-hsnap>
+    <main className="homeDetailPage" data-lenis-prevent data-hsnap ref={pageRef}>
       <div className="max-w-7xl mx-auto w-full px-6 md:px-10">
         {/* 대문 애니메이션 스킵 + 상품 그리드로 바로 점프는 App.jsx의
             DoorIntroController가 productDetailReturnZone(마운트 시 기록)을 보고
@@ -299,7 +319,7 @@ function HomeProductDetail() {
                   <button
                     key={src}
                     type="button"
-                    onClick={() => setActiveImage(i)}
+                    onClick={() => { setActiveImage(i); if (product.colors) setColorIdx(i); }}
                     className={`pdThumbBtn${activeImage === i ? " active" : ""}`}
                     aria-label={`상품 이미지 ${i + 1}`}
                   >
@@ -310,7 +330,7 @@ function HomeProductDetail() {
             )}
             <div className="relative overflow-hidden bg-muted aspect-5/6 flex-1 min-w-0">
               <img src={galleryImages[activeImage]} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-70" />
-              <img src={galleryImages[activeImage]} alt={product.alt} className="relative w-full h-full object-contain" />
+              <img src={galleryImages[activeImage]} alt={selectedColor?.alt || product.alt} className="relative w-full h-full object-contain" />
             </div>
           </div>
 
@@ -348,7 +368,7 @@ function HomeProductDetail() {
                 </button>
               </div>
             </div>
-            <p className="text-sm text-muted-foreground font-light mb-3">{product.sub}</p>
+            <p className="text-sm text-muted-foreground font-light mb-3">{displaySub}</p>
 
             <div className="flex items-center gap-1.5 mb-5">
               {avgRating ? (
@@ -441,14 +461,14 @@ function HomeProductDetail() {
           {/* 히어로 배너 */}
           <div className="relative overflow-hidden rounded-3xl mb-16 aspect-[16/9] max-w-4xl mx-auto">
             <img
-              src={product.image}
+              src={heroImage}
               alt=""
               aria-hidden="true"
               className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-70"
             />
             <img
-              src={product.image}
-              alt={product.alt}
+              src={heroImage}
+              alt={selectedColor?.alt || product.alt}
               className="relative w-full h-full object-contain"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
@@ -483,13 +503,13 @@ function HomeProductDetail() {
             >
               <div className="relative w-full md:w-1/2 overflow-hidden rounded-2xl aspect-[4/3] shrink-0">
                 <img
-                  src={product.image}
+                  src={heroImage}
                   alt=""
                   aria-hidden="true"
                   className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-70"
                 />
                 <img
-                  src={product.image}
+                  src={heroImage}
                   alt=""
                   className="relative w-full h-full object-contain"
                 />

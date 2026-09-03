@@ -48,7 +48,7 @@ function formatDate(isoStr) {
 function MyPage() {
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
-  const { isOpen, closeMyPage } = useMyPageModal();
+  const { closeMyPage } = useMyPageModal();
   const { openWithdraw } = useWithdrawModal();
   const [nickname, setNickname] = useState(() => localStorage.getItem("nickname") || "회원");
   const [nicknameDraft, setNicknameDraft] = useState(nickname);
@@ -166,7 +166,6 @@ function MyPage() {
   }, []);
 
   useEffect(() => {
-    if (!isOpen) return;
     getOrderHistory()
       // res.data가 배열이 아니면(만료된 토큰 등으로 인증 실패 응답이 예상과 다르게 와도)
       // orders.filter/.reduce에서 앱 전체가 죽지 않도록 방어한다.
@@ -179,7 +178,7 @@ function MyPage() {
     getMe()
       .then((res) => setProfile(res.data))
       .catch(() => setProfile(null));
-  }, [isOpen]);
+  }, []);
 
   useEffect(() => {
     setWishlist(getWishlist());
@@ -244,12 +243,13 @@ function MyPage() {
     setTrackingOrder(order);
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="mypageModalOverlay">
-    <main className="mypage" data-lenis-prevent>
-      <button type="button" className="mypageModalClose" onClick={closeMyPage} aria-label="닫기">
+    // metallicSilver — 상품 목록 그리드(Home.jsx #home-products)와 같은 파스텔 배경
+    // 클래스. Settings.jsx/CustomerCenter.jsx/AuthPage.jsx와 같은 전면 페이지 패턴.
+    <div className="mypagePage metallicSilver" data-hsnap data-lenis-prevent>
+    <div className="mypagePagePanel">
+    <main className="mypage">
+      <button type="button" className="mypageCloseBtn" onClick={closeMyPage} aria-label="닫기">
         ×
       </button>
 
@@ -875,6 +875,7 @@ function MyPage() {
         )}
       </section>
     </main>
+    </div>
     </div>
   );
 }

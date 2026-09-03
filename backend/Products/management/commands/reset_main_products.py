@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from django.db import transaction
 from Products.models import Category, Product, ProductOption
 
 
@@ -39,13 +40,15 @@ PRODUCTS = [
      'description': '삼각·다이아몬드 패턴을 세이지, 블루그레이 톤으로 촘촘히 터프팅한 러그입니다. 기하학적인 패턴이 공간에 리듬감을 더해 소파 앞이나 침대 곁 포인트 러그로 잘 어울립니다.'},
     {'id': 10, 'category': '소품', 'name': '친환경 우드 빨래 바구니', 'base_price': 39000,
      'description': '천연 라탄을 촘촘히 엮고 가죽 손잡이를 덧댄 친환경 소재 바구니입니다. 옷방, 욕실, 아이 방 등 어디에 두어도 자연스럽게 스며드는 내추럴한 분위기를 냅니다.'},
-    {'id': 11, 'category': '의자', 'name': '우드 의자', 'base_price': 219000,
+    # id 11~14는 korean_hall이 전역 PK 11~17을 이미 쓰고 있어 31~34로 옮김(2026-09-03) —
+    # 실제로 이 커맨드를 그대로 돌리면 11에서 IntegrityError로 멈추는 걸 확인함. Home.jsx도 같이 맞출 것.
+    {'id': 31, 'category': '의자', 'name': '우드 의자', 'base_price': 219000,
      'description': '둥근 라탄 케인 등받이와 오크 프레임이 만나는 자그마한 암체어입니다. 넉넉한 리넨 쿠션을 더해 식탁 의자로도, 침실 코너 체어로도 편안하게 쓸 수 있습니다.'},
-    {'id': 12, 'category': '의자', 'name': '유럽풍 피서지 의자', 'base_price': 268000,
+    {'id': 32, 'category': '의자', 'name': '유럽풍 피서지 의자', 'base_price': 268000,
      'description': '티크 원목 프레임에 가죽 스트랩을 교차로 엮어 만든 로우 라운지 체어입니다. 낮은 좌면과 여유로운 각도가 휴양지에 온 듯한 편안함을 주어, 테라스나 창가 자리에 잘 어울립니다.'},
-    {'id': 13, 'category': '침대', 'name': '북유럽 침대', 'base_price': 890000,
+    {'id': 33, 'category': '침대', 'name': '북유럽 침대', 'base_price': 890000,
      'description': '원목의 결과 라이브 엣지를 살린 헤드보드가 인상적인 플랫폼 침대 프레임입니다. 군더더기 없는 낮은 구조로 침실을 한층 넓고 차분하게 만들어 줍니다.'},
-    {'id': 14, 'category': '침대', 'name': '북유럽풍 파스텔 문양 침대', 'base_price': 950000,
+    {'id': 34, 'category': '침대', 'name': '북유럽풍 파스텔 문양 침대', 'base_price': 950000,
      'description': '블루, 세이지, 로즈 톤의 추상 패턴 패브릭으로 감싼 업홀스터리 침대입니다. 높은 헤드보드가 침실의 포인트가 되어 주고, 부드러운 패딩감이 등을 편안하게 받쳐줍니다.'},
     # 2026-09-03 생활용품 카테고리(발매트/수건/실내화/욕실화) 추가분 — Home.jsx PRODUCTS id 18~30과 동일.
     # id 15~17이 아니라 18부터 시작하는 이유: korean_hall 컬렉션이 이미 id 11~17을 쓰고 있어서
@@ -62,14 +65,11 @@ PRODUCTS = [
      'description': '틸과 머스터드가 어우러진 헤링본 스트라이프 세면 수건입니다. 색을 맞춰 욕실 소품을 꾸미기 좋고, 도톰한 파일감이 산뜻한 사용감을 줍니다.'},
     {'id': 22, 'category': '수건', 'name': '와플 문양 수건', 'base_price': 16000,
      'description': '베이지 톤 와플 문양으로 짠 순면 수건입니다. 도톰하게 짜인 조직이 통기성이 좋아 잘 마르고, 은은한 컬러로 어떤 욕실에도 무난히 어울립니다.'},
-    {'id': 23, 'category': '실내화', 'name': '부드러운 털 실내화 그레이', 'base_price': 16000,
-     'description': '부드러운 극세사로 안팎을 감싼 슬리퍼형 실내화입니다. 두툼한 안창이 발끝을 포근하게 받쳐주고, 차콜 스트라이프가 차분하게 어우러져 침실이나 거실 어디에 두어도 잘 어울립니다.'},
-    {'id': 24, 'category': '실내화', 'name': '부드러운 털 실내화 그린', 'base_price': 16000,
-     'description': '부드러운 극세사로 안팎을 감싼 슬리퍼형 실내화입니다. 두툼한 안창이 발끝을 포근하게 받쳐주고, 세이지 그린 컬러가 은은한 포인트를 더해줍니다.'},
-    {'id': 25, 'category': '실내화', 'name': '부드러운 털 실내화 브라운', 'base_price': 16000,
-     'description': '부드러운 극세사로 안팎을 감싼 슬리퍼형 실내화입니다. 두툼한 안창이 발끝을 포근하게 받쳐주고, 브라운 톤이 따뜻한 무드를 더해줍니다.'},
-    {'id': 26, 'category': '실내화', 'name': '부드러운 털 실내화 네이비', 'base_price': 16000,
-     'description': '부드러운 극세사로 안팎을 감싼 슬리퍼형 실내화입니다. 두툼한 안창이 발끝을 포근하게 받쳐주고, 네이비 컬러가 차분한 포인트를 더해줍니다.'},
+    # 그레이/그린/브라운/네이비 4개로 나뉘어 있던 걸 한 상품(id=23)으로 합치고 색상은
+    # COLOR_OPTIONS로 옵션 처리한다 — frontend/src/component/Home/Home.jsx의 PRODUCTS
+    # colors[]와 동일한 구성이어야 한다.
+    {'id': 23, 'category': '실내화', 'name': '부드러운 털 실내화', 'base_price': 16000,
+     'description': '부드러운 극세사로 안팎을 감싼 슬리퍼형 실내화입니다. 두툼한 안창이 발끝을 포근하게 받쳐주고, 컬러별로 각기 다른 무드를 더해줍니다.'},
     {'id': 27, 'category': '욕실화', 'name': '물이 잘 빠지는 욕실화 레드', 'base_price': 10000,
      'description': '배수 슬릿을 낸 쿠션 소재 욕실화입니다. 도톰한 EVA 밑창이 푹신하게 발을 받쳐주고, 미끄럼을 줄여주는 표면 처리로 젖은 바닥에서도 안심하고 신을 수 있습니다. 레드 컬러가 욕실에 산뜻한 포인트를 더합니다.'},
     {'id': 28, 'category': '욕실화', 'name': '물이 잘 빠지는 욕실화 블랙', 'base_price': 10000,
@@ -80,10 +80,18 @@ PRODUCTS = [
      'description': '배수 슬릿을 낸 쿠션 소재 욕실화입니다. 도톰한 EVA 밑창이 푹신하게 발을 받쳐주고, 미끄럼을 줄여주는 표면 처리로 젖은 바닥에서도 안심하고 신을 수 있습니다. 화이트 컬러로 깔끔한 분위기를 연출합니다.'},
 ]
 
+# 색상 등 옵션이 여러 개인 상품만 여기 등록 — 없는 상품은 기존처럼 기본/기본형 옵션 하나만 붙는다.
+COLOR_OPTIONS = {
+    23: ['그레이', '그린', '브라운', '네이비'],
+}
+
 
 class Command(BaseCommand):
     help = '메인 "전체 상품" 페이지(Home.jsx PRODUCTS) 14개로 collection=main 데이터를 완전히 재입력합니다.'
 
+    # id 충돌 등으로 루프 중간에 실패하면(실제로 한 번 겪음) 이미 지운 기존 데이터가
+    # 복구되지 못한 채 반쪽만 남는다 — 원자적으로 묶어 실패 시 삭제 전 상태로 롤백되게 한다.
+    @transaction.atomic
     def handle(self, *args, **kwargs):
         old_qs = Product.objects.filter(collection='main')
         old_count = old_qs.count()
@@ -108,10 +116,18 @@ class Command(BaseCommand):
                 thumbnail_url=f"/products-main/product-{data['id']:02d}.jpg",
                 collection='main',
             )
-            ProductOption.objects.create(
-                product=product, option_name='기본', option_value='기본형',
-                extra_price=0, stock_count=50,
-            )
+            colors = COLOR_OPTIONS.get(data['id'])
+            if colors:
+                for color in colors:
+                    ProductOption.objects.create(
+                        product=product, option_name='색상', option_value=color,
+                        extra_price=0, stock_count=50,
+                    )
+            else:
+                ProductOption.objects.create(
+                    product=product, option_name='기본', option_value='기본형',
+                    extra_price=0, stock_count=50,
+                )
             self.stdout.write(f'  + [{product.id}] {product}')
             created += 1
 

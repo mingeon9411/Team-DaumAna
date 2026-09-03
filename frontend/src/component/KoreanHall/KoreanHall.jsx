@@ -13,7 +13,6 @@ import { NAV_FLAGS } from "../../utils/navFlags";
 import { getCartItems, logoutUser } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
-import { useNoticeModal } from "../../context/NoticeModalContext";
 import irworobongdo from "../../assets/decor/irworobongdo.svg";
 
 const FILM_SOURCES = ["/videos/jipdaum-hanok.mp4", "/videos/jipdaum-kor.mp4"];
@@ -86,7 +85,6 @@ function KoreanHall() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("access_token"));
   const { openLogin, openRegister } = useAuthModal();
   const { openMyPage } = useMyPageModal();
-  const { openNotice } = useNoticeModal();
   useEffect(() => {
     const sync = () => setIsLoggedIn(!!localStorage.getItem("access_token"));
     window.addEventListener("authchange", sync);
@@ -260,7 +258,7 @@ function KoreanHall() {
           <span aria-hidden="true" className="khUtilDivider">|</span>
           <button type="button" onClick={() => navigate("/")}>메인 상품</button>
           <span aria-hidden="true" className="khUtilDivider">|</span>
-          <button type="button" onClick={openNotice}>공지사항</button>
+          <button type="button" onClick={() => navigate("/notice")}>공지사항</button>
           <span aria-hidden="true" className="khUtilDivider">|</span>
           <button type="button" onClick={() => navigate("/customer-center")}>고객센터</button>
         </div>

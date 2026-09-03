@@ -10,25 +10,50 @@
   }
 }
 
-/* ── 모달 오버레이 ── */
-.mypageModalOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
+/* ── 전면 페이지 배경 + 가운데 정렬 ── */
+/* 배경은 .metallicSilver(Home.css)가 담당 — 여기서 또 깔면 두 배경이 겹친다.
+   레이아웃은 예전 모달(.mypageModalOverlay)이 하던 가운데 정렬을 그대로 옮겨온
+   것 — 카드(.mypage) 자체는 그대로 재사용하므로 이 파일은 "전면 페이지 배경 +
+   가운데 정렬" 역할만 담당한다. AuthPage.css와 같은 패턴. */
+.mypagePage {
+  width: 100vw;
+  height: 100vh;
+  flex-shrink: 0;
+  overflow-y: auto;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background: rgba(13, 13, 13, 0.55);
-  backdrop-filter: blur(4px);
-
   padding: 24px;
-  overflow-y: auto;
   font-family: "TwayFly", "Noto Sans KR", sans-serif;
 }
 
-.mypage > .mypageModalClose {
+/* CustomerCenter.css/Settings.css/AuthPage.css와 동일한 이유 — .metallicSilver가
+   이미 pastelSheenDrift를 걸어두는데 같은 프로퍼티라 나중 규칙이 앞 규칙을 통째로
+   덮어쓴다. 더 구체적인 선택자로 페이드인 + 배경 드리프트를 한 선언에 같이
+   나열해 항상 이기게 한다. */
+.mypagePage.metallicSilver {
+  animation: mypageFadeIn 0.8s ease-out forwards, pastelSheenDrift 48s ease-in-out infinite;
+}
+
+@keyframes mypageFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* AuthPage.css의 .authPagePanel과 같은 이유 — overflow-y:auto는 다른 축도
+   자동으로 클리핑 대상이 되어버려서, 카드(.mypage)의 둥근 모서리 box-shadow가
+   패널 경계에 딱 잘려 보인다. 패딩만큼 안쪽으로 여유를 주고 같은 크기의 음수
+   마진으로 바깥 레이아웃은 그대로 유지한다. */
+.mypagePagePanel {
+  position: relative;
+  max-height: calc(100vh - 48px);
+  padding: 10px;
+  margin: -10px;
+}
+
+.mypage > .mypageCloseBtn {
   position: absolute;
   top: 18px;
   right: 22px;
@@ -47,7 +72,7 @@
   opacity: 0.7;
 }
 
-.mypageModalClose:hover {
+.mypageCloseBtn:hover {
   opacity: 1;
 }
 

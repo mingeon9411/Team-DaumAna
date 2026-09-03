@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as PortOne from "@portone/browser-sdk/v2";
 import { createOrder, readyPayment, verifyPayment, getMyCoupons, validateCoupon } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
+import { useNestedLenis } from "../../hooks/useNestedLenis";
 import SiteFooter from "../SiteFooter";
 import "./Checkout.css";
 
@@ -14,6 +15,11 @@ function Checkout() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
+
+  // data-lenis-prevent로 전역 가로 Lenis(App.jsx)는 건너뛰므로, 이 페이지 전용
+  // 세로 스크롤에도 KoreanHall.jsx와 같은 부드러운 관성을 붙인다.
+  const pageRef = useRef(null);
+  useNestedLenis(pageRef);
 
   const items = state?.cartItems
     || (state?.product ? [{ ...state.product, quantity: state.quantity }] : null);
@@ -196,7 +202,7 @@ function Checkout() {
   const selectedPayLabel = PAYMENT_METHODS.find((m) => m.key === payMethod)?.label;
 
   return (
-    <main className="checkoutPage" data-lenis-prevent data-hsnap>
+    <main className="checkoutPage" data-lenis-prevent data-hsnap ref={pageRef}>
       <div className="checkoutInner">
         <p className="coEyebrow">SECURE CHECKOUT</p>
         <h1 className="checkoutTitle">주문 / 결제</h1>

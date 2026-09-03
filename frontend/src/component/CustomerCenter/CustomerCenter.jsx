@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LuChevronLeft, LuMessageSquare, LuMessageCircle, LuPhone, LuChevronDown } from "react-icons/lu";
 import "./CustomerCenter.css";
 import { useAuthModal } from "../../context/AuthModalContext";
+import { useNestedLenis } from "../../hooks/useNestedLenis";
 import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 
 // 실제 상담 티켓/실시간 상담 시스템은 없는 포트폴리오 프로젝트라(data/businessInfo.js 참고),
@@ -35,6 +36,11 @@ function CustomerCenter() {
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
 
+  // data-lenis-prevent로 전역 가로 Lenis(App.jsx)는 건너뛰므로, 이 페이지 전용
+  // 세로 스크롤에도 KoreanHall.jsx와 같은 부드러운 관성을 붙인다.
+  const pageRef = useRef(null);
+  useNestedLenis(pageRef);
+
   // Cart.jsx와 동일한 신호 — 마운트 시점에 남겨둬야 "뒤로가기" 버튼 클릭이든 브라우저
   // 뒤로가기든 상관없이, "/" 도착 시 App.jsx의 DoorIntroController가 이 흔적을 보고
   // 대문 애니메이션·인트로 영상 패널 없이 곧장 상품 목록 패널로 스크롤한다.
@@ -63,7 +69,7 @@ function CustomerCenter() {
   // metallicSilver — 상품 목록 그리드(Home.jsx #home-products)와 같은 파스텔 배경
   // 클래스. 독의 "배경 톤"(pastelLevel)·다크모드 설정을 그대로 따라간다.
   return (
-    <div className="ccPage metallicSilver" data-hsnap data-lenis-prevent>
+    <div className="ccPage metallicSilver" data-hsnap data-lenis-prevent ref={pageRef}>
       <div className="ccWrap">
         <button type="button" className="ccBackBtn" onClick={goBack}>
           <LuChevronLeft size={14} /> 목록으로

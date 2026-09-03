@@ -13,7 +13,6 @@ import { getCartItems, logoutUser } from "../../api";
 import { NAV_FLAGS } from "../../utils/navFlags";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
-import { useNoticeModal } from "../../context/NoticeModalContext";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import { getRecentSearches, addRecentSearch, removeRecentSearch, clearRecentSearches } from "../../utils/recentSearches";
 
@@ -59,7 +58,6 @@ function Header() {
   const [cartCount, setCartCount] = useState(0);
   const { openLogin, openRegister } = useAuthModal();
   const { openMyPage } = useMyPageModal();
-  const { openNotice } = useNoticeModal();
 
   useEffect(() => {
     const sync = () => setIsLoggedIn(!!localStorage.getItem("access_token"));
@@ -364,7 +362,7 @@ function Header() {
           <span aria-hidden="true" className="headerNavDivider">|</span>
           <button type="button" onClick={() => navigate("/korean-hall")} className="headerNavLink">한국관</button>
           <span aria-hidden="true" className="headerNavDivider">|</span>
-          <button type="button" onClick={openNotice} className="headerNavLink">공지사항</button>
+          <button type="button" onClick={() => navigate("/notice")} className="headerNavLink">공지사항</button>
           <span aria-hidden="true" className="headerNavDivider">|</span>
           <button type="button" onClick={() => navigate("/customer-center")} className="headerNavLink">고객센터</button>
           <span aria-hidden="true" className="headerNavDivider">|</span>

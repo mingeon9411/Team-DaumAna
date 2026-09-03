@@ -39,7 +39,17 @@
       "Bash(grep -n '{ id: 1[5-9], no:\\\\|{ id: 2[0-7], no:' frontend/src/component/Home/Home.jsx)",
       "Bash(iconv -f utf-8 -t utf-8)",
       "Bash(gh run *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(node check-search.js)",
+      "Bash(git checkout *)",
+      "Bash(git restore *)",
+      "Bash(docker exec *)",
+      "Bash(xargs grep -l \"Routes\\\\|Route path\")",
+      "Bash(node check-detail.js)",
+      "Bash(curl -s http://localhost:8081/api/shop/products/23)",
+      "Bash(grep -rn \"GetMapping.*products\\\\|RequestMapping.*shop\\\\|RequestMapping.*products\" D:/jipdaum-spring/jipdaum-spring/src/main/java/com/jipdaum_spring/controller/*.java 2>&1 | grep -i product)",
+      "Read(//d/jipdaum-spring/jipdaum-spring/src/main/java/com/jipdaum_spring/controller/**)",
+      "Bash(taskkill //PID 21484 //F)"
     ]
   }
 }
