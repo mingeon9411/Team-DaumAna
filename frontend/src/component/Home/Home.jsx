@@ -280,6 +280,8 @@ function Label({ children, className = "" }) {
 function Home() {
   const [wishlist, setWishlist] = useState([]);
   const [productSearchQuery, setProductSearchQuery] = useState("");
+  // Header.jsx 검색창과 동일한 "포커스 시 확대" 연출 — 상세는 그쪽 headerSearchWrapFocused 참고.
+  const [productSearchFocused, setProductSearchFocused] = useState(false);
   const [selectedTop, setSelectedTop] = useState("전체");
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [selectedMid, setSelectedMid] = useState("전체");
@@ -993,22 +995,30 @@ function Home() {
         {/* z-30 — 아래 상품 그리드 래퍼도 z-10이라, 같은 값이면 DOM 순서상 나중에 오는
             그리드가 인기 검색어 드롭다운을 덮어버린다(같은 값끼리는 각자 안의 z-index가
             아니라 그냥 뒤에 오는 요소가 이긴다). 확실히 더 높여서 덮이지 않게 함. */}
-        <div className="relative z-30 max-w-7xl mx-auto w-full mb-10 flex items-end justify-end gap-4 flex-wrap">
-          <div className="relative w-full sm:w-72">
+        {/* Header.jsx 검색창과 동일한 스크림 — 확대된 검색창에 시선을 모은다. */}
+        <div
+          className={`fixed inset-0 z-30 bg-black/35 transition-opacity duration-300 ${productSearchFocused ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          aria-hidden="true"
+        />
+        <div className="relative z-40 max-w-7xl mx-auto w-full mb-10 flex items-end justify-end gap-4 flex-wrap">
+          <div className={`relative w-full transition-all duration-300 ${productSearchFocused ? "sm:w-[420px]" : "sm:w-[280px]"}`}>
             <div className="flex items-center gap-2 border-b border-foreground pb-2">
-              <Search size={15} className="text-muted-foreground shrink-0" />
+              <Search size={productSearchFocused ? 18 : 15} className="text-muted-foreground shrink-0 transition-all duration-300" />
               <input
                 type="text"
                 value={productSearchQuery}
                 onChange={(e) => setProductSearchQuery(e.target.value)}
+                onFocus={() => setProductSearchFocused(true)}
+                onBlur={() => setProductSearchFocused(false)}
                 placeholder="상품명, 브랜드, 라벨 검색"
                 aria-label="전체 상품 검색"
-                className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                className={`flex-1 bg-transparent text-foreground placeholder:text-muted-foreground outline-none transition-all duration-300 ${productSearchFocused ? "text-lg" : "text-sm"}`}
                 style={SANS}
               />
               {productSearchQuery && (
                 <button
                   type="button"
+                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => setProductSearchQuery("")}
                   aria-label="검색어 지우기"
                   className="text-muted-foreground hover:text-foreground transition-colors shrink-0"
