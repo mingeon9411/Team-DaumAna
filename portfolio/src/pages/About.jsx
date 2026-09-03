@@ -1,51 +1,78 @@
 import canvaIcon from "../assets/icons/canva.png";
 
-// shields.io 배지 슬러그 — 루트 README의 Tech Stack 섹션과 동일한 값 사용
+// shields.io 배지 슬러그 — 루트 README의 Tech Stack 섹션과 동일한 값·구성 사용
 const STACK_GROUPS = [
   {
     category: "Frontend",
     items: [
-      "React-20232A?logo=react&logoColor=61DAFB",
-      "Vite-646CFF?logo=vite&logoColor=white",
-      "React_Router-CA4245?logo=reactrouter&logoColor=white",
-      "Axios-5A29E4?logo=axios&logoColor=white",
-      "hCaptcha-006BFF?logoColor=white",
+      { slug: "React-61DAFB?logo=react&logoColor=black", name: "React 19", desc: "컴포넌트 기반 SPA UI" },
+      { slug: "Vite-646CFF?logo=vite&logoColor=white", name: "Vite", desc: "개발 서버 · 번들러(HMR)" },
+      { slug: "React_Router-CA4245?logo=reactrouter&logoColor=white", name: "React Router", desc: "클라이언트 라우팅(SPA 페이지 전환)" },
+      { slug: "Axios-5A29E4?logo=axios&logoColor=white", name: "Axios", desc: "Django · Spring Boot API 호출" },
+      { slug: "Lenis-111111?logoColor=white", name: "Lenis", desc: "스무스 스크롤(전역 휠 이벤트 인터셉트)" },
     ],
   },
   {
     category: "Backend",
     items: [
-      "Spring_Boot-6DB33F?logo=springboot&logoColor=white",
-      "Django-092E20?logo=django&logoColor=white",
-      "DRF-ff1709?logo=django&logoColor=white",
-      "JWT-000000?logo=jsonwebtokens&logoColor=white",
-      "Google-4285F4?logo=google&logoColor=white",
-      "Kakao-FFCD00?logo=kakao&logoColor=black",
-      "Naver-03C75A?logo=naver&logoColor=white",
-      "PortOne_V2-6C1EF2?logoColor=white",
+      { slug: "Django-092E20?logo=django&logoColor=white", name: "Django", desc: "관리자 화면(admin) · JWT 인증 · 상품/카테고리/리뷰 조회 API" },
+      { slug: "DRF-ff1709?logo=django&logoColor=white", name: "Django REST Framework", desc: "Django 쪽 REST API" },
+      { slug: "Spring_Boot-6DB33F?logo=springboot&logoColor=white", name: "Spring Boot", desc: "장바구니 · 주문 · 결제 · 쿠폰 · 소셜로그인 · 챗봇 전담(별도 저장소 jipdaum-spring)" },
+      { slug: "Spring_Security-6DB33F?logo=springsecurity&logoColor=white", name: "Spring Security", desc: "OAuth2 클라이언트, 인증/인가 필터 체인" },
+      { slug: "Spring_Data_JPA-6DB33F?logo=spring&logoColor=white", name: "Spring Data JPA", desc: "엔티티 매핑, 원자적 조건부 UPDATE로 재고 · 쿠폰 동시성 제어" },
+      { slug: "JWT-000000?logo=jsonwebtokens&logoColor=white", name: "JWT", desc: "Django · Spring Boot가 secret 공유, 단일 토큰으로 양쪽 인증" },
     ],
   },
-  { category: "Database", items: ["MySQL-4479A1?logo=mysql&logoColor=white"] },
+  {
+    category: "AI 챗봇",
+    items: [
+      { slug: "Gemini_API-8E75B2?logo=googlegemini&logoColor=white", name: "Gemini API", desc: "gemini-3.6-flash 대화 + gemini-embedding-001 기반 RAG 의미 검색, 함수 호출로 상품 추천" },
+      { slug: "Bucket4j-2C3E50?logoColor=white", name: "Bucket4j", desc: "IP · 계정 단위 챗봇 API 요청 제한" },
+      { slug: "Caffeine-6F4E37?logoColor=white", name: "Caffeine", desc: "인메모리 캐시(Rate-limit 버킷 보관)" },
+    ],
+  },
+  {
+    category: "Database",
+    items: [
+      { slug: "MySQL-4479A1?logo=mysql&logoColor=white", name: "MySQL (Docker)", desc: "Django · Spring Boot 공용 DB, 스키마는 Django 마이그레이션이 소유(ddl-auto: none)" },
+    ],
+  },
+  {
+    category: "Auth",
+    items: [
+      { slug: "Google-4285F4?logo=google&logoColor=white", name: "Google OAuth2", desc: "소셜 로그인" },
+      { slug: "Kakao-FFCD00?logo=kakao&logoColor=black", name: "Kakao OAuth2", desc: "소셜 로그인" },
+      { slug: "Naver-03C75A?logo=naver&logoColor=white", name: "Naver OAuth2", desc: "소셜 로그인" },
+      { slug: "hCaptcha-006BFF?logoColor=white", name: "hCaptcha", desc: "회원가입 · 로그인 봇 방지 캡차" },
+    ],
+  },
+  {
+    category: "Payment",
+    items: [
+      { slug: "PortOne_V2-6C1EF2?logoColor=white", name: "PortOne V2", desc: "결제 연동 — 프론트(browser-sdk)와 Spring Boot(API Secret) 양쪽에서 검증" },
+    ],
+  },
   {
     category: "DevOps",
     items: [
-      "Docker-2496ED?logo=docker&logoColor=white",
-      "Git-F05032?logo=git&logoColor=white",
-      "GitHub_Actions-2088FF?logo=githubactions&logoColor=white",
-      "Amazon_EC2-FF9900?logo=amazonec2&logoColor=white",
-      "Cloudflare_Pages-F38020?logo=cloudflarepages&logoColor=white",
+      { slug: "Git-F05032?logo=git&logoColor=white", name: "Git", desc: "형상 관리" },
+      { slug: "GitHub-181717?logo=github&logoColor=white", name: "GitHub", desc: "저장소 3개(프론트+Django / Spring Boot / 포트폴리오) 관리" },
+      { slug: "GitHub_Actions-2088FF?logo=githubactions&logoColor=white", name: "GitHub Actions", desc: "Django · Spring Boot CI/CD(Docker Hub 빌드 → EC2 배포)" },
+      { slug: "Docker-2496ED?logo=docker&logoColor=white", name: "Docker", desc: "Django · Spring Boot 컨테이너화 배포 단위" },
+      { slug: "Amazon_EC2-FF9900?logo=amazonec2&logoColor=white", name: "Amazon EC2", desc: "Django · Spring Boot 컨테이너 호스팅" },
+      { slug: "Cloudflare_Pages-F38020?logo=cloudflarepages&logoColor=white", name: "Cloudflare Pages", desc: "프론트엔드 Git 연동 자동 빌드 · 배포" },
     ],
   },
   {
     category: "Tools",
-    // Claude/Gemini는 shields.io(simple-icons) 배지, Canva는 simple-icons에 없어
-    // Canva 공식 아이콘(static.canva.com)을 받아 로컬 자산으로 별도 렌더링.
-    items: ["Claude-D97757?logo=claude&logoColor=white", "Google_Gemini-8E75B2?logo=googlegemini&logoColor=white"],
+    items: [
+      { slug: "Claude-D97757?logo=claude&logoColor=white", name: "Claude", desc: "AI 페어 프로그래밍" },
+      { slug: "Google_Gemini-8E75B2?logo=googlegemini&logoColor=white", name: "Gemini", desc: "AI 페어 프로그래밍" },
+    ],
   },
 ];
 
 const badgeSrc = (slug) => `https://img.shields.io/badge/${slug}&style=flat-square`;
-const badgeLabel = (slug) => decodeURIComponent(slug.split("-")[0]).replace(/_/g, " ");
 
 const STRENGTHS = [
   {
@@ -130,19 +157,47 @@ export default function About() {
             <p className="text-sm font-semibold" style={{ color: "var(--color-muted)" }}>
               {g.category}
             </p>
-            <div className="mt-3 flex flex-wrap items-center gap-2">
-              {g.items.map((s) => (
-                <img key={s} src={badgeSrc(s)} alt={badgeLabel(s)} height={20} />
-              ))}
-              {g.category === "Tools" && (
-                <span
-                  className="inline-flex items-center gap-1.5 rounded-xs pr-2 pl-1.5 text-white"
-                  style={{ background: "#00C4CC", height: 20, fontSize: 11, fontWeight: 700 }}
-                >
-                  <img src={canvaIcon} alt="" width={14} height={14} className="rounded-full" />
-                  Canva
-                </span>
-              )}
+            <div className="markdown">
+              <table>
+                <thead>
+                  <tr>
+                    <th>기술</th>
+                    <th>설명</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {g.items.map((it) => (
+                    <tr key={it.name}>
+                      <td className="whitespace-nowrap">
+                        <img
+                          src={badgeSrc(it.slug)}
+                          alt={it.name}
+                          style={{ height: 20, width: "auto", maxWidth: "none" }}
+                        />
+                      </td>
+                      <td className="text-sm" style={{ color: "var(--color-muted)" }}>
+                        {it.desc}
+                      </td>
+                    </tr>
+                  ))}
+                  {g.category === "Tools" && (
+                    <tr>
+                      <td className="whitespace-nowrap">
+                        <span
+                          className="inline-flex items-center gap-1.5 rounded-xs pr-2 pl-1.5 text-white"
+                          style={{ background: "#00C4CC", height: 20, fontSize: 11, fontWeight: 700 }}
+                        >
+                          <img src={canvaIcon} alt="" width={14} height={14} className="rounded-full" />
+                          Canva
+                        </span>
+                      </td>
+                      <td className="text-sm" style={{ color: "var(--color-muted)" }}>
+                        디자인 자산 · 발표 자료 제작
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </section>
         ))}
