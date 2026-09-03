@@ -395,3 +395,180 @@
 <div align="center">
   <img src="assets/divider.svg" width="680" alt="divider"/>
 </div>
+
+<br/>
+
+<div align="center">
+
+### 📸 화면
+
+<img src="assets/screenshots/home.png" alt="메인 페이지 - 상품 그리드" width="860"/>
+
+<sub>메인 페이지 — 카테고리 필터, 인기 상품 랭킹, 상품 그리드</sub>
+
+<br/><br/>
+
+<img src="assets/screenshots/korean-hall.png" alt="한국관 페이지" width="860"/>
+
+<sub>한국관 — 별도 카탈로그·오방색 테마가 적용된 서브 브랜드 페이지</sub>
+
+<br/><br/>
+
+<img src="assets/screenshots/cart.png" alt="장바구니" width="860"/>
+
+<sub>장바구니 — Spring Boot API 연동, 로그인 여부에 따른 안내 분기</sub>
+
+</div>
+
+<br/>
+
+<div align="center">
+  <img src="assets/divider.svg" width="680" alt="divider"/>
+</div>
+
+<br/>
+
+<div align="center">
+
+### 🧩 Core Features
+
+| 영역 | 기능 |
+|---|---|
+| 🔐 인증 | 이메일 회원가입(OTP 인증) · 소셜 로그인(카카오·네이버·구글) · JWT(Django·Spring 공용 secret) |
+| 🛍 상품 | 메인 · 한국관 이원 카탈로그, 카테고리 필터, 사이드바 검색(라우트별 스코프) |
+| 🛒 장바구니 · 주문 | 장바구니 CRUD, 주문 생성, 최근 본 상품(macOS 독 스타일 위젯) |
+| 💳 결제 | PortOne V2 연동 결제, 결제 검증 실패 시 `@Transactional` 롤백 |
+| 🎟 쿠폰 | 쿠폰 조회 · 적용, 원자적 조건부 UPDATE로 동시 사용 시 초과 차감 방지 |
+| 📦 재고 | 조건부 UPDATE(`stockCount >= qty`)로 동시 주문 시 오버셀 방지 |
+| 🤖 AI 챗봇 | Gemini 기반 상담 — 임베딩(`gemini-embedding-001`) 코사인 유사도 검색 + 함수 호출로 상품 추천 |
+| 👤 마이페이지 | 주문 내역, 리뷰 작성, 회원 정보 관리 |
+| 🛠 관리자 | Django Admin — 상품 · 카테고리 · 쿠폰 · 회원 관리 |
+| 📱 반응형 | 로그인/회원가입/챗봇/사이드바 모바일 레이아웃 대응 |
+
+</div>
+
+<br/>
+
+<div align="center">
+  <img src="assets/divider.svg" width="680" alt="divider"/>
+</div>
+
+<br/>
+
+<div align="center">
+
+### 🚀 Quick Start
+
+</div>
+
+1. **MySQL 컨테이너 기동** — 저장소 루트에서 `docker compose up -d` (`jibdaum-mysql`, 포트 3306)
+2. **`backend/.env` 생성** — `backend/.env.example`을 복사해 값 채우기
+3. **`frontend/.env` 생성** — `frontend/.env.example`을 복사해 PortOne·hCaptcha 키 채우기
+4. **`jipdaum-spring` 별도 클론** — `application.yml.example`을 복사해 `application.yml` 생성, `jwt.secret`을 `backend/.env`의 `SECRET_KEY`와 동일하게 설정
+5. **각자 실행**
+   ```bash
+   # Django (backend/)
+   python manage.py runserver          # :8000
+
+   # React (frontend/)
+   npm install && npm run dev          # :5173
+
+   # Spring Boot (jipdaum-spring/)
+   ./mvnw spring-boot:run              # :8081
+   ```
+
+상세 절차는 [`CLAUDE.md`](CLAUDE.md), 서비스별 세부 사항은 각 저장소의 `README.md` 참고.
+
+<br/>
+
+<div align="center">
+  <img src="assets/divider.svg" width="680" alt="divider"/>
+</div>
+
+<br/>
+
+<div align="center">
+
+### 🔁 CI/CD Pipeline
+
+</div>
+
+```mermaid
+flowchart LR
+    subgraph FE["Frontend (React)"]
+        A1[push to main] --> A2[Cloudflare Pages\nGit 연동 자동 빌드]
+        A2 --> A3[Cloudflare 엣지 배포]
+    end
+
+    subgraph DJ["Django"]
+        B1[push to main] --> B2[GitHub Actions\ndocker build push]
+        B2 --> B3[Docker Hub]
+        B3 --> B4[EC2 SSH 배포\ncontainer restart]
+    end
+
+    subgraph SP["Spring Boot"]
+        C1[push to main] --> C2[GitHub Actions\ndocker build push +\ndependency check]
+        C2 --> C3[Docker Hub]
+        C3 --> C4[EC2 SSH 배포\ncontainer restart]
+    end
+```
+
+3개 저장소가 각자 독립된 파이프라인으로 `main` 푸시 시 자동 배포된다 — 프론트는 Cloudflare Pages가 Git 연동으로 직접 빌드, Django·Spring Boot는 GitHub Actions가 Docker Hub에 이미지를 올린 뒤 EC2에 SSH로 접속해 컨테이너를 교체한다.
+
+<br/>
+
+<div align="center">
+  <img src="assets/divider.svg" width="680" alt="divider"/>
+</div>
+
+<br/>
+
+<div align="center">
+
+### 🗺 Development Roadmap
+
+</div>
+
+| 상태 | 내용 |
+|---|---|
+| ✅ 완료 | 상품 상세 디자인 통일 · 네비게이션 스크롤 복귀 · 전자상거래법 사업자 정보 패널 · 로그인/회원가입/챗봇/사이드바 반응형 · 프론트 배포 EC2 → Cloudflare Pages 전환 |
+| 🟡 진행중 | README/발표 자료 보강(스크린샷 · 아키텍처 문서화), 프론트 이미지 WebP 빌드 파이프라인 |
+| 🔵 계획 | 라우트 단위 코드 스플리팅, 체크아웃 플로우 ErrorBoundary, 챗봇 임베딩 인덱스를 활용한 취향 기반 추천 노출 |
+
+<br/>
+
+<div align="center">
+  <img src="assets/divider.svg" width="680" alt="divider"/>
+</div>
+
+<br/>
+
+<div align="center">
+
+### 🔎 Engineering Principles
+
+</div>
+
+| 원칙 | 내용 |
+|---|---|
+| 코딩 전에 먼저 생각하기 | 가정을 숨기지 않고 드러내며, 여러 해석이 갈리면 임의로 하나를 골라 진행하지 않는다 |
+| 단순함 우선 | 요청한 것 이상의 기능 · 추상화 · 설정 옵션을 만들지 않는다(YAGNI) |
+| 외과수술식 변경 | 요청과 무관한 인접 코드는 건드리지 않고, 기존 스타일을 따른다 |
+| 목표 지향적 실행 | 모든 작업을 검증 가능한 기준으로 바꾼다("버그 수정"이 아니라 "재현 테스트 작성 후 통과") |
+
+<br/>
+
+<div align="center">
+  <img src="assets/divider.svg" width="680" alt="divider"/>
+</div>
+
+<br/>
+
+<div align="center">
+
+### 📄 License & Notice
+
+개인 프로젝트로 제작되었으며, 별도 오픈소스 라이선스는 지정하지 않았습니다.
+상품 이미지 · 브랜드 자산은 발표 · 학습 목적의 목업이며 실제 판매 상품이 아닙니다.
+
+</div>
