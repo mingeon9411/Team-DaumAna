@@ -15,6 +15,7 @@ import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import { getRecentSearches, addRecentSearch, removeRecentSearch, clearRecentSearches } from "../../utils/recentSearches";
+import { KH_POPULAR_KEYWORDS } from "../../data/koreanHallKeywords";
 
 const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
 
@@ -29,6 +30,11 @@ function Header() {
   const isCartPage = location.pathname === "/cart";
   const isHome = location.pathname === "/";
   const isKoreanHall = location.pathname === "/korean-hall";
+  // /product/:id는 한국관 상품만 다루는 상세페이지(App.jsx 라우팅) — 로고·인기
+  // 검색어는 한국관 기준으로 보여준다. 스크롤 배너 전환(showExpandedNav 등)까지
+  // isKoreanHall에 얹으면 이 페이지의 상시 노출 헤더가 스크롤 전엔 숨어버리므로
+  // 그쪽엔 관여하지 않고, 로고/검색어 표시에만 별도로 쓴다.
+  const isKoreanHallProduct = location.pathname.startsWith("/product/");
   const isItemDetail = location.pathname.startsWith("/item/");
   const isSettingsPage = location.pathname === "/settings";
   const isCustomerCenterPage = location.pathname === "/customer-center";
@@ -321,6 +327,7 @@ function Header() {
                  예전엔 이걸 위 form 안에 한 줄(flex row)로 같이 넣어서 좁은 폭
                  안에서 입력창과 겹쳐 보였다. 이제 검색줄과 별도의 블록으로 분리. */
               <PopularKeywordsSidebar
+                data={isKoreanHall || isKoreanHallProduct ? KH_POPULAR_KEYWORDS : undefined}
                 onSelect={(keyword) => { setHeaderSearchQuery(keyword); submitHeaderSearch(keyword); }}
               />
             )}
@@ -329,8 +336,8 @@ function Header() {
       )}
 
       {!isFooterPanel && (
-        <Link to={isKoreanHall ? "/korean-hall" : "/"} className="logo" aria-label="집다움 홈">
-          {isKoreanHall ? (
+        <Link to={isKoreanHall || isKoreanHallProduct ? "/korean-hall" : "/"} className="logo" aria-label="집다움 홈">
+          {isKoreanHall || isKoreanHallProduct ? (
             <img
               src={darkMode ? JipdaumHanokLogoDark : JipdaumHanokLogo}
               alt="집다움"

@@ -14,20 +14,9 @@ import { getCartItems, logoutUser } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import irworobongdo from "../../assets/decor/irworobongdo.svg";
+import { KH_POPULAR_KEYWORDS } from "../../data/koreanHallKeywords";
 
 const FILM_SOURCES = ["/videos/jipdaum-hanok.mp4", "/videos/jipdaum-kor.mp4"];
-
-// 한국관 전용 인기 검색어 — Home.jsx의 MOCK_KEYWORDS와 마찬가지로 실제 products(위 배열)
-// 상품명 속 문구로만 골랐다. 클릭하면 productSearchQuery로 들어가 아래 그리드가 바로 필터링된다.
-const KH_POPULAR_KEYWORDS = [
-  { rank: 1, keyword: "한지 무드 조명", status: "up" },
-  { rank: 2, keyword: "평상 소파", status: "new" },
-  { rank: 3, keyword: "서안청 책장", status: "new" },
-  { rank: 4, keyword: "월넛 사이드 테이블", status: "same" },
-  { rank: 5, keyword: "한지 펜던트 조명", status: "up" },
-  { rank: 6, keyword: "나비 문양 수납장", status: "down" },
-  { rank: 7, keyword: "꽃잎 화병", status: "new" },
-];
 
 function KoreanHall() {
   const navigate = useNavigate();
