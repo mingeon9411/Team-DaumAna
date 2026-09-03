@@ -45,7 +45,7 @@ export default function CaseStudyDetail() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-12">
+    <div className="mx-auto max-w-5xl px-6 py-12">
       <Link className="text-sm underline" style={{ color: "var(--color-muted)" }} to="/case-studies" viewTransition>
         ← Case Studies
       </Link>
