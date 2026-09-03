@@ -6,8 +6,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft, Heart, Star, Share2, Truck } from "lucide-react";
 import { getProductDetail, addToCart, getReviews, createReview } from "../../api";
 import products from "../../data/products";
-import KorLogo from "../../assets/logo/Kor_logo.png";
-import WhiteLogo from "../../assets/logo/white_logo.png";
 import { isWished, toggleWish } from "../../utils/wishlist";
 import { addRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
@@ -77,15 +75,6 @@ function ProductDetail() {
   const [activeImage, setActiveImage] = useState(0);
   const [wished, setWished] = useState(false);
   // 헤더의 한옥 로고와는 별개로, 상세페이지 자체에 한글 워드마크를 하나 더 둔다.
-  // 초기값은 body.dark 클래스가 아니라 localStorage(Sidebar.jsx가 쓰는 것과 동일한
-  // 키)에서 직접 읽는다 — 마운트 시점엔 Sidebar의 다크모드 useEffect가 아직 body에
-  // 클래스를 붙이기 전이라, body 클래스를 읽으면 새로고침 때마다 라이트로 오판했다.
-  const [darkMode, setDarkMode] = useState(() => localStorage.getItem("darkMode") === "1");
-  useEffect(() => {
-    const syncDarkMode = () => setDarkMode(document.body.classList.contains("dark"));
-    window.addEventListener("darkmodechange", syncDarkMode);
-    return () => window.removeEventListener("darkmodechange", syncDarkMode);
-  }, []);
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
@@ -246,18 +235,6 @@ function ProductDetail() {
       </div>
 
       <div className="pdContent max-w-7xl mx-auto w-full px-6 md:px-10">
-        {/* 헤더의 한옥 로고와 별개로, 상세페이지 안에서도 한글 워드마크로 바로
-            메인 상품페이지("/")로 갈 수 있게 둔다 — 아래 "목록으로"는 한국관
-            목록으로 돌아가는 것이라 동작이 다르다. */}
-        <button
-          type="button"
-          onClick={() => navigate("/")}
-          aria-label="집다움 메인으로"
-          className="detailLogoLink"
-        >
-          <img src={darkMode ? WhiteLogo : KorLogo} alt="집다움" className="detailLogoImg" />
-        </button>
-
         {/* 대문 애니메이션 스킵 + 상품 목록으로 바로 스크롤은 App.jsx의
             DoorIntroController가 productDetailReturnZone(마운트 시 기록)을 보고
             처리한다 — 브라우저 뒤로가기로 돌아갈 때도 똑같이 적용된다. */}
