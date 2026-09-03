@@ -527,9 +527,6 @@ body.dark .header.koreanHallHeader::before {
 
 .header.koreanHallHeader .headerMoon {
   left: calc(var(--khAnchorX) - 69px);
-}
-
-body.dark .header.lightBg.koreanHallHeader .headerMoon {
   animation-name: moonGlowSmall;
 }
 
@@ -683,9 +680,9 @@ body.dark .starField::after {
     0 0 42px 16px rgba(180,210,255,0.14);
 }
 
-body.dark .header.scrolled .headerMoon,
-body.dark .header.lightBg .headerMoon,
-body.dark .header.cartHeader .headerMoon {
+.header.scrolled .headerMoon,
+.header.lightBg .headerMoon,
+.header.cartHeader .headerMoon {
   opacity: 1;
   animation: moonGlow 5s ease-in-out infinite alternate;
 }
@@ -718,13 +715,6 @@ body.dark .header.cartHeader .headerMoon {
 .header.lightBg .headerSun,
 .header.cartHeader .headerSun {
   opacity: 1;
-}
-
-body.dark .headerSun,
-body.dark .header.scrolled .headerSun,
-body.dark .header.lightBg .headerSun,
-body.dark .header.cartHeader .headerSun {
-  opacity: 0;
 }
 
 .headerIlwol {

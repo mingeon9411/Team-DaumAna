@@ -276,15 +276,6 @@ body.dark .khUtilDivider {
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
 }
 
-.khCategoryList {
-    display: flex;
-    flex: 1 1 auto;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
-    min-width: 0;
-}
-
 /* 인기 검색어 랭킹 — 카테고리 메뉴 오른쪽 끝에 고정폭으로 붙는다 */
 .khKeywordWrap {
     flex: 0 0 240px;
@@ -317,25 +308,6 @@ body.dark .khKeywordWrap .popularKeywordDropdown {
       linear-gradient(150deg, #3f5f9e 0%, #2b2013 25%, #b8453a 50%, #14100a 75%, #d6a86a 100%) border-box;
     background-size: 100% 100%, 100% 100%;
     box-shadow: 0 16px 44px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(214, 168, 106, 0.1);
-}
-
-.khCategoryList--sub {
-    grid-column: 1 / -1;
-    justify-content: center;
-    gap: 5px;
-    margin-top: 4px;
-    padding-top: 8px;
-    border-top: 1px solid rgba(180, 132, 74, 0.2);
-}
-
-body.dark .khCategoryList--sub {
-    border-top-color: rgba(214, 168, 106, 0.18);
-}
-
-.khCategoryBtn--sub {
-    padding: 3px 11px;
-    font-size: 10px;
-    opacity: 0.85;
 }
 
 .khSearchNotice {
@@ -374,55 +346,6 @@ body.dark .khCategoryMenu {
     background: linear-gradient(135deg, rgba(43, 32, 19, 0.92), rgba(26, 19, 9, 0.92));
     border-bottom: 1px solid rgba(214, 168, 106, 0.24);
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
-}
-
-.khCategoryBtn {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 5px 14px;
-    border-radius: 999px;
-    border: 1px solid rgba(180, 132, 74, 0.28);
-    background: linear-gradient(135deg, #f8f1e3 0%, #efe2c9 100%);
-    color: var(--muted-foreground);
-    font-family: "TwayFly", "Noto Sans KR", sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.02em;
-    cursor: pointer;
-    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
-}
-
-.khCategoryBtn svg {
-    flex-shrink: 0;
-}
-
-.khCategoryBtn:hover {
-    color: var(--foreground);
-    border-color: rgba(166, 52, 42, 0.4);
-    transform: translateY(-1px) scale(1.06);
-}
-
-.khCategoryBtn.active {
-    background: linear-gradient(135deg, #a6342a 0%, #7c261e 100%);
-    border-color: transparent;
-    color: #f5f1ea;
-    font-weight: 500;
-}
-
-body.dark .khCategoryBtn {
-    background: linear-gradient(135deg, #2b2013 0%, #1a1309 100%);
-    border-color: rgba(214, 168, 106, 0.24);
-    color: #5a6d9a;
-}
-
-body.dark .khCategoryBtn:hover {
-    color: #c8d5f2;
-    border-color: rgba(214, 168, 106, 0.4);
-}
-
-body.dark .khCategoryBtn.active {
-    background: linear-gradient(135deg, #a6342a 0%, #7c261e 100%);
-    color: #f5f1ea;
 }
 
 .khGrid {

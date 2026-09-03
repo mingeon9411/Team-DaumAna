@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Lenis from "lenis";
-import { LayoutGrid, Sofa, Table, Lamp, Archive, Package, Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag } from "lucide-react";
 import "./KoreanHall.css";
 import products from "../../data/products";
 import ChatBot from "../MyPage/ChatBot";
@@ -16,14 +16,6 @@ import { useMyPageModal } from "../../context/MyPageModalContext";
 import irworobongdo from "../../assets/decor/irworobongdo.svg";
 
 const FILM_SOURCES = ["/videos/jipdaum-hanok.mp4", "/videos/jipdaum-kor.mp4"];
-const PRODUCT_CATEGORIES = [
-  { label: "전체", Icon: LayoutGrid },
-  { label: "소파", Icon: Sofa },
-  { label: "테이블", Icon: Table },
-  { label: "조명", Icon: Lamp },
-  { label: "수납", Icon: Archive },
-  { label: "소품", Icon: Package },
-];
 
 // 한국관 전용 인기 검색어 — Home.jsx의 MOCK_KEYWORDS와 마찬가지로 실제 products(위 배열)
 // 상품명 속 문구로만 골랐다. 클릭하면 productSearchQuery로 들어가 아래 그리드가 바로 필터링된다.
@@ -44,8 +36,6 @@ function KoreanHall() {
   const gridRef = useRef(null);
   const [filmIndex, setFilmIndex] = useState(0);
   const [filmEnded, setFilmEnded] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("전체");
-  const [selectedMid, setSelectedMid] = useState("전체");
   const [productSearchQuery, setProductSearchQuery] = useState("");
   const [recentlyViewed, setRecentlyViewed] = useState(() => getRecentlyViewed("korean-hall"));
 
@@ -115,12 +105,6 @@ function KoreanHall() {
     };
   }, []);
 
-  // 대분류를 고를 때만 그 안의 중분류 목록이 의미가 있다 — 전체 보기에선 중분류 탭 자체를 숨긴다.
-  const midOptions =
-    selectedCategory === "전체"
-      ? []
-      : [...new Set(products.filter((p) => p.category === selectedCategory).map((p) => p.midCategory))];
-
   // 실시간 인기 검색어는 실제 상품명(또는 설명/카테고리/브랜드) 속 문구로만 골라둔
   // 것들이라, 검색창에 채워 필터링만 하지 않고 그 상품 상세로 바로 넘어가게 한다.
   // 겹치는 상품이 여럿이면 첫 번째로 매칭되는 상품으로 이동.
@@ -138,17 +122,14 @@ function KoreanHall() {
 
   const filteredProducts = (() => {
     const q = productSearchQuery.trim().toLowerCase();
-    return products.filter((p) => {
-      const matchesCategory = selectedCategory === "전체" || p.category === selectedCategory;
-      const matchesMid = selectedMid === "전체" || p.midCategory === selectedMid;
-      const matchesQuery =
-        !q ||
+    if (!q) return products;
+    return products.filter(
+      (p) =>
         p.name.toLowerCase().includes(q) ||
         p.desc.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q) ||
-        p.brand.toLowerCase().includes(q);
-      return matchesCategory && matchesMid && matchesQuery;
-    });
+        p.brand.toLowerCase().includes(q)
+    );
   })();
 
   useEffect(() => {
@@ -267,40 +248,6 @@ function KoreanHall() {
           <div className="khKeywordWrap">
             <PopularKeywordsSidebar data={KH_POPULAR_KEYWORDS} onSelect={handlePopularKeywordSelect} />
           </div>
-
-          <div className="khCategoryList">
-            {PRODUCT_CATEGORIES.map((cat) => (
-              <button
-                key={cat.label}
-                type="button"
-                className={`khCategoryBtn${selectedCategory === cat.label ? " active" : ""}`}
-                onClick={() => {
-                  setSelectedCategory(cat.label);
-                  setSelectedMid("전체");
-                }}
-              >
-                <cat.Icon size={13} strokeWidth={1.75} />
-                {cat.label}
-              </button>
-            ))}
-          </div>
-
-          {/* 중분류 탭 — 대분류 안에 세부 유형이 둘 이상일 때만 뜬다. khCategoryMenu 안에 둬야
-              sticky 헤더와 같이 붙어 움직인다(밖에 두면 스크롤 시 헤더 밑으로 가려짐). */}
-          {midOptions.length > 1 && (
-            <div className="khCategoryList khCategoryList--sub">
-              {["전체", ...midOptions].map((mid) => (
-                <button
-                  key={mid}
-                  type="button"
-                  className={`khCategoryBtn khCategoryBtn--sub${selectedMid === mid ? " active" : ""}`}
-                  onClick={() => setSelectedMid(mid)}
-                >
-                  {mid}
-                </button>
-              ))}
-            </div>
-          )}
         </div>
 
         {productSearchQuery && (
