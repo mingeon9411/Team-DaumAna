@@ -37,6 +37,13 @@ const NOTICES = [
     title: "신규 회원 가입 혜택",
     body: "지금 가입하시면 첫 구매 시 사용 가능한 10% 할인 쿠폰을 드립니다.",
   },
+
+  { id: 5,
+    date: "2026.09.03",
+    tag: "이벤트",
+    title: "추석 맞이 특별 이벤트",
+    body: "추석 맞이 전 상품을 최대 30% 할인된 가격으로 만나보세요. 한정 수량이므로 상품을 바로 확인해주세요"
+  }
 ];
 
 // Home.jsx의 동명 헬퍼와 같은 모양 — 카테고리 구획을 가르는 무지개 헤어라인.
@@ -69,7 +76,11 @@ function Notice() {
 
   return (
     <div className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto" data-hsnap data-lenis-prevent>
-      <div className="max-w-7xl mx-auto w-full px-8 py-20">
+      {/* Cart.jsx(.cartPage)와 같은 130px 상단 여백 — 이 페이지는 Header.jsx의
+          showExpandedNav 목록에 없어(스크롤 전에도 항상 펼쳐진 상태) 헤더 배너가
+          최상단부터 떠 있다. Home.jsx 상품 그리드의 py-20(80px)을 그대로 썼더니
+          그 배너에 "목록으로"/제목이 가려졌다 — Cart처럼 항상-펼침 페이지 기준으로 맞춘다. */}
+      <div className="max-w-7xl mx-auto w-full px-8 pt-[130px] pb-20">
         <button
           type="button"
           onClick={() => navigate("/")}

@@ -1,11 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag, Plus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag } from "lucide-react";
 import "./Home.css";
 import ChatBot from "../MyPage/ChatBot";
 import LookbookViewer from "./LookbookViewer";
-import PhotoReviewViewer from "./PhotoReviewViewer";
-import PhotoReviewUploadModal from "./PhotoReviewUploadModal";
 import RecentlyViewedSidebar from "./RecentlyViewedSidebar";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import SiteFooter from "../SiteFooter";
@@ -54,7 +52,7 @@ import nordicSofaInterior from "../../assets/interior/(소파) 북유럽 소파 
 import europeanWoodSofaInterior from "../../assets/interior/(소파) 유러피안 우드 소파 - 인테리어.jpg";
 import resortChairInterior from "../../assets/interior/(의자) 유럽풍 피서지 의자 - 인테리어.jpg";
 import nordicBedInterior from "../../assets/interior/(침대) 북유럽 침대 - 인테리어.jpg";
-import { getCartItems, getPhotoReviews, getProductsByCollection, logoutUser } from "../../api";
+import { getCartItems, getProductsByCollection, logoutUser } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 
@@ -373,9 +371,6 @@ function Home() {
   const [selectedMid, setSelectedMid] = useState("전체");
   const [lookbookPage, setLookbookPage] = useState(0);
   const [lookbookViewerIndex, setLookbookViewerIndex] = useState(null);
-  const [photoReviews, setPhotoReviews] = useState([]);
-  const [photoReviewViewerIndex, setPhotoReviewViewerIndex] = useState(null);
-  const [showPhotoUploadModal, setShowPhotoUploadModal] = useState(false);
   const [cartCounts, setCartCounts] = useState({});
 
   // 상품 이름/가격/설명은 더 이상 프론트에만 하드코딩돼 있지 않고, 백엔드
@@ -408,15 +403,6 @@ function Home() {
     };
   });
 
-  // 구매자가 올린 포토리뷰(사진 첨부된 리뷰) — 룩북 갤러리 패널에 실제 데이터로 보여준다.
-  const loadPhotoReviews = () => {
-    getPhotoReviews()
-      .then((res) => setPhotoReviews(Array.isArray(res.data) ? res.data : []))
-      .catch(() => setPhotoReviews([]));
-  };
-  useEffect(() => {
-    loadPhotoReviews();
-  }, []);
   // localStorage에 박제된 image URL은 빌드할 때마다 해시가 바뀌어 깨지기 쉽다(상품
   // 사진을 교체/재압축할 때마다 예전에 저장해둔 경로가 404남) — 그래서 저장된 스냅샷을
   // 그대로 쓰지 않고, 상품이 아직 PRODUCTS에 있으면 항상 최신 image/name/price로 덮어쓴다.
@@ -513,7 +499,7 @@ function Home() {
   }, []);
   // 인트로 영상 — 도어인트로가 끝나기 전엔 재생하지 않는다. 페이지에 들어와 처음
   // 화면에 잡힐 때 딱 한 번만 재생하고, 끝나면 소파 사진으로 전환한 채 고정된다.
-  // 이후 스크롤로 다시 돌아와도 재생하지 않는다(패널3·4와 동일한 패턴).
+  // 이후 스크롤로 다시 돌아와도 재생하지 않는다(2번째 패널과 동일한 패턴).
   const introVideoRef = useRef(null);
   const [introVideoEnded, setIntroVideoEnded] = useState(false);
   const [doorIntroDone, setDoorIntroDone] = useState(false);
@@ -547,60 +533,7 @@ function Home() {
     return () => io.disconnect();
   }, [doorIntroDone]);
 
-  // 두 번째(복제) 페이지 — 영상 없이 소파 사진에 켄 번즈 확대 연출만 준다. 페이지에
-  // 처음 들어와 화면에 잡힐 때 딱 한 번만 연출을 보여준 뒤, 눈에 들어올 시간이
-  // 지나면 에세이를 펼친다. 이후 스크롤로 다시 돌아와도 재생하지 않는다.
-  const [introVideo2Ended, setIntroVideo2Ended] = useState(false);
-  const [essay2PlayKey, setEssay2PlayKey] = useState(0);
-  const introVideo2Started = useRef(false);
-
-  useEffect(() => {
-    const el = document.getElementById("home-essay-2");
-    if (!el) return;
-
-    let revealTimer;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting || introVideo2Started.current) return;
-        introVideo2Started.current = true;
-        setEssay2PlayKey((k) => k + 1);
-        revealTimer = setTimeout(() => setIntroVideo2Ended(true), 3000);
-        io.disconnect();
-      },
-      { threshold: 0.5 }
-    );
-
-    io.observe(el);
-    return () => {
-      io.disconnect();
-      clearTimeout(revealTimer);
-    };
-  }, []);
-
-  // 세 번째 인트로 영상("집다움.mp4") — 이 페이지에 처음 들어올 때 딱 한 번만 재생한다.
-  const introVideo3Ref = useRef(null);
-  const [introVideo3Ended, setIntroVideo3Ended] = useState(false);
-  const introVideo3Started = useRef(false);
-
-  useEffect(() => {
-    const el = document.getElementById("home-essay-3");
-    if (!el) return;
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting || introVideo3Started.current) return;
-        introVideo3Started.current = true;
-        introVideo3Ref.current?.play().catch(() => {});
-        io.disconnect();
-      },
-      { threshold: 0.5 }
-    );
-
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  // 네 번째(한국관 배너) 영상("jipdaum-hanok.mp4") — 이 페이지에 처음 들어올 때 딱
+  // 두 번째(한국관 배너) 영상("jipdaum-hanok.mp4") — 이 페이지에 처음 들어올 때 딱
   // 한 번만 재생하고, 끝나면 왼쪽에 한국관으로 초대하는 에세이가 펼쳐진다.
   const introVideo4Ref = useRef(null);
   const [introVideo4Ended, setIntroVideo4Ended] = useState(false);
@@ -631,7 +564,7 @@ function Home() {
   }, []);
 
   // 첫 번째 인트로 영상이 끝나 에세이가 펼쳐진 뒤 7초 있다가, 사용자가 아직
-  // 그 페이지에 머물러 있으면 (복제된) 두 번째 인트로 페이지로 스크롤한다.
+  // 그 페이지에 머물러 있으면 두 번째(한국관 배너) 인트로 페이지로 스크롤한다.
   useEffect(() => {
     if (!introVideoEnded) return;
 
@@ -645,60 +578,8 @@ function Home() {
           window.lenis.scrollTo(target, {
             duration: 5.3,
             easing: (t) => 1 - Math.pow(1 - t, 3),
-          });
-        }
-      }
-    }, 7000);
-
-    return () => clearTimeout(holdTimer);
-  }, [introVideoEnded]);
-
-  // 두 번째(복제) 페이지의 에세이가 펼쳐진 뒤 7초 있다가, 사용자가 아직 그 페이지에
-  // 머물러 있으면 세 번째 인트로 페이지로 스크롤한다.
-  useEffect(() => {
-    if (!introVideo2Ended) return;
-
-    const holdTimer = setTimeout(() => {
-      const essayEl = document.getElementById("home-essay-2");
-      const stillOnEssay = essayEl && Math.abs(essayEl.getBoundingClientRect().left) < 50;
-      if (stillOnEssay && window.lenis) {
-        const target = document.querySelectorAll("[data-hsnap]")[2];
-        if (target) {
-          window.lenis.resize();
-          window.lenis.scrollTo(target, {
-            duration: 5.3,
-            easing: (t) => 1 - Math.pow(1 - t, 3),
             onComplete: () => {
-              // 세 번째 영상은 한 번만 재생하므로, 이미 재생을 시작했다면 다시 되돌리지 않는다.
-              if (introVideo3Started.current) return;
-              introVideo3Started.current = true;
-              introVideo3Ref.current?.play().catch(() => {});
-            },
-          });
-        }
-      }
-    }, 7000);
-
-    return () => clearTimeout(holdTimer);
-  }, [introVideo2Ended]);
-
-  // 세 번째 인트로 영상도 끝나고 7초 있다가, 사용자가 아직 그 페이지에
-  // 머물러 있으면 네 번째(한국관 배너) 페이지로 스크롤한다.
-  useEffect(() => {
-    if (!introVideo3Ended) return;
-
-    const holdTimer = setTimeout(() => {
-      const essayEl = document.getElementById("home-essay-3");
-      const stillOnEssay = essayEl && Math.abs(essayEl.getBoundingClientRect().left) < 50;
-      if (stillOnEssay && window.lenis) {
-        const target = document.querySelectorAll("[data-hsnap]")[3];
-        if (target) {
-          window.lenis.resize();
-          window.lenis.scrollTo(target, {
-            duration: 5.3,
-            easing: (t) => 1 - Math.pow(1 - t, 3),
-            onComplete: () => {
-              // 네 번째 영상도 한 번만 재생하므로, 이미 재생을 시작했다면 다시 되돌리지 않는다.
+              // 두 번째 영상은 한 번만 재생하므로, 이미 재생을 시작했다면 다시 되돌리지 않는다.
               if (introVideo4Started.current) return;
               introVideo4Started.current = true;
               introVideo4Ref.current?.play().catch(() => {});
@@ -709,9 +590,9 @@ function Home() {
     }, 7000);
 
     return () => clearTimeout(holdTimer);
-  }, [introVideo3Ended]);
+  }, [introVideoEnded]);
 
-  // 네 번째(한국관 배너) 영상도 끝나고 에세이가 펼쳐진 뒤 7초 있다가, 사용자가 아직
+  // 두 번째(한국관 배너) 영상도 끝나고 에세이가 펼쳐진 뒤 7초 있다가, 사용자가 아직
   // 그 페이지에 머물러 있으면 상품 페이지로 스크롤한다.
   useEffect(() => {
     if (!introVideo4Ended) return;
@@ -720,7 +601,7 @@ function Home() {
       const essayEl = document.getElementById("home-essay-4");
       const stillOnEssay = essayEl && Math.abs(essayEl.getBoundingClientRect().left) < 50;
       if (stillOnEssay && window.lenis) {
-        const target = document.querySelectorAll("[data-hsnap]")[4];
+        const target = document.querySelectorAll("[data-hsnap]")[2];
         if (target) {
           window.lenis.resize();
           window.lenis.scrollTo(target, {
@@ -735,7 +616,7 @@ function Home() {
   }, [introVideo4Ended]);
 
   const scrollToProductGrid = () => {
-    const target = document.querySelectorAll("[data-hsnap]")[4];
+    const target = document.querySelectorAll("[data-hsnap]")[2];
     if (!target) return;
     if (window.lenis) {
       window.lenis.resize();
@@ -797,15 +678,12 @@ function Home() {
   const toggleWish = (id) =>
     setWishlist((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
-  // 인트로 영상 옆에 연결해 보여줄 상품 — 영상 속 거실 장면에 어울리는 북유럽 소파
-  const featuredProduct = mergedProducts.find((p) => p.id === 5);
-
   // 도어인트로를 지나 홈에 들어오면 기본적으로 1번째 패널(에세이)에서 시작한다.
   // (HERO가 전체 상품 페이지 앞으로 옮겨가면서 에세이가 첫 패널이 됨)
   //
   // 다른 페이지(상품 상세의 "목록으로", 고객센터/설정의 뒤로가기 등)에서 돌아온
   // 경우엔 App.jsx의 DoorIntroController가 SKIP_HOME_DEFAULT_PANEL과 함께
-  // PENDING_HOME_PANEL_INDEX(보통 4=상품 그리드)를 세팅해둔다 — 여기서 그 값을
+  // PENDING_HOME_PANEL_INDEX(보통 2=상품 그리드)를 세팅해둔다 — 여기서 그 값을
   // 읽어 지정된 패널로 바로 이동한다. 값이 없으면(예: 로고 클릭으로 그냥 홈에
   // 온 경우) 원래대로 기본 패널(0번, 에세이)로 이동한다.
   //
@@ -901,99 +779,6 @@ function Home() {
             >
               상품 보러가기 →
             </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ESSAY SPREAD (복제) — 위 페이지와 좌우가 뒤바뀐 두 번째 페이지. 영상 없이 소파
-          사진에 켄 번즈 확대 연출만 주고, 화면에 들어와 잠시 지나면 에세이가 왼쪽에 펼쳐진다 */}
-      <section id="home-essay-2" data-hide-header data-hsnap className="w-screen h-screen shrink-0 overflow-hidden flex flex-row text-foreground">
-        <div
-          className="sparkleBg holoMesh relative h-full flex flex-col items-start justify-center overflow-hidden"
-          style={{
-            width: introVideo2Ended ? "50%" : "0%",
-            opacity: introVideo2Ended ? 1 : 0,
-            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s ease-in-out 0.5s",
-          }}
-        >
-          <div className="relative z-10 w-full max-w-md px-16">
-            <p className="text-xs tracking-[0.25em] uppercase text-muted-foreground mb-5 whitespace-nowrap" style={MONO}>
-              FEATURED IN THIS SCENE
-            </p>
-            <h3 className="text-3xl md:text-4xl font-light leading-snug mb-6 whitespace-nowrap" style={SERIF}>
-              사진 속 공간에 놓인
-              <br />
-              {featuredProduct.name}
-            </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mb-10 whitespace-nowrap">
-              사진에 등장한 상품을 지금 바로 만나보세요.
-              <br />
-              사진에 관련된 상품을 구매할 수 있습니다.
-            </p>
-            <button
-              type="button"
-              onClick={() => navigate(`/item/${featuredProduct.id}`)}
-              className="px-8 py-3.5 bg-foreground text-background text-sm font-medium tracking-wide hover:opacity-85 transition-opacity whitespace-nowrap"
-              style={SANS}
-            >
-              상품 보러가기 →
-            </button>
-          </div>
-        </div>
-
-        <div
-          className="relative h-full overflow-hidden"
-          style={{
-            width: introVideo2Ended ? "50%" : "100%",
-            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1)",
-          }}
-        >
-          <img
-            key={essay2PlayKey}
-            src={nordicSofa}
-            alt="북유럽 소파"
-            className="essaySofaKenBurns w-full h-full object-cover"
-          />
-        </div>
-      </section>
-
-      {/* ESSAY SPREAD 3 — 집다움.mp4, 끝나면 오른쪽 절반에 브랜드 무드 문구가 펼쳐진다 */}
-      <section id="home-essay-3" data-hide-header data-hsnap className="w-screen h-screen shrink-0 overflow-hidden flex flex-row text-foreground">
-        <div
-          className="relative h-full overflow-hidden"
-          style={{
-            width: introVideo3Ended ? "50%" : "100%",
-            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1)",
-          }}
-        >
-          <video
-            ref={introVideo3Ref}
-            className="w-full h-full object-cover"
-            src="/videos/jipdaum-brand.mp4"
-            muted
-            playsInline
-            preload="auto"
-            onEnded={() => setIntroVideo3Ended(true)}
-          />
-        </div>
-
-        <div
-          className="sparkleBg holoMesh relative h-full flex flex-col items-start justify-center overflow-hidden"
-          style={{
-            width: introVideo3Ended ? "50%" : "0%",
-            opacity: introVideo3Ended ? 1 : 0,
-            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s ease-in-out 0.5s",
-          }}
-        >
-          <div className="relative z-10 w-full max-w-md px-16">
-            <p className="text-xs tracking-[0.25em] uppercase text-muted-foreground mb-5 whitespace-nowrap" style={MONO}>
-              WELCOME TO JIPDAUM
-            </p>
-            <h3 className="text-3xl md:text-4xl font-light leading-snug whitespace-nowrap" style={SERIF}>
-              아늑한 공간, 편안한 느낌
-              <br />
-              집다움으로 오세요
-            </h3>
           </div>
         </div>
       </section>
@@ -1325,77 +1110,9 @@ function Home() {
             </div>
           )}
 
-          {/* 구매자 포토리뷰 — 위 큐레이션 사진과 구분해서 별도 섹션으로 둔다.
-              위쪽은 관리자가 고른 무드 사진(LookbookViewer가 가짜 좋아요/댓글까지 꾸며서 보여줌),
-              아래는 실제 리뷰 데이터라 그 둘을 섞지 않는다. */}
-          <div className="mt-16 pt-10 border-t border-border">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h3 className="text-lg font-medium text-foreground" style={SERIF}>고객님이 올린 사진</h3>
-                <p className="text-xs text-muted-foreground mt-1" style={MONO}>집다움 상품으로 꾸민 우리 집을 자랑해보세요</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowPhotoUploadModal(true)}
-                className="flex items-center gap-1.5 rounded-full border border-foreground text-foreground text-xs tracking-widest px-4 py-2 hover:bg-foreground hover:text-background transition-colors shrink-0"
-                style={SANS}
-              >
-                <Plus size={13} />
-                사진 올리기
-              </button>
-            </div>
-
-            {photoReviews.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-10" style={SANS}>
-                아직 등록된 사진이 없어요. 첫 번째 사진을 올려보세요!
-              </p>
-            ) : (
-              <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 gap-2">
-                {photoReviews.map((review, i) => (
-                  <button
-                    type="button"
-                    key={review.id}
-                    onClick={() => setPhotoReviewViewerIndex(i)}
-                    className="group overflow-hidden bg-muted aspect-square cursor-pointer relative"
-                  >
-                    <img
-                      src={review.review_image_url}
-                      alt={`${review.user_nickname}님이 올린 사진`}
-                      className="w-full h-full object-cover group-hover:scale-[1.05] transition-transform duration-600"
-                    />
-                    <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/15 transition-colors duration-300" />
-                    <span
-                      className="absolute bottom-1.5 left-2 text-[10px] text-white drop-shadow"
-                      style={MONO}
-                    >
-                      {review.user_nickname}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
           <SiteFooter />
         </div>
       </section>
-
-      {showPhotoUploadModal && (
-        <PhotoReviewUploadModal
-          products={PRODUCTS}
-          onClose={() => setShowPhotoUploadModal(false)}
-          onUploaded={loadPhotoReviews}
-        />
-      )}
-
-      {photoReviewViewerIndex !== null && (
-        <PhotoReviewViewer
-          reviews={photoReviews}
-          index={photoReviewViewerIndex}
-          onClose={() => setPhotoReviewViewerIndex(null)}
-          onNavigate={setPhotoReviewViewerIndex}
-        />
-      )}
 
       {lookbookViewerIndex !== null && (
         <LookbookViewer

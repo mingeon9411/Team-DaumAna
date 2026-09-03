@@ -13,7 +13,7 @@
   padding: 130px 24px 40px;
   overflow-y: auto;
   overflow-x: hidden;
-  font-family: "TwayFly", "Noto Sans KR", sans-serif;
+font-family: "TwayFly", "Noto Sans KR", sans-serif;
 }
 
 /* 메인(비-한국관) 카트는 상품 목록 페이지(Home.jsx #home-products)와 같은
@@ -280,6 +280,95 @@ body.dark .cartInner.koreanHallCart {
   bottom: -1px;
   height: 2px;
   background: linear-gradient(90deg, var(--cart-accent-1), var(--cart-accent-2));
+}
+
+/* ── 쿠폰 배너 ── 실제 적용은 결제 단계(Checkout.jsx)에서 하므로 여기선 보유 현황만 안내 */
+.cartCouponBanner {
+  margin-bottom: 14px;
+  border: 1px solid rgba(28, 26, 22, 0.1);
+  border-radius: 14px;
+  background: var(--cart-accent-soft);
+  overflow: hidden;
+}
+.cartCouponBannerRow {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  border: none;
+  background: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--foreground);
+  cursor: pointer;
+}
+.cartCouponBannerLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--cart-accent-2);
+}
+.cartCouponChevron { transition: transform 0.2s ease; color: var(--muted-foreground); }
+.cartCouponChevron.open { transform: rotate(180deg); }
+
+.cartCouponList {
+  padding: 4px 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cartCouponItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.5);
+  font-size: 12.5px;
+}
+.cartCouponName { font-weight: 600; color: var(--foreground); }
+.cartCouponValue { font-weight: 700; color: var(--cart-accent-2); }
+.cartCouponNote {
+  margin: 2px 2px 0;
+  font-size: 11.5px;
+  color: var(--muted-foreground);
+}
+body.dark .cartCouponBanner { border-color: rgba(150, 185, 255, 0.16); }
+body.dark .cartCouponItem { background: rgba(150, 185, 255, 0.06); }
+
+/* ── 2단 레이아웃(오늘의집류 참고) ── 왼쪽 상품 목록 + 오른쪽 sticky 결제 요약 */
+.cartLayout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  align-items: start;
+  gap: 32px;
+  margin-top: 8px;
+}
+
+.cartSummarySidebar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 26px 24px;
+  border-radius: 18px;
+  border: 1px solid rgba(28, 26, 22, 0.1);
+  background: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 10px 30px -14px rgba(20, 14, 6, 0.3);
+}
+body.dark .cartSummarySidebar {
+  border-color: rgba(150, 185, 255, 0.16);
+  background: rgba(150, 185, 255, 0.05);
+}
+
+.cartSummaryEyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cart-accent-1);
+  margin: 0 0 16px;
 }
 
 /* 툴바 — 전체선택 / 선택삭제 */
@@ -601,9 +690,7 @@ body.dark .emptyCartIcon {
 
 /* ── 영수증 스타일 요약 ── */
 .cartSummaryReceipt {
-  margin-top: 18px;
-  padding-top: 18px;
-  border-top: 1.5px dashed rgba(28, 26, 22, 0.22);
+  margin-bottom: 22px;
 }
 
 .cartSummaryRow {
@@ -644,16 +731,15 @@ body.dark .emptyCartIcon {
   text-shadow: 0 0 22px rgba(198, 151, 73, 0.45);
 }
 
-/* 하단 버튼 */
+/* 하단 버튼 — sticky 사이드바 안에 세로로 쌓는다(주문 버튼을 위로, 오늘의집처럼 CTA 강조) */
 .cartActions {
-  margin-top: 26px;
   display: flex;
-  justify-content: center;
-  gap: 14px;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .cartActions button {
-  min-width: 170px;
+  width: 100%;
   height: 50px;
   padding: 0 24px;
   border: none;
@@ -694,6 +780,58 @@ body.dark .emptyCartIcon {
 }
 .cartOrderBtn:hover::before { animation: cartShimmer 0.9s ease; }
 .cartOrderBtn:active { transform: translateY(0) scale(0.98); }
+
+/* ── 함께 구매하면 좋은 상품 ── */
+.cartRecommend {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(28, 26, 22, 0.12);
+}
+.cartRecommendTitle {
+  font-family: "Noto Serif KR", serif;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 18px;
+  color: var(--foreground);
+}
+.cartRecommendGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+.cartRecommendCard {
+  cursor: pointer;
+}
+.cartRecommendImg {
+  aspect-ratio: 5 / 6;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(228, 223, 211, 0.6);
+  margin-bottom: 8px;
+}
+.cartRecommendImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.cartRecommendCard:hover .cartRecommendImg img { transform: scale(1.05); }
+.cartRecommendName {
+  font-size: 12.5px;
+  color: var(--foreground);
+  margin: 0 0 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.cartRecommendPrice {
+  font-size: 13px;
+  font-weight: 700;
+  font-family: "DM Mono", monospace;
+  color: var(--foreground);
+  margin: 0;
+}
+body.dark .cartRecommend { border-top-color: rgba(150, 185, 255, 0.16); }
 
 /* ── 다크모드 ── */
 body.dark .cartTabs { border-bottom-color: rgba(150, 185, 255, 0.16); }
@@ -786,6 +924,9 @@ body.dark .cartSecondaryBtn:hover { background: rgba(150, 185, 255, 0.16); }
 /* ── 반응형 ── */
 @media (max-width: 760px) {
   .cartInner { padding: 40px 24px; }
+  .cartLayout { grid-template-columns: 1fr; gap: 20px; }
+  .cartSummarySidebar { position: static; }
+  .cartRecommendGrid { grid-template-columns: repeat(2, 1fr); }
   .cartItemRow {
     grid-template-columns: 24px 76px 1fr;
     row-gap: 10px;

@@ -1,36 +1,17 @@
-/* ── 페이지 진입 애니메이션 ── */
-@keyframes pageEnter {
-  from {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ── 전면 페이지 배경 + 가운데 정렬 ── */
+/* ── 전면 페이지 배경 ── */
 /* 배경은 .metallicSilver(Home.css)가 담당 — 여기서 또 깔면 두 배경이 겹친다.
-   레이아웃은 예전 모달(.mypageModalOverlay)이 하던 가운데 정렬을 그대로 옮겨온
-   것 — 카드(.mypage) 자체는 그대로 재사용하므로 이 파일은 "전면 페이지 배경 +
-   가운데 정렬" 역할만 담당한다. AuthPage.css와 같은 패턴. */
+   Settings.jsx/CustomerCenter.jsx와 같은 전면 페이지 패턴(히어로 + 콘텐츠) —
+   모달 카드(사이드바+박스) 대신 히어로 아래 가로 탭으로 섹션을 전환한다. */
 .mypagePage {
   width: 100vw;
   height: 100vh;
   flex-shrink: 0;
   overflow-y: auto;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 24px;
   font-family: "TwayFly", "Noto Sans KR", sans-serif;
 }
 
-/* CustomerCenter.css/Settings.css/AuthPage.css와 동일한 이유 — .metallicSilver가
-   이미 pastelSheenDrift를 걸어두는데 같은 프로퍼티라 나중 규칙이 앞 규칙을 통째로
+/* CustomerCenter.css/Settings.css와 동일한 이유 — .metallicSilver가 이미
+   pastelSheenDrift를 걸어두는데 같은 프로퍼티라 나중 규칙이 앞 규칙을 통째로
    덮어쓴다. 더 구체적인 선택자로 페이드인 + 배경 드리프트를 한 선언에 같이
    나열해 항상 이기게 한다. */
 .mypagePage.metallicSilver {
@@ -42,225 +23,63 @@
   to { opacity: 1; }
 }
 
-/* AuthPage.css의 .authPagePanel과 같은 이유 — overflow-y:auto는 다른 축도
-   자동으로 클리핑 대상이 되어버려서, 카드(.mypage)의 둥근 모서리 box-shadow가
-   패널 경계에 딱 잘려 보인다. 패딩만큼 안쪽으로 여유를 주고 같은 크기의 음수
-   마진으로 바깥 레이아웃은 그대로 유지한다. */
-.mypagePagePanel {
-  position: relative;
-  max-height: calc(100vh - 48px);
-  padding: 10px;
-  margin: -10px;
+.mypageWrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 120px 24px 100px;
 }
 
-.mypage > .mypageCloseBtn {
-  position: absolute;
-  top: 18px;
-  right: 22px;
-  z-index: 3;
-
-  width: 32px;
-  height: 32px;
-
-  border: none;
-  background: transparent;
-  color: var(--foreground);
-
-  font-size: 26px;
-  line-height: 1;
-  cursor: pointer;
-  opacity: 0.7;
-}
-
-.mypageCloseBtn:hover {
-  opacity: 1;
-}
-
-/* ── 페이지 레이아웃 ── */
-.mypage {
-  width: 100%;
-  max-width: 1200px;
-  height: calc(100vh - 48px);
-  max-height: 860px;
-  flex-shrink: 0;
-  overflow-y: auto;
-  display: grid;
-  grid-template-columns: 200px 1fr;
-  background: linear-gradient(
-    115deg,
-    #f4f5f6 0%,
-    #d9dbde 20%,
-    #c3c6cb 35%,
-    #eef0f2 50%,
-    #b7bac0 65%,
-    #dfe1e4 80%,
-    #f4f5f6 100%
-  );
-  background-size: 160% 160%;
-  animation: pageEnter 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
-  color: var(--foreground);
-  position: relative;
-  overflow-x: clip;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.18);
-  border: 1px solid rgba(0, 0, 0, 0.14);
-}
-
-body.dark .mypage {
-  background: linear-gradient(
-    115deg,
-    #1f3a63 0%,
-    #2c4d7a 20%,
-    #375f91 35%,
-    #1f3a63 50%,
-    #375f91 65%,
-    #2c4d7a 80%,
-    #1f3a63 100%
-  );
-  border: 1px solid rgba(150, 185, 255, 0.16);
-}
-
-/* 그리드 직속 자식이 pseudo-element 위로 */
-.mypage > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* ── 사이드 메뉴 ── */
-.mypageSide {
-  padding: 40px 28px 60px;
-  border-right: 1px solid var(--border);
-  background: linear-gradient(
-    115deg,
-    #f4f5f6 0%,
-    #d9dbde 20%,
-    #c3c6cb 35%,
-    #eef0f2 50%,
-    #b7bac0 65%,
-    #dfe1e4 80%,
-    #f4f5f6 100%
-  );
-  background-size: 160% 160%;
-  position: sticky;
-  top: 0;
-  height: 100%;
-  min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-body.dark .mypageSide {
-  background: linear-gradient(
-    115deg,
-    #1f3a63 0%,
-    #2c4d7a 20%,
-    #375f91 35%,
-    #1f3a63 50%,
-    #375f91 65%,
-    #2c4d7a 80%,
-    #1f3a63 100%
-  );
-}
-
-/* 사이드바 텍스트가 애니메이션 위로 */
-.mypageSide h2,
-.mypageSide nav {
-  position: relative;
-  z-index: 1;
-}
-
-/* ── 사이드바 로고 ── */
-.mypageLogoRow {
-  position: relative;
-  z-index: 1;
+.mypageTopRow {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin: 0 0 28px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid rgba(120, 120, 120, 0.18);
+  justify-content: space-between;
+  margin-bottom: 24px;
 }
 
-.mypageLogoJD {
-  height: 34px;
-  width: auto;
-  filter: brightness(0) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.12));
-}
-
-body.dark .mypageLogoJD {
-  filter: brightness(0) invert(1) drop-shadow(0 2px 5px rgba(0, 0, 0, 0.4));
-}
-
-.mypageLogoDivider {
-  width: 1px;
-  height: 28px;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    rgba(120, 120, 120, 0.5) 20%,
-    rgba(120, 120, 120, 0.5) 80%,
-    transparent
-  );
-}
-
-.mypageLogoHanok {
-  height: 34px;
-  width: auto;
-  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.18));
-}
-
-body.dark .mypageLogoHanok {
-  filter: grayscale(1) brightness(1.5) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
-}
-
-.mypageSide nav {
+.mypageBackBtn {
   display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.mypageSide nav p {
-  margin: 0;
-  padding: 10px 0;
-  font-size: 13px;
-  font-weight: 600;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: "TwayFly", "DM Mono", monospace;
+  font-size: 12px;
   color: var(--muted-foreground);
   cursor: pointer;
-  border-bottom: 1px solid var(--border);
-  transition: color 0.15s;
+  transition: color 0.15s ease;
 }
 
-.mypageSide nav p:last-child { border-bottom: none; }
-.mypageSide nav p:hover { color: var(--foreground); }
-
-.mypageSide nav p.active {
-  color: #913a22;
-  font-weight: 800;
-}
-
-/* ── 본문 ── */
-.mypageBox {
-  padding: 0 60px 80px;
-  position: relative;
-  min-height: 0;
-  height: 100%;
-  overflow-y: auto;
-}
-
-/* 콘텐츠가 page pseudo-element 위로 */
-.mypageBox > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* ── 히어로 헤더 ── */
-.mypageHero {
-  background: transparent;
+.mypageBackBtn:hover {
   color: var(--foreground);
-  padding: 56px 40px 38px;
+}
+
+.mypageLogoutBtn {
+  padding: 0;
+  background: none;
+  border: none;
+  font-family: "TwayFly", "DM Mono", monospace;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.mypageLogoutBtn:hover {
+  color: #913a22;
+}
+
+/* 사이드바 파스텔 프리셋·CustomerCenter.ccHero와 같은 레시피 —
+   연한 핑크→블루→민트 채움 + 보라→그린→핑크 그러데이션 테두리 */
+.mypageHero {
+  padding: 40px;
   margin-bottom: 32px;
-  position: relative;
-  overflow: hidden;
+  border-radius: 20px;
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(120deg, #ffe4f0 0%, #e4ecff 50%, #d9fbea 100%) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  color: var(--foreground);
 }
 
 .mypageHeroSub {
@@ -271,26 +90,53 @@ body.dark .mypageLogoHanok {
   color: #c47a3a;
 }
 
-.mypageHero h1 {
-  font-family: "Noto Serif KR", serif;
-  margin: 0 0 12px;
-  font-size: 32px;
-  font-weight: 900;
-  color: var(--foreground);
-  letter-spacing: -0.01em;
-  line-height: 1.1;
-}
-
 .welcomeText {
   margin: 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--muted-foreground);
+  font-family: "TwayFly", "Noto Serif KR", serif;
+  font-weight: 500;
+  font-size: 24px;
+  letter-spacing: -0.3px;
+  color: var(--foreground);
 }
 
 .welcomeText strong {
-  color: var(--foreground);
   font-weight: 700;
+}
+
+/* ── 섹션 탭 (예전 사이드바 nav 대체) ── */
+.mypageTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 40px;
+}
+
+.mypageTab {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--foreground);
+  font-family: "TwayFly", "Noto Sans KR", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.mypageTab:hover {
+  transform: translateY(-1px);
+}
+
+.mypageTab.active {
+  border-color: #913a22;
+  color: #913a22;
+  font-weight: 800;
+}
+
+/* ── 본문 ── */
+.mypageBox {
+  position: relative;
 }
 
 /* ── 회원 정보 그리드 ── */
@@ -1818,12 +1664,34 @@ body.dark .myWishImgBox {
 }
 
 /* 브랜드 강조색(#913a22 rust)이 네이비와 부딪혀서, 다크모드에서는 옅은 골드 톤으로 대체 */
-body.dark .mypageSide nav p.active {
+body.dark .mypageTab.active {
+  border-color: #f0dbb0;
+  color: #f0dbb0;
+}
+
+body.dark .mypageLogoutBtn:hover {
   color: #f0dbb0;
 }
 
 body.dark .mypageHeroSub {
   color: #f0dbb0;
+}
+
+body.dark .mypagePage {
+  color: #bfcbec;
+}
+
+body.dark .mypageHero {
+  background:
+    linear-gradient(rgba(6, 13, 30, 0.75), rgba(6, 13, 30, 0.75)) padding-box,
+    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
+  color: #dbe6f7;
+}
+
+body.dark .mypageTab {
+  background: rgba(6, 13, 30, 0.5);
+  border-color: rgba(150, 185, 255, 0.16);
+  color: #bfcbec;
 }
 
 body.dark .orderStatus {
@@ -1878,30 +1746,12 @@ body.dark .badgeLocked   { background: rgba(255, 255, 255, 0.08); color: rgba(25
 
 /* ── 반응형 ── */
 @media (max-width: 900px) {
-  .mypage {
-    grid-template-columns: 1fr;
+  .mypageWrap {
+    padding: 100px 20px 60px;
   }
 
-  .mypageSide {
-    position: static;
-    height: auto;
-    padding: 60px 24px 28px;
-  }
-
-  .mypageSide nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0;
-  }
-
-  .mypageSide nav p {
-    border-bottom: none;
-    padding: 6px 12px;
-    border-right: 1px solid var(--border);
-  }
-
-  .mypageBox {
-    padding: 0 24px 60px;
+  .mypageHero {
+    padding: 28px 24px;
   }
 
   .userInfoGrid,

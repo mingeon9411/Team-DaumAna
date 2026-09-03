@@ -1,6 +1,7 @@
 import "./MyPage.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { LuChevronLeft } from "react-icons/lu";
 import { logoutUser, getOrderHistory, getMyCoupons, cancelOrder, getMe } from "../../api";
 import { getWishlist, removeWish } from "../../utils/wishlist";
 import korfurni from "../../assets/products/korfurni.png";
@@ -15,10 +16,20 @@ import AddressModal from "./AddressModal";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import { useWithdrawModal } from "../../context/WithdrawModalContext";
-import JDLogo from "../../assets/J.D 로고.svg";
-// -sm: 34px로만 쓰여서 원본(1015x600, 750KB) 대신 축소본을 쓴다.
-import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
-import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent-sm.png";
+
+// 사이드바 nav(마이페이지/주문내역/위시리스트/...)를 대체하는 상단 탭 목록.
+// key는 activeSection 값과 그대로 대응한다.
+const TABS = [
+  { key: "main", label: "마이페이지" },
+  { key: "orders", label: "주문내역 조회" },
+  { key: "wishlist", label: "위시리스트" },
+  { key: "grade", label: "회원등급" },
+  { key: "coupon", label: "쿠폰" },
+  { key: "points", label: "적립금" },
+  { key: "address", label: "배송지 관리" },
+  { key: "inquiry", label: "1:1 문의" },
+  { key: "profile", label: "회원 정보" },
+];
 
 const STATUS_LABEL = {
   PENDING: "입금대기",
@@ -62,9 +73,6 @@ function MyPage() {
   const [profile, setProfile] = useState(null);
   const [wishlist, setWishlist] = useState(() => getWishlist());
   const [activeSection, setActiveSection] = useState("main");
-  const [darkMode, setDarkMode] = useState(
-    () => document.body.classList.contains("dark")
-  );
 
   // 배송지 관리 — 별도 백엔드 모델이 없어 위시리스트/리뷰와 같은 방식으로 로컬에 저장한다.
   const [addresses, setAddresses] = useState(() => {
@@ -160,12 +168,6 @@ function MyPage() {
   };
 
   useEffect(() => {
-    const syncDarkMode = () => setDarkMode(document.body.classList.contains("dark"));
-    window.addEventListener("darkmodechange", syncDarkMode);
-    return () => window.removeEventListener("darkmodechange", syncDarkMode);
-  }, []);
-
-  useEffect(() => {
     getOrderHistory()
       // res.data가 배열이 아니면(만료된 토큰 등으로 인증 실패 응답이 예상과 다르게 와도)
       // orders.filter/.reduce에서 앱 전체가 죽지 않도록 방어한다.
@@ -245,69 +247,59 @@ function MyPage() {
 
   return (
     // metallicSilver — 상품 목록 그리드(Home.jsx #home-products)와 같은 파스텔 배경
-    // 클래스. Settings.jsx/CustomerCenter.jsx/AuthPage.jsx와 같은 전면 페이지 패턴.
+    // 클래스. Settings.jsx/CustomerCenter.jsx와 같은 전면 페이지 패턴(히어로 +
+    // 콘텐츠). 사이드바 대신 히어로 아래 가로 탭으로 섹션을 전환한다.
     <div className="mypagePage metallicSilver" data-hsnap data-lenis-prevent>
-    <div className="mypagePagePanel">
-    <main className="mypage">
-      <button type="button" className="mypageCloseBtn" onClick={closeMyPage} aria-label="닫기">
-        ×
-      </button>
-
-      {trackingOrder && (
-        <TrackingModal
-          order={trackingOrder}
-          onClose={() => setTrackingOrder(null)}
-        />
-      )}
-
-      {selectedOrder && (
-        <Receipt
-          order={selectedOrder}
-          onClose={() => setSelectedOrder(null)}
-        />
-      )}
-
-      <AddressModal
-        isOpen={addressModalOpen}
-        onClose={() => { setAddressModalOpen(false); setEditingAddress(null); }}
-        onSave={handleSaveAddress}
-        initialData={editingAddress}
-      />
-
-
-      <aside className="mypageSide">
-        <div className="mypageLogoRow">
-          <img src={JDLogo} alt="J.D" className="mypageLogoJD" />
-          <span className="mypageLogoDivider" />
-          <img
-            src={darkMode ? JipdaumHanokLogoDark : JipdaumHanokLogo}
-            alt="집다움"
-            className="mypageLogoHanok"
-          />
+      <div className="mypageWrap">
+        <div className="mypageTopRow">
+          <button type="button" className="mypageBackBtn" onClick={closeMyPage}>
+            <LuChevronLeft size={14} /> 목록으로
+          </button>
+          <button type="button" className="mypageLogoutBtn" onClick={handleLogout}>로그아웃</button>
         </div>
-        <nav>
-          <p className={activeSection === "main" ? "active" : ""} onClick={() => setActiveSection("main")}>마이페이지</p>
-          <p className={activeSection === "orders" ? "active" : ""} onClick={() => setActiveSection("orders")}>주문내역 조회</p>
-          <p className={activeSection === "wishlist" ? "active" : ""} onClick={() => setActiveSection("wishlist")}>위시리스트</p>
-          <p className={activeSection === "grade" ? "active" : ""} onClick={() => setActiveSection("grade")}>회원등급</p>
-          <p className={activeSection === "coupon" ? "active" : ""} onClick={() => setActiveSection("coupon")}>쿠폰</p>
-          <p className={activeSection === "points" ? "active" : ""} onClick={() => setActiveSection("points")}>적립금</p>
-          <p className={activeSection === "address" ? "active" : ""} onClick={() => setActiveSection("address")}>배송지 관리</p>
-          <p className={activeSection === "inquiry" ? "active" : ""} onClick={() => setActiveSection("inquiry")}>1:1 문의</p>
-          <p className={activeSection === "profile" ? "active" : ""} onClick={() => setActiveSection("profile")}>회원 정보</p>
-          <p onClick={handleLogout}>로그아웃</p>
-        </nav>
-      </aside>
 
-      <section className="mypageBox">
-        {/* ── 히어로 (항상 표시) ── */}
-        <div className="mypageHero">
+        {trackingOrder && (
+          <TrackingModal
+            order={trackingOrder}
+            onClose={() => setTrackingOrder(null)}
+          />
+        )}
+
+        {selectedOrder && (
+          <Receipt
+            order={selectedOrder}
+            onClose={() => setSelectedOrder(null)}
+          />
+        )}
+
+        <AddressModal
+          isOpen={addressModalOpen}
+          onClose={() => { setAddressModalOpen(false); setEditingAddress(null); }}
+          onSave={handleSaveAddress}
+          initialData={editingAddress}
+        />
+
+        <section className="mypageHero">
           <p className="mypageHeroSub">
             {activeSection === "coupon" ? "MY COUPON" : "MY PAGE"}
           </p>
           <p className="welcomeText">반갑습니다, <strong>{nickname}</strong>님</p>
-        </div>
+        </section>
 
+        <nav className="mypageTabs">
+          {TABS.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              className={"mypageTab" + (activeSection === tab.key ? " active" : "")}
+              onClick={() => setActiveSection(tab.key)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+
+        <div className="mypageBox">
         {/* ── 메인 섹션 ── */}
         {activeSection === "main" && (
           <>
@@ -873,9 +865,8 @@ function MyPage() {
             </section>
           </section>
         )}
-      </section>
-    </main>
-    </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -810,6 +810,24 @@ body.dark .chatBotKoreanHall .chatBotSideDiscount {
   text-align: center;
 }
 
+.chatBotBuyColorSwatches {
+  display: flex;
+  gap: 6px;
+}
+.chatBotBuyColorSwatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  padding: 0;
+}
+.chatBotBuyColorSwatch.active {
+  border-color: var(--foreground);
+}
+
 .chatBotBuyForm {
   display: flex;
   flex-direction: column;

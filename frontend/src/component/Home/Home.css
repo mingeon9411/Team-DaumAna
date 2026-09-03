@@ -294,13 +294,3 @@ body.dark .metallicSilver {
   transform: translateX(-50%) translateY(0) scale(1);
 }
 
-@keyframes heroKenBurns {
-  from { transform: scale(1) translate(0, 0); }
-  to   { transform: scale(1.08) translate(-1.4%, -1%); }
-}
-
-/* 두 번째 에세이 페이지 — 영상 대신 소파 사진에 느린 켄 번즈 확대 연출 */
-.essaySofaKenBurns {
-  animation: heroKenBurns 5s ease-out forwards;
-}
-

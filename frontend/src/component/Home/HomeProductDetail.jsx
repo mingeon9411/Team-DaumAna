@@ -401,6 +401,25 @@ function HomeProductDetail() {
 
             <Hairline className="mb-6 w-16" />
 
+            {product.colors && (
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>색상</span>
+                <div className="flex items-center gap-2">
+                  {product.colors.map((c, i) => (
+                    <button
+                      key={c.value}
+                      type="button"
+                      onClick={() => { setColorIdx(i); setActiveImage(i); }}
+                      title={c.label}
+                      aria-label={`${c.value} 색상 선택`}
+                      className={`w-7 h-7 rounded-full bg-cover bg-center border-2 transition-colors ${i === colorIdx ? "border-foreground" : "border-border"}`}
+                      style={{ backgroundImage: `url(${c.image})` }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="flex items-center justify-between mb-4">
               <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>수량</span>
               <div className="flex items-center gap-4 border border-border px-3 py-1.5">

@@ -44,13 +44,15 @@ function Header() {
   // 유일한 상시 내비게이션이 된 페이지(장바구니 등)에서는 스크롤 여부와 무관하게
   // 항상 노출한다 — 이 페이지들은 헤더 말고는 빠져나갈 다른 수단이 없기 때문.
   //
-  // 상품 목록(홈)·설정·고객센터·한국관 페이지는 최상단에서부터 검색창·링크가
-  // 떠 있으면 위화감이 크다(홈·한국관은 전체화면 인트로 영상, 설정·고객센터는
-  // 파스텔 배경의 첫 화면이라 배너 없이 시작) — 이 네 곳은 스크롤을 내려야
-  // 나타나게 한다. 고객센터는 자체 "목록으로" 버튼(CustomerCenter.jsx)이,
-  // 한국관은 항상 떠 있는 로고(홈 이동)와 하단 독바가 따로 있어, 헤더 내비가
-  // 잠깐 숨어 있어도 홈으로 돌아갈 수단이 없어지지 않는다.
-  const showExpandedNav = (isHome || isSettingsPage || isCustomerCenterPage || isKoreanHall) ? scrolled : true;
+  // 상품 목록(홈)·상품상세·설정·고객센터·한국관 페이지는 최상단에서부터 검색창·
+  // 링크가 떠 있으면 위화감이 크다(홈·한국관은 전체화면 인트로 영상, 설정·고객
+  // 센터는 파스텔 배경의 첫 화면, 상품상세는 배너 자체가 스크롤 전엔 안 보이는데
+  // 그 안의 검색창·링크만 먼저 떠 있으면 배너 없이 붕 떠 보인다) — 이 다섯 곳은
+  // 스크롤을 내려야 배너와 함께 나타나게 한다. 고객센터는 자체 "목록으로" 버튼
+  // (CustomerCenter.jsx)이, 한국관은 항상 떠 있는 로고(홈 이동)와 하단 독바가,
+  // 상품상세는 자체 "목록으로" 버튼(HomeProductDetail.jsx)이 따로 있어, 헤더
+  // 내비가 잠깐 숨어 있어도 홈으로 돌아갈 수단이 없어지지 않는다.
+  const showExpandedNav = (isHome || isSettingsPage || isCustomerCenterPage || isKoreanHall || isItemDetail) ? scrolled : true;
 
   // 유틸 링크(로그인/회원가입 · 마이페이지/로그아웃 · 장바구니)용 — Home.jsx의
   // 카테고리 위 유틸 링크와 같은 기준(access_token)·같은 이벤트로 동기화한다.
@@ -360,7 +362,11 @@ function Header() {
             장바구니{cartCount > 0 && ` (${cartCount})`}
           </button>
           <span aria-hidden="true" className="headerNavDivider">|</span>
-          <button type="button" onClick={() => navigate("/korean-hall")} className="headerNavLink">한국관</button>
+          {/* 한국관 안에서는 "한국관" 탭이 제자리 이동이라 무의미 — 메인으로 돌아가는
+              기능으로 바꾼다. */}
+          <button type="button" onClick={() => navigate(isKoreanHall ? "/" : "/korean-hall")} className="headerNavLink">
+            {isKoreanHall ? "메인페이지" : "한국관"}
+          </button>
           <span aria-hidden="true" className="headerNavDivider">|</span>
           <button type="button" onClick={() => navigate("/notice")} className="headerNavLink">공지사항</button>
           <span aria-hidden="true" className="headerNavDivider">|</span>

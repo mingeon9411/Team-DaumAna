@@ -68,7 +68,7 @@ function DoorIntroController() {
         sessionStorage.setItem(NAV_FLAGS.SKIP_KOREAN_HALL_INTRO, "1");
       } else {
         sessionStorage.setItem(NAV_FLAGS.SKIP_HOME_DEFAULT_PANEL, "1");
-        sessionStorage.setItem(NAV_FLAGS.PENDING_HOME_PANEL_INDEX, "4");
+        sessionStorage.setItem(NAV_FLAGS.PENDING_HOME_PANEL_INDEX, "2");
       }
     }
 
@@ -100,8 +100,13 @@ function App() {
   // 컴포넌트의 useEffect가 초기 body.dark 클래스를 적용했다 — 그 독이
   // 사라지고 다크모드 토글이 /settings로 옮겨간 지금은, 사용자가 /settings를
   // 아직 안 들어간 세션에서도 저장된 값이 바로 적용되도록 여기서 한 번 적용한다.
+  // 배경 톤(pastelLevel)도 같은 이유로 여기서 적용해야 한다 — Settings.jsx의
+  // choosePastelLevel은 클릭 시점에만 body.dataset.pastel을 설정해서, 그 값이
+  // localStorage에는 저장돼도 새로고침/재방문 시 body에 다시 적용되지 않아
+  // 골랐던 배경 톤이 "진하게"(기본값)로 돌아가 보이는 문제가 있었다.
   useEffect(() => {
     document.body.classList.toggle("dark", localStorage.getItem("darkMode") === "1");
+    document.body.dataset.pastel = localStorage.getItem("pastelLevel") || "deep";
   }, []);
 
   useEffect(() => {

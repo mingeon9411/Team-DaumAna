@@ -171,7 +171,7 @@ function Settings() {
               <LuArrowUpToLine className="ssRowIcon" />
               <div>
                 <p className="ssRowTitle">페이지 이동 버튼</p>
-                <p className="ssRowDesc">홈 화면 영상 인트로 패널(1~4번째)에서만 화면 우하단에 맨 위로/맨 아래로 이동 버튼을 띄웁니다.</p>
+                <p className="ssRowDesc">홈 화면 영상 인트로 패널(1~2번째)에서만 화면 우하단에 맨 위로/맨 아래로 이동 버튼을 띄웁니다.</p>
               </div>
             </div>
             <button

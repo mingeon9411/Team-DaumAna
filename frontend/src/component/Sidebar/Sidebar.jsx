@@ -10,16 +10,16 @@ import { NAV_FLAGS } from "../../utils/navFlags";
 // 토글과 헤더(Header.jsx)의 상시 내비게이션으로 이전됐다. 이후 하단 중앙의
 // "이전/다음 페이지" 화살표 독도 없애고, 지금은 화면 우하단에 아주 작은 십자(+)
 // 모양 4버튼 패드(맨 위로/맨 아래로/이전 페이지/다음 페이지)가 홈의 가로 패널
-// 7개(index 0~6) 전부에서 하나씩은 뜬다 — 패널 성격에 따라 위/아래 버튼의 동작만
+// 4개(index 0~3) 전부에서 하나씩은 뜬다 — 패널 성격에 따라 위/아래 버튼의 동작만
 // 둘로 갈린다(아래 참고).
 //
-// 첫 번째 패드는 영상 인트로 패널(1~4번째, index 0~3, id="home-essay"~
+// 첫 번째 패드는 영상 인트로 패널(1~2번째, index 0~1, id="home-essay",
 // "home-essay-4")에서 뜬다 — 이 패널들은 헤더 내비가 접힌 상태(Header.jsx의
 // showExpandedNav)라 스크롤 말고는 페이지를 옮길 방법이 없기 때문. 이 패널들은
 // overflow-hidden이라 안에 스크롤할 콘텐츠가 없으므로, 위/아래는 홈 전체의 가로
 // 패널을 처음/끝으로 넘긴다(window.lenis 가로 스크롤).
 //
-// 두 번째 패드는 그 다음 패널들(index 4 이상 — 상품 그리드 id="home-products",
+// 두 번째 패드는 그 다음 패널들(index 2 이상 — 상품 그리드 id="home-products",
 // 룩북)에서 뜬다. 이 패널들은 전부 자체 overflow-y-auto로
 // 세로 스크롤하는 긴 콘텐츠라 위/아래가 "지금 보고 있는 패널 안쪽"의 스크롤
 // 위치만 바꾼다 — 어떤 패널이 활성인지는 activePanelIndex로 그때그때 찾는다(id가
@@ -36,9 +36,9 @@ function readFlag(key, fallback = true) {
   return raw === null ? fallback : raw === "1";
 }
 
-// 홈의 영상 인트로 패널 4개는 data-hsnap 순서상 맨 앞 0~3번 인덱스를 차지한다
-// (home-essay, home-essay-2, home-essay-3, home-essay-4 — 그 다음이 상품 그리드).
-const VIDEO_PANEL_COUNT = 4;
+// 홈의 영상 인트로 패널 2개는 data-hsnap 순서상 맨 앞 0~1번 인덱스를 차지한다
+// (home-essay, home-essay-4 — 그 다음이 상품 그리드).
+const VIDEO_PANEL_COUNT = 2;
 
 // 십자(+) 모양 4버튼 패드 — 위/아래(up/down)는 위젯마다 의미가 다르지만(가로 패널
 // 처음/끝 vs 상품 목록 안쪽 스크롤), 좌/우(prev/next 패널)는 두 위젯이 완전히
@@ -182,7 +182,7 @@ function Sidebar() {
 
   return (
     <>
-    {/* 맨 위로/맨 아래로/이전/다음 십자 패드 — 홈의 영상 인트로 패널(1~4번째)
+    {/* 맨 위로/맨 아래로/이전/다음 십자 패드 — 홈의 영상 인트로 패널(1~2번째)
         에서만, 화면 우하단에 고정. */}
     {showTopButton && onVideoPanel && (
       <CrossPad

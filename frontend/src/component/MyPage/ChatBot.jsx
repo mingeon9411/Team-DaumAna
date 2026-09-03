@@ -6,7 +6,7 @@ import { SiKakaotalk, SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
 import { Sparkles, Ruler, ShieldCheck, UserPlus, UserX, Mail, User, Lock, ChevronDown, CheckCircle2, AlertCircle, AlertTriangle, ArrowRight, ArrowLeft, LogIn } from "lucide-react";
 import "./ChatBot.css";
-import { sendChatMessage, createOrder, readyPayment, verifyPayment, registerUser, loginUser, checkNicknameAPI, requestSocialCaptchaTicket, withdrawUser } from "../../api";
+import { sendChatMessage, createOrder, readyPayment, verifyPayment, registerUser, loginUser, checkNicknameAPI, requestSocialCaptchaTicket, withdrawUser, getProductDetail } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { NAV_FLAGS } from "../../utils/navFlags";
 import { PRODUCTS } from "../Home/Home";
@@ -89,7 +89,7 @@ function matchBuyProduct(text, catalog) {
 function toBuyItem(p) {
   return {
     id: p.id, name: p.name, price: parseWon(p.price), image: p.image, quantity: 1, option_id: p.option_id ?? null,
-    sub: p.sub, spec: p.spec, desc: p.longDesc || p.desc,
+    sub: p.sub, spec: p.spec, desc: p.longDesc || p.desc, colors: p.colors ?? null,
   };
 }
 
@@ -522,9 +522,23 @@ function BuyPanel({ item, onClose, onPaid }) {
   const [form, setForm] = useState({ recipient: "", phone: "", address: "", detail: "" });
   const [isPaying, setIsPaying] = useState(false);
   const [quantity, setQuantity] = useState(item.quantity || 1);
+  const [colorIdx, setColorIdx] = useState(0);
+  // colors가 있는 상품(예: 부드러운 털 실내화)만 실제 주문 가능한 옵션 id를 DB에서 받아온다 —
+  // HomeProductDetail.jsx와 같은 방식(option_value로 매칭). 옵션이 하나뿐인 상품은 그대로 null 전송.
+  const [apiOptions, setApiOptions] = useState([]);
+  useEffect(() => {
+    if (!item.colors) return;
+    getProductDetail(item.id).then((res) => setApiOptions(res.data?.options || [])).catch(() => setApiOptions([]));
+  }, [item.id, item.colors]);
 
   const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   const totalPrice = item.price * quantity;
+  const selectedColor = item.colors ? item.colors[colorIdx] : null;
+  const selectedOptionId = selectedColor
+    ? apiOptions.find((o) => o.option_value === selectedColor.value)?.id ?? null
+    : item.option_id || null;
+  const displayImage = selectedColor?.image || item.image;
+  const displaySub = selectedColor?.label || item.sub;
 
   // 상세 설명 하이라이트 — HomeProductDetail.jsx와 동일한 방식으로 spec 문자열을 쪼갠다.
   // spec이 있는 카탈로그(메인)에서만 의미가 있고, 한국관은 longDesc 자체가 이미 상세 설명이라 생략.
@@ -558,7 +572,7 @@ function BuyPanel({ item, onClose, onPaid }) {
         orderRes = await createOrder({
           shipping_addr: shippingAddr,
           coupon_code: "",
-          items: [{ product_id: item.id, option_id: item.option_id || null, quantity }],
+          items: [{ product_id: item.id, option_id: selectedOptionId, quantity }],
         });
       } catch (e) {
         alert(`[주문 생성 오류] ${e.response?.data?.message || e.message}`);
@@ -613,11 +627,11 @@ function BuyPanel({ item, onClose, onPaid }) {
       </div>
       <div className="chatBotBuyBody" data-lenis-prevent>
         <div className="chatBotBuyImgWrap">
-          <img src={item.image} alt={item.name} className="chatBotBuyImg" />
+          <img src={displayImage} alt={item.name} className="chatBotBuyImg" />
         </div>
 
         <div className="chatBotBuyInfo">
-          {item.sub && <p className="chatBotBuySub">{item.sub}</p>}
+          {displaySub && <p className="chatBotBuySub">{displaySub}</p>}
           <p className="chatBotBuyName">{item.name}</p>
           {item.desc && <p className="chatBotBuyDesc">{item.desc}</p>}
           {item.spec && <p className="chatBotBuySpec">{item.spec}</p>}
@@ -634,6 +648,25 @@ function BuyPanel({ item, onClose, onPaid }) {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {item.colors && (
+          <div className="chatBotBuyQtyRow">
+            <span className="chatBotBuyQtyLabel">색상</span>
+            <div className="chatBotBuyColorSwatches">
+              {item.colors.map((c, i) => (
+                <button
+                  key={c.value}
+                  type="button"
+                  onClick={() => setColorIdx(i)}
+                  title={c.label}
+                  aria-label={`${c.value} 색상 선택`}
+                  className={`chatBotBuyColorSwatch${i === colorIdx ? " active" : ""}`}
+                  style={{ backgroundImage: `url(${c.image})` }}
+                />
+              ))}
+            </div>
           </div>
         )}
 
