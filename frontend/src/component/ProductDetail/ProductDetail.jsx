@@ -235,17 +235,23 @@ function ProductDetail() {
       </div>
 
       <div className="pdContent max-w-7xl mx-auto w-full px-6 md:px-10">
-        {/* 대문 애니메이션 스킵 + 상품 목록으로 바로 스크롤은 App.jsx의
+        {/* 명품관류 브레드크럼 — "한국관"이 곧 이전 "목록으로" 버튼 역할을 겸한다.
+            대문 애니메이션 스킵 + 상품 목록으로 바로 스크롤은 App.jsx의
             DoorIntroController가 productDetailReturnZone(마운트 시 기록)을 보고
             처리한다 — 브라우저 뒤로가기로 돌아갈 때도 똑같이 적용된다. */}
-        <button
-          type="button"
-          onClick={() => navigate("/korean-hall")}
-          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors mb-8"
-          style={MONO}
-        >
-          <ChevronLeft size={14} /> 목록으로
-        </button>
+        <nav className="pdBreadcrumb mb-8" style={MONO} aria-label="이전 위치">
+          <button type="button" onClick={() => navigate("/korean-hall")} className="pdBreadcrumbHome">
+            <ChevronLeft size={13} /> 한국관
+          </button>
+          <span className="pdBreadcrumbSep" aria-hidden="true">/</span>
+          <span>{product.category}</span>
+          {product.midCategory && (
+            <>
+              <span className="pdBreadcrumbSep" aria-hidden="true">/</span>
+              <span>{product.midCategory}</span>
+            </>
+          )}
+        </nav>
 
         <div className="homeDetailGlassCard grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 mb-20">
           {/* 왼쪽: 썸네일 레일 + 메인 이미지 — 오늘의집 등 상용 커머스 상세페이지의
@@ -275,10 +281,12 @@ function ProductDetail() {
               → 배송 → 수량/주문금액 → 장바구니/바로구매 순서로, 국내 커머스에서
               가장 익숙한 상세페이지 정보 순서를 그대로 따른다. */}
           <div className="flex flex-col justify-center">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-[11px] text-muted-foreground tracking-wide" style={MONO}>
-                KOREAN HALL · {[product.category, product.midCategory].filter(Boolean).join(" · ")}
-              </span>
+            {/* 명품관 정품 배지 바 — 오늘의집/쿠팡 럭셔리관의 검은 바 + 금박 글자 문법을
+                그대로 가져와 "정품 큐레이션"이라는 신뢰를 준다. */}
+            <div className="pdAuthBar mb-5" style={MONO}>KOREAN HALL · 정품 보증 · 무료배송</div>
+
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="pdBrandName" style={MONO}>{product.brand}</span>
               {product.label && (
                 <span className="text-[10px] font-semibold text-foreground/70 border border-border rounded px-1.5 py-0.5" style={MONO}>
                   {product.label}
@@ -330,6 +338,21 @@ function ProductDetail() {
               <span className="text-3xl font-bold text-foreground" style={MONO}>₩{priceNum.toLocaleString()}</span>
             </div>
 
+            {/* 정보 스펙 로우 — 쿠팡 "사이즈: OS / 색상: 블랙계열"처럼 구매 결정에
+                바로 필요한 정보를 가격 바로 아래 짧게 둔다. */}
+            <dl className="pdSpecRows mb-5" style={MONO}>
+              <div>
+                <dt>카테고리</dt>
+                <dd>{[product.category, product.midCategory].filter(Boolean).join(" · ")}</dd>
+              </div>
+              {product.subCategory && (
+                <div>
+                  <dt>소재 · 타입</dt>
+                  <dd>{product.subCategory}</dd>
+                </div>
+              )}
+            </dl>
+
             <div className="flex items-center gap-2 text-xs text-muted-foreground border border-border rounded-lg px-3.5 py-2.5 mb-6">
               <Truck size={14} className="text-foreground shrink-0" />
               <span>무료배송</span>
@@ -377,7 +400,7 @@ function ProductDetail() {
               </button>
               <button
                 onClick={handleKakaoPay}
-                className="flex-1 bg-foreground text-background text-xs tracking-widest py-3.5 hover:opacity-85 transition-opacity"
+                className="pdBuyBtn flex-1 text-xs tracking-widest py-3.5"
                 style={SANS}
               >
                 바로 구매하기
@@ -446,6 +469,33 @@ function ProductDetail() {
               <br />
               {product.name}, 오늘의 집에 어울리는 선택이 되기를 바랍니다.
             </p>
+          </div>
+
+          {/* 필수 표기 정보 — 쿠팡 등 커머스 상세페이지 맨 아래 항상 붙는 표기
+              양식을 그대로 따른다. 없는 값(원산지·제조사 등)은 지어내지 않고
+              실제 데이터(products.js)에 있는 항목만 담는다. */}
+          <div className="pdFactsBox max-w-4xl mx-auto mt-16">
+            <p className="pdFactsTitle" style={MONO}>필수 표기 정보</p>
+            <dl className="pdFactsList" style={MONO}>
+              <div>
+                <dt>카테고리</dt>
+                <dd>{[product.category, product.midCategory].filter(Boolean).join(" · ")}</dd>
+              </div>
+              {product.subCategory && (
+                <div>
+                  <dt>소재 · 타입</dt>
+                  <dd>{product.subCategory}</dd>
+                </div>
+              )}
+              <div>
+                <dt>브랜드</dt>
+                <dd>{product.brand}</dd>
+              </div>
+              <div>
+                <dt>상품코드</dt>
+                <dd>JD-{product.id}</dd>
+              </div>
+            </dl>
           </div>
         </section>
 

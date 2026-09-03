@@ -101,3 +101,146 @@ body.dark .pdPetal {
   0%, 100% { opacity: 0; transform: scale(calc(var(--pdPetalScale, 1) * 0.5)); }
   50%      { opacity: 1; transform: scale(calc(var(--pdPetalScale, 1) * 1.2)); }
 }
+
+/* ── 명품관 리뉴얼 — 브레드크럼 / 정품 배지 바 / 브랜드명 / 스펙 로우 /
+   구매 버튼 / 하단 필수 표기 정보. 전부 이 페이지(ProductDetail.jsx)에서만
+   쓰는 클래스라 /item(HomeProductDetail.jsx)에는 영향 없음. ── */
+
+.pdBreadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--muted-foreground);
+}
+
+.pdBreadcrumbHome {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--muted-foreground);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.pdBreadcrumbHome:hover {
+  color: #a6342a;
+}
+
+body.dark .pdBreadcrumbHome:hover {
+  color: #d98a7a;
+}
+
+.pdBreadcrumbSep {
+  opacity: 0.4;
+}
+
+/* 정품 배지 바 — 검은 바탕 + 금박 글자. 쿠팡 럭셔리관의 "무료배송·브랜드 정품"
+   바를 오방색(먹색+금) 톤으로 옮겨왔다. */
+.pdAuthBar {
+  display: inline-block;
+  background: linear-gradient(135deg, #1c1a16 0%, #2a241a 100%);
+  color: #d9b45c;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border-radius: 3px;
+}
+
+.pdBrandName {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--foreground);
+  opacity: 0.75;
+}
+
+/* 스펙 로우 — 가격 바로 아래, 구매 판단에 필요한 정보를 키:값으로 짧게 */
+.pdSpecRows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.pdSpecRows > div {
+  display: flex;
+  gap: 10px;
+}
+
+.pdSpecRows dt {
+  flex-shrink: 0;
+  width: 76px;
+  color: var(--muted-foreground);
+}
+
+.pdSpecRows dd {
+  color: var(--foreground);
+  opacity: 0.85;
+}
+
+/* 바로 구매하기 — 먹색→금 은은한 그러데이션으로 다른 버튼(장바구니)과
+   위계를 확실히 가른다. */
+.pdBuyBtn {
+  background: linear-gradient(135deg, #1c1a16 0%, #35302a 60%, #6b5324 100%);
+  color: #f5f1ea;
+  border: none;
+  cursor: pointer;
+  transition: filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pdBuyBtn:hover {
+  filter: brightness(1.12);
+  box-shadow: 0 6px 20px rgba(107, 83, 36, 0.35);
+}
+
+/* 하단 필수 표기 정보 — 커머스 상세페이지 관례상 항상 붙는 표기 박스 */
+.pdFactsBox {
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+}
+
+.pdFactsTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--foreground);
+  margin-bottom: 12px;
+}
+
+.pdFactsList {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.pdFactsList > div {
+  display: flex;
+  gap: 12px;
+}
+
+.pdFactsList dt {
+  flex-shrink: 0;
+  width: 90px;
+  color: var(--muted-foreground);
+}
+
+.pdFactsList dd {
+  color: var(--foreground);
+  opacity: 0.85;
+}
+
+/* 썸네일 레일 활성 테두리도 오방색 포인트(적)로 — 사이트 전반의 강조색과 통일 */
+.pdPage .pdThumbBtn.active {
+  border-color: #a6342a;
+}
+
+body.dark .pdPage .pdThumbBtn.active {
+  border-color: #d98a7a;
+}
