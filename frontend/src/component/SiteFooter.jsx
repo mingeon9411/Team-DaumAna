@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { TERMS_OF_SERVICE, PRIVACY_POLICY } from "../../data/legalContent";
-import { BUSINESS_INFO } from "./BusinessInfoPanel";
+import { TERMS_OF_SERVICE, PRIVACY_POLICY } from "../data/legalContent";
+import { BUSINESS_INFO } from "../data/businessInfo";
 
 const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
 const MONO = { fontFamily: "'TwayFly', 'DM Mono', monospace" };
 
-// #home-products(상품 그리드) 맨 아래에 붙는 세로형 법적 고지 푸터.
-// BusinessInfoPanel(가로 스냅 패널 전용, 전자상거래법 제10조 사업자 정보 표시)과는
-// 별개로, 이용약관·개인정보처리방침 본문을 상품 목록을 끝까지 내렸을 때 그 자리에서
-// 펼쳐볼 수 있게 한다. 문구는 회원가입 약관 박스와 같은 data/legalContent.js를 공유.
-function ProductListFooter() {
+// 페이지 콘텐츠 맨 아래에 붙는 공용 푸터 — 이용약관·개인정보처리방침 본문을 그 자리에서
+// 펼쳐볼 수 있게 하고, 전자상거래법 제10조 사업자 정보(BUSINESS_INFO)를 표시한다.
+// 예전엔 별도의 BusinessInfoPanel 페이지가 사업자 정보만 전담했으나, 지금은 이 푸터가
+// 상품 목록/룩북/결제/한국관/상품 상세 페이지 하단에 각각 박혀 그 역할을 대신한다.
+// 문구는 회원가입 약관 박스와 같은 data/legalContent.js를 공유.
+function SiteFooter() {
   const [openSection, setOpenSection] = useState(null); // "terms" | "privacy" | null
 
   const toggle = (section) => setOpenSection((cur) => (cur === section ? null : section));
@@ -62,4 +63,4 @@ function ProductListFooter() {
   );
 }
 
-export default ProductListFooter;
+export default SiteFooter;

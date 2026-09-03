@@ -20,7 +20,7 @@ import { NAV_FLAGS } from "../../utils/navFlags";
 // 패널을 처음/끝으로 넘긴다(window.lenis 가로 스크롤).
 //
 // 두 번째 패드는 그 다음 패널들(index 4 이상 — 상품 그리드 id="home-products",
-// 룩북, BusinessInfoPanel)에서 뜬다. 이 패널들은 전부 자체 overflow-y-auto로
+// 룩북)에서 뜬다. 이 패널들은 전부 자체 overflow-y-auto로
 // 세로 스크롤하는 긴 콘텐츠라 위/아래가 "지금 보고 있는 패널 안쪽"의 스크롤
 // 위치만 바꾼다 — 어떤 패널이 활성인지는 activePanelIndex로 그때그때 찾는다(id가
 // 있는 건 상품 그리드뿐이라 id 대신 인덱스로 요소를 집는다).
@@ -105,7 +105,7 @@ function Sidebar() {
   const onContentPanel = isHome && activePanelIndex >= VIDEO_PANEL_COUNT;
 
   // 다른 페이지(헤더의 "회사 정보" 링크)에서 홈으로 넘어온 경우 — 맨 끝
-  // (BusinessInfoPanel)까지 스크롤한다. 이 컴포넌트는 라우트와 무관하게 항상
+  // (룩북 패널의 SiteFooter)까지 스크롤한다. 이 컴포넌트는 라우트와 무관하게 항상
   // 마운트돼 있어서, 홈 도착을 여기서 계속 지켜볼 수 있다.
   useEffect(() => {
     if (!isHome) return;
@@ -144,7 +144,7 @@ function Sidebar() {
     }
   };
 
-  // 영상 인트로 이후 패널(상품 그리드/룩북/BusinessInfoPanel)은 가로 패널이
+  // 영상 인트로 이후 패널(상품 그리드/룩북)은 가로 패널이
   // 아니라 각자 자체 세로 스크롤 컨테이너라, 위 scrollToTop/scrollToBottom(가로
   // Lenis 패널 이동)과는 다르게 "지금 활성인 패널 요소"의 scrollTop만 바꾼다.
   // 상품 그리드 말고는 id가 없어서 activePanelIndex로 요소를 집는다.
@@ -197,7 +197,7 @@ function Sidebar() {
     )}
 
     {/* 맨 위로/맨 아래로/이전/다음 십자 패드 — 상품 그리드부터 그 뒤 모든 패널
-        (룩북, BusinessInfoPanel)에서, 같은 자리에 같은 모양(사이드바 독과 동일한
+        (룩북)에서, 같은 자리에 같은 모양(사이드바 독과 동일한
         railStyle 프리셋)으로 뜬다. */}
     {onContentPanel && (
       <CrossPad

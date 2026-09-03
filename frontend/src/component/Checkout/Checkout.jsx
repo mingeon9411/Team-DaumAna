@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import * as PortOne from "@portone/browser-sdk/v2";
 import { createOrder, readyPayment, verifyPayment, getMyCoupons, validateCoupon } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
+import SiteFooter from "../SiteFooter";
 import "./Checkout.css";
 
 const PAYMENT_METHODS = [
@@ -426,6 +427,8 @@ function Checkout() {
             </div>
           </div>
         </div>
+
+        <SiteFooter />
       </div>
     </main>
   );

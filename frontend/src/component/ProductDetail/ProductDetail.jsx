@@ -12,6 +12,7 @@ import { isWished, toggleWish } from "../../utils/wishlist";
 import { addRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 import { useAuthModal } from "../../context/AuthModalContext";
+import SiteFooter from "../SiteFooter";
 
 const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
 const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
@@ -564,6 +565,8 @@ function ProductDetail() {
             </button>
           </div>
         </section>
+
+        <SiteFooter />
       </div>
     </main>
   );

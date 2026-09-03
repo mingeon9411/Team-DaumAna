@@ -5,8 +5,8 @@ import "./CustomerCenter.css";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 
-// 실제 상담 티켓/실시간 상담 시스템은 없는 포트폴리오 프로젝트라(BusinessInfoPanel.jsx 참고),
-// FAQ 답변과 연락처는 BusinessInfoPanel.jsx의 사업자 정보와 맞춘 플레이스홀더.
+// 실제 상담 티켓/실시간 상담 시스템은 없는 포트폴리오 프로젝트라(data/businessInfo.js 참고),
+// FAQ 답변과 연락처는 그 사업자 정보와 맞춘 플레이스홀더.
 const FAQS = [
   {
     q: "배송은 얼마나 걸리나요?",

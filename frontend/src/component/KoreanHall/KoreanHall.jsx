@@ -7,6 +7,7 @@ import products from "../../data/products";
 import ChatBot from "../MyPage/ChatBot";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import RecentlyViewedSidebar from "../Home/RecentlyViewedSidebar";
+import SiteFooter from "../SiteFooter";
 import { getRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS } from "../../utils/navFlags";
 import { getCartItems, logoutUser } from "../../api";
@@ -366,6 +367,8 @@ function KoreanHall() {
             );
           })}
         </ul>
+
+        <SiteFooter />
       </section>
 
       {recentlyViewed.length > 0 && (

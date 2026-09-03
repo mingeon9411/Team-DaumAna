@@ -7,42 +7,13 @@
 
     padding: 42px 38px;
 
-    background: linear-gradient(
-      115deg,
-      #f4f5f6 0%,
-      #d9dbde 20%,
-      #c3c6cb 35%,
-      #eef0f2 50%,
-      #b7bac0 65%,
-      #dfe1e4 80%,
-      #f4f5f6 100%
-    );
-    background-size: 160% 160%;
-    animation: loginMetallicSheen 24s ease-in-out infinite;
-    border: 1px solid rgba(0, 0, 0, 0.14);
-    color: var(--foreground);
-
+    /* 배경/테두리/그림자는 이제 .loginBox(Login.css)가 담당 — 로그인창과 같은
+       레인보우(글래스)/메탈릭/파스텔 프리셋을 그대로 공유하기 위해 여기서는 안 채운다. */
     border-radius: 26px;
 
     text-align: center;
 
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
-
     font-family: "TwayFly", "Noto Sans KR", "Pretendard", sans-serif;
-  }
-
-  body.dark .registerBox {
-    background: linear-gradient(
-      115deg,
-      #2b2d31 0%,
-      #44474d 20%,
-      #5a5d64 35%,
-      #323438 50%,
-      #6b6e75 65%,
-      #3c3e43 80%,
-      #2b2d31 100%
-    );
-    border: 1px solid rgba(255, 255, 255, 0.18);
   }
 
   .registerBox h1 {
@@ -211,10 +182,16 @@
     padding: 12px;
 
     border: 1px solid var(--border);
-    background: var(--card);
+    /* var(--card)는 베이지 톤이라 로그인창과 안 어울림 — 카드 배경 위에 얹는
+       반투명 오버레이로 바꿔 로그인/회원가입창 배경이 그대로 비쳐 보이게 한다. */
+    background: rgba(255, 255, 255, 0.35);
 
     cursor: pointer;
     font-size: 14px;
+  }
+
+  body.dark .termsBtn {
+    background: rgba(0, 0, 0, 0.25);
   }
 
   .termsBox {
@@ -225,11 +202,15 @@
     overflow-y: auto;
 
     border: 1px solid var(--border);
-    background: var(--card);
+    background: rgba(255, 255, 255, 0.35);
 
     font-size: 13px;
     line-height: 1.7;
     color: var(--muted-foreground);
+  }
+
+  body.dark .termsBox {
+    background: rgba(0, 0, 0, 0.25);
   }
 
   .termsBox h4 {

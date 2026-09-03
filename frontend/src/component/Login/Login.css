@@ -497,6 +497,23 @@
     border-radius: 4px;
     overflow: hidden;
   }
+/* 전자상거래법 제10조 사업자 정보 — SiteFooter가 상품/결제 페이지 하단에 쓰는 것과
+   같은 BUSINESS_INFO를 로그인·회원가입 창 맨 아래에도 노출한다(로그인/회원가입 공용 클래스). */
+.authBusinessInfo {
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(120, 120, 120, 0.18);
+
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--muted-foreground);
+  font-family: "TwayFly", "DM Mono", monospace;
+}
+
+.authBusinessDot {
+  margin: 0 4px;
+}
+
 @media (max-width: 480px) {
   .loginBox {
     padding: 28px 22px;

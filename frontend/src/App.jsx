@@ -58,7 +58,7 @@ function DoorIntroController() {
     const returnZone = sessionStorage.getItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE);
     sessionStorage.removeItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE);
     // 독의 "회사 정보" 버튼으로 홈까지 넘어온 경우(Sidebar.jsx가 세팅, 아직 소비 전)도
-    // 대문 애니메이션 없이 곧장 BusinessInfoPanel로 스크롤되어야 하므로 스킵 대상.
+    // 대문 애니메이션 없이 곧장 맨 끝(룩북 패널의 SiteFooter)으로 스크롤되어야 하므로 스킵 대상.
     // 값은 Sidebar.jsx가 마운트 후에 읽고 지우므로 여기서는 확인만 하고 지우지 않는다.
     const pendingScrollToEnd = !isKoreanHall && sessionStorage.getItem(NAV_FLAGS.PENDING_SCROLL_TO_END);
     const isProductDetailReturn = returnZone === (isKoreanHall ? NAV_ZONE.KOREAN_HALL : NAV_ZONE.HOME);

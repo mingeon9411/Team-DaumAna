@@ -8,8 +8,7 @@ import PhotoReviewViewer from "./PhotoReviewViewer";
 import PhotoReviewUploadModal from "./PhotoReviewUploadModal";
 import RecentlyViewedSidebar from "./RecentlyViewedSidebar";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
-import BusinessInfoPanel from "./BusinessInfoPanel";
-import ProductListFooter from "./ProductListFooter";
+import SiteFooter from "../SiteFooter";
 import { getRecentlyViewed } from "../../utils/recentlyViewed";
 import { NAV_FLAGS } from "../../utils/navFlags";
 import { useNestedLenis } from "../../hooks/useNestedLenis";
@@ -29,6 +28,19 @@ import woodChair from "../../assets/products/(의자) 우드 의자.jpg";
 import resortChair from "../../assets/products/(의자) 유럽풍 피서지 의자.jpg";
 import nordicBed from "../../assets/products/(침대) 북유럽 침대.jpg";
 import pastelPatternBed from "../../assets/products/(침대) 북유럽풍 파스텔 문양 침대.jpg";
+import spriteMatA from "../../assets/products/생활용품/발매트/스프라이트 발매트(A타입).png";
+import spriteMatB from "../../assets/products/생활용품/발매트/스프라이트 발매트(B타입).png";
+import thickTowelA from "../../assets/products/생활용품/수건/두께가 있는 세면 수건(A타입).png";
+import thickTowelB from "../../assets/products/생활용품/수건/두꼐가 있는 세면 수건(B타입).png";
+import waffleTowel from "../../assets/products/생활용품/수건/와플 문양 수건.png";
+import furrySlipperGray from "../../assets/products/생활용품/실내화/부드러운 털 실내화 (그레이).png";
+import furrySlipperGreen from "../../assets/products/생활용품/실내화/부드러운 털 실내화 (그린).png";
+import furrySlipperBrown from "../../assets/products/생활용품/실내화/부드러운 털 실내화 (브라운).png";
+import furrySlipperNavy from "../../assets/products/생활용품/실내화/부드러운 털 실내화(네이비).png";
+import drainSandalRed from "../../assets/products/생활용품/욕실화/물이 잘 빠지는 욕실화 (레드).png";
+import drainSandalBlack from "../../assets/products/생활용품/욕실화/물이 잘 빠지는 욕실화 (블랙).png";
+import drainSandalBlue from "../../assets/products/생활용품/욕실화/물이 잘 빠지는 욕실화 (블루).png";
+import drainSandalWhite from "../../assets/products/생활용품/욕실화/물이 잘 빠지는 욕실화 (화이트).png";
 // 인테리어 컷 — 일부 상품만 있음. 카드에 커서를 올리면 스튜디오 사진 대신
 // 방에 놓인 모습으로 잠깐 전환해서 보여준다(마우스를 떼면 원래 사진으로 복귀).
 import rugBInterior from "../../assets/interior/(소품) 북유럽풍 러그 B형 -인테리어.jpg";
@@ -110,6 +122,58 @@ export const PRODUCTS = [
     desc: "블루, 세이지, 로즈 톤의 추상 패턴 패브릭으로 감싼 업홀스터리 침대입니다. 높은 헤드보드가 침실의 포인트가 되어 주고, 부드러운 패딩감이 등을 편안하게 받쳐줍니다.",
     spec: "SIZE : W165 D210 H130 (Q) · MATERIAL : polyester fabric, wood frame",
     image: pastelPatternBed, interiorImage: pastelPatternBedInterior, alt: "북유럽풍 파스텔 문양 침대", brand: "집다움", category: "침대", midCategory: "업홀스터리침대", subCategory: "패브릭 우드프레임" },
+  { id: 18, no: "No.18", name: "스프라이트 발매트 A타입", sub: "아이보리 브라운 스트라이프", price: "32,000", label: "NEW",
+    desc: "아이보리 바탕에 브라운 톤 스트라이프를 촘촘히 짜 넣은 극세사 발매트입니다. 미끄럼 방지 네이비 바인딩으로 마감해 욕실 입구나 세면대 앞에 깔아도 안정감 있게 자리를 지킵니다.",
+    spec: "SIZE : W60 D180 · MATERIAL : microfiber, non-slip backing",
+    image: spriteMatA, alt: "스프라이트 발매트 A타입", brand: "집다움", category: "발매트", midCategory: "발매트", subCategory: "브라운 스트라이프" },
+  { id: 19, no: "No.19", name: "스프라이트 발매트 B타입", sub: "아이보리 네이비 스트라이프", price: "32,000", label: "NEW",
+    desc: "아이보리 바탕에 네이비 스트라이프를 더한 극세사 발매트입니다. 짙은 컬러가 화이트·그레이 톤 욕실과 산뜻하게 어우러지고, 두툼한 파일감이 물기를 빠르게 흡수합니다.",
+    spec: "SIZE : W60 D180 · MATERIAL : microfiber, non-slip backing",
+    image: spriteMatB, alt: "스프라이트 발매트 B타입", brand: "집다움", category: "발매트", midCategory: "발매트", subCategory: "네이비 스트라이프" },
+  { id: 20, no: "No.20", name: "두께감 세면 수건 A타입", sub: "레드 블루 헤링본", price: "14,000", label: "NEW",
+    desc: "레드와 블루가 교차하는 헤링본 스트라이프 세면 수건입니다. 두께감 있는 순면 파일이 물기를 넉넉히 흡수하면서도 가볍게 말라 매일 쓰기 좋습니다.",
+    spec: "SIZE : W34 D75 · MATERIAL : cotton 100%",
+    image: thickTowelA, alt: "두께감 세면 수건 A타입", brand: "집다움", category: "수건", midCategory: "세면타월", subCategory: "헤링본 레드 블루" },
+  { id: 21, no: "No.21", name: "두께감 세면 수건 B타입", sub: "틸 머스터드 헤링본", price: "14,000", label: "NEW",
+    desc: "틸과 머스터드가 어우러진 헤링본 스트라이프 세면 수건입니다. 색을 맞춰 욕실 소품을 꾸미기 좋고, 도톰한 파일감이 산뜻한 사용감을 줍니다.",
+    spec: "SIZE : W34 D75 · MATERIAL : cotton 100%",
+    image: thickTowelB, alt: "두께감 세면 수건 B타입", brand: "집다움", category: "수건", midCategory: "세면타월", subCategory: "헤링본 틸 머스터드" },
+  { id: 22, no: "No.22", name: "와플 문양 수건", sub: "내추럴 베이지 와플", price: "16,000", label: "ECO",
+    desc: "베이지 톤 와플 문양으로 짠 순면 수건입니다. 도톰하게 짜인 조직이 통기성이 좋아 잘 마르고, 은은한 컬러로 어떤 욕실에도 무난히 어울립니다.",
+    spec: "SIZE : W40 D80 · MATERIAL : cotton waffle weave",
+    image: waffleTowel, alt: "와플 문양 수건", brand: "집다움", category: "수건", midCategory: "세면타월", subCategory: "와플 베이지" },
+  { id: 23, no: "No.23", name: "부드러운 털 실내화 그레이", sub: "차콜 그레이 스트라이프", price: "16,000", label: "NEW",
+    desc: "부드러운 극세사로 안팎을 감싼 슬리퍼형 실내화입니다. 두툼한 안창이 발끝을 포근하게 받쳐주고, 차콜 스트라이프가 차분하게 어우러져 침실이나 거실 어디에 두어도 잘 어울립니다.",
+    spec: "SIZE : 250-270mm (Free) · MATERIAL : fleece, EVA sole",
+    image: furrySlipperGray, alt: "부드러운 털 실내화 그레이", brand: "집다움", category: "실내화", midCategory: "극세사 실내화", subCategory: "그레이 스트라이프" },
+  { id: 24, no: "No.24", name: "부드러운 털 실내화 그린", sub: "세이지 그린", price: "16,000", label: "NEW",
+    desc: "부드러운 극세사로 안팎을 감싼 슬리퍼형 실내화입니다. 두툼한 안창이 발끝을 포근하게 받쳐주고, 세이지 그린 컬러가 은은한 포인트를 더해줍니다.",
+    spec: "SIZE : 250-270mm (Free) · MATERIAL : fleece, EVA sole",
+    image: furrySlipperGreen, alt: "부드러운 털 실내화 그린", brand: "집다움", category: "실내화", midCategory: "극세사 실내화", subCategory: "세이지 그린" },
+  { id: 25, no: "No.25", name: "부드러운 털 실내화 브라운", sub: "웜 브라운", price: "16,000", label: "NEW",
+    desc: "부드러운 극세사로 안팎을 감싼 슬리퍼형 실내화입니다. 두툼한 안창이 발끝을 포근하게 받쳐주고, 브라운 톤이 따뜻한 무드를 더해줍니다.",
+    spec: "SIZE : 250-270mm (Free) · MATERIAL : fleece, EVA sole",
+    image: furrySlipperBrown, alt: "부드러운 털 실내화 브라운", brand: "집다움", category: "실내화", midCategory: "극세사 실내화", subCategory: "브라운" },
+  { id: 26, no: "No.26", name: "부드러운 털 실내화 네이비", sub: "딥 네이비", price: "16,000", label: "BESTSELLER",
+    desc: "부드러운 극세사로 안팎을 감싼 슬리퍼형 실내화입니다. 두툼한 안창이 발끝을 포근하게 받쳐주고, 네이비 컬러가 차분한 포인트를 더해줍니다.",
+    spec: "SIZE : 250-270mm (Free) · MATERIAL : fleece, EVA sole",
+    image: furrySlipperNavy, alt: "부드러운 털 실내화 네이비", brand: "집다움", category: "실내화", midCategory: "극세사 실내화", subCategory: "네이비" },
+  { id: 27, no: "No.27", name: "물이 잘 빠지는 욕실화 레드", sub: "레드", price: "10,000", label: "NEW",
+    desc: "배수 슬릿을 낸 쿠션 소재 욕실화입니다. 도톰한 EVA 밑창이 푹신하게 발을 받쳐주고, 미끄럼을 줄여주는 표면 처리로 젖은 바닥에서도 안심하고 신을 수 있습니다. 레드 컬러가 욕실에 산뜻한 포인트를 더합니다.",
+    spec: "SIZE : 250-270mm (Free) · MATERIAL : EVA",
+    image: drainSandalRed, alt: "물이 잘 빠지는 욕실화 레드", brand: "집다움", category: "욕실화", midCategory: "쿠션 욕실화", subCategory: "레드" },
+  { id: 28, no: "No.28", name: "물이 잘 빠지는 욕실화 블랙", sub: "블랙", price: "10,000", label: "NEW",
+    desc: "배수 슬릿을 낸 쿠션 소재 욕실화입니다. 도톰한 EVA 밑창이 푹신하게 발을 받쳐주고, 미끄럼을 줄여주는 표면 처리로 젖은 바닥에서도 안심하고 신을 수 있습니다. 블랙 컬러로 어떤 욕실에도 무난히 어울립니다.",
+    spec: "SIZE : 250-270mm (Free) · MATERIAL : EVA",
+    image: drainSandalBlack, alt: "물이 잘 빠지는 욕실화 블랙", brand: "집다움", category: "욕실화", midCategory: "쿠션 욕실화", subCategory: "블랙" },
+  { id: 29, no: "No.29", name: "물이 잘 빠지는 욕실화 블루", sub: "블루", price: "10,000", label: "NEW",
+    desc: "배수 슬릿을 낸 쿠션 소재 욕실화입니다. 도톰한 EVA 밑창이 푹신하게 발을 받쳐주고, 미끄럼을 줄여주는 표면 처리로 젖은 바닥에서도 안심하고 신을 수 있습니다. 블루 컬러가 시원한 느낌을 더합니다.",
+    spec: "SIZE : 250-270mm (Free) · MATERIAL : EVA",
+    image: drainSandalBlue, alt: "물이 잘 빠지는 욕실화 블루", brand: "집다움", category: "욕실화", midCategory: "쿠션 욕실화", subCategory: "블루" },
+  { id: 30, no: "No.30", name: "물이 잘 빠지는 욕실화 화이트", sub: "화이트", price: "10,000", label: "BESTSELLER",
+    desc: "배수 슬릿을 낸 쿠션 소재 욕실화입니다. 도톰한 EVA 밑창이 푹신하게 발을 받쳐주고, 미끄럼을 줄여주는 표면 처리로 젖은 바닥에서도 안심하고 신을 수 있습니다. 화이트 컬러로 깔끔한 분위기를 연출합니다.",
+    spec: "SIZE : 250-270mm (Free) · MATERIAL : EVA",
+    image: drainSandalWhite, alt: "물이 잘 빠지는 욕실화 화이트", brand: "집다움", category: "욕실화", midCategory: "쿠션 욕실화", subCategory: "화이트" },
 ];
 
 // 대(大)카테고리 아래 중(中)카테고리를 묶어두는 트리 — product.category(중)가
@@ -139,6 +203,8 @@ export const CATEGORY_TREE = [
       { label: "수납" },
       { label: "발매트" },
       { label: "수건" },
+      { label: "실내화" },
+      { label: "욕실화" },
     ],
   },
 ];
@@ -1001,7 +1067,6 @@ function Home() {
             </button>
           </div>
 
-          <p className="mb-3 text-sm font-semibold text-foreground" style={SANS}>카테고리</p>
           <div className="flex items-center gap-7 overflow-x-auto pb-1 border-b border-border">
             {[{ label: "전체" }, ...CATEGORY_TREE].map((top) => {
               const selected = selectedTop === top.label;
@@ -1142,7 +1207,7 @@ function Home() {
         </div>
         )}
 
-        <ProductListFooter />
+        <SiteFooter />
       </section>
 
       {/* LOOKBOOK */}
@@ -1262,10 +1327,10 @@ function Home() {
               </div>
             )}
           </div>
+
+          <SiteFooter />
         </div>
       </section>
-
-      <BusinessInfoPanel />
 
       {showPhotoUploadModal && (
         <PhotoReviewUploadModal

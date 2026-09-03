@@ -46,7 +46,7 @@ const formatTime = (ms) =>
 
 // 질문 문장에서 상품 추천 패널을 띄울지 판단한다.
 // 카테고리 키워드(있으면 필터) + 조건 키워드(할인/신상/베스트/친환경 중 하나) 조합으로 PRODUCTS를 좁힌다.
-const CATEGORY_KEYWORDS = ["소파", "의자", "테이블", "조명", "수납", "침구", "소품"];
+const CATEGORY_KEYWORDS = ["소파", "의자", "테이블", "조명", "수납", "침구", "소품", "발매트", "수건", "실내화", "욕실화"];
 const CONDITION_RULES = [
   { test: (t) => /할인|세일|특가|저렴/.test(t), match: (p) => !!p.originalPrice, title: "🔥 할인 중인 상품" },
   { test: (t) => /신상|신제품|최신/.test(t), match: (p) => p.label === "NEW", title: "🆕 신상품" },

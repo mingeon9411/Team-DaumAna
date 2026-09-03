@@ -90,9 +90,10 @@ function Header() {
   }, [isProductPage]);
 
   // 예전엔 왼쪽 사이드바 독의 "회사 정보" 버튼이 하던 일 — 전자상거래법상 사업자
-  // 정보 표시 요건 때문에 어느 페이지에서든 닿을 수 있어야 한다. 홈이면 바로
-  // 맨 끝(BusinessInfoPanel)까지 스크롤, 다른 페이지면 홈으로 이동 후 Sidebar.jsx가
-  // PENDING_SCROLL_TO_END 신호를 보고 이어서 스크롤한다.
+  // 정보 표시 요건 때문에 어느 페이지에서든 닿을 수 있어야 한다. 사업자 정보는
+  // 이제 SiteFooter(룩북 패널 맨 아래 등)에 있으므로, 홈이면 바로 맨 끝까지 스크롤,
+  // 다른 페이지면 홈으로 이동 후 Sidebar.jsx가 PENDING_SCROLL_TO_END 신호를 보고
+  // 이어서 스크롤한다.
   const goToBusinessInfo = () => {
     if (isHome) {
       window.lenis?.resize();

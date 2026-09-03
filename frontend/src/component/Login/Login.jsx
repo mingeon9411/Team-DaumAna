@@ -8,12 +8,14 @@ import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { loginUser, requestSocialCaptchaTicket } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useRailStyle } from "../../hooks/useRailStyle";
+import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 import JDLogo from "../../assets/J.D 로고.svg";
 // -sm: 48px 높이로만 쓰이는데 원본이 1015x600(750KB)이라 로그인창이 뜰 때마다
 // 불필요하게 무거웠음 — 표시 크기에 맞춰 300px 높이로 미리 축소해둔 버전으로 교체.
 // DoorIntro(한국관 인트로, 420px+)처럼 실제로 큰 화면에 쓰는 곳만 원본을 그대로 쓴다.
 import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
 import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent-sm.png";
+import { BUSINESS_INFO } from "../../data/businessInfo";
 
 const SPRING = import.meta.env.VITE_SPRING_API_URL || "http://localhost:8081";
 const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
@@ -35,6 +37,13 @@ function Login() {
     const syncDarkMode = () => setDarkMode(document.body.classList.contains("dark"));
     window.addEventListener("darkmodechange", syncDarkMode);
     return () => window.removeEventListener("darkmodechange", syncDarkMode);
+  }, []);
+
+  // CustomerCenter.jsx와 동일한 신호 — "돌아가기" 버튼(closeAuthPage)으로 "/"에
+  // 도착하면 DoorIntroController가 이 흔적을 보고 대문 애니메이션 없이 곧장
+  // 상품 목록 패널로 스크롤한다(패널 1번 에세이가 아니라).
+  useEffect(() => {
+    sessionStorage.setItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE, NAV_ZONE.HOME);
   }, []);
 
   const [email, setEmail] = useState("");
@@ -246,6 +255,15 @@ function Login() {
             <FcGoogle className="snsIcon" />
             Google로 로그인하기
           </button>
+        </div>
+
+        <div className="authBusinessInfo">
+          {BUSINESS_INFO.map(([label, value], i) => (
+            <span key={label}>
+              {label} {value}
+              {i < BUSINESS_INFO.length - 1 && <span className="authBusinessDot">·</span>}
+            </span>
+          ))}
         </div>
       </section>
   );

@@ -30,7 +30,14 @@
       "Bash(node -e ' *)",
       "Bash(git diff *)",
       "Bash(wc -l /tmp_diff.txt)",
-      "Bash(git stash *)"
+      "Bash(git stash *)",
+      "Bash(git -C d:/Team-DaumAna pull)",
+      "Bash(docker compose *)",
+      "Bash(./venv/Scripts/python.exe manage.py migrate)",
+      "Bash(./venv/Scripts/python.exe manage.py reset_main_products)",
+      "Bash(./venv/Scripts/python.exe manage.py shell -c ' *)",
+      "Bash(grep -n '{ id: 1[5-9], no:\\\\|{ id: 2[0-7], no:' frontend/src/component/Home/Home.jsx)",
+      "Bash(iconv -f utf-8 -t utf-8)"
     ]
   }
 }

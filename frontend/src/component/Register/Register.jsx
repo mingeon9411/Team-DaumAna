@@ -4,28 +4,40 @@ import "../Login/Login.css";
 import { useNavigate, Link } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
+import { LuChevronLeft } from "react-icons/lu";
 import { registerUser, checkNicknameAPI } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
+import { useRailStyle } from "../../hooks/useRailStyle";
+import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 import JDLogo from "../../assets/J.D 로고.svg";
 // -sm: 48px로만 쓰여서 원본(1015x600, 750KB) 대신 축소본을 쓴다.
 import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
 import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent-sm.png";
 import { TERMS_OF_SERVICE, PRIVACY_POLICY } from "../../data/legalContent";
+import { BUSINESS_INFO } from "../../data/businessInfo";
 
 const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 
 function Register() {
   const navigate = useNavigate();
   const recaptchaRef = useRef(null);
-  const { openLogin } = useAuthModal();
+  const { openLogin, closeAuthPage } = useAuthModal();
   const [darkMode, setDarkMode] = useState(
     () => document.body.classList.contains("dark")
   );
+  // 로그인창과 동일한 레인보우(글래스)/메탈릭/파스텔 배경 프리셋을 회원가입창에도 그대로 반영
+  const { railStyle, styleSwitching } = useRailStyle();
 
   useEffect(() => {
     const syncDarkMode = () => setDarkMode(document.body.classList.contains("dark"));
     window.addEventListener("darkmodechange", syncDarkMode);
     return () => window.removeEventListener("darkmodechange", syncDarkMode);
+  }, []);
+
+  // Login.jsx와 동일한 신호 — "돌아가기" 버튼(closeAuthPage)으로 "/"에 도착하면
+  // DoorIntroController가 이 흔적을 보고 곧장 상품 목록 패널로 스크롤한다.
+  useEffect(() => {
+    sessionStorage.setItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE, NAV_ZONE.HOME);
   }, []);
 
   const [showTerms, setShowTerms] = useState(false);
@@ -188,8 +200,12 @@ function Register() {
   };
 
   return (
-      <section className="registerBox">
-        {/* 독립 페이지라 "닫기(X)"는 없고, 로고를 누르면 홈으로 돌아간다. */}
+      <section className={`loginBox registerBox railStyle-${railStyle} ${styleSwitching ? "styleSwitching" : ""}`}>
+        {/* 로그인창과 같은 패턴으로 돌아가기 버튼을 둔다(closeAuthPage는 항상 홈으로 보낸다) */}
+        <button type="button" className="loginBackBtn" onClick={closeAuthPage}>
+          <LuChevronLeft size={14} /> 돌아가기
+        </button>
+
         <Link to="/" className="loginLogoRow" aria-label="집다움 홈으로">
           <img src={JDLogo} alt="J.D" className="loginLogoJD" />
           <span className="loginLogoDivider" />
@@ -353,6 +369,15 @@ function Register() {
         <div className="registerLinks">
           <span>이미 계정이 있으신가요?</span>
           <button type="button" className="linkBtn" onClick={openLogin}>로그인</button>
+        </div>
+
+        <div className="authBusinessInfo">
+          {BUSINESS_INFO.map(([label, value], i) => (
+            <span key={label}>
+              {label} {value}
+              {i < BUSINESS_INFO.length - 1 && <span className="authBusinessDot">·</span>}
+            </span>
+          ))}
         </div>
       </section>
   );
