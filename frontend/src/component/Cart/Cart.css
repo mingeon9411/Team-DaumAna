@@ -44,6 +44,7 @@
   font-size: 28px;
   font-weight: 700;
   margin: 0 0 28px;
+  font-family: "GmarketSans", "Noto Sans KR", sans-serif;
 }
 
 /* ── 쿠폰 배너 ── 실제 적용은 결제 단계(Checkout.jsx)에서 하므로 여기선 보유
@@ -143,6 +144,7 @@
   font-size: 15px;
   font-weight: 600;
   margin: 0 0 18px;
+  font-family: "GmarketSans", "Noto Sans KR", sans-serif;
 }
 .cartSummaryTitle strong {
   font-size: 18px;
@@ -267,6 +269,7 @@
   font-weight: 600;
   margin: 0 0 4px;
   color: var(--foreground);
+  font-family: "GmarketSans", "Noto Sans KR", sans-serif;
 }
 
 .cartItemOption {
@@ -474,12 +477,12 @@
   width: 100%;
   height: 50px;
   padding: 0 16px;
-  border: none;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: opacity 0.15s;
+  font-family: "GmarketSans", "Noto Sans KR", sans-serif;
 }
 
 .cartSecondaryBtn {
@@ -516,6 +519,7 @@
   font-weight: 700;
   margin: 0 0 18px;
   color: var(--foreground);
+  font-family: "GmarketSans", "Noto Sans KR", sans-serif;
 }
 .cartRecommendGrid {
   display: grid;
