@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&family=Noto+Sans+KR:wght@300;400;500&family=Song+Myung&family=DM+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&family=Noto+Sans+KR:wght@300;400;500&family=Song+Myung&family=DM+Mono:wght@400;500&family=Alex+Brush&display=swap');
 @import "tailwindcss";
 
 /* Tailwind 기본 dark: 변형은 OS의 prefers-color-scheme를 따르는데, 이 앱의 다크모드는

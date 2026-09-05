@@ -269,7 +269,10 @@ function Header() {
       {/* 예전엔 SiteFooter 패널에서만 숨겼는데(isFooterPanel), 로고가 스크롤 중에
           잠깐씩 사라지는 게 오히려 어색해서 항상 보이게 되돌린다. */}
       <Link to="/" className="logo" aria-label="집다움 홈">
-        <span className="logoText" style={SANS}>집다움</span>
+        <span className="logoSwap">
+          <span className="logoText logoText--ko" style={SANS}>집다움</span>
+          <span className="logoText logoText--en">Home, Made Yours</span>
+        </span>
       </Link>
 
       {showExpandedNav && (
