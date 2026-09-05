@@ -23,6 +23,7 @@ import Settings from "./component/Settings/Settings";
 import Checkout from "./component/Checkout/Checkout";
 import OrderComplete from "./component/OrderComplete/OrderComplete";
 import Lookbook from "./component/Lookbook/Lookbook";
+import LookbookPost from "./component/Lookbook/LookbookPost";
 import LookbookTips from "./component/Lookbook/LookbookTips";
 import AuthModal from "./component/AuthModal/AuthModal";
 import AuthPage from "./component/AuthModal/AuthPage";
@@ -196,6 +197,7 @@ function App() {
         <Route path="/search" element={<SearchResults />} />
         <Route path="/lookbook" element={<Lookbook />} />
         <Route path="/lookbook/tips" element={<LookbookTips />} />
+        <Route path="/lookbook/:id" element={<LookbookPost />} />
         <Route path="/customer-center" element={<CustomerCenter />} />
         <Route path="/notice" element={<Notice />} />
         <Route path="/settings" element={<Settings />} />
