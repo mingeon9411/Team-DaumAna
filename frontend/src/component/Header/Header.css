@@ -401,8 +401,8 @@ body.dark[data-bg][data-pastel] .header.homePageHeader::before {
 
 /* J.D 로고 이미지가 (필터 색상 계산이 어긋나) 흰 배경 위에서 흰색으로 그대로
    묻혀 안 보이던 문제가 있어 텍스트 워드마크로 교체. 스크롤 상태와 무관하게
-   항상 검은색 고정 — 배너가 없는 화면(홈 영상 인트로 등 어두운 배경)에서는
-   묻혀 안 보일 수 있는데, 그건 검은색 고정 요청에 따른 트레이드오프. */
+   항상 검은색 고정이었으나, 다크모드에서는 어두운 배경 위에 검은 글자가 그대로
+   묻혀 안 보이는 문제가 있어 다크모드일 때만 흰색으로 뒤집는다(라이트모드는 기존과 동일). */
 /* 한글 워드마크와 영문 필기체("Home, Made Yours")를 같은 자리에 겹쳐두고
    크로스페이드로 번갈아 보여준다. 폭이 서로 달라 레이아웃이 흔들리지 않도록
    .logoSwap은 relative 컨테이너로, 두 로고는 absolute + 가운데 정렬로 겹친다. */
@@ -423,6 +423,10 @@ body.dark[data-bg][data-pastel] .header.homePageHeader::before {
   color: #000000;
   white-space: nowrap;
   animation: logoCrossfade 30s ease-in-out infinite;
+}
+
+body.dark .logoText {
+  color: #ffffff;
 }
 
 /* 페이지에 막 들어왔을 때 곧바로 튀어나오는 느낌이 있어, 최초 1회만 재생되는

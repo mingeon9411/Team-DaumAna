@@ -100,7 +100,7 @@ function LookbookPost() {
                 )}
                 <h3 className="text-sm font-medium text-foreground mt-1.5 mb-1" style={SERIF}>{p.name}</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed mb-1.5">{p.desc}</p>
-                <span className="text-sm font-semibold text-foreground" style={MONO}>₩{p.price}</span>
+                <span className="text-sm font-bold text-foreground" style={MONO}>₩{p.price}</span>
               </div>
             </div>
           ))}

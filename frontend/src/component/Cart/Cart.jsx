@@ -213,6 +213,18 @@ function Cart() {
     }
   };
 
+  // 사이드바 카드 안 select용 — "선택 안 함"이면 해제, 아니면 handleSelectCoupon 재사용.
+  const handleCouponSelectChange = (code) => {
+    if (!code) {
+      setAppliedCoupon(null);
+      setCouponDiscount(0);
+      setCouponError("");
+      return;
+    }
+    const coupon = myCoupons.find((c) => c.code === code);
+    if (coupon) handleSelectCoupon(coupon);
+  };
+
   // "다른 고객이 함께 구매한 상품" — 실제 co-purchase 통계 없이, 장바구니에 담긴 상품과
   // 같은 카테고리를 우선 노출하는 간단한 추천이다(카탈로그 자체가 카테고리 필드를 이미
   // 갖고 있어 별도 API 없이도 가능). "비슷한 취향의 고객이 담은 상품"은 첫 섹션과
@@ -429,6 +441,28 @@ function Cart() {
 
             <aside className="cartSummarySidebar">
               <h2 className="cartSummaryTitle">총 주문 금액 <strong>{displayOrderTotal.toLocaleString()}원</strong></h2>
+
+              {myCoupons.length > 0 && (
+                <div className="cartSidebarCoupon">
+                  <label htmlFor="cartCouponSelect" className="cartSidebarCouponLabel">
+                    <Ticket size={14} /> 쿠폰 적용
+                  </label>
+                  <select
+                    id="cartCouponSelect"
+                    value={appliedCoupon?.code || ""}
+                    onChange={(e) => handleCouponSelectChange(e.target.value)}
+                  >
+                    <option value="">쿠폰 선택 안 함</option>
+                    {myCoupons.map((c) => (
+                      <option key={c.id} value={c.code}>
+                        {c.name} ({c.discount_type === "FIXED" ? `${c.discount_value.toLocaleString()}원` : `${c.discount_value}%`} 할인)
+                      </option>
+                    ))}
+                  </select>
+                  {couponError && <p className="cartCouponError">{couponError}</p>}
+                </div>
+              )}
+
               <div className="cartSummaryReceipt">
                 <div className="cartSummaryRow cartSummarySub">
                   <span>ㄴ 상품 금액</span>

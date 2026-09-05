@@ -531,7 +531,7 @@ function HomeProductDetail() {
 
             <div className="flex items-baseline justify-between mb-7 pb-7 border-b border-border">
               <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>주문금액</span>
-              <span className="text-2xl font-semibold text-foreground" style={MONO}>
+              <span className="text-2xl font-bold text-foreground" style={MONO}>
                 ₩{(priceNum * quantity).toLocaleString()}
               </span>
             </div>

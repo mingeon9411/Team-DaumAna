@@ -17,7 +17,6 @@ import linenWoodSofa from "../../assets/products/(소파) 린넨 우드 소파.j
 import nordicSofa from "../../assets/products/(소파) 북유럽 소파.jpg";
 import europeanWoodSofa from "../../assets/products/(소파) 유러피안 우드 소파.jpg";
 import linenLaundryBasket from "../../assets/products/(소품) 린넨 빨래 바구니.jpg";
-import linenLaundryBasketInterior from "../../assets/interior/(소품) 린넨 빨래 바구니 - 인테리어.png";
 import patternLaundryBasket from "../../assets/products/(소품) 북유럽 문양 빨래 바구니.jpg";
 import rugA from "../../assets/products/(소품) 북유럽풍 러그 A형.jpg";
 import ecoWoodLaundryBasket from "../../assets/products/(소품) 친환경 우드 빨래 바구니.jpg";
@@ -38,6 +37,14 @@ import drainSandalRed from "../../assets/products/생활용품/욕실화/물이 
 import drainSandalBlack from "../../assets/products/생활용품/욕실화/물이 잘 빠지는 욕실화 (블랙).png";
 import drainSandalBlue from "../../assets/products/생활용품/욕실화/물이 잘 빠지는 욕실화 (블루).png";
 import drainSandalWhite from "../../assets/products/생활용품/욕실화/물이 잘 빠지는 욕실화 (화이트).png";
+import darkBrownSofa from "../../assets/products/소파/(소파) 다크 브라운 고급 소파 - 1.png";
+import mushroomLampGreen from "../../assets/products/무드등/(무드등) 버섯 무드등(그린).png";
+import mushroomLampNavy from "../../assets/products/무드등/(무드등) 버섯 무드등(네이비).png";
+import mushroomLampOrange from "../../assets/products/무드등/(무드등) 버섯 무드등(오렌지).png";
+import wideLiberoSandalRed from "../../assets/products/생활용품/욕실화/(욕실화)  미끄럼방지 와이드 리베로 EVA 욕실화 - 레드.png";
+import wideLiberoSandalBlue from "../../assets/products/생활용품/욕실화/(욕실화)  미끄럼방지 와이드 리베로 EVA 욕실화 - 블루.png";
+import cloudSandalBlack from "../../assets/products/생활용품/욕실화/(욕실화) EVA 미끄러짐 방지 욕실화 - 블랙.png";
+import cloudSandalWhite from "../../assets/products/생활용품/욕실화/(욕실화) EVA 미끄러짐 방지 욕실화 - 화이트.png";
 // 인테리어 컷 — 일부 상품만 있음. 카드에 커서를 올리면 스튜디오 사진 대신
 // 방에 놓인 모습으로 잠깐 전환해서 보여준다(마우스를 떼면 원래 사진으로 복귀).
 import rugBInterior from "../../assets/interior/(소품) 북유럽풍 러그 B형 -인테리어.jpg";
@@ -50,8 +57,12 @@ import smallMoodLampInterior from "../../assets/interior/(무드등) 북유럽�
 import linenWoodSofaInterior from "../../assets/interior/(소파) 린넨 우드 소파 - 인테리어.jpg";
 import nordicSofaInterior from "../../assets/interior/(소파) 북유럽 소파 - 인테리어.jpg";
 import europeanWoodSofaInterior from "../../assets/interior/(소파) 유러피안 우드 소파 - 인테리어.jpg";
-import resortChairInterior from "../../assets/interior/(의자) 유럽풍 피서지 의자 - 인테리어.jpg";
+import resortChairInterior from "../../assets/interior/(의자) 유럽풍 피서지 의자 - 인테리어.png";
 import nordicBedInterior from "../../assets/interior/(침대) 북유럽 침대 - 인테리어.jpg";
+import darkBrownSofaInterior from "../../assets/interior/(소파) 다크 브라운 고급 소파 - 인테리어.png";
+import mushroomLampInterior from "../../assets/interior/(무드등) LED 무드 버섯등 - 인테리어.png";
+import wideLiberoSandalInterior from "../../assets/interior/(욕실화)  미끄럼방지 와이드 리베로 EVA 욕실화 - 레드 인테리어.png";
+import cloudSandalInterior from "../../assets/interior/(욕실화) EVA 미끄럼 방지 욕실화 - 인테리어 2.png";
 import { getCartItems, getProductsByCollection, logoutUser } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
@@ -104,7 +115,10 @@ export const PRODUCTS = [
   { id: 7, no: "No.7", name: "린넨 빨래 바구니", sub: "민트 그레이 컬러블록", price: "32,000", label: "ECO",
     desc: "민트, 블루, 아이보리가 컬러블록으로 나뉜 패브릭 빨래 바구니입니다. 가벼운 무광 소재에 메탈 손잡이를 달아 옷방과 욕실을 오가며 들고 다니기 편합니다.",
     spec: "SIZE : W36 D36 H40 · MATERIAL : coated fabric, metal handle",
-    image: linenLaundryBasket, interiorImage: linenLaundryBasketInterior, alt: "린넨 빨래 바구니", brand: "집다움", category: "수납", midCategory: "수납바구니", subCategory: "패브릭 메탈핸들" },
+    // 예전엔 여기 interiorImage로 라탄 소재 바구니 사진이 잘못 물려 있었다 — 이
+    // 상품은 패브릭인데 완전히 다른 소재 사진이 떠서 삭제함(대체할 정확한
+    // 인테리어 컷은 아직 없음 — 촬영본 생기면 다시 연결할 것).
+    image: linenLaundryBasket, alt: "린넨 빨래 바구니", brand: "집다움", category: "수납", midCategory: "수납바구니", subCategory: "패브릭 메탈핸들" },
   { id: 8, no: "No.8", name: "북유럽 문양 빨래 바구니", sub: "내추럴 라탄", price: "45,000", label: "NEW",
     desc: "가는 라탄 가닥을 별무늬로 엮어 짠 바스켓으로, 가죽 손잡이가 포인트를 더합니다. 세탁물 정리는 물론 담요나 잡지꽂이로도 어울리는 다용도 소품입니다.",
     spec: "SIZE : W34 D34 H36 · MATERIAL : rattan, leather handle",
@@ -187,6 +201,40 @@ export const PRODUCTS = [
     desc: "배수 슬릿을 낸 쿠션 소재 욕실화입니다. 도톰한 EVA 밑창이 푹신하게 발을 받쳐주고, 미끄럼을 줄여주는 표면 처리로 젖은 바닥에서도 안심하고 신을 수 있습니다. 화이트 컬러로 깔끔한 분위기를 연출합니다.",
     spec: "SIZE : 250-270mm (Free) · MATERIAL : EVA",
     image: drainSandalWhite, alt: "물이 잘 빠지는 욕실화 화이트", brand: "집다움", category: "욕실화", midCategory: "쿠션 욕실화", subCategory: "화이트" },
+  { id: 35, no: "No.35", name: "다크 브라운 고급 소파", sub: "차콜 브라운 니트", price: "890,000", label: "NEW",
+    desc: "굵은 니트 원단으로 감싼 모듈형 2인 소파입니다. 낮고 넉넉한 좌면과 두툼한 팔걸이가 안정감 있게 몸을 받쳐주고, 짙은 차콜 브라운 톤이 공간에 차분한 무게감을 더합니다.",
+    spec: "SIZE : W165 D95 H75 · MATERIAL : knit fabric, wood frame",
+    image: darkBrownSofa, interiorImage: darkBrownSofaInterior, alt: "다크 브라운 고급 소파", brand: "집다움", category: "소파", midCategory: "2인소파", subCategory: "차콜 니트" },
+  // 3색(그린/네이비/오렌지) 컬러 옵션 상품 — 부드러운 털 실내화(id 23)와 같은 패턴.
+  { id: 36, no: "No.36", name: "버섯 무드등", sub: "세이지 그린", price: "39,000", label: "NEW",
+    desc: "동그란 버섯 모양 갓 아래로 은은한 불빛이 퍼지는 미니 무드등입니다. 협탁이나 콘솔 위에 올려두기 좋은 크기로, 컬러별로 각기 다른 무드를 더해줍니다.",
+    spec: "SIZE : W12 D12 H15 · MATERIAL : ceramic base, acrylic shade",
+    image: mushroomLampGreen, interiorImage: mushroomLampInterior, alt: "버섯 무드등", brand: "집다움", category: "조명", midCategory: "테이블조명", subCategory: "세이지 그린",
+    colors: [
+      { value: "그린", label: "세이지 그린", image: mushroomLampGreen, alt: "버섯 무드등 그린" },
+      { value: "네이비", label: "딥 네이비", image: mushroomLampNavy, alt: "버섯 무드등 네이비" },
+      { value: "오렌지", label: "선셋 오렌지", image: mushroomLampOrange, alt: "버섯 무드등 오렌지" },
+    ] },
+  // 2색(레드/블루) 컬러 옵션 — 드레인 슬릿 없이 폭 넓은 밴드형 욕실화(기존 27~30번
+  // "물이 잘 빠지는 욕실화"와는 다른 디자인 라인).
+  { id: 37, no: "No.37", name: "와이드 리베로 욕실화", sub: "레드", price: "15,000", label: "NEW",
+    desc: "발등을 넉넉히 감싸는 폭 넓은 밴드형 욕실화입니다. 배수 슬릿을 낸 EVA 밑창이 물기를 빠르게 흘려보내고, 두 가지 컬러가 만나는 배색이 포인트를 더합니다.",
+    spec: "SIZE : 250-270mm (Free) · MATERIAL : EVA",
+    image: wideLiberoSandalRed, interiorImage: wideLiberoSandalInterior, alt: "와이드 리베로 욕실화", brand: "집다움", category: "욕실화", midCategory: "쿠션 욕실화", subCategory: "레드",
+    colors: [
+      { value: "레드", label: "레드", image: wideLiberoSandalRed, alt: "와이드 리베로 욕실화 레드" },
+      { value: "블루", label: "블루", image: wideLiberoSandalBlue, alt: "와이드 리베로 욕실화 블루" },
+    ] },
+  // 2색(블랙/화이트) — 통통한 필로우 형태의 쿠션 욕실화, 위 와이드 리베로와는
+  // 또 다른 실루엣(밴드 없이 발 전체를 감싸는 슬라이드형)의 별도 상품.
+  { id: 38, no: "No.38", name: "필로우 쿠션 욕실화", sub: "블랙", price: "18,000", label: "NEW",
+    desc: "구름 위를 걷는 듯한 도톰한 쿠셔닝의 슬라이드형 욕실화입니다. 미끄럼을 줄여주는 밑창 처리로 젖은 바닥에서도 안심하고 신을 수 있습니다.",
+    spec: "SIZE : 250-270mm (Free) · MATERIAL : EVA",
+    image: cloudSandalBlack, interiorImage: cloudSandalInterior, alt: "필로우 쿠션 욕실화", brand: "집다움", category: "욕실화", midCategory: "쿠션 욕실화", subCategory: "블랙",
+    colors: [
+      { value: "블랙", label: "블랙", image: cloudSandalBlack, alt: "필로우 쿠션 욕실화 블랙" },
+      { value: "화이트", label: "화이트", image: cloudSandalWhite, alt: "필로우 쿠션 욕실화 화이트" },
+    ] },
 ];
 
 // 대(大)카테고리 아래 중(中)카테고리를 묶어두는 트리 — product.category(중)가

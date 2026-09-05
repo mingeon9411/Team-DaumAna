@@ -95,7 +95,7 @@ function ImageHotspots({ image, alt, tags, className = "" }) {
                     </span>
                   </span>
                 )}
-                <span className="text-base font-semibold text-foreground mt-0.5" style={MONO}>₩{p.price}</span>
+                <span className="text-base font-bold text-foreground mt-0.5" style={MONO}>₩{p.price}</span>
                 <span className="text-xs text-muted-foreground mt-1">무료배송</span>
               </span>
             </button>
