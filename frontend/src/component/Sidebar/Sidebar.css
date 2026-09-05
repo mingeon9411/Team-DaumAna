@@ -13,210 +13,69 @@
   padding: 10px 8px;
   border-radius: 999px;
 
-  /* 애플 컨트롤 센터/독처럼 — 안쪽은 얇고 평평한 반투명 화이트 한 겹
-     (그러데이션·애니메이션 없이 정적으로 둬야 "빛나는 금속"이 아니라
-     "블러된 유리"로 읽힌다), 테두리는 얇은 파스텔 라인만 살짝 */
-  border: 1.5px solid transparent;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.32)) padding-box,
-    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
-  backdrop-filter: blur(30px) saturate(115%);
-  -webkit-backdrop-filter: blur(30px) saturate(115%);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  /* 배경 톤 설정(화이트/베이지/파스텔)을 그대로 따라간다 — 기본(화이트)은
+     검정 테두리의 또렷한 흰 알약. 베이지/파스텔은 아래 body[data-bg=…] 규칙이 덮어쓴다. */
+  border: 2px solid #1c1a16;
+  background: #ffffff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14);
 
   transition: background-color 2.8s ease, border-color 2.1s ease;
 }
 
-/* 스타일 프리셋을 바꾸는 순간 — 그러데이션 배경은 transition으로 자연스럽게
-   섞이지 않으므로, 대신 짧게 페이드-스케일을 태워 전환이 뚝 끊기지 않게 한다.
-   translateY(-50%)는 세로 중앙 고정용이라 매 프레임에 그대로 유지해야 한다. */
-.sidebarRail.styleSwitching {
-  animation: railStyleSwap 2s ease;
-}
-
-@keyframes railStyleSwap {
-  0%   { opacity: 1;    transform: translateY(-50%) scale(1); }
-  40%  { opacity: 0.45; transform: translateY(-50%) scale(0.97); }
-  100% { opacity: 1;    transform: translateY(-50%) scale(1); }
-}
-
-/* 맨 위로/맨 아래로 버튼(모서리 고정, transform 없음)은 같은 페이드-스케일이라도
-   고정 transform을 유지해야 하므로 키프레임을 따로 둔다. */
-.railTopBtnWrap.styleSwitching {
-  animation: railStyleSwapPlain 2s ease;
-}
-@keyframes railStyleSwapPlain {
-  0%   { opacity: 1;    transform: scale(1); }
-  40%  { opacity: 0.45; transform: scale(0.97); }
-  100% { opacity: 1;    transform: scale(1); }
-}
-
-/* ── 사이드바 스타일 프리셋 (팔레트 아이콘으로 선택) ──────────────────
+/* ── 배경 톤(화이트/베이지/파스텔) 프리셋 — RecentlyViewedSidebar.css의
+   .recentDock과 동일한 원칙 ──────────────────
    왼쪽 독(.sidebarRail)·우하단 맨 위로/맨 아래로 버튼(.railTopBtnWrap)이 항상
    같은 값을 쓰도록 selector를 묶어서 선언한다 — 따로 적으면 하나만 고치고
-   나머지를 깜빡했을 때 스타일이 갈라진다. */
+   나머지를 깜빡했을 때 스타일이 갈라진다. 화이트는 위 기본 규칙(검정 테두리 +
+   흰 배경)이 이미 담당하니, 여기서는 베이지/파스텔만 덮어쓴다. */
 
-/* 메탈릭 — 원래 있던, 반짝임이 흐르는 실버 그러데이션 */
-.sidebarRail.railStyle-metallic,
-.railTopBtnWrap.railStyle-metallic {
-  border-width: 6px;
+/* 베이지 — Home.css .metallicSilver와 동일한 크림톤 애니메이션 그러데이션 */
+body[data-bg="beige"] .sidebarRail,
+body[data-bg="beige"] .railTopBtnWrap {
+  background: linear-gradient(
+    115deg,
+    #f8f2e6 0%, #f3ead9 20%, #f7f1e4 35%, #f8f2e6 50%,
+    #f2e8d6 65%, #f6efe0 80%, #f8f2e6 100%
+  );
+  background-size: 160% 160%;
+  animation: pastelSheenDrift 48s ease-in-out infinite;
+}
+
+/* 파스텔 — 배경은 Home.css .metallicSilver와 동일, 테두리만 오색 그러데이션
+   (border-box 트릭). data-pastel(진하게/보통/연하게)도 배경 톤 설정을 그대로 따라간다. */
+body[data-bg="pastel"] .sidebarRail,
+body[data-bg="pastel"] .railTopBtnWrap {
+  border-width: 4px;
+  border-color: transparent;
   background:
-    linear-gradient(120deg, #f4f4f6 0%, #d7d9dc 20%, #ececed 40%, #b8bcc2 55%, #e6e7e9 70%, #cfd1d4 85%, #f4f4f6 100%) padding-box,
-    linear-gradient(150deg, #d3d6da 0%, #8b929b 50%, #d3d6da 100%) border-box;
-  background-size: 300% 300%, 100% 100%;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  animation: metallicShine 11s ease-in-out infinite;
+    linear-gradient(115deg, #f7ddc9 0%, #cfe0f2 20%, #cdeed2 35%, #f7ddc9 50%, #ddd3f2 65%, #f4d3e4 80%, #f7ddc9 100%) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  background-size: 160% 160%, 100% 100%;
+  animation: pastelSheenDrift 48s ease-in-out infinite;
 }
 
-/* 메탈릭 스타일에서 전환 애니메이션이 재생 중일 땐 반짝임 애니메이션과
-   페이드-스케일 애니메이션을 함께(동시에) 재생한다 — animation 속성은
-   합쳐 쓰지 않으면 뒤에 선언된 쪽이 통째로 덮어써버리기 때문. 독마다 페이드
-   키프레임이 달라(위 참고) 이 결합 규칙만은 셋을 따로 적는다. */
-.sidebarRail.railStyle-metallic.styleSwitching {
-  animation: metallicShine 11s ease-in-out infinite, railStyleSwap 2s ease;
-}
-.railTopBtnWrap.railStyle-metallic.styleSwitching {
-  animation: metallicShine 11s ease-in-out infinite, railStyleSwapPlain 2s ease;
+body[data-bg="pastel"][data-pastel="medium"] .sidebarRail,
+body[data-bg="pastel"][data-pastel="medium"] .railTopBtnWrap {
+  background:
+    linear-gradient(115deg, #f8e9dc 0%, #e1e9f2 20%, #dff2e2 35%, #f8e9dc 50%, #e8e2f5 65%, #f5e1ec 80%, #f8e9dc 100%) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  background-size: 160% 160%, 100% 100%;
 }
 
+body[data-bg="pastel"][data-pastel="light"] .sidebarRail,
+body[data-bg="pastel"][data-pastel="light"] .railTopBtnWrap {
+  background:
+    linear-gradient(115deg, #f9f4ef 0%, #eef2f7 20%, #f0f7f0 35%, #f9f4ef 50%, #f2eef7 65%, #f7f0f5 80%, #f9f4ef 100%) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  background-size: 160% 160%, 100% 100%;
+}
+
+/* metallicShine — "독 스타일: 메탈릭" 프리셋은 없어졌지만, 이 키프레임 자체는
+   PopularKeywordsSidebar.css(인기 검색어 미니바)가 독립적으로 계속 쓰고 있어 남겨둔다. */
 @keyframes metallicShine {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
-}
-
-body.dark .sidebarRail.railStyle-metallic,
-body.dark .railTopBtnWrap.railStyle-metallic {
-  background:
-    linear-gradient(120deg, #1b1d21 0%, #2a2d33 20%, #35383f 40%, #1b1d21 55%, #35383f 70%, #2a2d33 85%, #1b1d21 100%) padding-box,
-    linear-gradient(150deg, #4a4f58 0%, #8b929b 50%, #4a4f58 100%) border-box;
-  background-size: 300% 300%, 100% 100%;
-}
-
-/* 파스텔 — 로그인창/버튼과 같은 톤의 정적인 파스텔 채움 */
-.sidebarRail.railStyle-pastel,
-.railTopBtnWrap.railStyle-pastel {
-  border-width: 4px;
-  background:
-    linear-gradient(120deg, #ffe4f0 0%, #e4ecff 50%, #d9fbea 100%) padding-box,
-    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-body.dark .sidebarRail.railStyle-pastel,
-body.dark .railTopBtnWrap.railStyle-pastel {
-  background:
-    linear-gradient(120deg, #3a2f4a 0%, #2a3550 50%, #223d38 100%) padding-box,
-    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
-}
-
-/* 스타일 선택 플라이아웃 */
-.railStyleWrap {
-  position: relative;
-}
-
-.railStyleFlyout {
-  position: absolute;
-  left: calc(100% + 12px);
-  top: 50%;
-  bottom: auto;
-  transform: translateY(-50%);
-
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-
-  width: 160px;
-  padding: 8px;
-  border-radius: 14px;
-
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)) padding-box,
-    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
-  border: 1.5px solid transparent;
-  backdrop-filter: blur(30px) saturate(115%);
-  -webkit-backdrop-filter: blur(30px) saturate(115%);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.55);
-  z-index: 25;
-
-  animation: railFlyoutIn 0.24s ease-out;
-}
-
-.railStyleOption {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  padding: 8px 10px;
-  border: none;
-  border-radius: 9px;
-  background: transparent;
-  color: var(--foreground);
-
-  font-size: 13px;
-  font-family: "Noto Sans KR", sans-serif;
-  cursor: pointer;
-  text-align: left;
-
-  transition: background 0.15s ease;
-}
-
-.railStyleOption:hover {
-  background: rgba(0, 0, 0, 0.06);
-}
-
-.railStyleOption.active {
-  font-weight: 700;
-}
-
-.railStyleSwatch {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.railStyleSwatch-glass {
-  background: rgba(255, 255, 255, 0.5);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
-}
-
-.railStyleSwatch-metallic {
-  background: linear-gradient(120deg, #f4f4f6 0%, #b8bcc2 55%, #f4f4f6 100%);
-}
-
-.railStyleSwatch-pastel {
-  background: linear-gradient(120deg, #ffe4f0 0%, #e4ecff 50%, #d9fbea 100%);
-}
-
-.railStyleSwatch-pastelDeep {
-  background: linear-gradient(120deg, #f7ddc9 0%, #cfe0f2 50%, #cdeed2 100%);
-}
-
-.railStyleSwatch-pastelMedium {
-  background: linear-gradient(120deg, #f8e9dc 0%, #e1e9f2 50%, #dff2e2 100%);
-}
-
-.railStyleSwatch-pastelLight {
-  background: linear-gradient(120deg, #f9f4ef 0%, #eef2f7 50%, #f0f7f0 100%);
-}
-
-body.dark .railStyleFlyout {
-  background:
-    linear-gradient(rgba(6, 13, 30, 0.9), rgba(6, 13, 30, 0.9)) padding-box,
-    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(150, 185, 255, 0.16);
-}
-
-body.dark .railStyleOption {
-  color: #c8d5f2;
-}
-
-body.dark .railStyleOption:hover {
-  background: rgba(150, 185, 255, 0.12);
 }
 
 /* 한국관 미니바 — 무궁화 꽃잎이 흩날리며 떨어지는 연출 */
@@ -541,27 +400,6 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
   opacity: 1;
 }
 
-/* 독 스타일 프리셋별 말풍선 배경 — 메탈릭/파스텔/한국관 톤에 맞춤 */
-.sidebarRail.railStyle-metallic .railBtn::after {
-  background: linear-gradient(120deg, #f4f4f6 0%, #d7d9dc 20%, #ececed 40%, #b8bcc2 55%, #e6e7e9 70%, #cfd1d4 85%, #f4f4f6 100%);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-body.dark .sidebarRail.railStyle-metallic .railBtn::after {
-  background: linear-gradient(120deg, #1b1d21 0%, #2a2d33 20%, #35383f 40%, #1b1d21 55%, #35383f 70%, #2a2d33 85%, #1b1d21 100%);
-}
-
-.sidebarRail.railStyle-pastel .railBtn::after {
-  background: linear-gradient(120deg, #ffe4f0 0%, #e4ecff 50%, #d9fbea 100%);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-body.dark .sidebarRail.railStyle-pastel .railBtn::after {
-  background: linear-gradient(120deg, #3a2f4a 0%, #2a3550 50%, #223d38 100%);
-}
-
 /* 개별 버튼 클릭 피드백 — 예전엔 80%까지 눌렸다가 118%까지 튀어오른 뒤
    되돌아오는(게다가 타이밍 함수도 스프링) 꽤 과장된 고무공 같은 반동이었다.
    눌렸다는 촉각적 신호는 남기되, 오버슈트 없이 살짝 눌렸다 돌아오는 것만
@@ -852,14 +690,19 @@ body.dark .railSearchResults button:hover {
   background: rgba(150, 185, 255, 0.12);
 }
 
-/* 다크모드 — 같은 글래스 느낌을 어두운 톤으로. 기본(유리) 프리셋의 다크모드
-   값이라 맨 위로/맨 아래로 버튼도 같이 묶는다(메탈릭/파스텔과 같은 원칙). */
-body.dark .sidebarRail,
-body.dark .railTopBtnWrap {
+/* 다크모드 — 화이트/베이지/파스텔 선택과 무관하게 항상 이 톤 하나로 통일한다
+   (Home.css .metallicSilver·RecentlyViewedSidebar.css .recentDock과 동일한 원칙).
+   [data-bg][data-pastel]는 App.jsx가 항상 채워두는 속성이라 값과 무관하게 항상
+   매치되고, 특이도도 위 [data-pastel="medium"/"light"] 규칙보다 세게 만들어
+   다크모드가 항상 이긴다. */
+body.dark[data-bg][data-pastel] .sidebarRail,
+body.dark[data-bg][data-pastel] .railTopBtnWrap {
+  border-color: transparent;
   background:
-    linear-gradient(rgba(6, 13, 30, 0.38), rgba(6, 13, 30, 0.38)) padding-box,
+    linear-gradient(115deg, #060d1e 0%, #0b1430 20%, #0f1f3d 35%, #060d1e 50%, #0f1f3d 65%, #0b1430 80%, #060d1e 100%) padding-box,
     linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(150, 185, 255, 0.16);
+  background-size: 160% 160%, 100% 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
 }
 
 body.dark .railBtn {
@@ -909,13 +752,11 @@ body.dark .railBtn::after {
   padding: 8px;
   border-radius: 999px;
 
-  border: 1.5px solid transparent;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.32)) padding-box,
-    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
-  backdrop-filter: blur(30px) saturate(115%);
-  -webkit-backdrop-filter: blur(30px) saturate(115%);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  /* 배경 톤 설정을 그대로 따라간다 — .sidebarRail과 동일한 기본(화이트) 값,
+     베이지/파스텔/다크모드는 위 body[data-bg=…] 규칙이 덮어쓴다. */
+  border: 2px solid #1c1a16;
+  background: #ffffff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14);
 
   transition: background-color 2.8s ease, border-color 2.1s ease;
 }

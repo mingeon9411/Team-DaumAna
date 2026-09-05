@@ -1,15 +1,12 @@
 import "./MyPage.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { LuChevronLeft } from "react-icons/lu";
+import { LuChevronLeft, LuCrown, LuTrophy, LuMedal, LuLeaf, LuUser } from "react-icons/lu";
 import { logoutUser, getOrderHistory, getMyCoupons, cancelOrder, getMe } from "../../api";
 import { getWishlist, removeWish } from "../../utils/wishlist";
 import korfurni from "../../assets/products/korfurni.png";
 import bird2 from "../../assets/decor/bird2.png";
-import bird from "../../assets/decor/bird.png";
 import flowers from "../../assets/decor/flowers.png";
-import orientCloud from "../../assets/decor/orient_cloud.png";
-import flower2Img from "../../assets/decor/flower2.png";
 import Receipt from "./Receipt";
 import TrackingModal from "./TrackingModal";
 import AddressModal from "./AddressModal";
@@ -39,12 +36,14 @@ const STATUS_LABEL = {
   CANCELLED: "취소",
 };
 
+// 일반 < 그린 < 브론즈 < 실버 < 골드 순 — 배열은 gradeIdx 계산 편의상 높은
+// 등급부터(골드가 0번) 담아둔다. min은 누적 구매금액 기준 승급 조건.
 const GRADE_CONFIG = [
-  { key: "VVIP",   rank: 1, min: 1500000, color1: "#0f0800", color2: "#3a1e00", accent: "#f5c842", img: bird2,       desc: "150만원 이상" },
-  { key: "VIP",    rank: 2, min: 700000,  color1: "#120020", color2: "#2a0045", accent: "#c084fc", img: bird,        desc: "70만원 이상" },
-  { key: "GOLD",   rank: 3, min: 300000,  color1: "#222222", color2: "#6b2e00", accent: "#f59e0b", img: flowers,     desc: "30만원 이상" },
-  { key: "SILVER", rank: 4, min: 100000,  color1: "#1c2830", color2: "#2c3e50", accent: "#94a3b8", img: orientCloud, desc: "10만원 이상" },
-  { key: "BRONZE", rank: 5, min: 0,       color1: "#2e1508", color2: "#4a2010", accent: "#b87333", img: flower2Img,  desc: "기본 등급" },
+  { key: "골드",   rank: 1, min: 1500000, color1: "#2a1c00", color2: "#6b4a00", accent: "#f5c842", Icon: LuCrown,  desc: "150만원 이상" },
+  { key: "실버",   rank: 2, min: 700000,  color1: "#1c2830", color2: "#3d4f5c", accent: "#94a3b8", Icon: LuTrophy, desc: "70만원 이상" },
+  { key: "브론즈", rank: 3, min: 300000,  color1: "#2e1508", color2: "#5a2f14", accent: "#b87333", Icon: LuMedal,  desc: "30만원 이상" },
+  { key: "그린",   rank: 4, min: 100000,  color1: "#0f2418", color2: "#1f4a30", accent: "#4ade80", Icon: LuLeaf,   desc: "10만원 이상" },
+  { key: "일반",   rank: 5, min: 0,       color1: "#26221c", color2: "#3f3a30", accent: "#9ca3af", Icon: LuUser,   desc: "기본 등급" },
 ];
 
 function formatDate(isoStr) {
@@ -200,10 +199,10 @@ function MyPage() {
 
   const totalSpent = orders.reduce((sum, o) => sum + (o.total_amount || 0), 0);
   const userGrade =
-    totalSpent >= 1500000 ? "VVIP" :
-    totalSpent >= 700000  ? "VIP"  :
-    totalSpent >= 300000  ? "GOLD" :
-    totalSpent >= 100000  ? "SILVER" : "BRONZE";
+    totalSpent >= 1500000 ? "골드" :
+    totalSpent >= 700000  ? "실버" :
+    totalSpent >= 300000  ? "브론즈" :
+    totalSpent >= 100000  ? "그린" : "일반";
   const gradeIdx = GRADE_CONFIG.findIndex((g) => g.key === userGrade);
   const currentGradeInfo = GRADE_CONFIG[gradeIdx];
   const nextGradeInfo = gradeIdx > 0 ? GRADE_CONFIG[gradeIdx - 1] : null;
@@ -306,7 +305,7 @@ function MyPage() {
             <div className="userInfoGrid">
               <div>
                 <span>회원등급</span>
-                <strong>마루 회원</strong>
+                <strong>{userGrade} 회원</strong>
               </div>
               <div>
                 <span>적립금</span>
@@ -632,7 +631,7 @@ function MyPage() {
               className="gradeHeroCard"
               style={{ background: `linear-gradient(135deg, ${currentGradeInfo.color1}, ${currentGradeInfo.color2})` }}
             >
-              <img className="gradeHeroImg" src={currentGradeInfo.img} alt="" />
+              <currentGradeInfo.Icon className="gradeHeroImg" style={{ color: currentGradeInfo.accent }} />
               <div className="gradeHeroContent">
                 <p className="gradeHeroLabel">현재 등급</p>
                 <p className="gradeHeroName" style={{ color: currentGradeInfo.accent }}>
@@ -683,7 +682,7 @@ function MyPage() {
                       <span className="gradeTierRank">#{g.rank}</span>
                       <span className="gradeTierName" style={{ color: g.accent }}>{g.key}</span>
                     </div>
-                    <img className="gradeTierImg" src={g.img} alt={g.key} />
+                    <g.Icon className="gradeTierImg" style={{ color: g.accent }} />
                     <div className="gradeTierInfo">
                       <p className="gradeTierDesc">{g.desc}</p>
                       <p className="gradeTierMin">

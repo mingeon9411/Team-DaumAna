@@ -1,13 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LuChevronLeft, LuSun, LuMoon, LuLayers, LuPalette, LuArrowUpToLine, LuClock } from "react-icons/lu";
+import { LuChevronLeft, LuSun, LuMoon, LuPalette, LuArrowUpToLine, LuClock } from "react-icons/lu";
 import "./Settings.css";
-
-const RAIL_STYLES = [
-  { id: "glass", label: "레인보우" },
-  { id: "metallic", label: "메탈릭" },
-  { id: "pastel", label: "파스텔" },
-];
 
 // 배경 색상 — 먼저 이 셋 중 하나를 고른다. "파스텔"을 고른 경우에만 아래
 // BG_TONES(진하기)가 추가로 뜬다 — 화이트/베이지는 단색이라 진하기 개념이 없다.
@@ -38,9 +32,6 @@ function Settings() {
   const [darkMode, setDarkModeState] = useState(
     () => document.body.classList.contains("dark")
   );
-  const [railStyle, setRailStyleState] = useState(
-    () => localStorage.getItem("railStyle") || "glass"
-  );
   // 배경 색상(화이트/베이지/파스텔) — 먼저 고른다. 톤(진하기)은 파스텔을
   // 골랐을 때만 의미가 있어 별도로 관리한다.
   const [bgColor, setBgColorState] = useState(
@@ -62,12 +53,6 @@ function Settings() {
     document.body.classList.toggle("dark", next);
     localStorage.setItem("darkMode", next ? "1" : "0");
     window.dispatchEvent(new Event("darkmodechange"));
-  };
-
-  const chooseRailStyle = (id) => {
-    setRailStyleState(id);
-    localStorage.setItem("railStyle", id);
-    window.dispatchEvent(new Event("railstylechange"));
   };
 
   const chooseBgColor = (id) => {
@@ -125,33 +110,10 @@ function Settings() {
 
           <div className="ssRow ssRowStack">
             <div className="ssRowLabel">
-              <LuLayers className="ssRowIcon" />
-              <div>
-                <p className="ssRowTitle">독 스타일</p>
-                <p className="ssRowDesc">페이지 이동 버튼·최근 본 상품 독의 테두리 스타일입니다.</p>
-              </div>
-            </div>
-            <div className="ssChipRow">
-              {RAIL_STYLES.map((s) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  className={`ssChip${railStyle === s.id ? " active" : ""}`}
-                  onClick={() => chooseRailStyle(s.id)}
-                >
-                  <span className={`ssChipSwatch ssChipSwatch-${s.id}`} />
-                  {s.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="ssRow ssRowStack">
-            <div className="ssRowLabel">
               <LuPalette className="ssRowIcon" />
               <div>
                 <p className="ssRowTitle">배경 톤</p>
-                <p className="ssRowDesc">상품 목록·설정 화면 배경 색상입니다. 파스텔을 고르면 아래에서 진하기도 정할 수 있어요.</p>
+                <p className="ssRowDesc">상품 목록·설정 화면은 물론 최근 본 상품 독, 로그인/회원가입 화면까지 사이트 전체에 적용됩니다. 파스텔을 고르면 아래에서 진하기도 정할 수 있어요.</p>
               </div>
             </div>
             <div className="ssChipRow">

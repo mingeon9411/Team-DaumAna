@@ -1,0 +1,229 @@
+/* 히어로 배너(HomeHeroBanner.css) 바로 아래 놓는 이케아류 5칸 배너 —
+   왼쪽은 세로로 긴 영상 1칸, 오른쪽은 상품 카드 2열×2행(총 4칸). */
+.featBannerGrid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 14px;
+  width: 100%;
+  height: 480px;
+  margin-bottom: 24px;
+}
+
+.featBannerVideo {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #111;
+}
+
+.featBannerVideoEl {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.featBannerNewBadge {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #c0392b;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.featBannerPauseBtn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.featBannerPauseBtn:hover {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.featBannerCaption {
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
+  right: 24px;
+  margin: 0;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 500;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
+}
+
+/* 상품 카드 4장 — 3열 그리드의 2·3번째 열에 2행씩 나눠 앉힌다. */
+.featBannerCard-1 { grid-column: 2; grid-row: 1; }
+.featBannerCard-2 { grid-column: 2; grid-row: 2; }
+.featBannerCard-3 { grid-column: 3; grid-row: 1; }
+.featBannerCard-4 { grid-column: 3; grid-row: 2; }
+
+.featBannerCard {
+  position: relative;
+  border: none;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: var(--muted);
+  cursor: pointer;
+  padding: 0;
+  /* 카드 영역 자체가 커졌다 줄어든다 — transform은 레이아웃(그리드 칸)에
+     영향을 안 주고 시각적으로만 확대돼서, 옆 카드를 밀어내지 않고 그 위에
+     겹쳐 보인다. z-index를 올려 옆 카드보다 항상 위에서 확대되게 한다. */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.featBannerCard:hover {
+  transform: scale(1.12);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+  z-index: 2;
+}
+
+.featBannerCard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* 위쪽 태그·아래쪽 이름/가격 둘 다 사진 위에서 읽혀야 해서, 아래에서
+     위로만 어둡게 깔던 그러데이션에 위쪽도 옅게 얹었다(태그 자리만 살짝). */
+  background:
+    linear-gradient(to top, rgba(0, 0, 0, 0.72) 0%, transparent 55%),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.35) 0%, transparent 30%);
+}
+
+/* 스튜디오 컷(기본) 위에 인테리어 컷을 겹쳐두고 opacity만 애니메이션 —
+   두 장 다 object-fit:cover라 크기·위치는 그대로, 사진만 자연스럽게 전환된다. */
+.featBannerCardImgWrap {
+  position: absolute;
+  inset: 0;
+}
+
+.featBannerCardImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.featBannerCardImgInterior {
+  opacity: 0;
+  animation: featBannerCrossfade 9s ease-in-out infinite;
+}
+
+/* 카드마다 살짝 다른 시점에 전환되도록 — 4장이 한꺼번에 똑같이 넘어가면
+   기계적으로 보인다. */
+.featBannerCard-2 .featBannerCardImgInterior { animation-delay: 2.25s; }
+.featBannerCard-3 .featBannerCardImgInterior { animation-delay: 4.5s; }
+.featBannerCard-4 .featBannerCardImgInterior { animation-delay: 6.75s; }
+
+@keyframes featBannerCrossfade {
+  0%, 40% { opacity: 0; }
+  50%, 90% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .featBannerCardImgInterior {
+    animation: none;
+  }
+}
+
+.featBannerCardEmpty {
+  cursor: default;
+  animation: featBannerPulse 1.4s ease-in-out infinite;
+}
+
+.featBannerCardEmpty::after {
+  content: none;
+}
+
+@keyframes featBannerPulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.8; }
+}
+
+.featBannerCardTag {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  z-index: 1;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.featBannerCardInfo {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 14px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  text-align: left;
+}
+
+.featBannerCardName {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.75);
+}
+
+.featBannerCardPrice {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.75);
+}
+
+@media (max-width: 768px) {
+  .featBannerGrid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    height: auto;
+  }
+
+  .featBannerVideo {
+    grid-column: 1 / span 2;
+    grid-row: 1;
+    height: 260px;
+  }
+
+  .featBannerCard-1 { grid-column: 1; grid-row: 2; }
+  .featBannerCard-2 { grid-column: 2; grid-row: 2; }
+  .featBannerCard-3 { grid-column: 1; grid-row: 3; }
+  .featBannerCard-4 { grid-column: 2; grid-row: 3; }
+
+  .featBannerCard,
+  .featBannerCardEmpty {
+    height: 160px;
+  }
+}

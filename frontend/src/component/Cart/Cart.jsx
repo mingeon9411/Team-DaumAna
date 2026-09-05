@@ -499,10 +499,7 @@ function Cart() {
 
               <div className="cartActions">
                 <button className="cartOrderBtn" onClick={handleBuySelected}>
-                  {displayPayable < displayOrderTotal && (
-                    <span className="cartOrderBtnOriginal">{displayOrderTotal.toLocaleString()}원</span>
-                  )}
-                  {displayPayable.toLocaleString()}원 결제하기 ({displayItems.length}개)
+                  결제하기
                 </button>
                 <button className="cartSecondaryBtn" onClick={goBack}>
                   쇼핑계속하기

@@ -1,12 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
-import { PRODUCTS } from "../Home/Home";
+import { resolveProductVariant } from "../Home/Home";
 
 const SANS = { fontFamily: "'GmarketSans', 'Noto Sans KR', sans-serif" };
 const MONO = { fontFamily: "'GmarketSans', 'DM Mono', monospace" };
-
-const byId = (id) => PRODUCTS.find((p) => p.id === id);
 
 // 오늘의집처럼 사진 위에 "+" 핀을 찍어두고, 눌러야 그 상품의 이름·가격이 뜨는
 // 위젯 — Lookbook(피드 카드)과 LookbookPost(게시물 상세) 양쪽에서 재사용한다.
@@ -31,7 +29,7 @@ function ImageHotspots({ image, alt, tags, className = "" }) {
         <img src={image} alt={alt} className="w-full h-full object-cover" />
       </div>
       {tags.map((tag) => {
-        const p = byId(tag.id);
+        const p = resolveProductVariant(tag.id, tag.color);
         if (!p) return null;
         const isOpen = openTagId === tag.id;
         // ProductCard(Home.jsx)와 동일한 할인율 계산 — 카드 스타일을 통일한다.

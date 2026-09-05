@@ -1,5 +1,8 @@
-/* Sidebar.css의 .sidebarRail(애플 컨트롤 센터/독 스타일)과 같은 레시피를 그대로 적용 —
-   안쪽은 얇고 평평한 반투명 화이트, 테두리는 무지개 톤 그러데이션, blur로 유리처럼.
+/* Home.css의 .metallicSilver(설정 > 배경 톤: 화이트/베이지/파스텔)와 같은 배경을
+   그대로 미러링한다 — 예전엔 이 독만 따로 "독 스타일"(레인보우/메탈릭/파스텔)을
+   골라 배경 톤과 따로 놀았는데, 이제 사이트 전체가 같은 배경 색상 설정을 하나로
+   따라간다. 화이트/베이지는 검정 테두리로 또렷하게, 파스텔만 오색 그러데이션
+   테두리(아래 border-box 트릭)를 준다.
    폭은 쿠팡류 미니 장바구니 카드가 들어갈 수 있게 넓혔던 168px가 화면에서
    시선을 너무 끌어서(상품 이미지가 과하게 커 보임), 두 단 더 좁혔다. */
 .recentDock {
@@ -15,20 +18,59 @@
      자리(140px)조차 없으면 결과가 음수가 되어 화면 밖으로 나가버리므로,
      바깥 max(19px, …)로 예전 기본값(뷰포트 끝에서 19px)을 하한으로 둔다. */
   right: max(19px, max(32px, (100vw - 1280px) / 2) - 140px);
-  border: 1.5px solid transparent;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0.32)) padding-box,
-    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
-  backdrop-filter: blur(30px) saturate(115%);
-  -webkit-backdrop-filter: blur(30px) saturate(115%);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  border: 2px solid #1c1a16;
+  background: #ffffff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.14);
 }
 
-body.dark .recentDock {
+/* 베이지 — Home.css .metallicSilver와 동일한 크림톤 애니메이션 그러데이션 */
+body[data-bg="beige"] .recentDock {
+  background: linear-gradient(
+    115deg,
+    #f8f2e6 0%, #f3ead9 20%, #f7f1e4 35%, #f8f2e6 50%,
+    #f2e8d6 65%, #f6efe0 80%, #f8f2e6 100%
+  );
+  background-size: 160% 160%;
+  animation: pastelSheenDrift 48s ease-in-out infinite;
+}
+
+/* 파스텔 — 배경은 Home.css .metallicSilver와 동일, 테두리만 오색 그러데이션
+   (border-box 트릭으로 배경/테두리 그러데이션을 따로 채운다). data-pastel
+   (진하게/보통/연하게)도 배경 톤 설정과 그대로 맞춰간다. */
+body[data-bg="pastel"] .recentDock {
+  border: 4px solid transparent;
   background:
-    linear-gradient(rgba(6, 13, 30, 0.38), rgba(6, 13, 30, 0.38)) padding-box,
+    linear-gradient(115deg, #f7ddc9 0%, #cfe0f2 20%, #cdeed2 35%, #f7ddc9 50%, #ddd3f2 65%, #f4d3e4 80%, #f7ddc9 100%) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  background-size: 160% 160%, 100% 100%;
+  animation: pastelSheenDrift 48s ease-in-out infinite;
+}
+
+body[data-bg="pastel"][data-pastel="medium"] .recentDock {
+  background:
+    linear-gradient(115deg, #f8e9dc 0%, #e1e9f2 20%, #dff2e2 35%, #f8e9dc 50%, #e8e2f5 65%, #f5e1ec 80%, #f8e9dc 100%) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  background-size: 160% 160%, 100% 100%;
+}
+
+body[data-bg="pastel"][data-pastel="light"] .recentDock {
+  background:
+    linear-gradient(115deg, #f9f4ef 0%, #eef2f7 20%, #f0f7f0 35%, #f9f4ef 50%, #f2eef7 65%, #f7f0f5 80%, #f9f4ef 100%) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  background-size: 160% 160%, 100% 100%;
+}
+
+/* 다크모드는 화이트/베이지/파스텔 선택과 무관하게 항상 이 톤 하나로 통일한다 —
+   Home.css .metallicSilver 다크모드 규칙과 동일한 원칙([data-bg][data-pastel]는
+   App.jsx가 항상 채워두는 속성이라 값과 무관하게 항상 매치되고, 특이도도 위
+   [data-pastel="medium"/"light"] 규칙보다 세게 만들어 다크모드가 항상 이긴다). */
+body.dark[data-bg][data-pastel] .recentDock {
+  border-color: transparent;
+  background:
+    linear-gradient(115deg, #060d1e 0%, #0b1430 20%, #0f1f3d 35%, #060d1e 50%, #0f1f3d 65%, #0b1430 80%, #060d1e 100%) padding-box,
     linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(150, 185, 255, 0.16);
+  background-size: 160% 160%, 100% 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
 }
 
 /* ── 접었다 펼치기 (하단 독바 Sidebar.css의 railToggle/railItems와 완전히 동일한
@@ -135,59 +177,6 @@ body.dark .recentDock {
   padding-bottom: 0;
 }
 
-/* ── 하단 독바(Sidebar.css)의 스타일 프리셋을 그대로 미러링 ──────────────── */
-
-/* 스타일이 바뀌는 순간 짧게 페이드-스케일 (Sidebar.css의 railStyleSwap과 같은
-   목적이지만, recentDock은 가로 중앙 정렬용 translateX가 없어 별도 키프레임) */
-.recentDock.styleSwitching {
-  animation: recentDockStyleSwap 2s ease;
-}
-
-@keyframes recentDockStyleSwap {
-  0%   { opacity: 1;    transform: scale(1); }
-  40%  { opacity: 0.45; transform: scale(0.97); }
-  100% { opacity: 1;    transform: scale(1); }
-}
-
-/* 메탈릭 — Sidebar.css와 같은 실버 그러데이션 (metallicShine 키프레임 재사용) */
-.recentDock.railStyle-metallic {
-  border-width: 6px;
-  background:
-    linear-gradient(120deg, #f4f4f6 0%, #d7d9dc 20%, #ececed 40%, #b8bcc2 55%, #e6e7e9 70%, #cfd1d4 85%, #f4f4f6 100%) padding-box,
-    linear-gradient(150deg, #d3d6da 0%, #8b929b 50%, #d3d6da 100%) border-box;
-  background-size: 300% 300%, 100% 100%;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  animation: metallicShine 11s ease-in-out infinite;
-}
-
-.recentDock.railStyle-metallic.styleSwitching {
-  animation: metallicShine 11s ease-in-out infinite, recentDockStyleSwap 2s ease;
-}
-
-body.dark .recentDock.railStyle-metallic {
-  background:
-    linear-gradient(120deg, #1b1d21 0%, #2a2d33 20%, #35383f 40%, #1b1d21 55%, #35383f 70%, #2a2d33 85%, #1b1d21 100%) padding-box,
-    linear-gradient(150deg, #4a4f58 0%, #8b929b 50%, #4a4f58 100%) border-box;
-  background-size: 300% 300%, 100% 100%;
-}
-
-/* 파스텔 — Sidebar.css와 같은 정적 파스텔 채움 */
-.recentDock.railStyle-pastel {
-  border-width: 4px;
-  background:
-    linear-gradient(120deg, #ffe4f0 0%, #e4ecff 50%, #d9fbea 100%) padding-box,
-    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-body.dark .recentDock.railStyle-pastel {
-  background:
-    linear-gradient(120deg, #3a2f4a 0%, #2a3550 50%, #223d38 100%) padding-box,
-    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
-}
-
 /* 좁은 화면에서는 가장자리에 더 붙이고 살짝 축소한다 — 이미지 축소로 폭이
    줄어드니 right도 10px로 재계산해 맞춘다. top/세로 중앙 정렬(top-1/2
    -translate-y-1/2)은 데스크톱과 동일하게 두고 여기서는 건드리지 않는다 —
@@ -206,18 +195,18 @@ body.dark .recentDock.railStyle-pastel {
 /* 우하단에 따로 떠 있던 십자패드(Sidebar.css .railTopBtnWrap--cross)를 이 독
    카드 맨 아래 섹션으로 옮겨 붙일 때 쓰는 변형 — 그리드 레이아웃·버튼 크기·
    툴팁(.railTopBtnWrap--cross, .railBtn)은 Sidebar.css 것을 그대로 물려받고,
-   이 카드 자체가 이미 유리/파스텔 배경이라 안에 또 캡슐을 겹쳐 그리지 않도록
-   고정 위치·배경·테두리·그림자만 지운다. `.recentDock` 부모까지 붙여 선택자
-   특이도를 Sidebar.css의 프리셋 규칙(.railTopBtnWrap.railStyle-*)보다 높여,
-   그쪽 CSS가 나중에 로드되더라도 항상 이 규칙이 이긴다. */
+   이 카드 자체가 이미 배경 톤을 입고 있으니 안에 또 캡슐을 겹쳐 그리지 않도록
+   고정 위치·배경·테두리·그림자만 지운다. Sidebar.css의 배경 톤별 규칙
+   (body[data-bg=…] .railTopBtnWrap, 다크모드는 [data-bg][data-pastel]까지 걸어
+   특이도가 더 높다)이 이 선택자보다 세질 수 있어 !important로 항상 이기게 한다. */
 .recentDock .railTopBtnWrap.recentDockCrossPad {
   position: static;
   margin: 0 auto;
-  background: none;
-  border-width: 0;
-  box-shadow: none;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  background: none !important;
+  border-width: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* ── 쿠팡 "최근 본 상품 담기" 스타일 미니 장바구니 카드 ───────────────────── */

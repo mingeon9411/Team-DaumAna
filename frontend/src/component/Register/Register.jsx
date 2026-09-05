@@ -7,7 +7,6 @@ import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { LuChevronLeft } from "react-icons/lu";
 import { registerUser, checkNicknameAPI } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
-import { useRailStyle } from "../../hooks/useRailStyle";
 import JDLogo from "../../assets/J.D 로고.svg";
 // -sm: 48px로만 쓰여서 원본(1015x600, 750KB) 대신 축소본을 쓴다.
 import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
@@ -23,9 +22,6 @@ function Register() {
   const [darkMode, setDarkMode] = useState(
     () => document.body.classList.contains("dark")
   );
-  // 로그인창과 동일한 레인보우(글래스)/메탈릭/파스텔 배경 프리셋을 회원가입창에도 그대로 반영
-  const { railStyle, styleSwitching } = useRailStyle();
-
   useEffect(() => {
     const syncDarkMode = () => setDarkMode(document.body.classList.contains("dark"));
     window.addEventListener("darkmodechange", syncDarkMode);
@@ -192,7 +188,7 @@ function Register() {
   };
 
   return (
-      <section className={`loginBox registerBox railStyle-${railStyle} ${styleSwitching ? "styleSwitching" : ""}`}>
+      <section className="loginBox registerBox">
         {/* 로그인창과 같은 패턴으로 돌아가기 버튼을 둔다(closeAuthPage는 항상 홈으로 보낸다) */}
         <button type="button" className="loginBackBtn" onClick={closeAuthPage}>
           <LuChevronLeft size={14} /> 돌아가기

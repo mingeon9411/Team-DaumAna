@@ -527,12 +527,6 @@
   color: var(--background);
 }
 .cartOrderBtn:hover { opacity: 0.88; }
-.cartOrderBtnOriginal {
-  font-size: 12px;
-  font-weight: 400;
-  text-decoration: line-through;
-  opacity: 0.6;
-}
 
 /* ── 함께 구매하면 좋은 상품 ── */
 .cartRecommend {

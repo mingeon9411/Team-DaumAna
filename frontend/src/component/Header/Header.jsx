@@ -32,26 +32,37 @@ function Header() {
   const isItemDetail = location.pathname.startsWith("/item/");
   const isSettingsPage = location.pathname === "/settings";
   const isCustomerCenterPage = location.pathname === "/customer-center";
+  const isLookbookPage = location.pathname.startsWith("/lookbook");
+  const isNoticePage = location.pathname === "/notice";
+  const isMyPage = location.pathname === "/mypage";
+  const isCheckoutPage = location.pathname === "/checkout";
+  const isSearchPage = location.pathname === "/search";
   // 로그인/회원가입은 이제 모달이 아니라 독립 페이지(/login, /register)라, 사이트
   // 공용 헤더(검색·로그인/회원가입 링크 등)가 같이 떠 있으면 오히려 모달처럼
   // 보인다 — 이 두 라우트에서는 헤더 자체를 렌더링하지 않는다.
   const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
-  // 스크롤 시 배너가 생기는 효과(::before 반투명→불투명 전환)는 상품목록(홈)·
-  // 상품상세·설정·고객센터·장바구니 페이지에만 적용.
-  const isProductPage = isHome || isItemDetail || isSettingsPage || isCustomerCenterPage || isCartPage;
+  // 스크롤 시 배너가 생기는 효과(::before 반투명→불투명 전환)는 자체 스크롤
+  // 콘텐츠가 있는 페이지 전부에 동일하게 적용한다 — 홈과 똑같이 최상단에선
+  // 숨었다가 스크롤해야 나온다. 주문완료(.ocPage)는 카드 한 장짜리 화면이라
+  // 스크롤 자체가 없어 이 목록에서 뺐다(넣으면 배너가 영영 안 나타남).
+  const isProductPage = isHome || isItemDetail || isSettingsPage || isCustomerCenterPage || isCartPage
+    || isLookbookPage || isNoticePage || isMyPage || isCheckoutPage || isSearchPage;
+  // 위 페이지 중 배경 자체가 .metallicSilver(파스텔 톤)인 곳만 배너도 같은
+  // 파스텔 그러데이션으로 — 결제·검색결과는 배경이 단색이라 배너도 그냥
+  // var(--background)로 맞춘 기본 productPageHeader만 쓴다(homePageHeader
+  // 없이 아래 CSS의 productPageHeader::before가 이미 그 배경색을 쓴다).
+  const isPastelPage = isHome || isItemDetail || isSettingsPage || isCustomerCenterPage || isCartPage
+    || isLookbookPage || isNoticePage || isMyPage;
 
-  // 상품 목록(홈)·상품상세·설정·고객센터·장바구니 페이지는 최상단에서부터
-  // 검색창·링크가 떠 있으면 위화감이 크다(설정·고객센터는 파스텔 배경의 첫
-  // 화면, 상품상세·장바구니는 배너 자체가 스크롤 전엔 안 보이는데 그 안의
-  // 검색창·링크만 먼저 떠 있으면 배너 없이 붕 떠 보인다) — 이 다섯 곳은
-  // 스크롤을 내려야 배너와 함께 나타나게 한다. 고객센터·상품상세·장바구니는
-  // 각자 자체 "목록으로" 버튼(CustomerCenter.jsx/HomeProductDetail.jsx/
-  // Cart.jsx)이 따로 있어, 헤더 내비가 잠깐 숨어 있어도 홈으로 돌아갈 수단이
-  // 없어지지 않는다. 홈은 에세이 인트로 패널이 없어졌지만, 상품 그리드 맨
-  // 위에 여전히 같은 검색창·유틸 링크가 인라인으로 떠 있어서(Home.jsx의
-  // "#home-inline-nav-end" 참고) 그게 화면 밖으로 스크롤되기 전까지는 배너
-  // 쪽을 계속 숨겨야 두 벌이 겹쳐 보이지 않는다.
-  const showExpandedNav = (isHome || isSettingsPage || isCustomerCenterPage || isItemDetail || isCartPage) ? scrolled : true;
+  // 위 페이지들은 최상단에서부터 검색창·링크가 떠 있으면 위화감이 크다(배너
+  // 자체가 스크롤 전엔 안 보이는데 그 안의 검색창·링크만 먼저 떠 있으면 배너
+  // 없이 붕 떠 보인다) — 스크롤을 내려야 배너와 함께 나타나게 한다. 각 페이지
+  // 마다 자체 "목록으로"/뒤로가기 버튼이 따로 있어, 헤더 내비가 잠깐 숨어
+  // 있어도 홈으로 돌아갈 수단이 없어지지 않는다. 홈은 에세이 인트로 패널이
+  // 없어졌지만, 상품 그리드 맨 위에 여전히 같은 검색창·유틸 링크가 인라인으로
+  // 떠 있어서(Home.jsx의 "#home-inline-nav-end" 참고) 그게 화면 밖으로
+  // 스크롤되기 전까지는 배너 쪽을 계속 숨겨야 두 벌이 겹쳐 보이지 않는다.
+  const showExpandedNav = isProductPage ? scrolled : true;
 
   // 유틸 링크(로그인/회원가입 · 마이페이지/로그아웃 · 장바구니)용 — Home.jsx의
   // 카테고리 위 유틸 링크와 같은 기준(access_token)·같은 이벤트로 동기화한다.
@@ -140,11 +151,20 @@ function Header() {
   }, []);
 
   // 상품상세(.homeDetailPage)·상품목록(#home-products)·설정(.ssPage)·
-  // 고객센터(.ccPage)·장바구니(.cartPage)는 전부 Lenis의 가로 스크롤에서 제외된
-  // (data-lenis-prevent) 자기만의 세로 스크롤(overflow-y: auto) 영역이라
-  // window에는 scroll 이벤트가 전혀 발생하지 않는다 — 그래서 리스너를 window가
-  // 아니라 해당 엘리먼트에 따로 붙여야 하고, "최상단"도 window가 아니라 그
-  // 엘리먼트 자신의 scrollTop 기준으로 판단해야 한다.
+  // 고객센터(.ccPage)·장바구니(.cartPage)·룩북(.lookbookPage)·공지사항
+  // (.noticePage)·마이페이지(.mypagePage)·결제(.checkoutPage)는 전부 Lenis의
+  // 가로 스크롤에서 제외된(data-lenis-prevent) 자기만의 세로 스크롤
+  // (overflow-y: auto) 영역이라 window에는 scroll 이벤트가 전혀 발생하지
+  // 않는다 — 그래서 리스너를 window가 아니라 해당 엘리먼트에 따로 붙여야 하고,
+  // "최상단"도 window가 아니라 그 엘리먼트 자신의 scrollTop 기준으로 판단해야
+  // 한다. 검색결과(/search)는 반대로 이 목록에 없는 페이지의 예 — 자체 세로
+  // 스크롤 영역이 아니라 홈처럼 전역 가로 Lenis 패널의 일부라 아래 else
+  // 분기(window.scrollX)가 그대로 맞는다.
+  //
+  // document.querySelector("[data-lenis-prevent]") 하나로 퉁치지 않고 페이지별
+  // 클래스를 그대로 쓰는 이유 — 검색 오버레이(SearchOverlay)·챗봇 패널도 같은
+  // data-lenis-prevent 속성을 쓰는데 헤더/챗봇은 페이지 콘텐츠보다 DOM에 먼저
+  // 나와서 querySelector가 그쪽을 잘못 집어올 수 있다.
   useEffect(() => {
     const itemDetailEl = isItemDetail ? document.querySelector(".homeDetailPage") : null;
     const productListEl = isHome ? document.querySelector("#home-products") : null;
@@ -155,6 +175,12 @@ function Header() {
     const settingsEl = isSettingsPage ? document.querySelector(".ssPage") : null;
     const customerCenterEl = isCustomerCenterPage ? document.querySelector(".ccPage") : null;
     const cartEl = isCartPage ? document.querySelector(".cartPage") : null;
+    const lookbookEl = isLookbookPage ? document.querySelector(".lookbookPage") : null;
+    const noticeEl = isNoticePage ? document.querySelector(".noticePage") : null;
+    const myPageEl = isMyPage ? document.querySelector(".mypagePage") : null;
+    const checkoutEl = isCheckoutPage ? document.querySelector(".checkoutPage") : null;
+    const selfScrollEl = itemDetailEl || settingsEl || customerCenterEl || cartEl
+      || lookbookEl || noticeEl || myPageEl || checkoutEl;
 
     const handleScroll = () => {
       if (isHome) {
@@ -171,14 +197,8 @@ function Header() {
           ? inlineNavEndEl.getBoundingClientRect().bottom <= 0
           : (productListEl?.scrollTop ?? 0) > 50;
         setScrolled(isProductGridActive && inlineNavGone);
-      } else if (isItemDetail) {
-        setScrolled((itemDetailEl?.scrollTop ?? 0) > 50);
-      } else if (isSettingsPage) {
-        setScrolled((settingsEl?.scrollTop ?? 0) > 50);
-      } else if (isCustomerCenterPage) {
-        setScrolled((customerCenterEl?.scrollTop ?? 0) > 50);
-      } else if (isCartPage) {
-        setScrolled((cartEl?.scrollTop ?? 0) > 50);
+      } else if (selfScrollEl) {
+        setScrolled(selfScrollEl.scrollTop > 50);
       } else {
         setScrolled(window.scrollX > 50);
       }
@@ -186,21 +206,18 @@ function Header() {
 
     handleScroll();
     window.addEventListener("scroll", handleScroll);
-    itemDetailEl?.addEventListener("scroll", handleScroll);
     productListEl?.addEventListener("scroll", handleScroll);
-    settingsEl?.addEventListener("scroll", handleScroll);
-    customerCenterEl?.addEventListener("scroll", handleScroll);
-    cartEl?.addEventListener("scroll", handleScroll);
+    selfScrollEl?.addEventListener("scroll", handleScroll);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      itemDetailEl?.removeEventListener("scroll", handleScroll);
       productListEl?.removeEventListener("scroll", handleScroll);
-      settingsEl?.removeEventListener("scroll", handleScroll);
-      customerCenterEl?.removeEventListener("scroll", handleScroll);
-      cartEl?.removeEventListener("scroll", handleScroll);
+      selfScrollEl?.removeEventListener("scroll", handleScroll);
     };
-  }, [isHome, isItemDetail, isSettingsPage, isCustomerCenterPage, isCartPage]);
+  }, [
+    location.pathname, isHome, isItemDetail, isSettingsPage, isCustomerCenterPage,
+    isCartPage, isLookbookPage, isNoticePage, isMyPage, isCheckoutPage,
+  ]);
 
   // 이 헤더는 fixed + height:auto라 상태(scrolled/검색창 포커스 등)에 따라 실제
   // 높이가 계속 바뀐다 — RecentlyViewedSidebar(오른쪽 최근 본 상품 독)가 예전엔
@@ -231,7 +248,7 @@ function Header() {
       isCartPage ? "cartHeader" : ""
     } ${!isHome ? "lightBg" : ""} ${
       isProductPage ? "productPageHeader" : ""
-    } ${isProductPage ? "homePageHeader" : ""} ${showExpandedNav ? "expanded" : ""}`}
+    } ${isPastelPage ? "homePageHeader" : ""} ${showExpandedNav ? "expanded" : ""}`}
     >
       <div className="headerLeaves" aria-hidden="true">
         {HEADER_LEAVES.map((l, i) => (
@@ -287,9 +304,9 @@ function Header() {
             </>
           ) : (
             <>
-              <button type="button" onClick={openLogin} className="headerNavLink">로그인</button>
+              <button type="button" onClick={openLogin} className="headerNavLink headerNavLinkAuth">로그인</button>
               <span aria-hidden="true" className="headerNavDivider">|</span>
-              <button type="button" onClick={openRegister} className="headerNavLink">회원가입</button>
+              <button type="button" onClick={openRegister} className="headerNavLink headerNavLinkAuth">회원가입</button>
             </>
           )}
           <span aria-hidden="true" className="headerNavDivider">|</span>

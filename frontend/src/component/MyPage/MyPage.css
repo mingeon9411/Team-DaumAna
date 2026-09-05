@@ -1437,8 +1437,7 @@ body.dark .profileNicknameRow button {
   transform: translateY(-50%);
   width: 240px;
   height: 240px;
-  object-fit: contain;
-  opacity: 0.2;
+  opacity: 0.35;
   pointer-events: none;
 }
 
@@ -1583,12 +1582,11 @@ body.dark .profileNicknameRow button {
 }
 
 .gradeTierImg {
-  width: 70px;
-  height: 70px;
-  object-fit: contain;
+  width: 40px;
+  height: 40px;
   flex-shrink: 0;
   margin: 0 6px;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .gradeTierInfo {

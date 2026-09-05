@@ -346,7 +346,7 @@ function HomeProductDetail() {
           {/* 오른쪽: 구매 정보 패널 — 브랜드/카테고리 → 제목+찜/공유 → 별점 → 가격
               → 배송 → 수량/주문금액 → 장바구니/바로구매 순서로, 국내 커머스에서
               가장 익숙한 상세페이지 정보 순서를 그대로 따른다. */}
-          <div className="flex flex-col justify-center rounded-2xl bg-background/70 backdrop-blur-sm px-6 py-7 md:px-8 md:py-9 shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
+          <div className="flex flex-col justify-start rounded-2xl bg-background/70 backdrop-blur-sm px-6 py-7 md:px-8 md:py-9 shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
             <div className="flex flex-col gap-2.5 mb-3">
               <div className="flex items-center gap-1 text-[11px] text-muted-foreground tracking-wide" style={MONO}>
                 {[product.category, product.midCategory, product.subCategory].filter(Boolean).map((seg, i, arr) => (

@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
-import { PRODUCTS } from "../Home/Home";
+import { resolveProductVariant } from "../Home/Home";
 import { getPostById } from "./posts";
 import ImageHotspots from "./ImageHotspots";
 import SiteFooter from "../SiteFooter";
@@ -8,8 +8,6 @@ import SiteFooter from "../SiteFooter";
 const SERIF = { fontFamily: "'GmarketSans', 'Noto Serif KR', serif" };
 const SANS = { fontFamily: "'GmarketSans', 'Noto Sans KR', sans-serif" };
 const MONO = { fontFamily: "'GmarketSans', 'DM Mono', monospace" };
-
-const byId = (id) => PRODUCTS.find((p) => p.id === id);
 
 function Hairline({ className = "" }) {
   return (
@@ -30,7 +28,7 @@ function LookbookPost() {
 
   if (!post) {
     return (
-      <div className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto" data-hsnap data-lenis-prevent>
+      <div className="lookbookPage metallicSilver w-screen h-screen shrink-0 overflow-y-auto" data-hsnap data-lenis-prevent>
         <div className="max-w-3xl mx-auto w-full px-8 pt-[130px] pb-20">
           <button
             type="button"
@@ -46,11 +44,11 @@ function LookbookPost() {
     );
   }
 
-  const cover = byId(post.coverId);
-  const taggedProducts = post.tags.map((tag) => byId(tag.id)).filter(Boolean);
+  const cover = resolveProductVariant(post.coverId, post.coverColor);
+  const taggedProducts = post.tags.map((tag) => resolveProductVariant(tag.id, tag.color)).filter(Boolean);
 
   return (
-    <div className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto" data-hsnap data-lenis-prevent>
+    <div className="lookbookPage metallicSilver w-screen h-screen shrink-0 overflow-y-auto" data-hsnap data-lenis-prevent>
       <div className="max-w-3xl mx-auto w-full px-8 pt-[130px] pb-20">
         <button
           type="button"

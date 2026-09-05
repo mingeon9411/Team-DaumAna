@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
-import { PRODUCTS } from "../Home/Home";
+import { resolveProductVariant } from "../Home/Home";
 import { POSTS } from "./posts";
 import ImageHotspots from "./ImageHotspots";
 import SiteFooter from "../SiteFooter";
@@ -8,8 +8,6 @@ import SiteFooter from "../SiteFooter";
 // Home.jsx 상품 목록과 같은 타이포 시스템 — 이 페이지도 그 스타일을 그대로 따른다.
 const SERIF = { fontFamily: "'GmarketSans', 'Noto Serif KR', serif" };
 const MONO = { fontFamily: "'GmarketSans', 'DM Mono', monospace" };
-
-const byId = (id) => PRODUCTS.find((p) => p.id === id);
 
 function Hairline({ className = "" }) {
   return (
@@ -27,7 +25,7 @@ function Lookbook() {
   const navigate = useNavigate();
 
   return (
-    <div className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto" data-hsnap data-lenis-prevent>
+    <div className="lookbookPage metallicSilver w-screen h-screen shrink-0 overflow-y-auto" data-hsnap data-lenis-prevent>
       <div className="max-w-5xl mx-auto w-full px-8 pt-[130px] pb-20">
         <button
           type="button"
@@ -49,7 +47,7 @@ function Lookbook() {
 
         <div className="grid sm:grid-cols-2 gap-8">
           {POSTS.map((post) => {
-            const cover = byId(post.coverId);
+            const cover = resolveProductVariant(post.coverId, post.coverColor);
             return (
               <article
                 key={post.id}

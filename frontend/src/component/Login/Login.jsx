@@ -7,7 +7,6 @@ import { useState, useRef, useEffect } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { loginUser, requestSocialCaptchaTicket } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
-import { useRailStyle } from "../../hooks/useRailStyle";
 import JDLogo from "../../assets/J.D 로고.svg";
 // -sm: 48px 높이로만 쓰이는데 원본이 1015x600(750KB)이라 로그인창이 뜰 때마다
 // 불필요하게 무거웠음 — 표시 크기에 맞춰 300px 높이로 미리 축소해둔 버전으로 교체.
@@ -24,9 +23,6 @@ function Login() {
   const [darkMode, setDarkMode] = useState(
     () => document.body.classList.contains("dark")
   );
-  // 하단 독바와 같은 레인보우(글래스)/메탈릭/파스텔 스타일을 로그인창에도 그대로 반영
-  const { railStyle, styleSwitching } = useRailStyle();
-
   useEffect(() => {
     const syncDarkMode = () => setDarkMode(document.body.classList.contains("dark"));
     window.addEventListener("darkmodechange", syncDarkMode);
@@ -139,7 +135,7 @@ function Login() {
   };
 
   return (
-      <section className={`loginBox railStyle-${railStyle} ${styleSwitching ? "styleSwitching" : ""}`}>
+      <section className="loginBox">
         {/* 독립 페이지라 CustomerCenter의 "목록으로"와 같은 패턴으로 돌아가기 버튼을 둔다
             (closeAuthPage는 항상 홈으로 보낸다 — AuthModalContext.jsx 참고). 로고를
             눌러도 같은 곳(홈)으로 가지만, 이 버튼이 더 명확한 이탈 동선이다. */}

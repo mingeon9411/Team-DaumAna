@@ -5,7 +5,6 @@ import { LuChevronsUp, LuChevronsDown, LuChevronLeft, LuChevronRight } from "rea
 import { removeRecentlyViewed, clearRecentlyViewed } from "../../utils/recentlyViewed";
 import { addToCart } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
-import { useRailStyle } from "../../hooks/useRailStyle";
 import "../Sidebar/Sidebar.css";
 import "./RecentlyViewedSidebar.css";
 
@@ -43,9 +42,6 @@ function RecentlyViewedSidebar({
     window.addEventListener("authchange", sync);
     return () => window.removeEventListener("authchange", sync);
   }, []);
-
-  // 하단 독바(Sidebar)와 같은 glass/메탈릭/파스텔 스타일을 공유한다.
-  const { railStyle, styleSwitching } = useRailStyle();
 
   // 하단 독바와 마찬가지로 접힘 상태를 기억해뒀다가 다음 방문에도 유지한다.
   const [collapsed, setCollapsed] = useState(
@@ -236,7 +232,7 @@ function RecentlyViewedSidebar({
       // 헤더 바로 아래(예전엔 --header-h 기준 top)보다 중앙이 화면 어디서
       // 스크롤하든 시선이 닿기 쉽다. 헤더가 검색창 포커스 등으로 높이가 늘어나도
       // 중앙 정렬은 그 값과 무관해 더는 --header-h를 따라갈 필요가 없다.
-      className={`recentDock railStyle-${railStyle} ${styleSwitching ? "styleSwitching" : ""} ${collapsed ? "collapsed" : ""} fixed top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 p-2 rounded-2xl`}
+      className={`recentDock ${collapsed ? "collapsed" : ""} fixed top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 p-2 rounded-2xl`}
       data-lenis-prevent
     >
       {showItems && (

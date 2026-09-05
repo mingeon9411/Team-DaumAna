@@ -68,11 +68,10 @@ function Notice() {
   const selected = NOTICES.find((n) => n.id === selectedId) || null;
 
   return (
-    <div className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto" data-hsnap data-lenis-prevent>
-      {/* Cart.jsx(.cartPage)와 같은 130px 상단 여백 — 이 페이지는 Header.jsx의
-          showExpandedNav 목록에 없어(스크롤 전에도 항상 펼쳐진 상태) 헤더 배너가
-          최상단부터 떠 있다. Home.jsx 상품 그리드의 py-20(80px)을 그대로 썼더니
-          그 배너에 "목록으로"/제목이 가려졌다 — Cart처럼 항상-펼침 페이지 기준으로 맞춘다. */}
+    <div className="noticePage metallicSilver w-screen h-screen shrink-0 overflow-y-auto" data-hsnap data-lenis-prevent>
+      {/* Cart.jsx(.cartPage)와 같은 130px 상단 여백 — 접힌 헤더(로고만 있는 상태)
+          높이만큼은 스크롤 여부와 무관하게 항상 필요하다. Home.jsx 상품 그리드의
+          py-20(80px)을 그대로 썼더니 헤더에 "목록으로"/제목이 가려졌다. */}
       <div className="max-w-7xl mx-auto w-full px-8 pt-[130px] pb-20">
         <button
           type="button"

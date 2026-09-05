@@ -7,10 +7,11 @@
     width: min(420px, calc(100vw - 48px));
     padding: 36px 40px;
 
-    /* 배경은 여기서 정하지 않고, 아래 railStyle-* 프리셋 블록에서 채운다 —
-       사이드바 하단 독바(Sidebar.css)와 같은 3가지 스타일(레인보우/메탈릭/파스텔)을
-       그대로 공유하기 위함 */
-    border: 8px solid transparent;
+    /* 배경 톤 설정(화이트/베이지/파스텔, 설정 페이지와 동일)을 그대로 따라간다 —
+       기본(화이트)은 검정 테두리의 흰 카드. 베이지/파스텔은 아래 body[data-bg=…]
+       규칙이 덮어쓴다. */
+    border: 8px solid #1c1a16;
+    background: #ffffff;
     color: var(--foreground);
 
     text-align: center;
@@ -21,68 +22,54 @@
     font-family: "GmarketSans", "Noto Sans KR", "Pretendard", sans-serif;
   }
 
-  /* ── 하단 독바(Sidebar.css)의 스타일 프리셋을 그대로 미러링 ──────────────── */
+  /* ── Home.css .metallicSilver·Sidebar.css .sidebarRail과 동일한 배경 톤 프리셋 ── */
 
-  /* 레인보우(글래스) — 얇고 평평한 반투명 화이트 + 무지개 톤 테두리, blur로 유리처럼 */
-  .loginBox.railStyle-glass {
+  /* 베이지 — 크림톤 애니메이션 그러데이션 */
+  body[data-bg="beige"] .loginBox {
+    background: linear-gradient(
+      115deg,
+      #f8f2e6 0%, #f3ead9 20%, #f7f1e4 35%, #f8f2e6 50%,
+      #f2e8d6 65%, #f6efe0 80%, #f8f2e6 100%
+    );
+    background-size: 160% 160%;
+    animation: pastelSheenDrift 48s ease-in-out infinite;
+  }
+
+  /* 파스텔 — 배경은 위와 동일한 파스텔 그러데이션, 테두리만 오색 그러데이션
+     (border-box 트릭). data-pastel(진하게/보통/연하게)도 그대로 따라간다. */
+  body[data-bg="pastel"] .loginBox {
+    border-color: transparent;
     background:
-      linear-gradient(rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0.62)) padding-box,
+      linear-gradient(115deg, #f7ddc9 0%, #cfe0f2 20%, #cdeed2 35%, #f7ddc9 50%, #ddd3f2 65%, #f4d3e4 80%, #f7ddc9 100%) padding-box,
       linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
-    backdrop-filter: blur(30px) saturate(115%);
-    -webkit-backdrop-filter: blur(30px) saturate(115%);
-  }
-
-  body.dark .loginBox.railStyle-glass {
-    background:
-      linear-gradient(rgba(6, 13, 30, 0.62), rgba(6, 13, 30, 0.62)) padding-box,
-      linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
-  }
-
-  /* 메탈릭 — 원래 있던 실버 그러데이션 + 실버 톤 테두리(독바와 동일) */
-  .loginBox.railStyle-metallic {
-    background:
-      linear-gradient(
-        115deg,
-        #f4f5f6 0%,
-        #d9dbde 20%,
-        #c3c6cb 35%,
-        #eef0f2 50%,
-        #b7bac0 65%,
-        #dfe1e4 80%,
-        #f4f5f6 100%
-      ) padding-box,
-      linear-gradient(150deg, #d3d6da 0%, #8b929b 50%, #d3d6da 100%) border-box;
     background-size: 160% 160%, 100% 100%;
-    animation: loginMetallicSheen 24s ease-in-out infinite;
+    animation: pastelSheenDrift 48s ease-in-out infinite;
   }
 
-  body.dark .loginBox.railStyle-metallic {
+  body[data-bg="pastel"][data-pastel="medium"] .loginBox {
     background:
-      linear-gradient(
-        115deg,
-        #2b2d31 0%,
-        #44474d 20%,
-        #5a5d64 35%,
-        #323438 50%,
-        #6b6e75 65%,
-        #3c3e43 80%,
-        #2b2d31 100%
-      ) padding-box,
-      linear-gradient(150deg, #4a4f58 0%, #8b929b 50%, #4a4f58 100%) border-box;
+      linear-gradient(115deg, #f8e9dc 0%, #e1e9f2 20%, #dff2e2 35%, #f8e9dc 50%, #e8e2f5 65%, #f5e1ec 80%, #f8e9dc 100%) padding-box,
+      linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
     background-size: 160% 160%, 100% 100%;
   }
 
-  /* 파스텔 — 독바와 같은 정적 파스텔 채움 */
-  .loginBox.railStyle-pastel {
+  body[data-bg="pastel"][data-pastel="light"] .loginBox {
     background:
-      linear-gradient(120deg, #ffe4f0 0%, #e4ecff 50%, #d9fbea 100%) padding-box,
+      linear-gradient(115deg, #f9f4ef 0%, #eef2f7 20%, #f0f7f0 35%, #f9f4ef 50%, #f2eef7 65%, #f7f0f5 80%, #f9f4ef 100%) padding-box,
       linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+    background-size: 160% 160%, 100% 100%;
   }
 
-  body.dark .loginBox.railStyle-pastel {
+  /* 다크모드는 화이트/베이지/파스텔 선택과 무관하게 항상 이 톤 하나로 통일한다 —
+     Home.css .metallicSilver와 동일한 원칙([data-bg][data-pastel]는 App.jsx가
+     항상 채워두는 속성이라 값과 무관하게 항상 매치되고, 특이도도 위
+     [data-pastel="medium"/"light"] 규칙보다 세게 만들어 다크모드가 항상 이긴다). */
+  body.dark[data-bg][data-pastel] .loginBox {
+    border-color: transparent;
     background:
-      linear-gradient(120deg, #3a2f4a 0%, #2a3550 50%, #223d38 100%) padding-box,
+      linear-gradient(115deg, #060d1e 0%, #0b1430 20%, #0f1f3d 35%, #060d1e 50%, #0f1f3d 65%, #0b1430 80%, #060d1e 100%) padding-box,
       linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
+    background-size: 160% 160%, 100% 100%;
   }
 
     /* CustomerCenter.css의 .ccBackBtn과 같은 레시피 — 텍스트 링크 톤의 얇은 뒤로가기 */
@@ -145,11 +132,6 @@
 
   body.dark .loginLogoHanok {
     filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
-  }
-
-  @keyframes loginMetallicSheen {
-    0%, 100% { background-position: 0% 40%; }
-    50% { background-position: 100% 60%; }
   }
 
   .loginBox .authModalClose {
@@ -494,23 +476,4 @@
   .loginBox {
     padding: 28px 22px;
   }
-}
-
-/* 로그인/회원가입이 독립 페이지(AuthPage.jsx)로 옮겨간 뒤 이 카드가 화면 대부분을
-   차지하게 됐는데, railStyle(독 테두리 프리셋)의 독자적인 무지개/메탈릭/파스텔
-   배경을 그대로 쓰면 설정 페이지(Settings)에서 고른 배경 톤과 안 맞고 따로 논다.
-   .authPage 안에서는 카드 자체 배경을 비워서 뒤에 깔린 .authPage.metallicSilver
-   (Settings와 동일한 배경 톤)가 그대로 비쳐 보이게 한다 — 위 railStyle-* 규칙과
-   특이도(클래스 2~3개)가 같거나 더 세게 만들고, 이 파일 맨 끝에 둬서 순서로 이긴다. */
-.authPage .loginBox.railStyle-glass,
-.authPage .loginBox.railStyle-metallic,
-.authPage .loginBox.railStyle-pastel {
-  background: transparent;
-  animation: none;
-}
-
-body.dark .authPage .loginBox.railStyle-glass,
-body.dark .authPage .loginBox.railStyle-metallic,
-body.dark .authPage .loginBox.railStyle-pastel {
-  background: transparent;
 }

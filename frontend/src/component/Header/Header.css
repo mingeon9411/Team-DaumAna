@@ -302,6 +302,10 @@ body.dark[data-bg][data-pastel] .header.homePageHeader::before {
   color: var(--foreground);
 }
 
+.headerNavLinkAuth {
+  color: var(--foreground);
+}
+
 .headerNavDivider {
   color: var(--border);
   font-size: 13px;

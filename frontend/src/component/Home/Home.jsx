@@ -6,6 +6,7 @@ import ChatBot from "../MyPage/ChatBot";
 import LookbookViewer from "./LookbookViewer";
 import RecentlyViewedSidebar from "./RecentlyViewedSidebar";
 import HomeHeroBanner from "./HomeHeroBanner";
+import HomeFeatureBanner from "./HomeFeatureBanner";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import SiteFooter from "../SiteFooter";
 import { getRecentlyViewed } from "../../utils/recentlyViewed";
@@ -186,22 +187,18 @@ export const PRODUCTS = [
       { value: "브라운", label: "웜 브라운", image: furrySlipperBrown, alt: "부드러운 털 실내화 브라운" },
       { value: "네이비", label: "딥 네이비", image: furrySlipperNavy, alt: "부드러운 털 실내화 네이비" },
     ] },
-  { id: 27, no: "No.27", name: "물이 잘 빠지는 욕실화 레드", sub: "레드", price: "10,000", label: "NEW",
-    desc: "배수 슬릿을 낸 쿠션 소재 욕실화입니다. 도톰한 EVA 밑창이 푹신하게 발을 받쳐주고, 미끄럼을 줄여주는 표면 처리로 젖은 바닥에서도 안심하고 신을 수 있습니다. 레드 컬러가 욕실에 산뜻한 포인트를 더합니다.",
+  // 4개 색상(레드/블랙/블루/화이트)을 한 상품으로 묶고 colors[]로 옵션 처리한다
+  // (id는 기존 레드 상품의 27을 그대로 씀 — 블랙/블루/화이트였던 28~30은 폐기).
+  { id: 27, no: "No.27", name: "물이 잘 빠지는 욕실화", sub: "레드", price: "10,000", label: "NEW",
+    desc: "배수 슬릿을 낸 쿠션 소재 욕실화입니다. 도톰한 EVA 밑창이 푹신하게 발을 받쳐주고, 미끄럼을 줄여주는 표면 처리로 젖은 바닥에서도 안심하고 신을 수 있습니다. 컬러별로 각기 다른 무드를 더해줍니다.",
     spec: "SIZE : 250-270mm (Free) · MATERIAL : EVA",
-    image: drainSandalRed, alt: "물이 잘 빠지는 욕실화 레드", brand: "집다움", category: "욕실화", midCategory: "쿠션 욕실화", subCategory: "레드" },
-  { id: 28, no: "No.28", name: "물이 잘 빠지는 욕실화 블랙", sub: "블랙", price: "10,000", label: "NEW",
-    desc: "배수 슬릿을 낸 쿠션 소재 욕실화입니다. 도톰한 EVA 밑창이 푹신하게 발을 받쳐주고, 미끄럼을 줄여주는 표면 처리로 젖은 바닥에서도 안심하고 신을 수 있습니다. 블랙 컬러로 어떤 욕실에도 무난히 어울립니다.",
-    spec: "SIZE : 250-270mm (Free) · MATERIAL : EVA",
-    image: drainSandalBlack, alt: "물이 잘 빠지는 욕실화 블랙", brand: "집다움", category: "욕실화", midCategory: "쿠션 욕실화", subCategory: "블랙" },
-  { id: 29, no: "No.29", name: "물이 잘 빠지는 욕실화 블루", sub: "블루", price: "10,000", label: "NEW",
-    desc: "배수 슬릿을 낸 쿠션 소재 욕실화입니다. 도톰한 EVA 밑창이 푹신하게 발을 받쳐주고, 미끄럼을 줄여주는 표면 처리로 젖은 바닥에서도 안심하고 신을 수 있습니다. 블루 컬러가 시원한 느낌을 더합니다.",
-    spec: "SIZE : 250-270mm (Free) · MATERIAL : EVA",
-    image: drainSandalBlue, alt: "물이 잘 빠지는 욕실화 블루", brand: "집다움", category: "욕실화", midCategory: "쿠션 욕실화", subCategory: "블루" },
-  { id: 30, no: "No.30", name: "물이 잘 빠지는 욕실화 화이트", sub: "화이트", price: "10,000", label: "BESTSELLER",
-    desc: "배수 슬릿을 낸 쿠션 소재 욕실화입니다. 도톰한 EVA 밑창이 푹신하게 발을 받쳐주고, 미끄럼을 줄여주는 표면 처리로 젖은 바닥에서도 안심하고 신을 수 있습니다. 화이트 컬러로 깔끔한 분위기를 연출합니다.",
-    spec: "SIZE : 250-270mm (Free) · MATERIAL : EVA",
-    image: drainSandalWhite, alt: "물이 잘 빠지는 욕실화 화이트", brand: "집다움", category: "욕실화", midCategory: "쿠션 욕실화", subCategory: "화이트" },
+    image: drainSandalRed, alt: "물이 잘 빠지는 욕실화", brand: "집다움", category: "욕실화", midCategory: "쿠션 욕실화", subCategory: "레드",
+    colors: [
+      { value: "레드", label: "레드", image: drainSandalRed, alt: "물이 잘 빠지는 욕실화 레드" },
+      { value: "블랙", label: "블랙", image: drainSandalBlack, alt: "물이 잘 빠지는 욕실화 블랙" },
+      { value: "블루", label: "블루", image: drainSandalBlue, alt: "물이 잘 빠지는 욕실화 블루" },
+      { value: "화이트", label: "화이트", image: drainSandalWhite, alt: "물이 잘 빠지는 욕실화 화이트" },
+    ] },
   { id: 35, no: "No.35", name: "다크 브라운 고급 소파", sub: "차콜 브라운 니트", price: "890,000", label: "NEW",
     desc: "굵은 니트 원단으로 감싼 모듈형 2인 소파입니다. 낮고 넉넉한 좌면과 두툼한 팔걸이가 안정감 있게 몸을 받쳐주고, 짙은 차콜 브라운 톤이 공간에 차분한 무게감을 더합니다.",
     spec: "SIZE : W165 D95 H75 · MATERIAL : knit fabric, wood frame",
@@ -237,6 +234,17 @@ export const PRODUCTS = [
       { value: "화이트", label: "화이트", image: cloudSandalWhite, alt: "필로우 쿠션 욕실화 화이트" },
     ] },
 ];
+
+// id로 상품을 찾되, colorValue가 있으면 colors[]에서 그 색상의 image/alt/sub로
+// 덮어쓴 사본을 돌려준다 — 여러 색상을 한 상품(colors[])으로 합친 뒤에도
+// 룩북(Lookbook.jsx/LookbookPost.jsx/ImageHotspots.jsx)처럼 특정 색상 사진을
+// 정확히 보여줘야 하는 곳에서 쓴다.
+export const resolveProductVariant = (id, colorValue) => {
+  const p = PRODUCTS.find((product) => product.id === id);
+  if (!p || !colorValue || !p.colors) return p;
+  const color = p.colors.find((c) => c.value === colorValue);
+  return color ? { ...p, image: color.image, alt: color.alt, sub: color.label } : p;
+};
 
 // 대(大)카테고리 아래 중(中)카테고리를 묶어두는 트리 — product.category(중)가
 // 어느 대카테고리에 속하는지는 이 트리 하나에서 뽑아 쓴다(따로 매핑 상수를
@@ -767,6 +775,8 @@ function Home() {
           </div>
 
           <HomeHeroBanner />
+
+          <HomeFeatureBanner products={PRODUCTS} />
 
           <div className="flex items-center gap-7 overflow-x-auto pb-1 border-b border-border">
             {[{ label: "전체" }, ...CATEGORY_TREE].map((top) => {
