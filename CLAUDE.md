@@ -6,11 +6,11 @@ React/Vite 프론트엔드(`frontend/`) + Spring Boot 백엔드(별도 저장소
 
 ## 새 PC에서 처음 시작할 때 (순서대로)
 
-1. **MySQL 컨테이너 실행** — 프로젝트 루트에서 `docker compose up -d` (Docker Desktop 켜져 있어야 함). `jibdaum-mysql` 컨테이너가 3306 포트로 뜬다 (DB `jibdaum`, root/rootpassword). Django와 Spring Boot가 이 DB 하나를 공유한다.
+1. **MySQL·Redis 컨테이너 실행** — 프로젝트 루트에서 `docker compose up -d` (Docker Desktop 켜져 있어야 함). `jibdaum-mysql`(3306, DB `jibdaum`, root/rootpassword)과 `jibdaum-redis`(6379)가 뜬다. Django와 Spring Boot가 MySQL 하나를 공유하고, Redis는 Spring Boot 상품 목록 조회 캐시 전용(없어도 캐시 미스로 우회할 뿐 앱은 정상 동작).
 2. **`backend/.env` 직접 생성** — 이 파일은 git에 안 올라간다(gitignore). PC마다 새로 만들어야 함: `backend/.env.example`을 복사해서 `.env`로 만들고 값 채우기. `DB_*` 값은 docker-compose 기본값(jibdaum/root/rootpassword/127.0.0.1/3306)과 맞출 것.
 3. **`frontend/.env` 직접 생성** — 이것도 gitignore 대상. `frontend/.env.example`을 복사해서 `.env`로 만들고 PortOne(`VITE_PORTONE_STORE_ID`, `VITE_PORTONE_CHANNEL_KEY`)·hCaptcha(`VITE_HCAPTCHA_SITE_KEY`) 값을 채울 것 — 결제·회원가입/로그인 캡차가 이 값 없이는 로컬에서 아예 안 뜬다. `VITE_SPRING_API_URL`은 비워두면 로컬 Spring Boot(`http://localhost:8081`)를 기본으로 씀.
 4. **`jipdaum-spring` 저장소를 별도로 클론/pull**하고, `src/main/resources/application.yml.example`을 복사해 같은 위치에 `application.yml`로 만들어 값 채우기 (이것도 gitignore, git에 없음). 특히:
-   - `jwt.secret`은 `backend/.env`의 `SECRET_KEY`와 **반드시 같은 값**이어야 프론트가 발급받은 토큰이 Django/Spring 양쪽에서 다 통함.
+   - `jwt.secret`은 Spring Boot 혼자 JWT를 서명·검증하는 데만 쓰는 값 — Django엔 이제 JWT를 다루는 코드가 전혀 없어서(SIMPLE_JWT 등 제거됨, API 자체가 없음) `backend/.env`의 `SECRET_KEY`와 맞출 필요가 **없다**. (예전에 Django SIMPLE_JWT와 토큰을 공유하던 시절의 요구사항이 남아있던 것 — `application.yml.example`의 주석은 아직 안 고쳐져 있으니 참고만 할 것.)
    - `portone.api-secret`은 프론트의 `VITE_PORTONE_STORE_ID`/`VITE_PORTONE_CHANNEL_KEY`와는 **다른 값**(PortOne 콘솔의 API Secret Key) — 결제 검증(verifyPayment)에 씀.
    - `hcaptcha.secret-key`가 비어 있으면 캡차 검증을 항상 통과시키므로(로컬 개발 편의), 로컬에서 급하면 비워둬도 부팅은 됨.
 5. **나머지 설치/실행 절차**는 `backend/README.md`, `frontend/README.md`, `jipdaum-spring/README.md`에 단계별로 있음 (venv, `pip install -r requirements.txt`, `npm install`, `./mvnw spring-boot:run` 등). 여기서 중복 설명 안 함.
@@ -23,10 +23,11 @@ React/Vite 프론트엔드(`frontend/`) + Spring Boot 백엔드(별도 저장소
 
 - **DB는 Oracle → MySQL(Docker)로 전환됨** (2026-07). Oracle 관련 코드/설정은 완전히 제거됐고 잔존물 없음 — 다시 Oracle 얘기가 나오면 오래된 문서나 기억을 참고한 것이니 의심할 것.
 - **API는 Django → Spring Boot로 이관 완료됨** (`backend/config/urls.py` 참고). Django는 `/admin/`만 남아있고 회원/상품/쿠폰/결제/챗봇은 전부 별도 저장소 `jipdaum-spring`(포트 8081)이 처리. "장고 서버 실행해줘" 같은 요청에 Django만 띄우면 로그인/결제/챗봇 등 실제 기능은 다 실패한다 — Spring Boot도 같이 띄워야 함.
-- **상품 데이터가 두 개로 분리돼 있음**: `frontend/src/component/Home/Home.jsx`의 로컬 `PRODUCTS`(export됨, 메인 페이지 전용)와 `frontend/src/data/products.js`(한국관 페이지가 씀). id가 겹쳐도 서로 다른 상품이니 절대 섞어서 참조하면 안 됨. 챗봇처럼 두 카탈로그를 공유하는 로직이 특정 필드(label/spec 등)에 의존하면 양쪽에 다 있는지 확인할 것 — 한쪽에만 없으면 조용히 안 먹는다.
-- **챗봇(`ChatBot.jsx`)은 메인/한국관 공용 컴포넌트** — `catalog`/`variant` 등 props로만 갈라지고 결제·회원가입·탈퇴 패널 같은 기능 로직은 variant 분기 없이 자동으로 양쪽에 적용됨. 메인 챗봇을 고치면 보통 한국관도 같이 바뀐다.
+- **한국관은 완전히 폐지됨**(2026-09, 룩북으로 대체). `frontend/src/data/products.js`(한국관 전용 카탈로그)는 삭제됐고, 상품은 이제 `frontend/src/component/Home/Home.jsx`의 `PRODUCTS` 하나뿐 — 상품 상세페이지도 `/item/:id`(`HomeProductDetail.jsx`) 하나로 통일됨. "한국관"이 코드나 옛 문서에 나오면 지워진 기능이니 의심할 것.
+- **챗봇(`ChatBot.jsx`)에 여전히 `catalog` prop(기본값 `PRODUCTS`)이 남아있음** — 한국관이 있던 시절 카탈로그를 갈아끼우던 용도였는데, 지금은 카탈로그가 하나뿐이라 사실상 죽은 유연성. 새로 만질 일 있으면 굳이 prop을 안 없애도 되지만, "두 카탈로그 대응"이라고 오해하지 말 것.
 - **파비콘은 라우트 무관하게 항상 JD 로고 고정**(`index.html`). 예전엔 `/korean-hall`에서 한옥 로고로 바꿔주는 `FaviconController`가 있었으나, 축소 렌더링 시 로고가 뭉개져 보여 2026-08-28 제거함.
-- **사이드바 검색**(`Sidebar.jsx`)은 현재 라우트에 맞는 카탈로그만 검색함(한국관이면 한국관 상품만, 그 외엔 메인 상품만).
+- **검색은 `Sidebar.jsx`가 아니라 `Header/SearchOverlay.jsx` + `SearchResults.jsx`가 담당**(Sidebar.jsx는 이제 검색과 무관한 상/하/이전/다음 이동용 십자 패드 위젯). 검색은 로컬 배열 필터링이 아니라 백엔드 `searchProducts` API(Spring Boot) 호출이고, 카탈로그가 하나뿐이라 라우트별 스코프 분기도 더 이상 없음.
+- **Spring Boot 상품 목록 조회에 Redis 캐시(TTL 30초)가 붙어있음** — Django admin에서 상품을 고쳐도 최대 30초간은 캐시된 옛 값이 보일 수 있다(무효화 연동 없음, 최종 일관성 타협). "방금 admin에서 고쳤는데 화면에 안 바뀐다"는 버그 리포트가 오면 이것부터 의심할 것. Redis가 죽어 있어도 캐시 미스로 우회할 뿐 조회 자체는 실패하지 않는다.
 - **Lenis(스무스 스크롤)가 전역 휠 이벤트를 가로챔** — 모달처럼 내부 스크롤이 따로 필요한 요소는 `data-lenis-prevent` 속성을 반드시 달아야 스크롤이 먹힌다 (MyPage에서 이거 빠져서 스크롤 안 되던 버그 있었음). 화면에 고정으로 뜨는 외부 팝업(hCaptcha 챌린지, PortOne 결제창)이 떠 있는 동안은 `window.lenis?.stop()`/`start()`로 배경 스크롤 자체를 막아야 한다 — 안 그러면 팝업은 제자리에 있고 배경만 스크롤돼 서로 따로 노는 것처럼 보인다.
 
 ## 배포

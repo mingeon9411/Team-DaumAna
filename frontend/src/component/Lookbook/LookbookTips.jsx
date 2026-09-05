@@ -5,9 +5,9 @@ import { PRODUCTS } from "../Home/Home";
 import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 import SiteFooter from "../SiteFooter";
 
-const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
-const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
-const MONO = { fontFamily: "'TwayFly', 'DM Mono', monospace" };
+const SERIF = { fontFamily: "'GmarketSans', 'Noto Serif KR', serif" };
+const SANS = { fontFamily: "'GmarketSans', 'Noto Sans KR', sans-serif" };
+const MONO = { fontFamily: "'GmarketSans', 'DM Mono', monospace" };
 
 function Hairline({ className = "" }) {
   return (

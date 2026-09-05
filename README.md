@@ -193,7 +193,7 @@
 | ![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black) | React 19 | 컴포넌트 기반 SPA UI |
 | ![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white) | Vite | 개발 서버 · 번들러 (HMR) |
 | ![React Router](https://img.shields.io/badge/React_Router-CA4245?style=flat-square&logo=reactrouter&logoColor=white) | React Router | 클라이언트 라우팅(SPA 페이지 전환) |
-| ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=flat-square&logo=axios&logoColor=white) | Axios | Django · Spring Boot API 호출 |
+| ![Axios](https://img.shields.io/badge/Axios-5A29E4?style=flat-square&logo=axios&logoColor=white) | Axios | Spring Boot API 호출(인터셉터로 JWT 자동 첨부·만료 처리) |
 | ![Lenis](https://img.shields.io/badge/Lenis-111111?style=flat-square&logoColor=white) | Lenis | 스무스 스크롤(전역 휠 이벤트 인터셉트) |
 
 <br/>
@@ -202,12 +202,11 @@
 
 | | 기술 | 설명 |
 |---|---|---|
-| ![Django](https://img.shields.io/badge/Django-092E20?style=flat-square&logo=django&logoColor=white) | Django | 관리자 화면(admin) · JWT 인증 · 상품/카테고리/리뷰 조회 API |
-| ![DRF](https://img.shields.io/badge/DRF-ff1709?style=flat-square&logo=django&logoColor=white) | Django REST Framework | Django 쪽 REST API |
-| ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white) | Spring Boot | 장바구니 · 주문 · 결제 · 쿠폰 · 소셜로그인 · 챗봇 전담(별도 저장소 `jipdaum-spring`) |
+| ![Django](https://img.shields.io/badge/Django-092E20?style=flat-square&logo=django&logoColor=white) | Django | 관리자 화면(admin) 전용 — REST API 없음, MySQL 스키마는 계속 이쪽 마이그레이션이 소유 |
+| ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=springboot&logoColor=white) | Spring Boot | 회원가입 · 로그인(소셜 포함) · 장바구니 · 주문 · 결제 · 쿠폰 · 챗봇 등 API 전부 전담(별도 저장소 `jipdaum-spring`) |
 | ![Spring Security](https://img.shields.io/badge/Spring_Security-6DB33F?style=flat-square&logo=springsecurity&logoColor=white) | Spring Security | OAuth2 클라이언트, 인증/인가 필터 체인 |
-| ![Spring Data JPA](https://img.shields.io/badge/Spring_Data_JPA-6DB33F?style=flat-square&logo=spring&logoColor=white) | Spring Data JPA | 엔티티 매핑, 원자적 조건부 UPDATE 쿼리(재고 · 쿠폰 동시성 제어) |
-| ![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=jsonwebtokens&logoColor=white) | JWT | Django · Spring Boot가 secret을 공유해 단일 토큰으로 양쪽 인증 |
+| ![Spring Data JPA](https://img.shields.io/badge/Spring_Data_JPA-6DB33F?style=flat-square&logo=spring&logoColor=white) | Spring Data JPA | 엔티티 매핑, 원자적 조건부 UPDATE 쿼리(재고 · 쿠폰 동시성 제어), `ddl-auto: none`(스키마는 Django가 소유) |
+| ![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=jsonwebtokens&logoColor=white) | JWT | Spring Boot가 발급 · 검증 전담(Django는 API가 없어 JWT를 다루지 않음) |
 
 <br/>
 
@@ -226,6 +225,7 @@
 | | 기술 | 설명 |
 |---|---|---|
 | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white) | MySQL (Docker) | Django · Spring Boot 공용 DB, 스키마는 Django 마이그레이션이 소유(`ddl-auto: none`) |
+| ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white) | Redis (Docker) | Spring Boot 상품 목록 조회 캐시(TTL 30초) — 장애 시 캐시 미스로 자동 우회, 조회 자체는 실패하지 않음 |
 
 <br/>
 
@@ -275,6 +275,8 @@
 
 <img src="backend/img/architecture.diagram.png" alt="Architecture Diagram" width="860"/>
 
+<sub>⚠️ 이 다이어그램은 Redis 캐시 계층 추가 이전 버전입니다 — 실제로는 Spring Boot가 상품 목록 조회 시 Redis를 거치고(TTL 30초), Django는 REST API가 없어 화살표처럼 프론트가 직접 호출하지 않습니다(관리자 화면 전용). 갱신 전까지는 아래 텍스트 기준을 최신으로 봐주세요.</sub>
+
 </div>
 
 <br/>
@@ -323,15 +325,14 @@
 
 ### 🛠 Backend
 
-**Django REST Framework** &nbsp;`Port 8000`
+**Django** &nbsp;`admin 전용 · Port 8000`
 
 | | |
 |---|---|
-| 🔑 **JWT 인증** | 액세스 2시간 / 리프레시 7일, 로테이션 + 블랙리스트 자동 처리 |
-| 🔗 **인증 연동** | `CustomJWTAuthentication`이 Django·Spring Boot 발급 JWT를 모두 해석 — 단일 토큰으로 양쪽 서버 호출 |
-| 📦 **데이터 API** | 상품 · 카테고리 · 리뷰 (장바구니 · 주문은 Spring Boot 전담) |
-| 🗄 **데이터베이스** | MySQL (Docker) · `test` 실행 시 SQLite 인메모리 자동 전환 |
-| 📧 **이메일** | 개발: 콘솔 출력 / 운영: Naver SMTP (`DEBUG` 플래그 기반 자동 분기) |
+| 🛠 **관리자 화면** | Users · Products · Orders · payments · coupons 모델을 admin에서 관리 |
+| 🚫 **API** | 없음 — 회원 · 상품 · 주문 · 결제 · 쿠폰 · 챗봇 API는 전부 Spring Boot(`jipdaum-spring`)로 이관 완료 |
+| 🗄 **스키마 소유** | MySQL 마이그레이션을 Django가 전담 — Spring Boot의 JPA는 `ddl-auto: none`으로 스키마에 손대지 않음 |
+| 🧪 **테스트** | `test` 실행 시 SQLite 인메모리로 자동 전환 |
 
 <br/>
 
@@ -340,6 +341,8 @@
   <source media="(prefers-color-scheme: light)" srcset="assets/tables/springboot-light.png"/>
   <img src="assets/tables/springboot-light.png" alt="Spring Boot API" width="860"/>
 </picture>
+
+<sub>⚠️ 위 표는 회원가입/로그인·이메일 인증·챗봇·웰컴 쿠폰 자동 지급·Redis 캐시가 추가되기 전 버전입니다. 실제로는 "회원" 항목에 회원가입 · 로그인(소셜 포함) · 이메일 인증 · 탈퇴가, "쿠폰"에 신규가입 웰컴 쿠폰 자동 지급이, "인증 연동"에는 Spring Boot 단독 발급·검증(Django는 관여하지 않음)이 포함되고, 챗봇 API(Gemini 연동)도 별도로 있습니다.</sub>
 
 </div>
 
@@ -358,7 +361,8 @@
 | | |
 |---|---|
 | 🐬 **MySQL (Docker)** | `Oracle → MySQL` 전환 완료(2026-07) · Django · Spring Boot가 하나의 DB를 공유 |
-| 🔗 **연동** | `docker compose up -d`로 로컬 컨테이너(`jibdaum-mysql`, 3306) 기동, PC마다 `.env`만 새로 생성하면 동일 스키마 공유 |
+| ⚡ **Redis (Docker)** | Spring Boot 상품 목록 조회 캐시(TTL 30초) · `jibdaum-redis` 컨테이너, 장애 시 캐시 미스로 우회해 조회 자체는 영향 없음 |
+| 🔗 **연동** | `docker compose up -d`로 로컬 컨테이너(`jibdaum-mysql`, `jibdaum-redis`) 기동, PC마다 `.env`만 새로 생성하면 동일 스키마 공유 |
 
 </div>
 
@@ -380,11 +384,13 @@
 
 | 구분 | 내용 |
 |---|---|
-| 🛍 상품 상세 | 한국관/메인 상품 상세페이지를 하나의 디자인 시스템으로 통일, API 연동 리뷰로 전환 |
+| 🛍 카탈로그 | 한국관 폐지, 룩북(오늘의집 스타일 상품 피드 + 핀 위젯) 신설 — 상품 상세페이지는 `/item/:id` 하나로 통일 |
+| 🧭 상품 상세 | 카테고리 브레드크럼 표시, 컬러 옵션이 있는 상품은 드롭다운으로 옵션·수량 선택 후 구매 |
+| 🎟 웰컴 쿠폰 | 회원가입 시 웰컴 쿠폰 자동 지급(Spring Boot) — Django에 결제 적용용 일반 쿠폰 10종 시드 |
+| ⚡ 캐싱 | Spring Boot 상품 목록 조회에 Redis 캐시 도입(TTL 30초, 장애 시 자동 우회) |
 | 🧭 네비게이션 | 상세 → 목록 뒤가기 시 인트로를 건너뛰고 원래 스크롤 위치로 즉시 복귀 |
 | 📜 법적 고지 | 전자상거래법상 사업자 정보 표시 패널(BusinessInfoPanel) 신설 |
 | 📱 반응형 | 로그인/회원가입/챗봇/사이드바 모바일 레이아웃 및 터치 스크롤 대응 |
-| 🔐 본인인증 | 회원가입/로그인 인증 방식을 hCaptcha로 유지·정리 |
 | ☁️ 배포 | 프론트엔드 배포를 EC2 → Cloudflare Pages(Git 자동 배포)로 전환 |
 
 </div>
@@ -434,12 +440,6 @@
 
 <br/><br/>
 
-<img src="assets/screenshots/korean-hall.png" alt="한국관 페이지" width="860"/>
-
-<sub>한국관 — 별도 카탈로그·오방색 테마가 적용된 서브 브랜드 페이지</sub>
-
-<br/><br/>
-
 <img src="assets/screenshots/cart.png" alt="장바구니" width="860"/>
 
 <sub>장바구니 — Spring Boot API 연동, 로그인 여부에 따른 안내 분기</sub>
@@ -460,15 +460,17 @@
 
 | 영역 | 기능 |
 |---|---|
-| 🔐 인증 | 이메일 회원가입(OTP 인증) · 소셜 로그인(카카오·네이버·구글) · JWT(Django·Spring 공용 secret) |
-| 🛍 상품 | 메인 · 한국관 이원 카탈로그, 카테고리 필터, 사이드바 검색(라우트별 스코프) |
+| 🔐 인증 | 이메일 회원가입(OTP 인증) · 소셜 로그인(카카오·네이버·구글) · JWT(Spring Boot 단독 발급·검증) |
+| 🛍 상품 | 단일 카탈로그(`/item/:id`), 카테고리 브레드크럼, 컬러 옵션 드롭다운(옵션·수량 선택 후 구매), 사이드바 검색 |
+| 📷 룩북 | 오늘의집 스타일 상품 피드 + 이미지 핀 위젯, 게시물 상세 페이지 |
 | 🛒 장바구니 · 주문 | 장바구니 CRUD, 주문 생성, 최근 본 상품(macOS 독 스타일 위젯) |
 | 💳 결제 | PortOne V2 연동 결제, 결제 검증 실패 시 `@Transactional` 롤백 |
-| 🎟 쿠폰 | 쿠폰 조회 · 적용, 원자적 조건부 UPDATE로 동시 사용 시 초과 차감 방지 |
+| 🎟 쿠폰 | 회원가입 시 웰컴 쿠폰 자동 지급, 조회 · 적용은 원자적 조건부 UPDATE로 동시 사용 시 초과 차감 방지 |
 | 📦 재고 | 조건부 UPDATE(`stockCount >= qty`)로 동시 주문 시 오버셀 방지 |
+| ⚡ 캐싱 | Redis로 상품 목록 조회 캐시(TTL 30초), 장애 시 캐시 미스로 자동 우회 |
 | 🤖 AI 챗봇 | Gemini 기반 상담 — 임베딩(`gemini-embedding-001`) 코사인 유사도 검색 + 함수 호출로 상품 추천 |
 | 👤 마이페이지 | 주문 내역, 리뷰 작성, 회원 정보 관리 |
-| 🛠 관리자 | Django Admin — 상품 · 카테고리 · 쿠폰 · 회원 관리 |
+| 🛠 관리자 | Django Admin — 상품 · 카테고리 · 쿠폰 · 회원 관리(API는 없음, admin 전용) |
 | 📱 반응형 | 로그인/회원가입/챗봇/사이드바 모바일 레이아웃 대응 |
 
 </div>
@@ -487,7 +489,7 @@
 
 </div>
 
-1. **MySQL 컨테이너 기동** — 저장소 루트에서 `docker compose up -d` (`jibdaum-mysql`, 포트 3306)
+1. **MySQL · Redis 컨테이너 기동** — 저장소 루트에서 `docker compose up -d` (`jibdaum-mysql` 3306 · `jibdaum-redis` 6379)
 2. **`backend/.env` 생성** — `backend/.env.example`을 복사해 값 채우기
 3. **`frontend/.env` 생성** — `frontend/.env.example`을 복사해 PortOne·hCaptcha 키 채우기
 4. **`jipdaum-spring` 별도 클론** — `application.yml.example`을 복사해 `application.yml` 생성, `jwt.secret`을 `backend/.env`의 `SECRET_KEY`와 동일하게 설정

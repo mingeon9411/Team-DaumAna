@@ -7,8 +7,8 @@
 @custom-variant dark (&:where(body.dark, body.dark *));
 
 @font-face {
-  font-family: 'TwayFly';
-  src: url('./assets/font/tway_fly.ttf') format('truetype');
+  font-family: 'GmarketSans';
+  src: url('./assets/font/gmarket_sans_medium.woff') format('woff');
   font-weight: normal;
   font-style: normal;
   font-display: swap;

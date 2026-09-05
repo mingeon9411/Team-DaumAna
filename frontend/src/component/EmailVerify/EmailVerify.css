@@ -6,7 +6,7 @@
     align-items: center;
     justify-content: center;
     background: var(--background);
-    font-family: "TwayFly", "Noto Sans KR", sans-serif;
+    font-family: "GmarketSans", "Noto Sans KR", sans-serif;
     padding: 20px;
 }
 
@@ -52,7 +52,7 @@ body.dark .evBox {
 }
 
 .evTitle {
-    font-family: "TwayFly", "Noto Serif KR", serif;
+    font-family: "GmarketSans", "Noto Serif KR", serif;
     font-size: 22px;
     font-weight: 500;
     color: var(--foreground);

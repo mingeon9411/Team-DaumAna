@@ -3,15 +3,16 @@ import { useEffect, useRef, useState } from "react";
 
 import JDLogo from "../../assets/J.D 로고.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Search, Clock, X, Settings as SettingsIcon } from "lucide-react";
+import { Search, Settings as SettingsIcon } from "lucide-react";
 import { getCartItems, logoutUser } from "../../api";
 import { NAV_FLAGS } from "../../utils/navFlags";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
-import { getRecentSearches, addRecentSearch, removeRecentSearch, clearRecentSearches } from "../../utils/recentSearches";
+import SearchOverlay from "./SearchOverlay";
+import { getRecentSearches, addRecentSearch } from "../../utils/recentSearches";
 
-const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
+const SANS = { fontFamily: "'GmarketSans', 'Noto Sans KR', sans-serif" };
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -35,14 +36,15 @@ function Header() {
   // 유일한 상시 내비게이션이 된 페이지(장바구니 등)에서는 스크롤 여부와 무관하게
   // 항상 노출한다 — 이 페이지들은 헤더 말고는 빠져나갈 다른 수단이 없기 때문.
   //
-  // 상품 목록(홈)·상품상세·설정·고객센터 페이지는 최상단에서부터 검색창·링크가
-  // 떠 있으면 위화감이 크다(홈은 전체화면 인트로 영상, 설정·고객센터는 파스텔
-  // 배경의 첫 화면, 상품상세는 배너 자체가 스크롤 전엔 안 보이는데 그 안의
-  // 검색창·링크만 먼저 떠 있으면 배너 없이 붕 떠 보인다) — 이 네 곳은 스크롤을
-  // 내려야 배너와 함께 나타나게 한다. 고객센터는 자체 "목록으로" 버튼
-  // (CustomerCenter.jsx)이, 상품상세는 자체 "목록으로" 버튼(HomeProductDetail.jsx)이
-  // 따로 있어, 헤더 내비가 잠깐 숨어 있어도 홈으로 돌아갈 수단이 없어지지 않는다.
-  const showExpandedNav = (isHome || isSettingsPage || isCustomerCenterPage || isItemDetail) ? scrolled : true;
+  // 상품상세·설정·고객센터 페이지는 최상단에서부터 검색창·링크가 떠 있으면
+  // 위화감이 크다(설정·고객센터는 파스텔 배경의 첫 화면, 상품상세는 배너 자체가
+  // 스크롤 전엔 안 보이는데 그 안의 검색창·링크만 먼저 떠 있으면 배너 없이 붕
+  // 떠 보인다) — 이 세 곳은 스크롤을 내려야 배너와 함께 나타나게 한다. 고객센터는
+  // 자체 "목록으로" 버튼(CustomerCenter.jsx)이, 상품상세는 자체 "목록으로" 버튼
+  // (HomeProductDetail.jsx)이 따로 있어, 헤더 내비가 잠깐 숨어 있어도 홈으로
+  // 돌아갈 수단이 없어지지 않는다. 홈은 이제 진입 즉시 상품 그리드가 메인
+  // 화면이라(에세이 인트로 패널 삭제) 처음부터 계속 노출한다.
+  const showExpandedNav = (isSettingsPage || isCustomerCenterPage || isItemDetail) ? scrolled : true;
 
   // 유틸 링크(로그인/회원가입 · 마이페이지/로그아웃 · 장바구니)용 — Home.jsx의
   // 카테고리 위 유틸 링크와 같은 기준(access_token)·같은 이벤트로 동기화한다.
@@ -111,7 +113,11 @@ function Header() {
   // 필터링한다(headerProductSearch). 그 외 페이지(상품상세 등)는 Home.jsx가
   // 없어 이벤트를 받을 곳이 없으므로, 검색 결과 페이지(/search)로 이동한다.
   const [headerSearchQuery, setHeaderSearchQuery] = useState("");
-  const [headerSearchFocused, setHeaderSearchFocused] = useState(false);
+  const [searchOverlayOpen, setSearchOverlayOpen] = useState(false);
+  const closeSearchOverlay = () => {
+    setSearchOverlayOpen(false);
+    setHeaderSearchQuery("");
+  };
   const submitHeaderSearch = (query) => {
     setRecentSearches(addRecentSearch(query));
     if (isHome) {
@@ -119,17 +125,17 @@ function Header() {
     } else {
       navigate(`/search?q=${encodeURIComponent(query)}`);
     }
+    closeSearchOverlay();
   };
 
   // 최근 검색어 — Sidebar 독 검색과 같은 localStorage 키(utils/recentSearches.js)를
-  // 공유한다. 검색창에 포커스를 주면(아직 입력 전) 아래에 목록으로 뜬다.
+  // 공유한다. SearchOverlay(풀스크린 검색 모달)가 아직 입력 전일 때 목록으로 보여준다.
   const [recentSearches, setRecentSearches] = useState(getRecentSearches);
   useEffect(() => {
     const sync = () => setRecentSearches(getRecentSearches());
     window.addEventListener("recentsearchchange", sync);
     return () => window.removeEventListener("recentsearchchange", sync);
   }, []);
-  const showRecentSearches = headerSearchFocused && !headerSearchQuery.trim() && recentSearches.length > 0;
 
   // 상품상세(.homeDetailPage)·상품목록(#home-products)·설정(.ssPage)·
   // 고객센터(.ccPage)는 전부 Lenis의 가로 스크롤에서 제외된
@@ -140,6 +146,10 @@ function Header() {
   useEffect(() => {
     const itemDetailEl = isItemDetail ? document.querySelector(".homeDetailPage") : null;
     const productListEl = isHome ? document.querySelector("#home-products") : null;
+    // Home.jsx 그리드 맨 위에 이미 같은 검색창·유틸 링크가 인라인으로 떠 있다
+    // (Home.jsx의 "#home-inline-nav-end" 참고) — 배너 쪽 검색·유틸 링크는 그게
+    // 화면 밖으로 완전히 스크롤된 뒤에만 떠야 두 벌이 동시에 보이는 구간이 안 생긴다.
+    const inlineNavEndEl = isHome ? document.querySelector("#home-inline-nav-end") : null;
     const settingsEl = isSettingsPage ? document.querySelector(".ssPage") : null;
     const customerCenterEl = isCustomerCenterPage ? document.querySelector(".ccPage") : null;
 
@@ -154,7 +164,10 @@ function Header() {
         const isProductGridActive = productListEl
           ? Math.abs(productListEl.getBoundingClientRect().left) < window.innerWidth / 2
           : false;
-        setScrolled(isProductGridActive && (productListEl?.scrollTop ?? 0) > 50);
+        const inlineNavGone = inlineNavEndEl
+          ? inlineNavEndEl.getBoundingClientRect().bottom <= 0
+          : (productListEl?.scrollTop ?? 0) > 50;
+        setScrolled(isProductGridActive && inlineNavGone);
       } else if (isItemDetail) {
         setScrolled((itemDetailEl?.scrollTop ?? 0) > 50);
       } else if (isSettingsPage) {
@@ -220,79 +233,22 @@ function Header() {
       isProductPage ? "productPageHeader" : ""
     } ${isProductPage ? "homePageHeader" : ""} ${showExpandedNav ? "expanded" : ""}`}
     >
-      {/* 검색창에 포커스가 가면 확대해 부각시키고, 배경은 스크림으로 살짝 눌러
-          시선을 검색창에 모은다(29CM류 검색 모달의 축소판 — 별도 페이지/모달
-          없이 이 배너 안에서 크기만 순간적으로 커졌다 줄어드는 정도로 구현). */}
-      <div className={`headerSearchScrim${headerSearchFocused ? " headerSearchScrimVisible" : ""}`} aria-hidden="true" />
-
       {showExpandedNav && (
         <div className="headerLeft">
-          <div className={`headerSearchWrap${headerSearchFocused ? " headerSearchWrapFocused" : ""}`}>
-            <form
-              className="headerSearchInputRow"
-              onSubmit={(e) => { e.preventDefault(); submitHeaderSearch(headerSearchQuery); setHeaderSearchFocused(false); }}
-            >
+          <div className="headerSearchWrap">
+            {/* 29CM 레퍼런스 — 클릭하면 그 자리에서 커지는 대신 화면 전체를 덮는
+                검색 모달(SearchOverlay)이 뜬다. 이 줄 자체는 그 모달을 여는
+                버튼일 뿐, 직접 타이핑은 모달 안 입력창에서 한다. */}
+            <button type="button" className="headerSearchTrigger" onClick={() => setSearchOverlayOpen(true)}>
               <Search size={14} className="headerSearchIcon" aria-hidden="true" />
-              <input
-                type="text"
-                value={headerSearchQuery}
-                onChange={(e) => setHeaderSearchQuery(e.target.value)}
-                onFocus={() => setHeaderSearchFocused(true)}
-                onBlur={() => setHeaderSearchFocused(false)}
-                placeholder="상품명, 브랜드, 라벨 검색"
-                aria-label="전체 상품 검색"
-                className="headerSearchInput"
-                style={SANS}
-              />
-            </form>
-            {/* 입력줄에 포커스를 준 채 아직 아무것도 안 쳤으면(빈 값) 최근 검색어를,
-                그 외엔 기존 인기 검색어 티커를 보여준다 — 버튼들은 onMouseDown에서
-                preventDefault로 막아 클릭 전에 input이 blur되어 목록이 먼저
-                사라지는 걸 방지한다(Sidebar.jsx 독 검색 플라이아웃과 동일 패턴). */}
-            {showRecentSearches ? (
-              <div className="headerRecentSearches">
-                <div className="headerRecentSearchesHead">
-                  <span>최근 검색어</span>
-                  <button
-                    type="button"
-                    onMouseDown={(e) => e.preventDefault()}
-                    onClick={() => { clearRecentSearches(); setRecentSearches([]); }}
-                  >
-                    전체 삭제
-                  </button>
-                </div>
-                <ul>
-                  {recentSearches.map((term) => (
-                    <li key={term}>
-                      <button
-                        type="button"
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={() => { setHeaderSearchQuery(term); submitHeaderSearch(term); setHeaderSearchFocused(false); }}
-                      >
-                        <Clock size={13} aria-hidden="true" />
-                        {term}
-                      </button>
-                      <button
-                        type="button"
-                        className="headerRecentSearchRemove"
-                        aria-label={`"${term}" 검색어 삭제`}
-                        onMouseDown={(e) => e.preventDefault()}
-                        onClick={() => setRecentSearches(removeRecentSearch(term))}
-                      >
-                        <X size={13} aria-hidden="true" />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : (
-              /* PopularKeywordsSidebar가 자체 mt-2로 입력줄 바로 아래에 붙는다 —
-                 예전엔 이걸 위 form 안에 한 줄(flex row)로 같이 넣어서 좁은 폭
-                 안에서 입력창과 겹쳐 보였다. 이제 검색줄과 별도의 블록으로 분리. */
-              <PopularKeywordsSidebar
-                onSelect={(keyword) => { setHeaderSearchQuery(keyword); submitHeaderSearch(keyword); }}
-              />
-            )}
+              <span className="headerSearchPlaceholder" style={SANS}>상품명, 브랜드, 라벨 검색</span>
+            </button>
+            {/* PopularKeywordsSidebar가 자체 mt-2로 입력줄 바로 아래에 붙는다 —
+                평소 눈에 띄는 자동 회전 미니바로, 눌러서 펼치면 자체 드롭다운으로
+                전체 순위를 보여준다(풀스크린 모달과는 별개의 더 가벼운 경로). */}
+            <PopularKeywordsSidebar
+              onSelect={(keyword) => { setHeaderSearchQuery(keyword); submitHeaderSearch(keyword); }}
+            />
           </div>
         </div>
       )}
@@ -345,6 +301,17 @@ function Header() {
         >
           <SettingsIcon size={15} />
         </button>
+      )}
+
+      {searchOverlayOpen && (
+        <SearchOverlay
+          query={headerSearchQuery}
+          onQueryChange={setHeaderSearchQuery}
+          onSubmit={submitHeaderSearch}
+          onClose={closeSearchOverlay}
+          recentSearches={recentSearches}
+          setRecentSearches={setRecentSearches}
+        />
       )}
     </header>
   );

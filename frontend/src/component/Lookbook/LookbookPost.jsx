@@ -7,9 +7,9 @@ import { getPostById } from "./posts";
 import ImageHotspots from "./ImageHotspots";
 import SiteFooter from "../SiteFooter";
 
-const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
-const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
-const MONO = { fontFamily: "'TwayFly', 'DM Mono', monospace" };
+const SERIF = { fontFamily: "'GmarketSans', 'Noto Serif KR', serif" };
+const SANS = { fontFamily: "'GmarketSans', 'Noto Sans KR', sans-serif" };
+const MONO = { fontFamily: "'GmarketSans', 'DM Mono', monospace" };
 
 const byId = (id) => PRODUCTS.find((p) => p.id === id);
 

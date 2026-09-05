@@ -8,7 +8,6 @@ import RecentlyViewedSidebar from "./RecentlyViewedSidebar";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import SiteFooter from "../SiteFooter";
 import { getRecentlyViewed } from "../../utils/recentlyViewed";
-import { NAV_FLAGS } from "../../utils/navFlags";
 import { useNestedLenis } from "../../hooks/useNestedLenis";
 import rugB from "../../assets/products/(러그) 북유럽풍 러그 B형.jpg";
 import woodMoodLamp from "../../assets/products/(무드등) 우드 롱 무드등.jpg";
@@ -57,9 +56,9 @@ import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 
 
-const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
-const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
-const MONO = { fontFamily: "'TwayFly', 'DM Mono', monospace" };
+const SERIF = { fontFamily: "'GmarketSans', 'Noto Serif KR', serif" };
+const SANS = { fontFamily: "'GmarketSans', 'Noto Sans KR', sans-serif" };
+const MONO = { fontFamily: "'GmarketSans', 'DM Mono', monospace" };
 
 export const PRODUCTS = [
   { id: 1, no: "No.1", name: "북유럽풍 러그 B형", sub: "멀티 파스텔 아브스트랙트", price: "168,000", originalPrice: "198,000", label: "BESTSELLER",
@@ -356,7 +355,8 @@ function ProductCard({ p, wished, cartCount, onToggleWish, onClick }) {
 function Home() {
   const [wishlist, setWishlist] = useState([]);
   const [productSearchQuery, setProductSearchQuery] = useState("");
-  // Header.jsx 검색창과 동일한 "포커스 시 확대" 연출 — 상세는 그쪽 headerSearchWrapFocused 참고.
+  // 이 그리드 안쪽 상품 검색창 전용 "포커스 시 확대" 연출 — Header.jsx의 검색은
+  // 이제 이 방식이 아니라 풀스크린 모달(SearchOverlay.jsx)을 쓴다.
   const [productSearchFocused, setProductSearchFocused] = useState(false);
   const [selectedTop, setSelectedTop] = useState("전체");
   const [selectedCategory, setSelectedCategory] = useState("전체");
@@ -489,42 +489,6 @@ function Home() {
       window.removeEventListener("authchange", fetchCartCounts);
     };
   }, []);
-  // 인트로 영상 — 도어인트로가 끝나기 전엔 재생하지 않는다. 페이지에 들어와 처음
-  // 화면에 잡힐 때 딱 한 번만 재생하고, 끝나면 소파 사진으로 전환한 채 고정된다.
-  // 이후 스크롤로 다시 돌아와도 재생하지 않는다(2번째 패널과 동일한 패턴).
-  const introVideoRef = useRef(null);
-  const [introVideoEnded, setIntroVideoEnded] = useState(false);
-  const [doorIntroDone, setDoorIntroDone] = useState(false);
-  const introVideoStarted = useRef(false);
-
-  useEffect(() => {
-    const onDoorIntroEnd = () => setDoorIntroDone(true);
-    window.addEventListener("doorintroend", onDoorIntroEnd);
-    return () => window.removeEventListener("doorintroend", onDoorIntroEnd);
-  }, []);
-
-  useEffect(() => {
-    const el = document.getElementById("home-essay");
-    if (!el) return;
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting || !doorIntroDone || introVideoStarted.current) return;
-        introVideoStarted.current = true;
-        const v = introVideoRef.current;
-        if (v) {
-          v.currentTime = 0;
-          v.play().catch(() => {});
-        }
-        io.disconnect();
-      },
-      { threshold: 0.5 }
-    );
-
-    io.observe(el);
-    return () => io.disconnect();
-  }, [doorIntroDone]);
-
   // #home-products는 App.jsx의 가로 Lenis를 안 타는 패널이라(data-lenis-prevent)
   // 기본값이 네이티브 스크롤이다 — 나머지 사이트와 같은 부드러운 관성 스크롤을
   // 주기 위해 이 패널 하나에만 스코프된 두 번째 Lenis를 붙인다.
@@ -532,7 +496,7 @@ function Home() {
   useNestedLenis(productGridRef);
 
   const scrollToProductGrid = () => {
-    const target = document.querySelectorAll("[data-hsnap]")[1];
+    const target = document.querySelectorAll("[data-hsnap]")[0];
     if (!target) return;
     if (window.lenis) {
       window.lenis.resize();
@@ -594,48 +558,18 @@ function Home() {
   const toggleWish = (id) =>
     setWishlist((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
-  // 도어인트로를 지나 홈에 들어오면 기본적으로 1번째 패널(에세이)에서 시작한다.
-  // (HERO가 전체 상품 페이지 앞으로 옮겨가면서 에세이가 첫 패널이 됨)
-  //
-  // 다른 페이지(상품 상세의 "목록으로", 고객센터/설정의 뒤로가기 등)에서 돌아온
-  // 경우엔 App.jsx의 DoorIntroController가 SKIP_HOME_DEFAULT_PANEL과 함께
-  // PENDING_HOME_PANEL_INDEX(보통 2=상품 그리드)를 세팅해둔다 — 여기서 그 값을
-  // 읽어 지정된 패널로 바로 이동한다. 값이 없으면(예: 로고 클릭으로 그냥 홈에
-  // 온 경우) 원래대로 기본 패널(0번, 에세이)로 이동한다.
-  //
-  // ⚠️ sessionStorage 플래그는 반드시 setTimeout 콜백 "안에서"(실제로 실행될
-  // 때) 읽고 지워야 한다 — StrictMode는 개발 모드에서 마운트마다 effect를
-  // setup→cleanup→setup 두 번 실행하는데, 이 컴포넌트는 라우트 이동마다 매번
-  // 새로 마운트되니(Home.jsx는 <Routes>가 스왑하는 컴포넌트) 매번 이 더블
-  // 실행을 겪는다. effect 본문에서 곧장 플래그를 읽어 지워버리면, 첫 번째
-  // 실행이 플래그를 이미 소비한 채로 예약한 타이머가 cleanup에 의해 취소되고
-  // (StrictMode가 즉시 cleanup을 부름), 두 번째 실행은 이미 지워진 플래그를
-  // 보고 아무 것도 예약하지 않아 스크롤이 영영 안 일어난다 — 실제로 이 버그로
-  // "목록으로" 버튼들이 전부 인트로 영상에서 멈춰 있었다. 타이머가 실제로
-  // 발화하는 시점(취소되지 않고 살아남은 마지막 실행)에 읽으면 이 레이스가
-  // 사라진다.
+  // 도어인트로를 지나 홈에 들어오면 상품 그리드(0번 패널)가 첫 화면이다. 예전엔
+  // 앞에 에세이(인트로 영상) 패널이 있어 "목록으로" 복귀 시 그 패널을 건너뛰고
+  // 상품 그리드로 바로 이동시키는 SKIP_HOME_DEFAULT_PANEL 플래그가 필요했지만,
+  // 에세이 패널을 없애 상품 그리드 자체가 기본(0번) 패널이 된 지금은 항상 0번으로
+  // 스크롤하면 그대로 원하는 위치라 그 플래그 자체가 불필요해졌다.
   useEffect(() => {
     const timer = setTimeout(() => {
-      let targetIndex = 0;
-      let immediate = false;
-
-      if (sessionStorage.getItem(NAV_FLAGS.SKIP_HOME_DEFAULT_PANEL)) {
-        sessionStorage.removeItem(NAV_FLAGS.SKIP_HOME_DEFAULT_PANEL);
-        const stored = sessionStorage.getItem(NAV_FLAGS.PENDING_HOME_PANEL_INDEX);
-        if (stored !== null) {
-          sessionStorage.removeItem(NAV_FLAGS.PENDING_HOME_PANEL_INDEX);
-          targetIndex = Number(stored);
-          // 뒤로가기 복귀는 인트로 영상을 스쳐 지나가는 스크롤 애니메이션
-          // 없이 즉시 전환해야 "화면이 훑고 지나간다"는 위화감이 없다.
-          immediate = true;
-        }
-      }
-
-      const target = document.querySelectorAll("[data-hsnap]")[targetIndex];
+      const target = document.querySelectorAll("[data-hsnap]")[0];
       if (!target) return;
       if (window.lenis) {
         window.lenis.resize();
-        window.lenis.scrollTo(target, { immediate });
+        window.lenis.scrollTo(target, { immediate: true });
       } else {
         target.scrollIntoView();
       }
@@ -645,59 +579,6 @@ function Home() {
 
   return (
     <div className="home relative bg-background text-foreground flex flex-row" style={SANS}>
-
-      {/* ESSAY SPREAD — 처음엔 영상이 화면 전체를 채우고, 영상이 끝나면 마지막 장면
-          그대로 절반으로 줄어들고, 나머지 절반은 에세이(상품 구매 유도) 페이지가 자연스럽게 펼쳐진다 */}
-      <section id="home-essay" data-hide-header data-hsnap className="w-screen h-screen shrink-0 overflow-hidden flex flex-row text-foreground">
-        <div
-          className="relative h-full overflow-hidden"
-          style={{
-            width: introVideoEnded ? "50%" : "100%",
-            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1)",
-          }}
-        >
-          <video
-            ref={introVideoRef}
-            className="w-full h-full object-cover"
-            src="/videos/jipdaum%20video(1).mp4"
-            muted
-            playsInline
-            preload="auto"
-            onEnded={() => setIntroVideoEnded(true)}
-          />
-        </div>
-
-        <div
-          className="sparkleBg holoMesh relative h-full flex flex-col items-start justify-center overflow-hidden"
-          style={{
-            width: introVideoEnded ? "50%" : "0%",
-            opacity: introVideoEnded ? 1 : 0,
-            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s ease-in-out 0.5s",
-          }}
-        >
-          <div className="relative z-10 w-full max-w-md px-16">
-            <p className="text-xs tracking-[0.25em] uppercase text-muted-foreground mb-5 whitespace-nowrap" style={MONO}>
-              WELCOME TO JIPDAUM
-            </p>
-            <h3 className="text-3xl md:text-4xl font-light leading-snug mb-6 whitespace-nowrap" style={SERIF}>
-              집다움에 오신 것을 환영합니다
-            </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mb-10 whitespace-nowrap">
-              따뜻한 나만의 집다움을 느낄 수 있도록
-              <br />
-              바로 집다움의 상품을 확인하세요
-            </p>
-            <button
-              type="button"
-              onClick={scrollToProductGrid}
-              className="px-8 py-3.5 bg-foreground text-background text-sm font-medium tracking-wide hover:opacity-85 transition-opacity whitespace-nowrap"
-              style={SANS}
-            >
-              상품 보러가기 →
-            </button>
-          </div>
-        </div>
-      </section>
 
       {/* PRODUCT GRID */}
       <section
@@ -753,8 +634,14 @@ function Home() {
 
         <div className="relative z-10 max-w-7xl mx-auto w-full mb-2">
           {/* 29CM류 유틸 링크 — 왼쪽 사이드 독(아이콘 전용)에 이미 있는 필수 기능을
-              누구나 바로 알아볼 수 있게 텍스트로도 노출한다. 카테고리 라벨 바로 위. */}
-          <div className="mb-3 flex items-center justify-end gap-3 text-xs text-muted-foreground" style={SANS}>
+              누구나 바로 알아볼 수 있게 텍스트로도 노출한다. 카테고리 라벨 바로 위.
+              id="home-inline-nav-end" — Header.jsx가 이 요소(검색창+유틸 링크 묶음의
+              마지막 줄)가 화면 밖으로 완전히 스크롤되는 시점을 기준으로 자기 배너의
+              검색·유틸 링크를 띄운다. 고정 배너 쪽 threshold(예: "50px")를 여기 실제
+              레이아웃 높이와 별개로 하드코딩하면, 이 안쪽 내용이 늘어나거나 줄어들
+              때마다 둘 사이에 겹치는 구간(둘 다 동시에 보이는 것처럼 보이는 버그)이
+              생긴다 — 이 요소를 직접 관측해 근본적으로 맞춘다. */}
+          <div id="home-inline-nav-end" className="mb-3 flex items-center justify-end gap-3 text-xs text-muted-foreground" style={SANS}>
             {isLoggedIn ? (
               <>
                 <button type="button" onClick={openMyPage} className="hover:text-foreground transition-colors">

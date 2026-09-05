@@ -4,9 +4,9 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 
 // Home.jsx 상품 목록과 같은 타이포 시스템 — 이 페이지도 그 스타일을 그대로 따른다.
-const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
-const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
-const MONO = { fontFamily: "'TwayFly', 'DM Mono', monospace" };
+const SERIF = { fontFamily: "'GmarketSans', 'Noto Serif KR', serif" };
+const SANS = { fontFamily: "'GmarketSans', 'Noto Sans KR', sans-serif" };
+const MONO = { fontFamily: "'GmarketSans', 'DM Mono', monospace" };
 
 const NOTICES = [
   {

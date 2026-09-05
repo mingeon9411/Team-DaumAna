@@ -59,11 +59,6 @@ function DoorIntroController() {
     const isProductDetailReturn = returnZone === NAV_ZONE.HOME;
     const skip = isProductDetailReturn || !!pendingScrollToEnd;
 
-    if (isProductDetailReturn) {
-      sessionStorage.setItem(NAV_FLAGS.SKIP_HOME_DEFAULT_PANEL, "1");
-      sessionStorage.setItem(NAV_FLAGS.PENDING_HOME_PANEL_INDEX, "1");
-    }
-
     // doorintroend 이벤트(사이드바 펼침 등)는 건너뛸 때도 그대로 쏴줘야 하므로
     // 지연시간만 0으로 줄인다(리스너가 붙을 다음 틱까지 기다리기 위해 0ms 유지).
     setShowDoorIntro(!skip);

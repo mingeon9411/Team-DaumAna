@@ -2,7 +2,7 @@ import "./Home.css";
 import "./HomeProductDetail.css";
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronLeft, Heart, Star, Sparkles, Ruler, ShieldCheck, ImagePlus, X, Share2, Truck } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, Heart, Star, Sparkles, Ruler, ShieldCheck, ImagePlus, X, Share2, Truck } from "lucide-react";
 import { PRODUCTS } from "./Home";
 import { addToCart, getReviews, createReview, uploadReviewImage, getProductDetail } from "../../api";
 import { isWished, toggleWish } from "../../utils/wishlist";
@@ -12,9 +12,9 @@ import { useAuthModal } from "../../context/AuthModalContext";
 import { useNestedLenis } from "../../hooks/useNestedLenis";
 import SiteFooter from "../SiteFooter";
 
-const SERIF = { fontFamily: "'TwayFly', 'Noto Serif KR', serif" };
-const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
-const MONO = { fontFamily: "'TwayFly', 'DM Mono', monospace" };
+const SERIF = { fontFamily: "'GmarketSans', 'Noto Serif KR', serif" };
+const SANS = { fontFamily: "'GmarketSans', 'Noto Sans KR', sans-serif" };
+const MONO = { fontFamily: "'GmarketSans', 'DM Mono', monospace" };
 
 const formatReviewDate = (iso) => {
   if (!iso) return "";
@@ -70,7 +70,10 @@ function HomeProductDetail() {
 
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
-  const [colorIdx, setColorIdx] = useState(0);
+  // colors[]가 있는 상품은 "옵션을 선택해주세요" 드롭다운에서 직접 골라야 구매할 수 있도록
+  // null(미선택)에서 시작한다 — 갤러리 미리보기(activeImage)는 선택 여부와 무관하게 0번부터 보여준다.
+  const [colorIdx, setColorIdx] = useState(null);
+  const [optionOpen, setOptionOpen] = useState(false);
   const [wished, setWished] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
@@ -86,7 +89,8 @@ function HomeProductDetail() {
     window.scrollTo(0, 0);
     setQuantity(1);
     setActiveImage(0);
-    setColorIdx(0);
+    setColorIdx(null);
+    setOptionOpen(false);
     setWished(isWished(product.id));
     setReviewRating(5);
     setReviewTitle("");
@@ -209,6 +213,10 @@ function HomeProductDetail() {
       openLogin();
       return;
     }
+    if (product.colors && !selectedColor) {
+      alert("옵션을 선택해주세요.");
+      return;
+    }
     try {
       await addToCart({ product: product.id, quantity, option: selectedOptionId });
       window.dispatchEvent(new Event("cartchange"));
@@ -223,6 +231,10 @@ function HomeProductDetail() {
     if (!localStorage.getItem("access_token")) {
       alert("로그인이 필요합니다.");
       openLogin();
+      return;
+    }
+    if (product.colors && !selectedColor) {
+      alert("옵션을 선택해주세요.");
       return;
     }
     navigate("/checkout", {
@@ -339,9 +351,14 @@ function HomeProductDetail() {
               가장 익숙한 상세페이지 정보 순서를 그대로 따른다. */}
           <div className="flex flex-col justify-center">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-[11px] text-muted-foreground tracking-wide" style={MONO}>
-                {[product.category, product.midCategory].filter(Boolean).join(" · ")}
-              </span>
+              <div className="flex items-center gap-1 text-[11px] text-muted-foreground tracking-wide" style={MONO}>
+                {[product.category, product.midCategory, product.subCategory].filter(Boolean).map((seg, i, arr) => (
+                  <span key={seg} className="flex items-center gap-1">
+                    {seg}
+                    {i < arr.length - 1 && <ChevronRight size={10} />}
+                  </span>
+                ))}
+              </div>
               {product.label && (
                 <span className="text-[10px] font-semibold text-foreground/70 border border-border rounded px-1.5 py-0.5" style={MONO}>
                   {product.label}
@@ -401,47 +418,103 @@ function HomeProductDetail() {
 
             <Hairline className="mb-6 w-16" />
 
-            {product.colors && (
+            {product.colors ? (
+              <div className="mb-4">
+                <span className="text-xs text-muted-foreground tracking-widest block mb-2" style={MONO}>옵션</span>
+                <div className="relative">
+                  <button
+                    type="button"
+                    onClick={() => setOptionOpen((v) => !v)}
+                    className="w-full flex items-center justify-between border border-border px-3.5 py-3 text-sm text-foreground hover:border-foreground transition-colors"
+                  >
+                    옵션을 선택해주세요
+                    <ChevronDown size={14} className={`text-muted-foreground transition-transform ${optionOpen ? "rotate-180" : ""}`} />
+                  </button>
+                  {optionOpen && (
+                    <div className="absolute left-0 right-0 top-full mt-1 border border-border bg-background z-10 max-h-56 overflow-auto">
+                      {product.colors.map((c, i) => (
+                        <button
+                          key={c.value}
+                          type="button"
+                          onClick={() => { setColorIdx(i); setActiveImage(i); setOptionOpen(false); }}
+                          className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-left hover:bg-card/60 transition-colors"
+                        >
+                          <span
+                            className="w-5 h-5 rounded-full bg-cover bg-center border border-border shrink-0"
+                            style={{ backgroundImage: `url(${c.image})` }}
+                          />
+                          {c.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {selectedColor && (
+                  <div className="flex items-center justify-between gap-3 border border-border px-3.5 py-3 mt-2">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span
+                        className="w-8 h-8 rounded-full bg-cover bg-center border border-border shrink-0"
+                        style={{ backgroundImage: `url(${selectedColor.image})` }}
+                      />
+                      <span className="text-sm text-foreground truncate">{selectedColor.label}</span>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0">
+                      <div className="flex items-center gap-3 border border-border px-2.5 py-1">
+                        <button
+                          type="button"
+                          onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                          className="text-foreground hover:opacity-60 transition-opacity"
+                          aria-label="수량 감소"
+                        >
+                          −
+                        </button>
+                        <span className="text-sm text-foreground w-4 text-center" style={MONO}>{quantity}</span>
+                        <button
+                          type="button"
+                          onClick={() => setQuantity((q) => q + 1)}
+                          className="text-foreground hover:opacity-60 transition-opacity"
+                          aria-label="수량 증가"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setColorIdx(null)}
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label="옵션 제거"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
               <div className="flex items-center justify-between mb-4">
-                <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>색상</span>
-                <div className="flex items-center gap-2">
-                  {product.colors.map((c, i) => (
-                    <button
-                      key={c.value}
-                      type="button"
-                      onClick={() => { setColorIdx(i); setActiveImage(i); }}
-                      title={c.label}
-                      aria-label={`${c.value} 색상 선택`}
-                      className={`w-7 h-7 rounded-full bg-cover bg-center border-2 transition-colors ${i === colorIdx ? "border-foreground" : "border-border"}`}
-                      style={{ backgroundImage: `url(${c.image})` }}
-                    />
-                  ))}
+                <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>수량</span>
+                <div className="flex items-center gap-4 border border-border px-3 py-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    className="text-foreground hover:opacity-60 transition-opacity"
+                    aria-label="수량 감소"
+                  >
+                    −
+                  </button>
+                  <span className="text-sm text-foreground w-4 text-center" style={MONO}>{quantity}</span>
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((q) => q + 1)}
+                    className="text-foreground hover:opacity-60 transition-opacity"
+                    aria-label="수량 증가"
+                  >
+                    +
+                  </button>
                 </div>
               </div>
             )}
-
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>수량</span>
-              <div className="flex items-center gap-4 border border-border px-3 py-1.5">
-                <button
-                  type="button"
-                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  className="text-foreground hover:opacity-60 transition-opacity"
-                  aria-label="수량 감소"
-                >
-                  −
-                </button>
-                <span className="text-sm text-foreground w-4 text-center" style={MONO}>{quantity}</span>
-                <button
-                  type="button"
-                  onClick={() => setQuantity((q) => q + 1)}
-                  className="text-foreground hover:opacity-60 transition-opacity"
-                  aria-label="수량 증가"
-                >
-                  +
-                </button>
-              </div>
-            </div>
 
             <div className="flex items-baseline justify-between mb-6 pb-6 border-b border-border">
               <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>주문금액</span>

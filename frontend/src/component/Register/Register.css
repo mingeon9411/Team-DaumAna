@@ -13,11 +13,11 @@
 
     text-align: center;
 
-    font-family: "TwayFly", "Noto Sans KR", "Pretendard", sans-serif;
+    font-family: "GmarketSans", "Noto Sans KR", "Pretendard", sans-serif;
   }
 
   .registerBox h1 {
-    font-family: "TwayFly", "Noto Serif KR", serif;
+    font-family: "GmarketSans", "Noto Serif KR", serif;
     font-size: 32px;
     font-weight: 500;
     margin-bottom: 12px;
@@ -49,7 +49,7 @@
     outline: none;
   }
 
-  /* TwayFly 폰트가 -webkit-text-security(비밀번호 마스킹 점)를 렌더링하지 못해
+  /* GmarketSans 폰트가 -webkit-text-security(비밀번호 마스킹 점)를 렌더링하지 못해
      비밀번호 입력 시 아무것도 안 보이는 문제가 있어, 이 필드만 폰트를 제외한다 */
   .registerForm input[type="password"] {
     font-family: "Noto Sans KR", "Pretendard", sans-serif;

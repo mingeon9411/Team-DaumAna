@@ -48,6 +48,39 @@ function StatusMark({ status }) {
 }
 
 /**
+ * 순위 목록 자체(제목 없이 항목들만) — 미니바 드롭다운과 SearchOverlay.jsx의
+ * 풀스크린 검색 모달이 똑같은 항목 마크업(순위/키워드/상승·하락 표시)을 공유한다.
+ * @param {{ data: KeywordItem[], onSelect?: (keyword: string) => void, className?: string }} props
+ */
+export function PopularKeywordsList({ data, onSelect, className = "" }) {
+  return (
+    <ol className={`divide-y divide-black/5 dark:divide-white/5 ${className}`}>
+      {data.map((item) => (
+        <li key={item.keyword}>
+          <button
+            type="button"
+            onClick={() => onSelect?.(item.keyword)}
+            className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left transition-colors hover:bg-foreground/5 active:bg-foreground/10"
+          >
+            <span
+              className={`w-4 shrink-0 text-sm font-bold tabular-nums ${
+                item.rank <= 3 ? "text-rose-500" : "text-foreground"
+              }`}
+            >
+              {item.rank}
+            </span>
+            <span className="min-w-0 flex-1 truncate text-sm text-foreground">
+              {item.keyword}
+            </span>
+            <StatusMark status={item.status} />
+          </button>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
+/**
  * 검색창 바로 아래에 항상 붙어있는 인기 검색어 미니바 — 평소엔 1위부터 한 줄씩 자동으로
  * 돌아가며 보여주다가, 누르면 그 아래로 전체 10위까지 펼쳐진다. 펼쳐진 동안엔 티커를 멈춘다.
  *
@@ -118,29 +151,7 @@ export default function PopularKeywordsSidebar({ data = MOCK_KEYWORDS, onSelect 
             </span>
           </div>
 
-          <ol className="divide-y divide-black/5 py-1 dark:divide-white/5">
-            {data.map((item) => (
-              <li key={item.keyword}>
-                <button
-                  type="button"
-                  onClick={() => handleSelect(item.keyword)}
-                  className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left transition-colors hover:bg-foreground/5 active:bg-foreground/10"
-                >
-                  <span
-                    className={`w-4 shrink-0 text-sm font-bold tabular-nums ${
-                      item.rank <= 3 ? "text-rose-500" : "text-foreground"
-                    }`}
-                  >
-                    {item.rank}
-                  </span>
-                  <span className="min-w-0 flex-1 truncate text-sm text-foreground">
-                    {item.keyword}
-                  </span>
-                  <StatusMark status={item.status} />
-                </button>
-              </li>
-            ))}
-          </ol>
+          <PopularKeywordsList data={data} onSelect={handleSelect} className="py-1" />
         </div>
       )}
     </div>

@@ -160,7 +160,7 @@ function Register() {
 
   const handleCaptchaVerify = async (token) => {
     try {
-      await registerUser({
+      const res = await registerUser({
         email,
         nickname,
         password,
@@ -168,7 +168,7 @@ function Register() {
         recaptcha_token: token,
       });
       localStorage.setItem("nickname", nickname);
-      navigate("/welcome");
+      navigate("/welcome", { state: { coupons: res.data.coupons || [] } });
     } catch (err) {
       const data = err.response?.data;
       if (!data) {

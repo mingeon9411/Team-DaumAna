@@ -1,0 +1,158 @@
+/* 29CM 검색 모달 레퍼런스 — 화면 전체를 덮는 오버레이. .header(z-index 1000)보다
+   위에 뜨도록 여유 있게 잡는다. */
+@keyframes searchOverlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.searchOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  pointer-events: auto;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 96px 24px 48px;
+  overflow-y: auto;
+  animation: searchOverlayIn 0.25s ease;
+}
+
+.searchOverlayClose {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--foreground);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.searchOverlayClose:hover {
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+
+.searchOverlayForm {
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--foreground);
+}
+
+.searchOverlayIcon {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+}
+
+.searchOverlayInput {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 24px;
+  color: var(--foreground);
+}
+
+.searchOverlayInput::placeholder {
+  color: var(--muted-foreground);
+}
+
+.searchOverlayBody {
+  width: 100%;
+  max-width: 640px;
+  margin-top: 32px;
+}
+
+.searchOverlaySection + .searchOverlaySection {
+  margin-top: 28px;
+}
+
+.searchOverlaySectionHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.searchOverlaySectionHead button {
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+  cursor: pointer;
+}
+
+.searchOverlaySectionHead button:hover {
+  color: var(--foreground);
+  text-decoration: underline;
+}
+
+.searchOverlayRecentList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.searchOverlayRecentList li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.searchOverlayRecentList li button:first-child {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 9px 4px;
+  border: none;
+  background: transparent;
+  color: var(--foreground);
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.searchOverlayRecentList li button:first-child svg {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+}
+
+.searchOverlayRecentList li button:last-child {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+}
+
+.searchOverlayRecentList li button:last-child:hover {
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+  color: var(--foreground);
+}

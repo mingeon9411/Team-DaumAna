@@ -3,8 +3,8 @@ import { ChevronDown } from "lucide-react";
 import { TERMS_OF_SERVICE, PRIVACY_POLICY } from "../data/legalContent";
 import { BUSINESS_INFO } from "../data/businessInfo";
 
-const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
-const MONO = { fontFamily: "'TwayFly', 'DM Mono', monospace" };
+const SANS = { fontFamily: "'GmarketSans', 'Noto Sans KR', sans-serif" };
+const MONO = { fontFamily: "'GmarketSans', 'DM Mono', monospace" };
 
 // 페이지 콘텐츠 맨 아래에 붙는 공용 푸터 — 이용약관·개인정보처리방침 본문을 그 자리에서
 // 펼쳐볼 수 있게 하고, 전자상거래법 제10조 사업자 정보(BUSINESS_INFO)를 표시한다.

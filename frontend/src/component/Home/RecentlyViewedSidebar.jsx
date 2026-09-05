@@ -5,8 +5,8 @@ import { removeRecentlyViewed, clearRecentlyViewed } from "../../utils/recentlyV
 import { useRailStyle } from "../../hooks/useRailStyle";
 import "./RecentlyViewedSidebar.css";
 
-const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
-const MONO = { fontFamily: "'TwayFly', 'DM Mono', monospace" };
+const SANS = { fontFamily: "'GmarketSans', 'Noto Sans KR', sans-serif" };
+const MONO = { fontFamily: "'GmarketSans', 'DM Mono', monospace" };
 
 const MAX_VISIBLE = 6;
 

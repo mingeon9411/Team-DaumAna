@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { PRODUCTS } from "../Home/Home";
 
-const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
-const MONO = { fontFamily: "'TwayFly', 'DM Mono', monospace" };
+const SANS = { fontFamily: "'GmarketSans', 'Noto Sans KR', sans-serif" };
+const MONO = { fontFamily: "'GmarketSans', 'DM Mono', monospace" };
 
 const byId = (id) => PRODUCTS.find((p) => p.id === id);
 

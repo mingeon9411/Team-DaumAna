@@ -7,7 +7,7 @@
   height: 100vh;
   flex-shrink: 0;
   overflow-y: auto;
-  font-family: "TwayFly", "Noto Sans KR", sans-serif;
+  font-family: "GmarketSans", "Noto Sans KR", sans-serif;
 }
 
 /* CustomerCenter.css/Settings.css와 동일한 이유 — .metallicSilver가 이미
@@ -43,7 +43,7 @@
   padding: 0;
   background: none;
   border: none;
-  font-family: "TwayFly", "DM Mono", monospace;
+  font-family: "GmarketSans", "DM Mono", monospace;
   font-size: 12px;
   color: var(--muted-foreground);
   cursor: pointer;
@@ -58,7 +58,7 @@
   padding: 0;
   background: none;
   border: none;
-  font-family: "TwayFly", "DM Mono", monospace;
+  font-family: "GmarketSans", "DM Mono", monospace;
   font-size: 12px;
   color: var(--muted-foreground);
   cursor: pointer;
@@ -92,7 +92,7 @@
 
 .welcomeText {
   margin: 0;
-  font-family: "TwayFly", "Noto Serif KR", serif;
+  font-family: "GmarketSans", "Noto Serif KR", serif;
   font-weight: 500;
   font-size: 24px;
   letter-spacing: -0.3px;
@@ -117,7 +117,7 @@
   border: 1.5px solid var(--border);
   background: rgba(255, 255, 255, 0.6);
   color: var(--foreground);
-  font-family: "TwayFly", "Noto Sans KR", sans-serif;
+  font-family: "GmarketSans", "Noto Sans KR", sans-serif;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;

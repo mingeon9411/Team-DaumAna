@@ -10,22 +10,12 @@ import { NAV_FLAGS } from "../../utils/navFlags";
 // 토글과 헤더(Header.jsx)의 상시 내비게이션으로 이전됐다. 이후 하단 중앙의
 // "이전/다음 페이지" 화살표 독도 없애고, 지금은 화면 우하단에 아주 작은 십자(+)
 // 모양 4버튼 패드(맨 위로/맨 아래로/이전 페이지/다음 페이지)가 홈의 가로 패널
-// 3개(index 0~2) 전부에서 하나씩은 뜬다 — 패널 성격에 따라 위/아래 버튼의 동작만
-// 둘로 갈린다(아래 참고).
+// (상품 그리드 id="home-products", 룩북) 전부에서 뜬다. 이 패널들은 전부 자체
+// overflow-y-auto로 세로 스크롤하는 긴 콘텐츠라 위/아래가 "지금 보고 있는 패널
+// 안쪽"의 스크롤 위치만 바꾼다 — 어떤 패널이 활성인지는 activePanelIndex로
+// 그때그때 찾는다(id가 있는 건 상품 그리드뿐이라 id 대신 인덱스로 요소를 집는다).
 //
-// 첫 번째 패드는 영상 인트로 패널(index 0, id="home-essay")에서 뜬다 — 이
-// 패널은 헤더 내비가 접힌 상태(Header.jsx의 showExpandedNav)라 스크롤 말고는
-// 페이지를 옮길 방법이 없기 때문. overflow-hidden이라 안에 스크롤할 콘텐츠가
-// 없으므로, 위/아래는 홈 전체의 가로 패널을 처음/끝으로 넘긴다(window.lenis 가로 스크롤).
-//
-// 두 번째 패드는 그 다음 패널들(index 1 이상 — 상품 그리드 id="home-products",
-// 룩북)에서 뜬다. 이 패널들은 전부 자체 overflow-y-auto로
-// 세로 스크롤하는 긴 콘텐츠라 위/아래가 "지금 보고 있는 패널 안쪽"의 스크롤
-// 위치만 바꾼다 — 어떤 패널이 활성인지는 activePanelIndex로 그때그때 찾는다(id가
-// 있는 건 상품 그리드뿐이라 id 대신 인덱스로 요소를 집는다).
-//
-// 좌/우는 두 패드가 완전히 같은 동작을 한다 — 어느 쪽이든 바로 옆 hsnap 패널로
-// 한 칸만 이동(scrollToPanel).
+// 좌/우는 바로 옆 hsnap 패널로 한 칸만 이동한다(scrollToPanel).
 //
 // railStyle(독 테두리 프리셋)은 더 이상 이 컴포넌트가 소유하지 않고, 다른
 // 구독자(RecentlyViewedSidebar 등)와 마찬가지로 useRailStyle() 훅으로 따라간다
@@ -35,13 +25,7 @@ function readFlag(key, fallback = true) {
   return raw === null ? fallback : raw === "1";
 }
 
-// 홈의 영상 인트로 패널은 data-hsnap 순서상 맨 앞 0번 인덱스를 차지한다
-// (home-essay — 그 다음이 상품 그리드).
-const VIDEO_PANEL_COUNT = 1;
-
-// 십자(+) 모양 4버튼 패드 — 위/아래(up/down)는 위젯마다 의미가 다르지만(가로 패널
-// 처음/끝 vs 상품 목록 안쪽 스크롤), 좌/우(prev/next 패널)는 두 위젯이 완전히
-// 같은 동작을 공유해서 컴포넌트 하나로 묶었다.
+// 십자(+) 모양 4버튼 패드 — 좌/우(prev/next 패널)는 어느 패널에서든 같은 동작.
 function CrossPad({ presetClass, upLabel, downLabel, onUp, onDown, onPrev, onNext }) {
   return (
     <div className={`railTopBtnWrap railTopBtnWrap--cross ${presetClass}`} data-lenis-prevent>
@@ -75,11 +59,10 @@ function Sidebar() {
     return () => window.removeEventListener("dockvisibilitychange", sync);
   }, []);
 
-  // 현재 홈에서 몇 번째 가로 패널을 보고 있는지 — 어느 패드를 띄울지(영상 인트로용
-  // vs 나머지 패널용) 가르는 데도, 좌/우 버튼의 "다음/이전 패널" 계산에도 그대로
-  // 쓰기 위해 인덱스 자체를 상태로 들고 있는다. Home의 가로 Lenis 스크롤은
-  // window.scrollX를 움직이므로(Header.jsx도 같은 방식으로 "scrolled" 상태를
-  // 판단) window의 "scroll" 이벤트를 그대로 쓴다.
+  // 현재 홈에서 몇 번째 가로 패널을 보고 있는지 — 좌/우 버튼의 "다음/이전 패널"
+  // 계산과 위/아래 버튼이 어느 패널 안쪽을 스크롤할지 판단하는 데 쓴다. Home의
+  // 가로 Lenis 스크롤은 window.scrollX를 움직이므로(Header.jsx도 같은 방식으로
+  // "scrolled" 상태를 판단) window의 "scroll" 이벤트를 그대로 쓴다.
   const [activePanelIndex, setActivePanelIndex] = useState(0);
   useEffect(() => {
     if (!isHome) return;
@@ -100,8 +83,6 @@ function Sidebar() {
     window.addEventListener("scroll", computeActivePanel);
     return () => window.removeEventListener("scroll", computeActivePanel);
   }, [isHome]);
-  const onVideoPanel = isHome && activePanelIndex < VIDEO_PANEL_COUNT;
-  const onContentPanel = isHome && activePanelIndex >= VIDEO_PANEL_COUNT;
 
   // 다른 페이지(헤더의 "회사 정보" 링크)에서 홈으로 넘어온 경우 — 맨 끝
   // (룩북 패널의 SiteFooter)까지 스크롤한다. 이 컴포넌트는 라우트와 무관하게 항상
@@ -125,15 +106,6 @@ function Sidebar() {
   // 페이지의 콘텐츠 폭을 Lenis가 아직 못 읽었으면 limit(스크롤 가능 범위)이 0으로
   // 잡혀 "end"가 곧장 0으로 계산돼버린다("회사 정보" 링크로 다른 페이지에서
   // 홈으로 막 넘어온 직후 scrollToBottom()이 아무 데도 안 움직이던 버그의 원인).
-  const scrollToTop = () => {
-    if (window.lenis) {
-      window.lenis.resize();
-      window.lenis.scrollTo(0);
-    } else {
-      window.scrollTo({ left: 0, behavior: "smooth" });
-    }
-  };
-
   const scrollToBottom = () => {
     if (window.lenis) {
       window.lenis.resize();
@@ -143,10 +115,10 @@ function Sidebar() {
     }
   };
 
-  // 영상 인트로 이후 패널(상품 그리드/룩북)은 가로 패널이
-  // 아니라 각자 자체 세로 스크롤 컨테이너라, 위 scrollToTop/scrollToBottom(가로
-  // Lenis 패널 이동)과는 다르게 "지금 활성인 패널 요소"의 scrollTop만 바꾼다.
-  // 상품 그리드 말고는 id가 없어서 activePanelIndex로 요소를 집는다.
+  // 홈의 패널(상품 그리드/룩북)은 가로 패널이 아니라 각자 자체 세로 스크롤
+  // 컨테이너라, 위 scrollToBottom(가로 Lenis 패널 이동)과는 다르게 "지금 활성인
+  // 패널 요소"의 scrollTop만 바꾼다. 상품 그리드 말고는 id가 없어서
+  // activePanelIndex로 요소를 집는다.
   const scrollActivePanelTop = () => {
     document.querySelectorAll("[data-hsnap]")[activePanelIndex]?.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -181,24 +153,10 @@ function Sidebar() {
 
   return (
     <>
-    {/* 맨 위로/맨 아래로/이전/다음 십자 패드 — 홈의 영상 인트로 패널(1~2번째)
-        에서만, 화면 우하단에 고정. */}
-    {showTopButton && onVideoPanel && (
-      <CrossPad
-        presetClass={presetClass}
-        upLabel="맨 위로"
-        downLabel="맨 아래로"
-        onUp={withPop(scrollToTop)}
-        onDown={withPop(scrollToBottom)}
-        onPrev={handlePrevPanel}
-        onNext={handleNextPanel}
-      />
-    )}
-
-    {/* 맨 위로/맨 아래로/이전/다음 십자 패드 — 상품 그리드부터 그 뒤 모든 패널
-        (룩북)에서, 같은 자리에 같은 모양(사이드바 독과 동일한
+    {/* 맨 위로/맨 아래로/이전/다음 십자 패드 — 홈의 가로 패널(상품 그리드/룩북)
+        전부에서, 화면 우하단에 같은 자리·같은 모양(사이드바 독과 동일한
         railStyle 프리셋)으로 뜬다. */}
-    {onContentPanel && (
+    {showTopButton && isHome && (
       <CrossPad
         presetClass={presetClass}
         upLabel="맨 위로"

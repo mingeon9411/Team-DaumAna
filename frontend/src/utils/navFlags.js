@@ -5,10 +5,6 @@ export const NAV_FLAGS = {
   // HomeProductDetail이 마운트될 때 "home"을 남기고,
   // App.jsx의 DoorIntroController가 "/" 도착 시 소비한다.
   PRODUCT_DETAIL_RETURN_ZONE: "productDetailReturnZone",
-  // DoorIntroController가 위 흔적을 발견하면 대신 세팅 — Home.jsx가 소비.
-  SKIP_HOME_DEFAULT_PANEL: "skipHomeDefaultPanel",
-  // Sidebar.jsx가 소비(상품 그리드 패널로 점프).
-  PENDING_HOME_PANEL_INDEX: "pendingHomePanelIndex",
   // 다른 라우트에서 독의 "회사 정보" 버튼을 눌렀을 때 — 홈으로 이동한 뒤
   // 마지막 패널(룩북, 맨 아래에 SiteFooter가 있음)까지 스크롤하도록 Sidebar.jsx가 소비.
   PENDING_SCROLL_TO_END: "pendingScrollToEnd",
