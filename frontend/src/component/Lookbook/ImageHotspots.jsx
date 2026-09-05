@@ -34,6 +34,11 @@ function ImageHotspots({ image, alt, tags, className = "" }) {
         const p = byId(tag.id);
         if (!p) return null;
         const isOpen = openTagId === tag.id;
+        // ProductCard(Home.jsx)와 동일한 할인율 계산 — 카드 스타일을 통일한다.
+        const priceNum = Number(p.price.replace(/,/g, ""));
+        const originalNum = p.originalPrice ? Number(p.originalPrice.replace(/,/g, "")) : 0;
+        const hasDiscount = originalNum > priceNum;
+        const discountPct = hasDiscount ? Math.round((1 - priceNum / originalNum) * 100) : 0;
         return (
           <div
             key={tag.id}
@@ -58,12 +63,31 @@ function ImageHotspots({ image, alt, tags, className = "" }) {
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); navigate(`/item/${tag.id}`); }}
-                className="absolute top-1/2 left-full ml-2 -translate-y-1/2 flex items-center gap-2.5 bg-white text-left rounded-xl shadow-xl p-2 pr-4 hover:opacity-90 transition-opacity whitespace-nowrap"
+                className="absolute top-1/2 left-full ml-2 -translate-y-1/2 flex gap-3 bg-card border border-border text-left rounded-2xl shadow-xl p-3 w-56 hover:border-foreground/30 transition-colors"
               >
-                <img src={p.image} alt="" className="w-11 h-11 rounded-lg object-cover shrink-0" />
-                <span className="flex flex-col">
-                  <span className="text-xs font-medium text-neutral-900" style={SANS}>{p.name}</span>
-                  <span className="text-xs font-semibold text-neutral-900" style={MONO}>₩{p.price}</span>
+                <img src={p.image} alt="" className="w-16 h-16 rounded-xl object-cover shrink-0" />
+                <span className="flex flex-col min-w-0">
+                  {p.label && (
+                    <span
+                      className="text-[9px] font-semibold text-foreground/70 border border-border rounded px-1.5 py-0.5 w-fit mb-1"
+                      style={MONO}
+                    >
+                      {p.label}
+                    </span>
+                  )}
+                  <span className="text-xs font-medium text-foreground truncate" style={SANS}>{p.name}</span>
+                  {hasDiscount && (
+                    <span className="flex items-center gap-1 mt-1">
+                      <span className="text-[9px] font-bold text-white bg-[#c0392b] rounded px-1 py-0.5" style={MONO}>
+                        {discountPct}%
+                      </span>
+                      <span className="text-[10px] text-muted-foreground line-through" style={MONO}>
+                        ₩{p.originalPrice}
+                      </span>
+                    </span>
+                  )}
+                  <span className="text-sm font-semibold text-foreground mt-0.5" style={MONO}>₩{p.price}</span>
+                  <span className="text-[10px] text-muted-foreground mt-1">무료배송</span>
                 </span>
               </button>
             )}
