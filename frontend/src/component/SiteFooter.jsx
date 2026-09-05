@@ -62,7 +62,7 @@ function SiteFooter() {
         ))}
       </div>
 
-      <p className="text-[10px] mt-4 pb-6" style={MONO}>© 2026 JIPDAUM. All rights reserved.</p>
+      <p className="text-[10px] mt-4 pb-6 text-center" style={MONO}>© 2026 JIPDAUM. All rights reserved.</p>
     </footer>
   );
 }
