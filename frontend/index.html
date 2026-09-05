@@ -13,6 +13,13 @@
     <link rel="preconnect" href="https://newassets.hcaptcha.com" crossorigin />
     <link rel="dns-prefetch" href="https://js.hcaptcha.com" />
     <link rel="dns-prefetch" href="https://newassets.hcaptcha.com" />
+
+    <!-- 구글 폰트를 index.css의 @import로 불러오면 브라우저가 그 CSS 파일을 다
+         파싱한 후에야 폰트 stylesheet 요청을 시작해 한 박자 늦게 발견된다.
+         head에서 바로 링크로 걸어 HTML 파싱과 동시에 요청이 나가게 한다. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&family=Noto+Sans+KR:wght@300;400;500&family=Song+Myung&family=DM+Mono:wght@400;500&family=Alex+Brush&display=swap" />
   </head>
   <body>
     <div id="root"></div>

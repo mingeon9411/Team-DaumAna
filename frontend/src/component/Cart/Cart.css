@@ -147,7 +147,7 @@
 .cartSummaryTitle strong {
   font-size: 18px;
   font-weight: 700;
-  font-family: "DM Mono", monospace;
+  font-family: "GmarketSans", "DM Mono", monospace;
 }
 
 /* 툴바 — 전체선택 / 선택삭제 */
@@ -285,19 +285,19 @@
   font-size: 14px;
   font-weight: 700;
   color: #c0392b;
-  font-family: "DM Mono", monospace;
+  font-family: "GmarketSans", "DM Mono", monospace;
 }
 .cartItemPrice {
   font-size: 17px;
   font-weight: 800;
   color: var(--foreground);
-  font-family: "DM Mono", monospace;
+  font-family: "GmarketSans", "DM Mono", monospace;
 }
 .cartItemOriginalPrice {
   font-size: 13px;
   color: var(--muted-foreground);
   text-decoration: line-through;
-  font-family: "DM Mono", monospace;
+  font-family: "GmarketSans", "DM Mono", monospace;
 }
 
 .cartItemBottomRow {
@@ -459,7 +459,7 @@
 .cartSummaryTotal strong {
   font-size: 22px;
   font-weight: 800;
-  font-family: "DM Mono", monospace;
+  font-family: "GmarketSans", "DM Mono", monospace;
   color: var(--foreground);
 }
 
@@ -579,12 +579,12 @@
   font-size: 12.5px;
   font-weight: 700;
   color: #c0392b;
-  font-family: "DM Mono", monospace;
+  font-family: "GmarketSans", "DM Mono", monospace;
 }
 .cartRecommendPrice {
   font-size: 13px;
   font-weight: 700;
-  font-family: "DM Mono", monospace;
+  font-family: "GmarketSans", "DM Mono", monospace;
   color: var(--foreground);
   margin: 0;
 }
@@ -606,7 +606,7 @@
   font-size: 12px;
   font-weight: 600;
   color: var(--muted-foreground);
-  font-family: "DM Mono", monospace;
+  font-family: "GmarketSans", "DM Mono", monospace;
 }
 .cartRecommendPager button {
   width: 26px;

@@ -227,15 +227,16 @@ function RecentlyViewedSidebar({
 
   return (
     <div
-      // 십자 패드(Sidebar.css .railTopBtnWrap--cross)와 폭을 맞추던 값이었으나,
-      // 쿠팡 스타일 미니 장바구니로 넓어지며 더는 그 폭에 맞출 이유가 없다 —
-      // right 오프셋(19px)만 그대로 유지해 우측 정렬 기준선은 동일하게 둔다.
+      // right 위치는 RecentlyViewedSidebar.css의 .recentDock이 담당 — 뷰포트
+      // 끝이 아니라 상품 그리드 콘텐츠(max-w-7xl) 오른쪽 끝에 붙도록 calc()로
+      // 계산한다(쿠팡처럼 상품과 딱 붙어 보이게). 여기 Tailwind 클래스에는
+      // 그 값과 경쟁하지 않도록 right-* 유틸리티를 넣지 않는다.
       //
       // 화면 세로 중앙에 고정 — position:fixed라 어차피 스크롤에 안 움직이니,
       // 헤더 바로 아래(예전엔 --header-h 기준 top)보다 중앙이 화면 어디서
       // 스크롤하든 시선이 닿기 쉽다. 헤더가 검색창 포커스 등으로 높이가 늘어나도
       // 중앙 정렬은 그 값과 무관해 더는 --header-h를 따라갈 필요가 없다.
-      className={`recentDock railStyle-${railStyle} ${styleSwitching ? "styleSwitching" : ""} ${collapsed ? "collapsed" : ""} fixed right-[19px] top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 p-2 rounded-2xl`}
+      className={`recentDock railStyle-${railStyle} ${styleSwitching ? "styleSwitching" : ""} ${collapsed ? "collapsed" : ""} fixed top-1/2 -translate-y-1/2 z-40 flex flex-col gap-2 p-2 rounded-2xl`}
       data-lenis-prevent
     >
       {showItems && (

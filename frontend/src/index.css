@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700&family=Noto+Sans+KR:wght@300;400;500&family=Song+Myung&family=DM+Mono:wght@400;500&family=Alex+Brush&display=swap');
+/* 구글 폰트는 index.html <head>에서 <link rel="stylesheet">로 직접 불러온다 —
+   여기서 @import로 걸면 브라우저가 이 CSS 파일을 다 파싱해야 폰트 요청이
+   시작돼 한 박자 늦어진다. */
 @import "tailwindcss";
 
 /* Tailwind 기본 dark: 변형은 OS의 prefers-color-scheme를 따르는데, 이 앱의 다크모드는
