@@ -35,15 +35,19 @@
 
 :root {
   --background: #f4f0e8;
-  --foreground: #1c1a16;
+  /* 라이트모드 폰트 색상 통일 요청 — foreground/card-foreground/secondary-foreground/
+     muted-foreground(회색 보조 텍스트 포함)를 전부 검정으로. primary-foreground·
+     accent-foreground는 그대로 둔다(어두운 primary/accent 배경 위에 얹는 밝은
+     텍스트라 검정으로 바꾸면 안 보임). 다크모드(body.dark)는 별도 블록이라 무관. */
+  --foreground: #000000;
   --card: #ede8dd;
-  --card-foreground: #1c1a16;
+  --card-foreground: #000000;
   --primary: #1c1a16;
   --primary-foreground: #f4f0e8;
   --secondary: #e8e3d8;
-  --secondary-foreground: #1c1a16;
+  --secondary-foreground: #000000;
   --muted: #e4dfd3;
-  --muted-foreground: #7a7060;
+  --muted-foreground: #000000;
   --accent: #2b4a3f;
   --accent-foreground: #f4f0e8;
   --border: rgba(28, 26, 22, 0.12);
