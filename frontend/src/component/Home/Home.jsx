@@ -21,6 +21,7 @@ import patternLaundryBasket from "../../assets/products/(소품) 북유럽 문�
 import rugA from "../../assets/products/(소품) 북유럽풍 러그 A형.jpg";
 import ecoWoodLaundryBasket from "../../assets/products/(소품) 친환경 우드 빨래 바구니.jpg";
 import woodChair from "../../assets/products/(의자) 우드 의자.jpg";
+import woodChairInterior from "../../assets/interior/(의자) 우드 의자 - 인테리어.jpg";
 import resortChair from "../../assets/products/(의자) 유럽풍 피서지 의자.jpg";
 import nordicBed from "../../assets/products/(침대) 북유럽 침대.jpg";
 import pastelPatternBed from "../../assets/products/(침대) 북유럽풍 파스텔 문양 침대.jpg";
@@ -138,7 +139,7 @@ export const PRODUCTS = [
   { id: 31, no: "No.31", name: "우드 의자", sub: "내추럴 라탄 케인", price: "219,000", label: "NEW",
     desc: "둥근 라탄 케인 등받이와 오크 프레임이 만나는 자그마한 암체어입니다. 넉넉한 리넨 쿠션을 더해 식탁 의자로도, 침실 코너 체어로도 편안하게 쓸 수 있습니다.",
     spec: "SIZE : W64 D58 H74 · MATERIAL : oak, rattan cane, linen",
-    image: woodChair, alt: "우드 의자", brand: "집다움", category: "의자", midCategory: "암체어", subCategory: "오크 라탄" },
+    image: woodChair, interiorImage: woodChairInterior, alt: "우드 의자", brand: "집다움", category: "의자", midCategory: "암체어", subCategory: "오크 라탄" },
   { id: 32, no: "No.32", name: "유럽풍 피서지 의자", sub: "코냑 브라운 레더 스트랩", price: "268,000", originalPrice: "298,000", label: "BESTSELLER",
     desc: "티크 원목 프레임에 가죽 스트랩을 교차로 엮어 만든 로우 라운지 체어입니다. 낮은 좌면과 여유로운 각도가 휴양지에 온 듯한 편안함을 주어, 테라스나 창가 자리에 잘 어울립니다.",
     spec: "SIZE : W68 D75 H68 · MATERIAL : teak wood, leather strap",
