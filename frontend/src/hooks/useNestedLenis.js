@@ -20,6 +20,23 @@ export function useNestedLenis(ref, { enabled = true } = {}) {
 
     const lenis = new Lenis({ wrapper: el, content: el, duration: 1.8, smoothWheel: true, autoRaf: true });
 
-    return () => lenis.destroy();
+    // 휠 관성이 아직 진행 중일 때(최대 duration=1.8초) 네이티브 스크롤바를 잡아
+    // 끌면 버벅였다 — Lenis는 자기가 만든 보간 애니메이션이 도는 동안
+    // (isScrolling === "smooth") 네이티브 scroll 이벤트를 무시하고 매 프레임
+    // scrollTop을 자기 목표값으로 계속 되돌려 써서, 드래그로 옮긴 위치가
+    // 스냅되듯 튕겨 돌아왔다. 스크롤바 여백(el.clientWidth 바깥) 클릭을 감지해
+    // 그 즉시 진행 중이던 보간을 취소하면, 이후 드래그는 순수 네이티브
+    // 스크롤이라 부드럽게 먹는다.
+    const onPointerDown = (e) => {
+      if (e.target === el && e.offsetX >= el.clientWidth) {
+        lenis.scrollTo(lenis.actualScroll, { immediate: true });
+      }
+    };
+    el.addEventListener("pointerdown", onPointerDown);
+
+    return () => {
+      el.removeEventListener("pointerdown", onPointerDown);
+      lenis.destroy();
+    };
   }, [ref, enabled]);
 }
