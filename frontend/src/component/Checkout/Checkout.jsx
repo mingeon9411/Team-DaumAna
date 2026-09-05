@@ -67,7 +67,9 @@ function Checkout() {
     setCouponError("");
     try {
       const res = await validateCoupon(coupon.code, totalAmount);
-      setAppliedCoupon(res.data);
+      // validateCoupon 응답엔 code/name이 없고 coupon_name만 온다 — 실제 사용한 code와
+      // 화면 표시용 name을 직접 채워 넣는다(안 하면 주문 생성 시 coupon_code가 빈 값으로 나감).
+      setAppliedCoupon({ ...res.data, code: coupon.code, name: res.data.coupon_name });
       setDiscountAmount(res.data.discount_amount);
       setCouponInput("");
     } catch (e) {
@@ -78,9 +80,10 @@ function Checkout() {
   const handleApplyCouponCode = async () => {
     if (!couponInput.trim()) return;
     setCouponError("");
+    const code = couponInput.trim().toUpperCase();
     try {
-      const res = await validateCoupon(couponInput.trim().toUpperCase(), totalAmount);
-      setAppliedCoupon(res.data);
+      const res = await validateCoupon(code, totalAmount);
+      setAppliedCoupon({ ...res.data, code, name: res.data.coupon_name });
       setDiscountAmount(res.data.discount_amount);
     } catch (e) {
       setCouponError(e.response?.data?.error || "쿠폰 적용에 실패했습니다.");
