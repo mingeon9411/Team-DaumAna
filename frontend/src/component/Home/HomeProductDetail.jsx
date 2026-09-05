@@ -2,12 +2,11 @@ import "./Home.css";
 import "./HomeProductDetail.css";
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, ChevronDown, Heart, Star, Sparkles, Ruler, ShieldCheck, ImagePlus, X, Share2, Truck } from "lucide-react";
-import { PRODUCTS } from "./Home";
+import { ChevronLeft, ChevronRight, ChevronDown, Heart, Star, Sparkles, Ruler, ShieldCheck, ImagePlus, X, Share2 } from "lucide-react";
+import { PRODUCTS, labelKo, LABEL_BADGE } from "./Home";
 import { addToCart, getReviews, createReview, uploadReviewImage, getProductDetail } from "../../api";
 import { isWished, toggleWish } from "../../utils/wishlist";
 import { addRecentlyViewed } from "../../utils/recentlyViewed";
-import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useNestedLenis } from "../../hooks/useNestedLenis";
 import SiteFooter from "../SiteFooter";
@@ -101,10 +100,6 @@ function HomeProductDetail() {
       ...product,
       price: Number(product.price.replace(/,/g, "")),
     });
-    // "목록으로" 버튼 클릭이든 브라우저 뒤로가기든, 여기서 홈으로 돌아가면
-    // 대문 애니메이션 없이 상품 목록으로 바로 이어지도록 App.jsx의
-    // DoorIntroController가 참고할 흔적을 남긴다.
-    sessionStorage.setItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE, NAV_ZONE.HOME);
   }, [product?.id]);
 
   useEffect(() => {
@@ -306,12 +301,14 @@ function HomeProductDetail() {
     }
   };
 
+  const labelBadge = LABEL_BADGE[product.label];
+
   return (
     <main className="homeDetailPage" data-lenis-prevent data-hsnap ref={pageRef}>
-      <div className="max-w-7xl mx-auto w-full px-6 md:px-10">
-        {/* 대문 애니메이션 스킵 + 상품 그리드로 바로 점프는 App.jsx의
-            DoorIntroController가 productDetailReturnZone(마운트 시 기록)을 보고
-            처리한다 — 브라우저 뒤로가기로 돌아갈 때도 똑같이 적용된다. */}
+      {/* max-w-7xl(1280px)→1440px — 아래 "상세정보" 프로즈 섹션들은 이미 각자
+          더 좁은 max-w-4xl/2xl로 따로 잡혀있어 이 폭 변화의 영향을 안 받고,
+          카드(homeDetailGlassCard)만 그 폭을 그대로 채우므로 카드만 넓어진다. */}
+      <div className="max-w-360 mx-auto w-full px-6 md:px-10">
         <button
           type="button"
           onClick={() => navigate("/")}
@@ -349,8 +346,8 @@ function HomeProductDetail() {
           {/* 오른쪽: 구매 정보 패널 — 브랜드/카테고리 → 제목+찜/공유 → 별점 → 가격
               → 배송 → 수량/주문금액 → 장바구니/바로구매 순서로, 국내 커머스에서
               가장 익숙한 상세페이지 정보 순서를 그대로 따른다. */}
-          <div className="flex flex-col justify-center">
-            <div className="flex items-center gap-2 mb-2">
+          <div className="flex flex-col justify-center rounded-2xl bg-background/70 backdrop-blur-sm px-6 py-7 md:px-8 md:py-9 shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
+            <div className="flex flex-col gap-2.5 mb-3">
               <div className="flex items-center gap-1 text-[11px] text-muted-foreground tracking-wide" style={MONO}>
                 {[product.category, product.midCategory, product.subCategory].filter(Boolean).map((seg, i, arr) => (
                   <span key={seg} className="flex items-center gap-1">
@@ -359,15 +356,22 @@ function HomeProductDetail() {
                   </span>
                 ))}
               </div>
-              {product.label && (
-                <span className="text-[10px] font-semibold text-foreground/70 border border-border rounded px-1.5 py-0.5" style={MONO}>
-                  {product.label}
+              {/* 상품 라벨 + 배송 태그를 한 줄에 — 29cm처럼 제목 위 작은 태그 묶음으로,
+                  아래 가격 옆에 따로 있던 큰 무료배송 박스는 배송정보 줄로 옮겼다. */}
+              <div className="flex items-center gap-1.5">
+                {product.label && (
+                  <span className={`text-[11px] font-semibold rounded-full px-2 py-0.5 border ${labelBadge?.className || "text-foreground border-border"}`} style={MONO}>
+                    {labelKo(product.label)}
+                  </span>
+                )}
+                <span className="text-[11px] font-medium text-muted-foreground rounded-full px-2 py-0.5 border border-border" style={MONO}>
+                  무료배송
                 </span>
-              )}
+              </div>
             </div>
 
-            <div className="flex items-start justify-between gap-4 mb-1">
-              <h1 className="text-3xl font-light text-foreground" style={SERIF}>{product.name}</h1>
+            <div className="flex items-start justify-between gap-4 mb-2">
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground" style={SERIF}>{product.name}</h1>
               <div className="flex items-center gap-1.5 shrink-0 pt-1">
                 <button
                   onClick={handleWish}
@@ -385,38 +389,40 @@ function HomeProductDetail() {
                 </button>
               </div>
             </div>
-            <p className="text-sm text-muted-foreground font-light mb-3">{displaySub}</p>
+            <p className="text-sm text-muted-foreground font-light mb-4">{displaySub}</p>
 
-            <div className="flex items-center gap-1.5 mb-5">
-              {avgRating ? (
-                <>
-                  <Star size={13} className="fill-foreground text-foreground" />
-                  <span className="text-sm font-medium text-foreground" style={MONO}>{avgRating}</span>
-                  <span className="text-xs text-muted-foreground">리뷰 {reviews.length}개</span>
-                </>
-              ) : (
-                <span className="text-xs text-muted-foreground">아직 리뷰가 없어요</span>
-              )}
+            {avgRating ? (
+              <button
+                type="button"
+                onClick={() => document.getElementById("reviews")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                className="flex items-center gap-1.5 mb-6 hover:opacity-70 transition-opacity"
+              >
+                <Star size={13} className="fill-foreground text-foreground" />
+                <span className="text-sm font-medium text-foreground" style={MONO}>{avgRating}</span>
+                <span className="text-xs text-muted-foreground underline underline-offset-2">리뷰 {reviews.length}개 보기</span>
+              </button>
+            ) : (
+              <span className="text-xs text-muted-foreground mb-6 block">아직 리뷰가 없어요</span>
+            )}
+
+            {/* 이 아래(Hairline)에서 이미 한 번 여백을 주므로, 여기서 또 mb-6을
+                겹쳐 쌓지 않는다 — 겹치면 앞뒤 다른 줄 간격(mb-5 등)보다 두 배 가까이
+                떠서 이 구간만 유난히 넓어 보였다(줄 간격이 안 맞는다는 지적 지점). */}
+            <div className="flex flex-col gap-2 text-xs">
+              {/* w-16(64px)이면 "배송정보"(4글자+tracking-wide)가 폭을 넘쳐서 그
+                  옆 값이 "배송비" 줄의 값보다 오른쪽으로 밀려 보였다(대칭 안 맞음
+                  지적 지점) — 두 라벨 다 여유 있게 들어가는 w-20으로 넓힌다. */}
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <span className="w-20 shrink-0 tracking-wide" style={MONO}>배송정보</span>
+                <span>결제 완료 후 평균 2~5일 내 출고</span>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <span className="w-20 shrink-0 tracking-wide" style={MONO}>배송비</span>
+                <span className="font-medium text-foreground">무료배송</span>
+              </div>
             </div>
 
-            <div className="mb-5">
-              {hasDiscount && (
-                <div className="flex items-center gap-2 mb-1.5">
-                  <span className="text-[13px] font-bold text-white bg-[#c0392b] rounded px-1.5 py-0.5 tracking-wide" style={MONO}>
-                    {discountPct}% OFF
-                  </span>
-                  <span className="text-sm text-muted-foreground line-through" style={MONO}>₩{product.originalPrice}</span>
-                </div>
-              )}
-              <span className="text-3xl font-bold text-foreground" style={MONO}>₩{priceNum.toLocaleString()}</span>
-            </div>
-
-            <div className="flex items-center gap-2 text-xs text-muted-foreground border border-border rounded-lg px-3.5 py-2.5 mb-6">
-              <Truck size={14} className="text-foreground shrink-0" />
-              <span>무료배송</span>
-            </div>
-
-            <Hairline className="mb-6 w-16" />
+            <Hairline className="my-6 w-16" />
 
             {product.colors ? (
               <div className="mb-4">
@@ -439,10 +445,9 @@ function HomeProductDetail() {
                           onClick={() => { setColorIdx(i); setActiveImage(i); setOptionOpen(false); }}
                           className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-sm text-left hover:bg-card/60 transition-colors"
                         >
-                          <span
-                            className="w-5 h-5 rounded-full bg-cover bg-center border border-border shrink-0"
-                            style={{ backgroundImage: `url(${c.image})` }}
-                          />
+                          <span className="w-5 h-5 rounded-full border border-border shrink-0 overflow-hidden">
+                            <img src={c.image} alt="" className="w-full h-full object-cover" />
+                          </span>
                           {c.label}
                         </button>
                       ))}
@@ -451,16 +456,15 @@ function HomeProductDetail() {
                 </div>
 
                 {selectedColor && (
-                  <div className="flex items-center justify-between gap-3 border border-border px-3.5 py-3 mt-2">
+                  <div className="flex items-center justify-between gap-3 border border-border px-3.5 py-3 mt-3">
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <span
-                        className="w-8 h-8 rounded-full bg-cover bg-center border border-border shrink-0"
-                        style={{ backgroundImage: `url(${selectedColor.image})` }}
-                      />
+                      <span className="w-8 h-8 rounded-full border border-border shrink-0 overflow-hidden">
+                        <img src={selectedColor.image} alt="" className="w-full h-full object-cover" />
+                      </span>
                       <span className="text-sm text-foreground truncate">{selectedColor.label}</span>
                     </div>
-                    <div className="flex items-center gap-3 shrink-0">
-                      <div className="flex items-center gap-3 border border-border px-2.5 py-1">
+                    <div className="flex items-center gap-4 shrink-0">
+                      <div className="flex items-center gap-3 bg-muted/50 rounded-full px-3 py-1">
                         <button
                           type="button"
                           onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -492,9 +496,9 @@ function HomeProductDetail() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-5">
                 <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>수량</span>
-                <div className="flex items-center gap-4 border border-border px-3 py-1.5">
+                <div className="flex items-center gap-4 bg-muted/50 rounded-full px-4 py-1.5">
                   <button
                     type="button"
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -516,24 +520,36 @@ function HomeProductDetail() {
               </div>
             )}
 
-            <div className="flex items-baseline justify-between mb-6 pb-6 border-b border-border">
+            {/* 정가/할인율 — 예전엔 별점 아래 중간에 따로 있었는데, 구매 직전
+                금액(주문금액)과 붙여서 "얼마나 할인받는지"가 바로 옆에서 보이게 옮겼다. */}
+            {hasDiscount && (
+              <div className="flex items-center justify-between mb-3 text-xs">
+                <span className="text-muted-foreground line-through" style={MONO}>₩{product.originalPrice}</span>
+                <span className="font-bold text-[#c0392b]" style={MONO}>{discountPct}% 할인</span>
+              </div>
+            )}
+
+            <div className="flex items-baseline justify-between mb-7 pb-7 border-b border-border">
               <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>주문금액</span>
               <span className="text-2xl font-semibold text-foreground" style={MONO}>
                 ₩{(priceNum * quantity).toLocaleString()}
               </span>
             </div>
 
-            <div className="flex gap-3">
+            {/* 모바일에서는 이 버튼 대신 화면 하단 스티키 바(아래)를 쓴다 —
+                상세 이미지·리뷰까지 스크롤이 긴 페이지에서 구매 버튼이 화면 밖으로
+                사라지지 않도록. */}
+            <div className="hidden md:flex gap-3">
               <button
                 onClick={handleAddToCart}
-                className="flex-1 border border-foreground text-foreground text-xs tracking-widest py-3.5 hover:bg-foreground/5 transition-colors"
+                className="flex-1 rounded-xl border border-foreground text-foreground text-xs tracking-widest py-3.5 hover:bg-foreground/5 transition-colors"
                 style={SANS}
               >
                 장바구니
               </button>
               <button
                 onClick={handleBuyNow}
-                className="flex-1 bg-foreground text-background text-xs tracking-widest py-3.5 hover:opacity-85 transition-opacity"
+                className="flex-1 rounded-xl bg-foreground text-background text-xs tracking-widest py-3.5 hover:opacity-85 transition-opacity"
                 style={SANS}
               >
                 바로 구매하기
@@ -565,8 +581,8 @@ function HomeProductDetail() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
             <div className="absolute bottom-8 left-8 right-8 text-white">
-              <span className="text-[10px] tracking-widest opacity-80 block mb-2" style={MONO}>
-                {product.no} · {product.label}
+              <span className="text-[11px] tracking-widest opacity-90 block mb-2" style={MONO}>
+                {product.no} · {labelKo(product.label)}
               </span>
               <h3 className="text-3xl font-light" style={SERIF}>{product.name}</h3>
               <p className="text-sm opacity-90 mt-2 font-light max-w-md">{product.desc}</p>
@@ -645,7 +661,7 @@ function HomeProductDetail() {
           </div>
         </section>
 
-        <section className="border-t border-border pt-12 pb-24">
+        <section id="reviews" className="border-t border-border pt-12 pb-32 md:pb-24">
           <div className="max-w-2xl mx-auto">
             <div className="flex items-end justify-between mb-8">
               <div>
@@ -804,6 +820,35 @@ function HomeProductDetail() {
         </section>
 
         <SiteFooter />
+      </div>
+
+      {/* 모바일 전용 스티키 구매 바 — 데스크톱 버튼(위)이 숨는 위치라, 어디까지
+          스크롤하든 찜/장바구니/바로구매를 항상 화면 하단에 붙여둔다. */}
+      <div
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex items-center gap-2 bg-background/95 backdrop-blur-sm border-t border-border px-4 pt-2.5"
+        style={{ paddingBottom: "calc(0.625rem + env(safe-area-inset-bottom))" }}
+      >
+        <button
+          onClick={handleWish}
+          className="w-11 h-11 flex items-center justify-center border border-border rounded-xl shrink-0"
+          aria-label="찜 리스트에 담기"
+        >
+          <Heart size={16} className={wished ? "fill-foreground text-foreground" : "text-foreground"} />
+        </button>
+        <button
+          onClick={handleAddToCart}
+          className="flex-1 h-11 rounded-xl border border-foreground text-foreground text-xs tracking-widest"
+          style={SANS}
+        >
+          장바구니
+        </button>
+        <button
+          onClick={handleBuyNow}
+          className="flex-[1.4] h-11 rounded-xl bg-foreground text-background text-xs tracking-widest"
+          style={SANS}
+        >
+          바로 구매 · ₩{(priceNum * quantity).toLocaleString()}
+        </button>
       </div>
     </main>
   );

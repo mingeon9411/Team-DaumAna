@@ -59,38 +59,46 @@ function ImageHotspots({ image, alt, tags, className = "" }) {
               <Plus size={15} strokeWidth={2.5} />
             </button>
 
-            {isOpen && (
-              <button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); navigate(`/item/${tag.id}`); }}
-                className="absolute top-1/2 left-full ml-2 -translate-y-1/2 flex gap-3 bg-card border border-border text-left rounded-2xl shadow-xl p-3 w-56 hover:border-foreground/30 transition-colors"
-              >
-                <img src={p.image} alt="" className="w-16 h-16 rounded-xl object-cover shrink-0" />
-                <span className="flex flex-col min-w-0">
-                  {p.label && (
-                    <span
-                      className="text-[9px] font-semibold text-foreground/70 border border-border rounded px-1.5 py-0.5 w-fit mb-1"
-                      style={MONO}
-                    >
-                      {p.label}
+            {/* 항상 마운트해두고 opacity/scale만 토글 — {isOpen && ...}로 마운트/언마운트를
+                가르면 트랜지션이 붙을 새 없이 순간적으로 나타나 보인다. 닫혀있을 땐
+                pointer-events-none·tabIndex=-1로 안 보이는 버튼이 눌리거나 탭으로
+                포커스되는 걸 막는다. */}
+            <button
+              type="button"
+              onClick={(e) => { e.stopPropagation(); navigate(`/item/${tag.id}`); }}
+              tabIndex={isOpen ? 0 : -1}
+              aria-hidden={!isOpen}
+              className={`absolute top-1/2 left-full ml-2 -translate-y-1/2 flex gap-4 bg-card border border-border text-left rounded-2xl shadow-xl p-4 w-72 origin-left transition-all duration-300 ease-out ${
+                isOpen
+                  ? "opacity-100 scale-100 translate-x-0 pointer-events-auto hover:border-foreground/30"
+                  : "opacity-0 scale-95 -translate-x-2 pointer-events-none"
+              }`}
+            >
+              <img src={p.image} alt="" className="w-20 h-20 rounded-xl object-cover shrink-0" />
+              <span className="flex flex-col min-w-0">
+                {p.label && (
+                  <span
+                    className="text-[10px] font-semibold text-foreground/70 border border-border rounded px-1.5 py-0.5 w-fit mb-1"
+                    style={MONO}
+                  >
+                    {p.label}
+                  </span>
+                )}
+                <span className="text-sm font-medium text-foreground truncate" style={SANS}>{p.name}</span>
+                {hasDiscount && (
+                  <span className="flex items-center gap-1 mt-1">
+                    <span className="text-[10px] font-bold text-white bg-[#c0392b] rounded px-1 py-0.5" style={MONO}>
+                      {discountPct}%
                     </span>
-                  )}
-                  <span className="text-xs font-medium text-foreground truncate" style={SANS}>{p.name}</span>
-                  {hasDiscount && (
-                    <span className="flex items-center gap-1 mt-1">
-                      <span className="text-[9px] font-bold text-white bg-[#c0392b] rounded px-1 py-0.5" style={MONO}>
-                        {discountPct}%
-                      </span>
-                      <span className="text-[10px] text-muted-foreground line-through" style={MONO}>
-                        ₩{p.originalPrice}
-                      </span>
+                    <span className="text-xs text-muted-foreground line-through" style={MONO}>
+                      ₩{p.originalPrice}
                     </span>
-                  )}
-                  <span className="text-sm font-semibold text-foreground mt-0.5" style={MONO}>₩{p.price}</span>
-                  <span className="text-[10px] text-muted-foreground mt-1">무료배송</span>
-                </span>
-              </button>
-            )}
+                  </span>
+                )}
+                <span className="text-base font-semibold text-foreground mt-0.5" style={MONO}>₩{p.price}</span>
+                <span className="text-xs text-muted-foreground mt-1">무료배송</span>
+              </span>
+            </button>
           </div>
         );
       })}

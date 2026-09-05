@@ -281,7 +281,7 @@ function MyPage() {
 
         <section className="mypageHero">
           <p className="mypageHeroSub">
-            {activeSection === "coupon" ? "MY COUPON" : "MY PAGE"}
+            {activeSection === "coupon" ? "내 쿠폰" : "마이페이지"}
           </p>
           <p className="welcomeText">반갑습니다, <strong>{nickname}</strong>님</p>
         </section>
@@ -306,11 +306,11 @@ function MyPage() {
             <div className="userInfoGrid">
               <div>
                 <span>회원등급</span>
-                <strong>MARU</strong>
+                <strong>마루 회원</strong>
               </div>
               <div>
                 <span>적립금</span>
-                <strong>0P</strong>
+                <strong>0포인트</strong>
               </div>
               <div
                 className="couponCell"
@@ -327,19 +327,19 @@ function MyPage() {
               <div className="orderStatus">
                 <div>
                   <p>입금대기</p>
-                  <strong>{counts.PENDING}</strong>
+                  <strong className={counts.PENDING > 0 ? "active" : ""}>{counts.PENDING}</strong>
                 </div>
                 <div>
                   <p>상품준비중</p>
-                  <strong>{counts.ORDERED}</strong>
+                  <strong className={counts.ORDERED > 0 ? "active" : ""}>{counts.ORDERED}</strong>
                 </div>
                 <div>
                   <p>배송중</p>
-                  <strong>{counts.SHIPPED}</strong>
+                  <strong className={counts.SHIPPED > 0 ? "active" : ""}>{counts.SHIPPED}</strong>
                 </div>
                 <div>
                   <p>배송완료</p>
-                  <strong>{counts.DELIVERED}</strong>
+                  <strong className={counts.DELIVERED > 0 ? "active" : ""}>{counts.DELIVERED}</strong>
                 </div>
               </div>
 
@@ -470,7 +470,7 @@ function MyPage() {
             <div className="myCouponBanner" style={{ backgroundImage: `url(${korfurni})` }}>
               <div className="myCouponBannerOverlay" />
               <div className="myCouponBannerCenter">
-                <p className="myCouponBannerSub">MY COUPON</p>
+                <p className="myCouponBannerSub">내 쿠폰</p>
                 <p className="myCouponBannerTitle">나의 쿠폰함</p>
                 <p className="myCouponBannerCount">
                   <strong>{myCoupons.length}</strong>장 보유 중

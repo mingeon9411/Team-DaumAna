@@ -8,13 +8,11 @@ import { LuChevronLeft } from "react-icons/lu";
 import { registerUser, checkNicknameAPI } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useRailStyle } from "../../hooks/useRailStyle";
-import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 import JDLogo from "../../assets/J.D 로고.svg";
 // -sm: 48px로만 쓰여서 원본(1015x600, 750KB) 대신 축소본을 쓴다.
 import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
 import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent-sm.png";
 import { TERMS_OF_SERVICE, PRIVACY_POLICY } from "../../data/legalContent";
-import { BUSINESS_INFO } from "../../data/businessInfo";
 
 const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 
@@ -32,12 +30,6 @@ function Register() {
     const syncDarkMode = () => setDarkMode(document.body.classList.contains("dark"));
     window.addEventListener("darkmodechange", syncDarkMode);
     return () => window.removeEventListener("darkmodechange", syncDarkMode);
-  }, []);
-
-  // Login.jsx와 동일한 신호 — "돌아가기" 버튼(closeAuthPage)으로 "/"에 도착하면
-  // DoorIntroController가 이 흔적을 보고 곧장 상품 목록 패널로 스크롤한다.
-  useEffect(() => {
-    sessionStorage.setItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE, NAV_ZONE.HOME);
   }, []);
 
   const [showTerms, setShowTerms] = useState(false);
@@ -369,15 +361,6 @@ function Register() {
         <div className="registerLinks">
           <span>이미 계정이 있으신가요?</span>
           <button type="button" className="linkBtn" onClick={openLogin}>로그인</button>
-        </div>
-
-        <div className="authBusinessInfo">
-          {BUSINESS_INFO.map(([label, value], i) => (
-            <span key={label}>
-              {label} {value}
-              {i < BUSINESS_INFO.length - 1 && <span className="authBusinessDot">·</span>}
-            </span>
-          ))}
         </div>
       </section>
   );

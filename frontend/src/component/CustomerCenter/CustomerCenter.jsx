@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LuChevronLeft, LuMessageSquare, LuMessageCircle, LuPhone, LuChevronDown } from "react-icons/lu";
 import "./CustomerCenter.css";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useNestedLenis } from "../../hooks/useNestedLenis";
-import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
+import { NAV_FLAGS } from "../../utils/navFlags";
 
 // 실제 상담 티켓/실시간 상담 시스템은 없는 포트폴리오 프로젝트라(data/businessInfo.js 참고),
 // FAQ 답변과 연락처는 그 사업자 정보와 맞춘 플레이스홀더.
@@ -29,6 +29,18 @@ const FAQS = [
     q: "회원 탈퇴는 어떻게 하나요?",
     a: "마이페이지 > 회원정보에서 탈퇴를 신청할 수 있어요. 탈퇴 시 보유 쿠폰·적립 혜택은 함께 소멸되니 참고해 주세요.",
   },
+  {
+    q: "쿠키는 어떤 목적으로 사용되나요?",
+    // 실제로는 브라우저 쿠키가 아니라 대부분 로컬 스토리지를 쓰고 있어서(그 사실을
+    // 숨기지 않고 그대로 밝힘), 처음 방문 시 뜨는 쿠키 동의 배너(CookieConsent.jsx)의
+    // 4개 카테고리와 정확히 같은 이름·순서로 설명한다. 이 사이트엔 실제 통계/광고
+    // 스크립트가 아직 없다는 것도 얼버무리지 않고 그대로 적는다.
+    a: "정확히는 브라우저 쿠키보다 브라우저 저장소(로컬 스토리지)를 주로 씁니다. 필수 쿠키는 로그인 유지, 화면 테마·독 표시 여부 같은 사이트 이용에 꼭 필요한 정보를 저장해요. 맞춤 설정 쿠키는 최근 검색어·최근 본 상품·찜한 상품처럼 회원님이 둘러보신 내용을 바탕으로 화면을 구성하는 데 씁니다. 통계 쿠키와 마케팅 쿠키는 카테고리만 마련해뒀을 뿐, 지금 집다움은 별도의 이용 통계 도구나 외부 광고·리타게팅 스크립트를 쓰지 않아 실제로 수집되는 데이터는 없어요. 나중에 그런 도구를 들이면 이 두 카테고리 동의를 받은 경우에만 사용합니다.",
+  },
+  {
+    q: "쿠키 사용 동의를 나중에 바꿀 수 있나요?",
+    a: "cookie-settings-reopen",
+  },
 ];
 
 function CustomerCenter() {
@@ -40,13 +52,6 @@ function CustomerCenter() {
   // 세로 스크롤에도 부드러운 관성을 붙인다.
   const pageRef = useRef(null);
   useNestedLenis(pageRef);
-
-  // Cart.jsx와 동일한 신호 — 마운트 시점에 남겨둬야 "뒤로가기" 버튼 클릭이든 브라우저
-  // 뒤로가기든 상관없이, "/" 도착 시 App.jsx의 DoorIntroController가 이 흔적을 보고
-  // 대문 애니메이션·인트로 영상 패널 없이 곧장 상품 목록 패널로 스크롤한다.
-  useEffect(() => {
-    sessionStorage.setItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE, NAV_ZONE.HOME);
-  }, []);
 
   const goBack = () => navigate("/");
 
@@ -64,6 +69,15 @@ function CustomerCenter() {
       return;
     }
     openChatbot();
+  };
+
+  // CookieConsent.jsx는 한 번 선택하면(localStorage.cookieConsent) 다시 안 뜬다 —
+  // 그 값을 지우고 새로고침하면 다음 렌더에서 다시 뜬다. FAQ 답변에서 "나중에
+  // 바꿀 수 있다"고 말해놓고 실제로 바꿀 방법이 없으면 안 되니, 그 방법 자체를
+  // 여기 버튼으로 만들어둔다.
+  const reopenCookieSettings = () => {
+    localStorage.removeItem("cookieConsent");
+    window.location.reload();
   };
 
   // metallicSilver — 상품 목록 그리드(Home.jsx #home-products)와 같은 파스텔 배경
@@ -95,7 +109,20 @@ function CustomerCenter() {
                   <span>{item.q}</span>
                   <LuChevronDown className="ccFaqChevron" />
                 </button>
-                {openIdx === i && <p className="ccFaqA">{item.a}</p>}
+                {openIdx === i && (
+                  item.a === "cookie-settings-reopen" ? (
+                    <p className="ccFaqA">
+                      네, 처음 방문 시 고르신 내용은 브라우저에 저장돼 재방문 시엔 다시 묻지
+                      않아요. 선택을 바꾸고 싶으면{" "}
+                      <button type="button" className="ccFaqInlineBtn" onClick={reopenCookieSettings}>
+                        쿠키 설정 다시 열기
+                      </button>
+                      를 눌러주세요.
+                    </p>
+                  ) : (
+                    <p className="ccFaqA">{item.a}</p>
+                  )
+                )}
               </li>
             ))}
           </ul>

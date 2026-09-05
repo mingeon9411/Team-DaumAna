@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 
 // Home.jsx 상품 목록과 같은 타이포 시스템 — 이 페이지도 그 스타일을 그대로 따른다.
 const SERIF = { fontFamily: "'GmarketSans', 'Noto Serif KR', serif" };
@@ -63,12 +62,6 @@ function Notice() {
   const [selectedTag, setSelectedTag] = useState("전체");
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
-
-  // CustomerCenter.jsx/Settings.jsx와 동일한 신호 — "목록으로" 클릭이든 브라우저
-  // 뒤로가기든, "/" 도착 시 대문 애니메이션·인트로 영상 없이 곧장 상품 목록으로.
-  useEffect(() => {
-    sessionStorage.setItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE, NAV_ZONE.HOME);
-  }, []);
 
   const tags = ["전체", ...new Set(NOTICES.map((n) => n.tag))];
   const filteredNotices = selectedTag === "전체" ? NOTICES : NOTICES.filter((n) => n.tag === selectedTag);

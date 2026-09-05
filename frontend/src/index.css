@@ -97,7 +97,6 @@ h1, h2, h3, h4, h5, h6, p, span, a, strong, em, li {
   transition: color 2.1s ease;
 }
 
-/* 스크롤바 기본: 투명 */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -106,14 +105,8 @@ h1, h2, h3, h4, h5, h6, p, span, a, strong, em, li {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: transparent;
-  border-radius: 3px;
-  transition: background 1.6s cubic-bezier(0, 0, 0.15, 1);
-}
-
-/* 스크롤 중일 때만 표시 */
-body.is-scrolling::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.25);
+  border-radius: 3px;
 }
 
 *:not(input):not(textarea):not([contenteditable="true"]) {

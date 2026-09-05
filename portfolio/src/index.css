@@ -4,8 +4,8 @@
 /* 집다움 프론트(frontend/src/index.css)와 동일한 자체 호스팅 폰트 — 사이트 전체
    워드마크·본문에 쓰는 브랜드 폰트라 여기서도 같은 파일을 그대로 재사용한다. */
 @font-face {
-  font-family: "TwayFly";
-  src: url("./assets/font/tway_fly.ttf") format("truetype");
+  font-family: "GmarketSans";
+  src: url("./assets/font/gmarket_sans_medium.woff") format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -27,7 +27,7 @@
   --color-accent: #a184e8;
   --color-accent-soft: #e4ecff;
   --color-line: rgba(161, 132, 232, 0.22);
-  --font-serif: "TwayFly", "Noto Sans KR", serif;
+  --font-serif: "GmarketSans", "Noto Sans KR", serif;
 }
 
 body {
@@ -39,7 +39,7 @@ body {
   background: linear-gradient(120deg, #ffe4f0 0%, #e4ecff 50%, #d9fbea 100%);
   background-attachment: fixed;
   color: var(--color-ink);
-  /* TwayFly는 워드마크/제목용 디스플레이 폰트라 굵고 커서, 본문에 깔면
+  /* GmarketSans는 워드마크/제목용 디스플레이 폰트라 굵고 커서, 본문에 깔면
      가독성이 떨어진다 — frontend(SERIF/SANS/MONO 상수)처럼 제목에만
      var(--font-serif)로 선택 적용하고, 본문 기본은 Noto Sans KR로 둔다. */
   font-family: "Noto Sans KR", system-ui, sans-serif;

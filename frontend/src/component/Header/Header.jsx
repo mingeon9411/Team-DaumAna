@@ -1,11 +1,9 @@
 import "./Header.css";
 import { useEffect, useRef, useState } from "react";
 
-import JDLogo from "../../assets/J.D 로고.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Search, Settings as SettingsIcon } from "lucide-react";
 import { getCartItems, logoutUser } from "../../api";
-import { NAV_FLAGS } from "../../utils/navFlags";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
@@ -14,9 +12,19 @@ import { getRecentSearches, addRecentSearch } from "../../utils/recentSearches";
 
 const SANS = { fontFamily: "'GmarketSans', 'Noto Sans KR', sans-serif" };
 
+// 9월 가을 시즌 연출 — 헤더 배너 위로 단풍잎이 흩날리며 떨어진다. Sidebar.css의
+// 옛 한국관 꽃잎 연출(khPetal)과 같은 방식: Math.random() 대신 인덱스 기반
+// 의사난수로 좌표·타이밍을 고정해 리렌더될 때마다 잎이 순간이동하지 않게 한다.
+const HEADER_LEAVES = Array.from({ length: 10 }, (_, i) => ({
+  left: (i * 9.7 + 4) % 100,
+  delay: (i * 0.83) % 8,
+  duration: 7 + ((i * 1.31) % 5),
+  scale: 0.6 + ((i * 0.43) % 0.6),
+  hue: i % 4,
+}));
+
 function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const [isFooterPanel, setIsFooterPanel] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const isCartPage = location.pathname === "/cart";
@@ -83,21 +91,6 @@ function Header() {
     };
   }, [isProductPage]);
 
-  // 예전엔 왼쪽 사이드바 독의 "회사 정보" 버튼이 하던 일 — 전자상거래법상 사업자
-  // 정보 표시 요건 때문에 어느 페이지에서든 닿을 수 있어야 한다. 사업자 정보는
-  // 이제 SiteFooter(룩북 패널 맨 아래 등)에 있으므로, 홈이면 바로 맨 끝까지 스크롤,
-  // 다른 페이지면 홈으로 이동 후 Sidebar.jsx가 PENDING_SCROLL_TO_END 신호를 보고
-  // 이어서 스크롤한다.
-  const goToBusinessInfo = () => {
-    if (isHome) {
-      window.lenis?.resize();
-      window.lenis?.scrollTo("end");
-      return;
-    }
-    sessionStorage.setItem(NAV_FLAGS.PENDING_SCROLL_TO_END, "1");
-    navigate("/");
-  };
-
   const handleLogout = async () => {
     const refresh = localStorage.getItem("refresh_token");
     try {
@@ -139,6 +132,16 @@ function Header() {
     return () => window.removeEventListener("recentsearchchange", sync);
   }, []);
 
+  // Home.jsx 상품 그리드 맨 위에도 같은 검색 트리거가 인라인으로 있다 —
+  // headerProductSearch(반대 방향: 여기 → Home.jsx)와 짝을 이루는 이벤트로,
+  // 그쪽 버튼을 눌러도 이 오버레이가 뜨게 한다. 검색 UI를 두 벌 따로 만들지
+  // 않고 이 오버레이 하나만 공유하기 위함.
+  useEffect(() => {
+    const open = () => setSearchOverlayOpen(true);
+    window.addEventListener("openHeaderSearchOverlay", open);
+    return () => window.removeEventListener("openHeaderSearchOverlay", open);
+  }, []);
+
   // 상품상세(.homeDetailPage)·상품목록(#home-products)·설정(.ssPage)·
   // 고객센터(.ccPage)는 전부 Lenis의 가로 스크롤에서 제외된
   // (data-lenis-prevent) 자기만의 세로 스크롤(overflow-y: auto) 영역이라
@@ -161,8 +164,8 @@ function Header() {
         // 가로 스냅 패널이 여러 개 더 있다 — 상품 그리드를 한 번 내려서 배너가
         // 뜬 뒤 오른쪽/왼쪽 다른 패널로 넘어가도 그 엘리먼트의 scrollTop 값은
         // 그대로 남아있어(가로 이동은 세로 스크롤을 초기화하지 않음), 배너가
-        // 계속 고정돼 보이는 버그가 있었다. isFooterPanel과 같은 방식으로
-        // "지금 실제로 보이는 패널이 상품 그리드인지"부터 확인한다.
+        // 계속 고정돼 보이는 버그가 있었다. "지금 실제로 보이는 패널이 상품
+        // 그리드인지"부터 확인한다.
         const isProductGridActive = productListEl
           ? Math.abs(productListEl.getBoundingClientRect().left) < window.innerWidth / 2
           : false;
@@ -179,13 +182,6 @@ function Header() {
       } else {
         setScrolled(window.scrollX > 50);
       }
-
-      // 푸터 패널에 도달했는지 — 헤더 로고는 그 패널에서만 숨긴다.
-      // (푸터 자체가 없는 라우트에서는 항상 false)
-      const footerPanel = document.querySelector(".footer");
-      setIsFooterPanel(
-        footerPanel ? footerPanel.getBoundingClientRect().left <= window.innerWidth / 2 : false
-      );
     };
 
     handleScroll();
@@ -235,6 +231,21 @@ function Header() {
       isProductPage ? "productPageHeader" : ""
     } ${isProductPage ? "homePageHeader" : ""} ${showExpandedNav ? "expanded" : ""}`}
     >
+      <div className="headerLeaves" aria-hidden="true">
+        {HEADER_LEAVES.map((l, i) => (
+          <span
+            key={i}
+            className={`headerLeaf headerLeaf-${l.hue}`}
+            style={{
+              left: `${l.left}%`,
+              animationDelay: `${l.delay}s`,
+              animationDuration: `${l.duration}s`,
+              "--headerLeafScale": l.scale,
+            }}
+          />
+        ))}
+      </div>
+
       {showExpandedNav && (
         <div className="headerLeft">
           <div className="headerSearchWrap">
@@ -255,11 +266,11 @@ function Header() {
         </div>
       )}
 
-      {!isFooterPanel && (
-        <Link to="/" className="logo" aria-label="집다움 홈">
-          <img src={JDLogo} alt="J.D" className="logoImg" />
-        </Link>
-      )}
+      {/* 예전엔 SiteFooter 패널에서만 숨겼는데(isFooterPanel), 로고가 스크롤 중에
+          잠깐씩 사라지는 게 오히려 어색해서 항상 보이게 되돌린다. */}
+      <Link to="/" className="logo" aria-label="집다움 홈">
+        <span className="logoText" style={SANS}>집다움</span>
+      </Link>
 
       {showExpandedNav && (
         <div className="headerRight" style={SANS}>
@@ -286,8 +297,6 @@ function Header() {
           <button type="button" onClick={() => navigate("/notice")} className="headerNavLink">공지사항</button>
           <span aria-hidden="true" className="headerNavDivider">|</span>
           <button type="button" onClick={() => navigate("/customer-center")} className="headerNavLink">고객센터</button>
-          <span aria-hidden="true" className="headerNavDivider">|</span>
-          <button type="button" onClick={goToBusinessInfo} className="headerNavLink">회사 정보</button>
         </div>
       )}
 

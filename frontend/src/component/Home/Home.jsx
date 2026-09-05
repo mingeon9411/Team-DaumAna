@@ -5,6 +5,7 @@ import "./Home.css";
 import ChatBot from "../MyPage/ChatBot";
 import LookbookViewer from "./LookbookViewer";
 import RecentlyViewedSidebar from "./RecentlyViewedSidebar";
+import HomeHeroBanner from "./HomeHeroBanner";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import SiteFooter from "../SiteFooter";
 import { getRecentlyViewed } from "../../utils/recentlyViewed";
@@ -59,6 +60,21 @@ import { useMyPageModal } from "../../context/MyPageModalContext";
 const SERIF = { fontFamily: "'GmarketSans', 'Noto Serif KR', serif" };
 const SANS = { fontFamily: "'GmarketSans', 'Noto Sans KR', sans-serif" };
 const MONO = { fontFamily: "'GmarketSans', 'DM Mono', monospace" };
+
+// 상품 배지(BESTSELLER/NEW/ECO)는 필터링·매칭 로직(ChatBot, Cart, 이 파일의
+// NEW_PRODUCT_TIPS 등)이 product.label 값 자체를 그대로 비교해서 쓰기 때문에
+// 데이터는 안 건드리고, 화면에 보여줄 때만 한글로 바꾼다(4060 사용자 직관성 피드백 반영).
+export const LABEL_KO = { BESTSELLER: "인기 상품", NEW: "신상품", ECO: "친환경" };
+export const labelKo = (label) => LABEL_KO[label] || label;
+
+// 상품 카드(이 파일)·상세페이지(HomeProductDetail.jsx) 둘 다 같은 라벨 뱃지
+// 색상을 쓴다 — labelKo와 같은 키를 쓰는 별도 맵이라, 새 라벨이 추가되면 여기도
+// 같이 채워야 한다(없으면 기본 색으로만 표시).
+export const LABEL_BADGE = {
+  BESTSELLER: { className: "text-amber-700 bg-amber-50 border-amber-200 dark:text-amber-300 dark:bg-amber-950/40 dark:border-amber-800/60" },
+  NEW: { className: "text-blue-700 bg-blue-50 border-blue-200 dark:text-blue-300 dark:bg-blue-950/40 dark:border-blue-800/60" },
+  ECO: { className: "text-emerald-700 bg-emerald-50 border-emerald-200 dark:text-emerald-300 dark:bg-emerald-950/40 dark:border-emerald-800/60" },
+};
 
 export const PRODUCTS = [
   { id: 1, no: "No.1", name: "북유럽풍 러그 B형", sub: "멀티 파스텔 아브스트랙트", price: "168,000", originalPrice: "198,000", label: "BESTSELLER",
@@ -246,6 +262,19 @@ const LOOKBOOK_PHOTOS = [
 
 const LOOKBOOK_PAGE_SIZE = 21;
 
+// 관리자가 신상품에 붙이는 스타일링 한마디 — 지금은 프론트 목업 데이터.
+// PRODUCTS의 label이 "NEW"인 상품 id에 매칭시켜두고, 해당하지 않는 상품은
+// 자동으로 팁 목록에서 빠진다(새 신상품이 들어오면 여기 한 줄만 추가하면 됨).
+// 예전엔 룩북 쪽 별도 페이지(/lookbook/tips)였는데, 상품 목록을 보다가 바로
+// 이어서 보는 게 자연스러워 상품 그리드 맨 아래로 옮겼다.
+const NEW_PRODUCT_TIPS = {
+  2: "라탄 케인 갓 사이로 새어나오는 그물무늬 빛은 벽에서 30cm 정도 띄워야 무늬가 온전히 살아납니다.",
+  3: "협탁 위보다 낮은 콘솔이나 바닥에 두면 마사 로프의 자연스러운 그림자가 더 길게 드리워집니다.",
+  6: "월넛 프레임은 원목 가구와, 라탄 등받이는 패브릭 소품과 번갈아 매치하면 질리지 않습니다.",
+  8: "가죽 손잡이는 시간이 지나면 짙어지니 처음엔 조금 밝은 톤의 옷·수건을 담아 대비를 주세요.",
+  9: "지오메트릭 패턴 러그는 가구를 적게 올릴수록 무늬가 도드라져 좁은 방에도 잘 어울립니다.",
+};
+
 function Hairline({ className = "" }) {
   return (
     <div
@@ -278,6 +307,7 @@ function ProductCard({ p, wished, cartCount, onToggleWish, onClick }) {
   const discountPct = hasDiscount ? Math.round((1 - priceNum / originalNum) * 100) : 0;
   const displayImage = p.colors ? p.colors[colorIdx].image : p.image;
   const displayAlt = p.colors ? p.colors[colorIdx].alt : p.alt;
+  const labelBadge = LABEL_BADGE[p.label];
 
   return (
     <article className="group cursor-pointer" onClick={onClick}>
@@ -337,14 +367,26 @@ function ProductCard({ p, wished, cartCount, onToggleWish, onClick }) {
           </span>
         )}
       </div>
-      <span className="text-[10px] text-muted-foreground block mb-1" style={MONO}>{p.no} · {p.label}</span>
-      <h4 className="text-sm font-medium text-foreground mb-0.5" style={SANS}>{p.name}</h4>
+      {/* 상세페이지(HomeProductDetail.jsx)와 같은 뱃지 — 라벨(색상은 LABEL_BADGE)과
+          무료배송을 알약 모양 태그로. p.no는 이 태그 줄 아래 상품명 위 자리를
+          잃은 대신 별 의미 없는 진열 번호라 그냥 뺐다. */}
+      <div className="flex items-center gap-1.5 mb-1.5">
+        {p.label && (
+          <span className={`text-[11px] font-semibold rounded-full px-2 py-0.5 border ${labelBadge?.className || "text-foreground border-border"}`} style={MONO}>
+            {labelKo(p.label)}
+          </span>
+        )}
+        <span className="text-[11px] font-medium text-muted-foreground rounded-full px-2 py-0.5 border border-border" style={MONO}>
+          무료배송
+        </span>
+      </div>
+      <h4 className="text-base font-semibold text-foreground mb-0.5" style={SANS}>{p.name}</h4>
       <div className="mt-1 flex flex-col items-end gap-1">
         <div className={`flex items-center gap-1.5 ${hasDiscount ? "" : "invisible"}`}>
-          <span className="text-[10px] font-bold text-white bg-[#c0392b] rounded px-1.5 py-0.5 tracking-wide" style={MONO}>
+          <span className="text-xs font-bold text-white bg-[#c0392b] rounded px-1.5 py-0.5 tracking-wide" style={MONO}>
             {discountPct}% OFF
           </span>
-          <span className="text-xs text-muted-foreground line-through" style={MONO}>₩{p.originalPrice || p.price}</span>
+          <span className="text-sm text-muted-foreground line-through" style={MONO}>₩{p.originalPrice || p.price}</span>
         </div>
         <span className="text-right text-2xl font-bold text-foreground" style={MONO}>₩{p.price}</span>
       </div>
@@ -355,9 +397,6 @@ function ProductCard({ p, wished, cartCount, onToggleWish, onClick }) {
 function Home() {
   const [wishlist, setWishlist] = useState([]);
   const [productSearchQuery, setProductSearchQuery] = useState("");
-  // 이 그리드 안쪽 상품 검색창 전용 "포커스 시 확대" 연출 — Header.jsx의 검색은
-  // 이제 이 방식이 아니라 풀스크린 모달(SearchOverlay.jsx)을 쓴다.
-  const [productSearchFocused, setProductSearchFocused] = useState(false);
   const [selectedTop, setSelectedTop] = useState("전체");
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [selectedMid, setSelectedMid] = useState("전체");
@@ -589,35 +628,31 @@ function Home() {
         onWheel={(e) => e.stopPropagation()}
         className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto overscroll-contain flex flex-col justify-start py-20 px-8"
       >
-        {/* z-30 — 아래 상품 그리드 래퍼도 z-10이라, 같은 값이면 DOM 순서상 나중에 오는
+        {/* z-40 — 아래 상품 그리드 래퍼도 z-10이라, 같은 값이면 DOM 순서상 나중에 오는
             그리드가 인기 검색어 드롭다운을 덮어버린다(같은 값끼리는 각자 안의 z-index가
-            아니라 그냥 뒤에 오는 요소가 이긴다). 확실히 더 높여서 덮이지 않게 함. */}
-        {/* Header.jsx 검색창과 동일한 스크림 — 확대된 검색창에 시선을 모은다.
-            이 패널은 배경이 밝은 파스텔 톤이라 헤더 배너(짙은 이미지/영상 위)와 같은
-            35%로는 딤이 거의 안 보여서, 여기만 더 짙게 준다. */}
-        <div
-          className={`fixed inset-0 z-30 bg-black/55 transition-opacity duration-300 ${productSearchFocused ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-          aria-hidden="true"
-        />
+            아니라 그냥 뒤에 오는 요소가 이긴다). 확실히 더 높여서 덮이지 않게 함.
+            Header.jsx의 헤더 트리거와 완전히 같은 패턴 — 그 자리에서 커지는 대신,
+            "openHeaderSearchOverlay" 이벤트로 Header.jsx의 풀스크린 검색 모달
+            (SearchOverlay)을 그대로 연다. 검색 UI를 두 벌 따로 만들지 않고 하나만
+            공유한다(예전엔 여기만 인라인 확대+스크림 방식이 남아있어서, 누르면 화면
+            전체가 어둡게 딤만 되고 정작 모달은 안 뜨는 것처럼 보였다). */}
         <div className="relative z-40 max-w-7xl mx-auto w-full mb-10 flex items-end justify-end gap-4 flex-wrap">
-          <div className={`relative w-full origin-top-right transition-all duration-300 ${productSearchFocused ? "sm:w-[420px] sm:scale-105" : "sm:w-[280px]"}`}>
+          <div className="relative w-full sm:w-70">
             <div className="flex items-center gap-2 border-b border-foreground pb-2">
-              <Search size={productSearchFocused ? 18 : 15} className="text-muted-foreground shrink-0 transition-all duration-300" />
-              <input
-                type="text"
-                value={productSearchQuery}
-                onChange={(e) => setProductSearchQuery(e.target.value)}
-                onFocus={() => setProductSearchFocused(true)}
-                onBlur={() => setProductSearchFocused(false)}
-                placeholder="상품명, 브랜드, 라벨 검색"
+              <button
+                type="button"
+                onClick={() => window.dispatchEvent(new Event("openHeaderSearchOverlay"))}
+                className="flex flex-1 min-w-0 items-center gap-2 text-left"
                 aria-label="전체 상품 검색"
-                className={`flex-1 bg-transparent text-foreground placeholder:text-muted-foreground outline-none transition-all duration-300 ${productSearchFocused ? "text-lg" : "text-sm"}`}
-                style={SANS}
-              />
+              >
+                <Search size={15} className="text-muted-foreground shrink-0" />
+                <span className="flex-1 min-w-0 truncate text-sm text-muted-foreground" style={SANS}>
+                  {productSearchQuery || "상품명, 브랜드, 라벨 검색"}
+                </span>
+              </button>
               {productSearchQuery && (
                 <button
                   type="button"
-                  onMouseDown={(e) => e.preventDefault()}
                   onClick={() => setProductSearchQuery("")}
                   aria-label="검색어 지우기"
                   className="text-muted-foreground hover:text-foreground transition-colors shrink-0"
@@ -681,6 +716,8 @@ function Home() {
               고객센터
             </button>
           </div>
+
+          <HomeHeroBanner />
 
           <div className="flex items-center gap-7 overflow-x-auto pb-1 border-b border-border">
             {[{ label: "전체" }, ...CATEGORY_TREE].map((top) => {
@@ -772,6 +809,44 @@ function Home() {
           ))}
         </div>
         )}
+
+        {/* 신상품 스타일링 팁 — 상품 목록을 다 훑어본 바로 다음 자리에 이어 붙인다
+            (예전엔 룩북 쪽 별도 페이지였음). 카테고리 필터와 무관하게 항상 전체
+            신상품 기준으로 보여준다. */}
+        {(() => {
+          const newTipProducts = PRODUCTS.filter((p) => p.label === "NEW" && NEW_PRODUCT_TIPS[p.id]);
+          if (newTipProducts.length === 0) return null;
+          return (
+            <div className="relative z-10 max-w-7xl mx-auto w-full mt-20">
+              <span className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase" style={MONO}>TIPS</span>
+              <h2 className="text-2xl md:text-3xl font-light mt-2 mb-3" style={SERIF}>신상품 스타일링 팁</h2>
+              <p className="text-sm text-muted-foreground mb-8 max-w-md">
+                이번에 새로 들어온 상품, 집다움 스타일팀이 짧게 코멘트를 남겼어요.
+              </p>
+              <Hairline className="mb-10" />
+              <div className="flex flex-col gap-6">
+                {newTipProducts.map((p) => (
+                  <div
+                    key={p.id}
+                    className="flex gap-5 items-start p-5 rounded-2xl border border-border hover:border-foreground/30 transition-colors cursor-pointer"
+                    onClick={() => navigate(`/item/${p.id}`)}
+                  >
+                    <div className="overflow-hidden rounded-xl bg-muted w-24 h-24 shrink-0">
+                      <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[10px] font-semibold text-foreground/70 border border-border rounded px-1.5 py-0.5" style={MONO}>
+                        NEW
+                      </span>
+                      <h3 className="text-base font-medium text-foreground mt-1.5 mb-1" style={SERIF}>{p.name}</h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{NEW_PRODUCT_TIPS[p.id]}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
 
         <SiteFooter />
       </section>
@@ -870,12 +945,13 @@ function Home() {
         />
       )}
 
-      {recentlyViewed.length > 0 && (
-        <RecentlyViewedSidebar
-          items={recentlyViewed}
-          onChange={() => setRecentlyViewed(getRecentlyViewed())}
-        />
-      )}
+      {/* 상품이 없어도(첫 방문 등) 맨 아래에 옮겨 붙은 십자패드(맨 위로/맨 아래로/
+          이전/다음 페이지)는 계속 떠야 하므로, 더는 items.length로 렌더 자체를
+          막지 않는다 — 뭘 보여줄지는 RecentlyViewedSidebar 내부에서 판단한다. */}
+      <RecentlyViewedSidebar
+        items={recentlyViewed}
+        onChange={() => setRecentlyViewed(getRecentlyViewed())}
+      />
 
       <ChatBot />
     </div>

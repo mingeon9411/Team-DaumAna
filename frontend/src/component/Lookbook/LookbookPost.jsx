@@ -1,8 +1,6 @@
-import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import { PRODUCTS } from "../Home/Home";
-import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 import { getPostById } from "./posts";
 import ImageHotspots from "./ImageHotspots";
 import SiteFooter from "../SiteFooter";
@@ -29,10 +27,6 @@ function LookbookPost() {
   const { id } = useParams();
   const navigate = useNavigate();
   const post = getPostById(id);
-
-  useEffect(() => {
-    sessionStorage.setItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE, NAV_ZONE.HOME);
-  }, []);
 
   if (!post) {
     return (

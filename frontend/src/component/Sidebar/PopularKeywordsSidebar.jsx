@@ -4,6 +4,8 @@ import "./PopularKeywordsSidebar.css";
 
 const PREVIEW_INTERVAL_MS = 2500;
 
+const SANS = { fontFamily: "'GmarketSans', 'Noto Sans KR', sans-serif" };
+
 /**
  * @typedef {"new" | "up" | "down" | "same"} KeywordStatus
  *
@@ -121,7 +123,7 @@ export default function PopularKeywordsSidebar({ data = MOCK_KEYWORDS, onSelect 
   if (!previewItem) return null;
 
   return (
-    <div className="relative mt-2" ref={wrapRef}>
+    <div className="relative mt-2" ref={wrapRef} style={SANS}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}

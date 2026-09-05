@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sendEmailOTP, verifyEmailOTP } from '../../api';
 import { useAuthModal } from '../../context/AuthModalContext';
-import { NAV_FLAGS, NAV_ZONE } from '../../utils/navFlags';
 import './EmailVerify.css';
 
 function EmailVerify() {
@@ -111,9 +110,6 @@ function EmailVerify() {
                 window.dispatchEvent(new Event('authchange'));
             }
             verifiedRef.current = true;
-            // DoorIntroController가 이 흔적을 보고 대문 애니메이션(패널 1) 없이
-            // 곧장 상품 그리드 패널로 점프한다 — Login.jsx의 "돌아가기"와 동일한 메커니즘.
-            sessionStorage.setItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE, NAV_ZONE.HOME);
             navigate('/', { replace: true });
         } catch (err) {
             setError(err.response?.data?.error || '인증에 실패했습니다.');

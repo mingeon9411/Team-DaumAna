@@ -1,12 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Lenis from "lenis";
 import Snap from "lenis/snap";
 
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "./component/ScrollToTop";
-import DoorIntro from "./component/DoorIntro/DoorIntro";
 import Header from "./component/Header/Header";
-import Sidebar from "./component/Sidebar/Sidebar";
 import MyPage from "./component/MyPage/MyPage";
 import WithdrawModal from "./component/WithDraw/WithdrawModal";
 import Home from "./component/Home/Home";
@@ -24,55 +22,14 @@ import Checkout from "./component/Checkout/Checkout";
 import OrderComplete from "./component/OrderComplete/OrderComplete";
 import Lookbook from "./component/Lookbook/Lookbook";
 import LookbookPost from "./component/Lookbook/LookbookPost";
-import LookbookTips from "./component/Lookbook/LookbookTips";
 import AuthModal from "./component/AuthModal/AuthModal";
 import AuthPage from "./component/AuthModal/AuthPage";
+import CookieConsent from "./component/CookieConsent/CookieConsent";
 import { AuthModalProvider } from "./context/AuthModalContext";
 import { MyPageModalProvider } from "./context/MyPageModalContext";
 import { WithdrawModalProvider } from "./context/WithdrawModalContext";
 import { createPagingController } from "./utils/snapSetup";
-import { NAV_FLAGS, NAV_ZONE } from "./utils/navFlags";
 import "./App.css";
-
-function DoorIntroController() {
-  const { pathname, key } = useLocation();
-  const [showDoorIntro, setShowDoorIntro] = useState(false);
-
-  useEffect(() => {
-    if (pathname !== "/") {
-      setShowDoorIntro(false);
-      return;
-    }
-
-    // HomeProductDetail은 마운트될 때 productDetailReturnZone을 남겨둔다.
-    // 여기서 그 흔적을 보고 "방금 그 상세페이지를 보다가 여기로 돌아왔다"를
-    // 판단하면, "목록으로" 버튼 클릭(PUSH)이든 브라우저 뒤로가기(POP)든
-    // 트리거 방식과 무관하게 동일하게 처리된다 — 대문 애니메이션 없이 곧장
-    // 상품 목록으로. 이 페이지에 도착한 이상(스킵 대상이든 아니든) 다음
-    // 방문에 잘못 재사용되지 않도록 항상 지운다.
-    const returnZone = sessionStorage.getItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE);
-    sessionStorage.removeItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE);
-    // 독의 "회사 정보" 버튼으로 홈까지 넘어온 경우(Sidebar.jsx가 세팅, 아직 소비 전)도
-    // 대문 애니메이션 없이 곧장 맨 끝(룩북 패널의 SiteFooter)으로 스크롤되어야 하므로 스킵 대상.
-    // 값은 Sidebar.jsx가 마운트 후에 읽고 지우므로 여기서는 확인만 하고 지우지 않는다.
-    const pendingScrollToEnd = sessionStorage.getItem(NAV_FLAGS.PENDING_SCROLL_TO_END);
-    const isProductDetailReturn = returnZone === NAV_ZONE.HOME;
-    const skip = isProductDetailReturn || !!pendingScrollToEnd;
-
-    // doorintroend 이벤트(사이드바 펼침 등)는 건너뛸 때도 그대로 쏴줘야 하므로
-    // 지연시간만 0으로 줄인다(리스너가 붙을 다음 틱까지 기다리기 위해 0ms 유지).
-    setShowDoorIntro(!skip);
-    const timer = setTimeout(() => {
-      setShowDoorIntro(false);
-      window.dispatchEvent(new Event("doorintroend"));
-    }, skip ? 0 : 7700);
-    return () => clearTimeout(timer);
-  }, [key, pathname]);
-
-  if (!showDoorIntro) return null;
-
-  return <DoorIntro lightEffect="sparkle" />;
-}
 
 function App() {
     const lenisRef = useRef(null);
@@ -83,12 +40,15 @@ function App() {
   // 컴포넌트의 useEffect가 초기 body.dark 클래스를 적용했다 — 그 독이
   // 사라지고 다크모드 토글이 /settings로 옮겨간 지금은, 사용자가 /settings를
   // 아직 안 들어간 세션에서도 저장된 값이 바로 적용되도록 여기서 한 번 적용한다.
-  // 배경 톤(pastelLevel)도 같은 이유로 여기서 적용해야 한다 — Settings.jsx의
-  // choosePastelLevel은 클릭 시점에만 body.dataset.pastel을 설정해서, 그 값이
-  // localStorage에는 저장돼도 새로고침/재방문 시 body에 다시 적용되지 않아
-  // 골랐던 배경 톤이 "진하게"(기본값)로 돌아가 보이는 문제가 있었다.
+  // 배경 색상(bgColor)·톤(pastelLevel)도 같은 이유로 여기서 적용해야 한다 —
+  // Settings.jsx의 chooseBgColor/choosePastelLevel은 클릭 시점에만
+  // body.dataset를 설정해서, 그 값이 localStorage에는 저장돼도 새로고침/재방문
+  // 시 body에 다시 적용되지 않아 골랐던 배경이 기본값("white", 화이트)으로
+  // 돌아가 보이는 문제가 있었다. 톤(deep/medium/light)은 색상이 "pastel"일
+  // 때만 실제로 쓰이지만, 값 자체는 항상 넣어둬도 무해하다.
   useEffect(() => {
     document.body.classList.toggle("dark", localStorage.getItem("darkMode") === "1");
+    document.body.dataset.bg = localStorage.getItem("bgColor") || "white";
     document.body.dataset.pastel = localStorage.getItem("pastelLevel") || "deep";
   }, []);
 
@@ -175,11 +135,10 @@ function App() {
     <MyPageModalProvider>
     <WithdrawModalProvider>
     <ScrollToTop lenis={lenisRef} controller={controllerRef} panelsUnsub={panelsUnsubRef} />
-    <DoorIntroController />
     <Header />
-    <Sidebar />
     <AuthModal />
     <WithdrawModal />
+    <CookieConsent />
 
     <div className="hTrack">
       <Routes>
@@ -191,7 +150,6 @@ function App() {
         <Route path="/email-verify" element={<EmailVerify />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/lookbook" element={<Lookbook />} />
-        <Route path="/lookbook/tips" element={<LookbookTips />} />
         <Route path="/lookbook/:id" element={<LookbookPost />} />
         <Route path="/customer-center" element={<CustomerCenter />} />
         <Route path="/notice" element={<Notice />} />

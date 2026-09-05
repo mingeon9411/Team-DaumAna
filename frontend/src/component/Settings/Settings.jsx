@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LuChevronLeft, LuSun, LuMoon, LuLayers, LuPalette, LuArrowUpToLine, LuClock } from "react-icons/lu";
 import "./Settings.css";
-import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 
 const RAIL_STYLES = [
   { id: "glass", label: "레인보우" },
@@ -10,7 +9,15 @@ const RAIL_STYLES = [
   { id: "pastel", label: "파스텔" },
 ];
 
-const PASTEL_LEVELS = [
+// 배경 색상 — 먼저 이 셋 중 하나를 고른다. "파스텔"을 고른 경우에만 아래
+// BG_TONES(진하기)가 추가로 뜬다 — 화이트/베이지는 단색이라 진하기 개념이 없다.
+const BG_COLORS = [
+  { id: "white", label: "화이트" },
+  { id: "beige", label: "베이지" },
+  { id: "pastel", label: "파스텔" },
+];
+
+const BG_TONES = [
   { id: "deep", label: "진하게" },
   { id: "medium", label: "보통" },
   { id: "light", label: "연하게" },
@@ -34,6 +41,11 @@ function Settings() {
   const [railStyle, setRailStyleState] = useState(
     () => localStorage.getItem("railStyle") || "glass"
   );
+  // 배경 색상(화이트/베이지/파스텔) — 먼저 고른다. 톤(진하기)은 파스텔을
+  // 골랐을 때만 의미가 있어 별도로 관리한다.
+  const [bgColor, setBgColorState] = useState(
+    () => localStorage.getItem("bgColor") || "white"
+  );
   const [pastelLevel, setPastelLevelState] = useState(
     () => localStorage.getItem("pastelLevel") || "deep"
   );
@@ -41,12 +53,6 @@ function Settings() {
   // 아예 없으면(기존 사용자) 기본 켬(true)으로 취급해 이전과 동일하게 보인다.
   const [showTopButton, setShowTopButtonState] = useState(() => readFlag("showTopButton"));
   const [showRecentDock, setShowRecentDockState] = useState(() => readFlag("showRecentDock"));
-
-  // Cart.jsx/CustomerCenter.jsx와 동일한 신호 — "목록으로" 클릭이든 브라우저
-  // 뒤로가기든, "/" 도착 시 대문 애니메이션·인트로 영상 없이 곧장 상품 목록으로.
-  useEffect(() => {
-    sessionStorage.setItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE, NAV_ZONE.HOME);
-  }, []);
 
   const goBack = () => navigate("/");
 
@@ -62,6 +68,12 @@ function Settings() {
     setRailStyleState(id);
     localStorage.setItem("railStyle", id);
     window.dispatchEvent(new Event("railstylechange"));
+  };
+
+  const chooseBgColor = (id) => {
+    setBgColorState(id);
+    document.body.dataset.bg = id;
+    localStorage.setItem("bgColor", id);
   };
 
   const choosePastelLevel = (id) => {
@@ -139,22 +151,37 @@ function Settings() {
               <LuPalette className="ssRowIcon" />
               <div>
                 <p className="ssRowTitle">배경 톤</p>
-                <p className="ssRowDesc">상품 목록·설정 화면 같은 파스텔 배경의 진하기입니다.</p>
+                <p className="ssRowDesc">상품 목록·설정 화면 배경 색상입니다. 파스텔을 고르면 아래에서 진하기도 정할 수 있어요.</p>
               </div>
             </div>
             <div className="ssChipRow">
-              {PASTEL_LEVELS.map((p) => (
+              {BG_COLORS.map((c) => (
                 <button
-                  key={p.id}
+                  key={c.id}
                   type="button"
-                  className={`ssChip${pastelLevel === p.id ? " active" : ""}`}
-                  onClick={() => choosePastelLevel(p.id)}
+                  className={`ssChip${bgColor === c.id ? " active" : ""}`}
+                  onClick={() => chooseBgColor(c.id)}
                 >
-                  <span className={`ssChipSwatch ssChipSwatch-${p.id}`} />
-                  {p.label}
+                  <span className={`ssChipSwatch ssChipSwatch-${c.id}`} />
+                  {c.label}
                 </button>
               ))}
             </div>
+            {bgColor === "pastel" && (
+              <div className="ssChipRow ssChipRowSub">
+                {BG_TONES.map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    className={`ssChip${pastelLevel === t.id ? " active" : ""}`}
+                    onClick={() => choosePastelLevel(t.id)}
+                  >
+                    <span className={`ssChipSwatch ssChipSwatch-${t.id}`} />
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </section>
 

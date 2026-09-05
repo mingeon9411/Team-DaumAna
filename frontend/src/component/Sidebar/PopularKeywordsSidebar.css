@@ -24,27 +24,46 @@ body.dark .popularKeywordMiniBar:hover {
   background: rgba(255, 255, 255, 0.07);
 }
 
-/* 전체 순위 펼침 패널 — 은은한 연파스텔 그러데이션. #home-products 배경(.metallicSilver)보다
-   항상 한 단계 연하게 둬서, 독의 "배경 톤" 설정이 뭐든 서로 묻히지 않고 카드가 붕 떠 보인다. */
+/* 전체 순위 펼침 패널 — #home-products 배경(.metallicSilver)보다 항상 한 단계
+   연하게 둬서, 독의 "배경 톤" 설정이 뭐든 서로 묻히지 않고 카드가 붕 떠 보인다.
+   기본값(화이트)에서는 거의 무채색에 가까운 은은한 그러데이션, 베이지는 그
+   톤을 한 단계 더 연하게, 무지개톤 파스텔(deep/medium/light)을 명시적으로
+   고르면 예전 그대로의 조합이 나온다. */
 .popularKeywordDropdown {
   border: 6px solid transparent;
   background:
-    linear-gradient(120deg, #f8e9dc 0%, #e1e9f2 20%, #dff2e2 40%, #f8e9dc 55%, #e8e2f5 70%, #f5e1ec 85%, #f8e9dc 100%) padding-box,
-    linear-gradient(150deg, #e8e2f5 0%, #eab8d4 50%, #e8e2f5 100%) border-box;
+    linear-gradient(120deg, #ffffff 0%, #f7f7f8 20%, #fbfbfc 40%, #ffffff 55%, #f6f6f8 70%, #fafafa 85%, #ffffff 100%) padding-box,
+    linear-gradient(150deg, #ececed 0%, #d7d9dc 50%, #ececed 100%) border-box;
   background-size: 300% 300%, 100% 100%;
   animation: metallicShine 7s ease-in-out infinite;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+body[data-bg="beige"] .popularKeywordDropdown {
+  background:
+    linear-gradient(120deg, #faf6ee 0%, #f6efe0 20%, #f9f4ea 40%, #faf6ee 55%, #f5eee0 70%, #f8f2e4 85%, #faf6ee 100%) padding-box,
+    linear-gradient(150deg, #f5eee0 0%, #ecdfc8 50%, #f5eee0 100%) border-box;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+body[data-bg="pastel"] .popularKeywordDropdown {
+  background:
+    linear-gradient(120deg, #f8e9dc 0%, #e1e9f2 20%, #dff2e2 40%, #f8e9dc 55%, #e8e2f5 70%, #f5e1ec 85%, #f8e9dc 100%) padding-box,
+    linear-gradient(150deg, #e8e2f5 0%, #eab8d4 50%, #e8e2f5 100%) border-box;
   box-shadow: 0 16px 44px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-body[data-pastel="medium"] .popularKeywordDropdown,
-body[data-pastel="light"] .popularKeywordDropdown {
+body[data-bg="pastel"][data-pastel="medium"] .popularKeywordDropdown,
+body[data-bg="pastel"][data-pastel="light"] .popularKeywordDropdown {
   background:
     linear-gradient(120deg, #f9f4ef 0%, #eef2f7 20%, #f0f7f0 40%, #f9f4ef 55%, #f2eef7 70%, #f7f0f5 85%, #f9f4ef 100%) padding-box,
     linear-gradient(150deg, #f2eef7 0%, #f7f0f5 50%, #f2eef7 100%) border-box;
   box-shadow: 0 16px 44px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
-body.dark .popularKeywordDropdown {
+/* Home.css .metallicSilver의 다크모드 규칙과 같은 이유로 [data-bg][data-pastel]
+   존재 여부를 같이 걸어 특이도를 medium/light 규칙과 맞춘다. */
+body.dark[data-bg][data-pastel] .popularKeywordDropdown {
   background:
     linear-gradient(120deg, #1b1d21 0%, #2a2d33 20%, #35383f 40%, #1b1d21 55%, #35383f 70%, #2a2d33 85%, #1b1d21 100%) padding-box,
     linear-gradient(150deg, #4a4f58 0%, #8b929b 50%, #4a4f58 100%) border-box;

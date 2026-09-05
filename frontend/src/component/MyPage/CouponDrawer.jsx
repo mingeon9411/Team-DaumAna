@@ -16,7 +16,7 @@ function CouponDrawer({ coupons, onClose }) {
         {/* 헤더 */}
         <div className="cdHeader">
           <div>
-            <p className="cdHeaderSub">MY COUPON</p>
+            <p className="cdHeaderSub">내 쿠폰</p>
             <h2 className="cdHeaderTitle">보유 쿠폰</h2>
           </div>
           <button className="cdClose" onClick={onClose} aria-label="닫기">✕</button>

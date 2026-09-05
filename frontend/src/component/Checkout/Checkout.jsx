@@ -50,6 +50,21 @@ function Checkout() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Cart.jsx에서 미리 적용해본 쿠폰이 있으면 이어서 적용한다 — handleApplyCouponCode와
+  // 완전히 같은 방식(validateCoupon 재검증)이라 myCoupons 목록이 아직 안 와도 된다.
+  // 실패해도 조용히 무시 — 여기서 다시 직접 고르거나 코드를 입력하면 된다.
+  useEffect(() => {
+    const code = state?.couponCode;
+    if (!code || !items || items.length === 0) return;
+    const amount = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
+    validateCoupon(code, amount)
+      .then((res) => {
+        setAppliedCoupon({ ...res.data, code, name: res.data.coupon_name });
+        setDiscountAmount(res.data.discount_amount);
+      })
+      .catch(() => {});
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   if (!items || items.length === 0) {
     return null;
   }

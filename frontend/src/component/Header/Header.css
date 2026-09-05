@@ -73,13 +73,36 @@ body.dark {
 }
 
 /* 상품목록(홈)·상품상세·설정 배너 공통 — 상품목록 페이지 배경이 var(--background)가
-   아니라 파스텔 그러데이션(Home.css .metallicSilver)이라, 배너도 같은 그러데이션·
-   같은 애니메이션을 그대로 가져와 색이 어긋나지 않게 한다. 상품상세 페이지 배경은
-   여전히 흰색/var(--background) 그대로지만, 배너는 목록 페이지와 똑같이 보이도록
-   맞춘다(요청: 상세페이지 배너도 목록 페이지 배너와 동일하게). 설정 페이지는 실제로
-   같은 .metallicSilver 배경을 쓰므로 자연스럽게 맞아떨어진다. 진하기(deep/medium/
-   light)는 독의 "배경 톤" 설정(body[data-pastel])을 .metallicSilver와 동일하게 따라간다. */
+   아니라 Home.css .metallicSilver라, 배너도 같은 그러데이션·같은 애니메이션을
+   그대로 가져와 색이 어긋나지 않게 한다. 상품상세 페이지 배경은 여전히 흰색/
+   var(--background) 그대로지만, 배너는 목록 페이지와 똑같이 보이도록 맞춘다
+   (요청: 상세페이지 배너도 목록 페이지 배너와 동일하게). 설정 페이지는 실제로
+   같은 .metallicSilver 배경을 쓰므로 자연스럽게 맞아떨어진다. 기본값은 화이트
+   (.metallicSilver와 동일하게 투명 — 아래 var(--background) 참고), 베이지·
+   무지개톤 파스텔(deep/medium/light)은 독의 "배경 톤" 설정에서 색상을 먼저
+   고른 뒤(body[data-bg]) 필요하면 진하기(body[data-pastel])까지 고른다.
+   화이트는 사이트 공용 --background(#f4f0e8, 살짝 크림톤) 대신 완전한
+   흰색(#ffffff)을 그대로 박아 쓴다 — "화이트"라는 이름값에 맞게. */
 .header.homePageHeader::before {
+  background: #ffffff;
+}
+
+body[data-bg="beige"] .header.homePageHeader::before {
+  background: linear-gradient(
+    115deg,
+    #f8f2e6 0%,
+    #f3ead9 20%,
+    #f7f1e4 35%,
+    #f8f2e6 50%,
+    #f2e8d6 65%,
+    #f6efe0 80%,
+    #f8f2e6 100%
+  );
+  background-size: 160% 160%;
+  animation: pastelSheenDrift 48s ease-in-out infinite;
+}
+
+body[data-bg="pastel"] .header.homePageHeader::before {
   background: linear-gradient(
     115deg,
     #f7ddc9 0%,
@@ -94,7 +117,7 @@ body.dark {
   animation: pastelSheenDrift 48s ease-in-out infinite;
 }
 
-body[data-pastel="medium"] .header.homePageHeader::before {
+body[data-bg="pastel"][data-pastel="medium"] .header.homePageHeader::before {
   background: linear-gradient(
     115deg,
     #f8e9dc 0%,
@@ -107,7 +130,7 @@ body[data-pastel="medium"] .header.homePageHeader::before {
   );
 }
 
-body[data-pastel="light"] .header.homePageHeader::before {
+body[data-bg="pastel"][data-pastel="light"] .header.homePageHeader::before {
   background: linear-gradient(
     115deg,
     #f9f4ef 0%,
@@ -120,7 +143,10 @@ body[data-pastel="light"] .header.homePageHeader::before {
   );
 }
 
-body.dark .header.homePageHeader::before {
+/* Home.css .metallicSilver의 다크모드 규칙과 같은 이유로 [data-bg][data-pastel]
+   존재 여부를 같이 걸어 특이도를 medium/light 규칙과 맞춘다 — 안 그러면
+   다크모드 + 파스텔(보통/연하게) 조합에서 이 규칙이 밀린다. */
+body.dark[data-bg][data-pastel] .header.homePageHeader::before {
   background: linear-gradient(
     115deg,
     #060d1e 0%,
@@ -134,16 +160,75 @@ body.dark .header.homePageHeader::before {
   background-size: 160% 160%;
 }
 
-/* 로고는 평소 흰색 고정(brightness(0) invert(1)) — 히어로 위에선 잘 보이지만
-   배너가 뜨면 라이트 테마 배경(밝은 크림톤)과 겹쳐 안 보인다. 배너가 뜬 라이트
-   테마에서만 로고 원래(잉크 블랙) 색으로 되돌린다. 다크 테마는 배너도 어두운
-   톤이라 흰 로고가 그대로 잘 보이므로 다시 흰색으로 되돌려둔다. */
-.header.productPageHeader.scrolled .logoImg {
-  filter: none;
+/* 9월 가을 시즌 연출 — 헤더 배너(::before) 위, 로고/검색/내비(z-index 1001)
+   아래에서 단풍잎이 떨어진다. Sidebar.css의 옛 한국관 꽃잎(.khPetal)과 같은
+   레시피(흩날리며 회전+낙하, 인덱스 기반 의사난수로 좌표 고정)를 가을 톤으로 옮김.
+   배너가 있는 페이지(홈/상품상세/설정/고객센터)에선 배너(::before)와 똑같은
+   타이밍으로 최상단에선 숨었다가 스크롤해야 같이 나타난다 — 배너가 없는
+   페이지(장바구니/룩북 등)는 기본값(opacity:1)대로 항상 보인다. */
+.headerLeaves {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.9s cubic-bezier(0.05, 0.7, 0.1, 1);
 }
 
-body.dark .header.productPageHeader.scrolled .logoImg {
-  filter: brightness(0) invert(1);
+.header.productPageHeader .headerLeaves {
+  opacity: 0;
+}
+
+.header.productPageHeader.scrolled .headerLeaves {
+  opacity: 1;
+}
+
+/* 모양은 단풍잎 실루엣(잎맥처럼 뾰족한 톱니 윤곽) — 색은 CSS 그러데이션으로
+   칠하고, 실제 잎 모양은 mask로 오려낸다(별도 이미지 에셋 없이 인라인 SVG). */
+.headerLeaf {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12,1L9.75,5.25L5,4.5L6.5,9L2,11L6.25,13.5L4.5,18L9.5,17L12,22L14.5,17L19.5,18L17.75,13.5L22,11L17.5,9L19,4.5L14.25,5.25L12,1Z'/%3E%3C/svg%3E") no-repeat center / contain;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12,1L9.75,5.25L5,4.5L6.5,9L2,11L6.25,13.5L4.5,18L9.5,17L12,22L14.5,17L19.5,18L17.75,13.5L22,11L17.5,9L19,4.5L14.25,5.25L12,1Z'/%3E%3C/svg%3E") no-repeat center / contain;
+  animation-name: headerLeafFall;
+  animation-timing-function: ease-in;
+  animation-iteration-count: infinite;
+}
+
+.headerLeaf-0 { background: radial-gradient(circle at 32% 30%, #f7c873, #d9822c 55%, #a85a1a 100%); }
+.headerLeaf-1 { background: radial-gradient(circle at 32% 30%, #f4a15c, #c1552f 55%, #8a3a1f 100%); }
+.headerLeaf-2 { background: radial-gradient(circle at 32% 30%, #f0d179, #d9a441 55%, #a8752a 100%); }
+.headerLeaf-3 { background: radial-gradient(circle at 32% 30%, #e08a6a, #a8432a 55%, #7a2c19 100%); }
+
+@keyframes headerLeafFall {
+  0% {
+    transform: translate(0, -10px) rotate(0deg) scale(var(--headerLeafScale, 1));
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate(10px, 45px) rotate(170deg) scale(var(--headerLeafScale, 1));
+  }
+  85% {
+    opacity: 0.75;
+  }
+  100% {
+    transform: translate(-8px, 100px) rotate(320deg) scale(var(--headerLeafScale, 1));
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .headerLeaf {
+    display: none;
+  }
 }
 
 .logo {
@@ -314,11 +399,17 @@ body.dark .header.productPageHeader.scrolled .logoImg {
   opacity: 0.7;
 }
 
-.logoImg {
-  height: 104px;
-  width: auto;
+/* J.D 로고 이미지가 (필터 색상 계산이 어긋나) 흰 배경 위에서 흰색으로 그대로
+   묻혀 안 보이던 문제가 있어 텍스트 워드마크로 교체. 스크롤 상태와 무관하게
+   항상 검은색 고정 — 배너가 없는 화면(홈 영상 인트로 등 어두운 배경)에서는
+   묻혀 안 보일 수 있는데, 그건 검은색 고정 요청에 따른 트레이드오프. */
+.logoText {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #000000;
+  white-space: nowrap;
   display: block;
-  filter: brightness(0) invert(1);
 }
 
 /* ─────────────────────────────────────────

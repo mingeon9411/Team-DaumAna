@@ -190,6 +190,20 @@
   gap: 8px;
 }
 
+/* 배경 톤 — "파스텔"을 골랐을 때만 그 아래 붙는 진하기(deep/medium/light) 줄.
+   위 색상 줄에 딸린 하위 선택지라는 걸 보이려고 살짝 들여쓰고 여백을 준다.
+   버튼 3개는 내용 길이대로 들쭉날쭉 붙지 않도록 flex:1로 폭을 맞춰 균등한
+   간격으로 나란히 놓는다(위 색상 줄은 항목 수가 늘 수 있어 그대로 둔다). */
+.ssChipRowSub {
+  padding-left: 16px;
+  margin-top: 2px;
+}
+
+.ssChipRowSub .ssChip {
+  flex: 1;
+  justify-content: center;
+}
+
 .ssChip {
   display: flex;
   align-items: center;
@@ -233,6 +247,15 @@
 
 .ssChipSwatch-pastel {
   background: linear-gradient(120deg, #ffe4f0 0%, #e4ecff 50%, #d9fbea 100%);
+}
+
+.ssChipSwatch-white {
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+.ssChipSwatch-beige {
+  background: linear-gradient(120deg, #f8f2e6 0%, #f3ead9 50%, #f6efe0 100%);
 }
 
 .ssChipSwatch-deep {

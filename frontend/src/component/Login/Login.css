@@ -495,3 +495,22 @@
     padding: 28px 22px;
   }
 }
+
+/* 로그인/회원가입이 독립 페이지(AuthPage.jsx)로 옮겨간 뒤 이 카드가 화면 대부분을
+   차지하게 됐는데, railStyle(독 테두리 프리셋)의 독자적인 무지개/메탈릭/파스텔
+   배경을 그대로 쓰면 설정 페이지(Settings)에서 고른 배경 톤과 안 맞고 따로 논다.
+   .authPage 안에서는 카드 자체 배경을 비워서 뒤에 깔린 .authPage.metallicSilver
+   (Settings와 동일한 배경 톤)가 그대로 비쳐 보이게 한다 — 위 railStyle-* 규칙과
+   특이도(클래스 2~3개)가 같거나 더 세게 만들고, 이 파일 맨 끝에 둬서 순서로 이긴다. */
+.authPage .loginBox.railStyle-glass,
+.authPage .loginBox.railStyle-metallic,
+.authPage .loginBox.railStyle-pastel {
+  background: transparent;
+  animation: none;
+}
+
+body.dark .authPage .loginBox.railStyle-glass,
+body.dark .authPage .loginBox.railStyle-metallic,
+body.dark .authPage .loginBox.railStyle-pastel {
+  background: transparent;
+}

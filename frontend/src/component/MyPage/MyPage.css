@@ -84,10 +84,10 @@
 
 .mypageHeroSub {
   margin: 0 0 10px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.18em;
-  color: #c47a3a;
+  color: #a35d24;
 }
 
 .welcomeText {
@@ -173,7 +173,8 @@
 
 .userInfoGrid strong {
   text-align: right;
-  font-size: 17px;
+  font-size: 19px;
+  font-weight: 800;
   text-decoration: underline;
   color: var(--foreground);
 }
@@ -230,8 +231,15 @@
 }
 
 .orderStatus strong {
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 900;
+  opacity: 0.7;
+}
+
+/* 진행 중인 단계(0건이 아닌 상태)만 또렷하게 강조해 한눈에 들어오게 한다 */
+.orderStatus strong.active {
+  opacity: 1;
+  color: #ffd166;
 }
 
 .emptyText {
@@ -1700,6 +1708,9 @@ body.dark .orderStatus {
 }
 body.dark .orderStatus strong {
   color: #f0dbb0;
+}
+body.dark .orderStatus strong.active {
+  color: #ffd166;
 }
 
 body.dark .myCouponCountBar strong,
