@@ -10,7 +10,7 @@ import Lenis from "lenis";
 // 같은 부드러운 관성을 준다. wrapper=content=같은 엘리먼트로 두면 Lenis가
 // DOM을 새로 감싸지 않고 그 엘리먼트의 실제 scrollTop을 그대로 부드럽게
 // 몰아준다(가상 스크롤/transform 방식이 아니라 네이티브 스크롤을 보간).
-// duration/smoothWheel 값은 KoreanHall.jsx의 페이지 전용 Lenis와 맞춘 것 —
+// duration/smoothWheel 값은 사이트의 다른 페이지 전용 Lenis 인스턴스와 맞춘 것 —
 // 같은 사이트 안에서 패널마다 관성 느낌이 다르면 어색하다.
 export function useNestedLenis(ref, { enabled = true } = {}) {
   useEffect(() => {

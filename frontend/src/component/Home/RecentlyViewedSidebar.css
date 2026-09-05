@@ -171,52 +171,6 @@ body.dark .recentDock.railStyle-pastel {
     linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
 }
 
-/* ── 한국관 전용 테마 (RecentlyViewedSidebar variant="korean-hall") ──
-   사용자가 고른 유리/메탈릭/파스텔 독 스타일과 무관하게, 한국관 챗봇·인기
-   검색어와 같은 한지 종이색 + 오방색(청/백/적/흑/황) 테마로 항상 고정한다.
-   railStyle-* 규칙과 클래스 개수(specificity)가 같으므로, 이 블록을 파일
-   맨 뒤에 둬서 캐스케이드 순서로 이긴다(같은 방식을 KoreanHall.css에서도 씀). */
-.recentDock.recentDockKoreanHall {
-  border-width: 4px;
-  background:
-    linear-gradient(rgba(248, 241, 227, 0.6), rgba(248, 241, 227, 0.6)) padding-box,
-    linear-gradient(150deg, #2a4d8f 0%, #f5f1ea 25%, #a6342a 50%, #1c1a16 75%, #c9a227 100%) border-box;
-  background-size: 100% 100%, 100% 100%;
-  backdrop-filter: blur(20px) saturate(130%);
-  -webkit-backdrop-filter: blur(20px) saturate(130%);
-  animation: none;
-  box-shadow: 0 8px 32px rgba(30, 20, 10, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.5);
-}
-.recentDock.recentDockKoreanHall.styleSwitching {
-  animation: recentDockStyleSwap 2s ease;
-}
-
-body.dark .recentDock.recentDockKoreanHall {
-  background:
-    linear-gradient(rgba(20, 14, 8, 0.58), rgba(20, 14, 8, 0.58)) padding-box,
-    linear-gradient(150deg, #3f5f9e 0%, #2b2013 25%, #b8453a 50%, #14100a 75%, #d6a86a 100%) border-box;
-  background-size: 100% 100%, 100% 100%;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(214, 168, 106, 0.12);
-}
-
-/* 상품 썸네일 테두리도 무채색 대신 은은한 적색 톤으로 */
-.recentDockKoreanHall .recentDockItemImg {
-  border-color: rgba(166, 52, 42, 0.28);
-}
-body.dark .recentDockKoreanHall .recentDockItemImg {
-  border-color: rgba(214, 168, 106, 0.32);
-}
-
-/* 토글/전체삭제 아이콘 호버 시 강조색을 적색 계열로 */
-.recentDockKoreanHall .recentDockToggle:hover,
-.recentDockKoreanHall .recentDockItems > button:hover {
-  color: #a6342a;
-}
-body.dark .recentDockKoreanHall .recentDockToggle:hover,
-body.dark .recentDockKoreanHall .recentDockItems > button:hover {
-  color: #d98a7a;
-}
-
 /* 좁은 화면에서는 헤더 바로 아래(예전엔 top-32=128px 고정값)에 떠 있으면 화면
    위쪽에 붕 뜬 것처럼 보이고, 아이템 이미지(64px)도 과하게 크다 — 가장자리에
    붙이고 살짝 축소한다. right는 데스크톱(right-1.5, railTopBtnWrap과 중심

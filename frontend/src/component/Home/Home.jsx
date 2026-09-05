@@ -247,14 +247,6 @@ const LOOKBOOK_PHOTOS = [
 
 const LOOKBOOK_PAGE_SIZE = 21;
 
-// 한국관 에세이(4페이지) 배경 위에 흩날리는 무궁화 꽃잎
-const ESSAY_PETALS = Array.from({ length: 16 }, (_, i) => ({
-  left: (i * 6.3 + 2) % 100,
-  delay: (i * 0.78) % 9,
-  duration: 9 + ((i * 1.63) % 5),
-  scale: 0.7 + ((i * 0.47) % 0.7),
-}));
-
 function Hairline({ className = "" }) {
   return (
     <div
@@ -533,90 +525,14 @@ function Home() {
     return () => io.disconnect();
   }, [doorIntroDone]);
 
-  // 두 번째(한국관 배너) 영상("jipdaum-hanok.mp4") — 이 페이지에 처음 들어올 때 딱
-  // 한 번만 재생하고, 끝나면 왼쪽에 한국관으로 초대하는 에세이가 펼쳐진다.
-  const introVideo4Ref = useRef(null);
-  const [introVideo4Ended, setIntroVideo4Ended] = useState(false);
-  const introVideo4Started = useRef(false);
-
   // #home-products는 App.jsx의 가로 Lenis를 안 타는 패널이라(data-lenis-prevent)
   // 기본값이 네이티브 스크롤이다 — 나머지 사이트와 같은 부드러운 관성 스크롤을
   // 주기 위해 이 패널 하나에만 스코프된 두 번째 Lenis를 붙인다.
   const productGridRef = useRef(null);
   useNestedLenis(productGridRef);
 
-  useEffect(() => {
-    const el = document.getElementById("home-essay-4");
-    if (!el) return;
-
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting || introVideo4Started.current) return;
-        introVideo4Started.current = true;
-        introVideo4Ref.current?.play().catch(() => {});
-        io.disconnect();
-      },
-      { threshold: 0.5 }
-    );
-
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  // 첫 번째 인트로 영상이 끝나 에세이가 펼쳐진 뒤 7초 있다가, 사용자가 아직
-  // 그 페이지에 머물러 있으면 두 번째(한국관 배너) 인트로 페이지로 스크롤한다.
-  useEffect(() => {
-    if (!introVideoEnded) return;
-
-    const holdTimer = setTimeout(() => {
-      const essayEl = document.getElementById("home-essay");
-      const stillOnEssay = essayEl && Math.abs(essayEl.getBoundingClientRect().left) < 50;
-      if (stillOnEssay && window.lenis) {
-        const target = document.querySelectorAll("[data-hsnap]")[1];
-        if (target) {
-          window.lenis.resize();
-          window.lenis.scrollTo(target, {
-            duration: 5.3,
-            easing: (t) => 1 - Math.pow(1 - t, 3),
-            onComplete: () => {
-              // 두 번째 영상은 한 번만 재생하므로, 이미 재생을 시작했다면 다시 되돌리지 않는다.
-              if (introVideo4Started.current) return;
-              introVideo4Started.current = true;
-              introVideo4Ref.current?.play().catch(() => {});
-            },
-          });
-        }
-      }
-    }, 7000);
-
-    return () => clearTimeout(holdTimer);
-  }, [introVideoEnded]);
-
-  // 두 번째(한국관 배너) 영상도 끝나고 에세이가 펼쳐진 뒤 7초 있다가, 사용자가 아직
-  // 그 페이지에 머물러 있으면 상품 페이지로 스크롤한다.
-  useEffect(() => {
-    if (!introVideo4Ended) return;
-
-    const holdTimer = setTimeout(() => {
-      const essayEl = document.getElementById("home-essay-4");
-      const stillOnEssay = essayEl && Math.abs(essayEl.getBoundingClientRect().left) < 50;
-      if (stillOnEssay && window.lenis) {
-        const target = document.querySelectorAll("[data-hsnap]")[2];
-        if (target) {
-          window.lenis.resize();
-          window.lenis.scrollTo(target, {
-            duration: 5.3,
-            easing: (t) => 1 - Math.pow(1 - t, 3),
-          });
-        }
-      }
-    }, 7000);
-
-    return () => clearTimeout(holdTimer);
-  }, [introVideo4Ended]);
-
   const scrollToProductGrid = () => {
-    const target = document.querySelectorAll("[data-hsnap]")[2];
+    const target = document.querySelectorAll("[data-hsnap]")[1];
     if (!target) return;
     if (window.lenis) {
       window.lenis.resize();
@@ -783,76 +699,6 @@ function Home() {
         </div>
       </section>
 
-      {/* KOREAN HALL BANNER — 전체 상품(검색) 페이지 바로 앞에 배치. 처음엔 한옥 영상이
-          화면 전체를 채우고, 영상이 끝나면 왼쪽에 한국관으로 초대하는 에세이가 펼쳐진다 */}
-      <section id="home-essay-4" data-hide-header data-hsnap className="w-screen h-screen shrink-0 overflow-hidden flex flex-row text-foreground">
-        <div
-          className="sparkleBg hanjiMesh relative h-full flex flex-col items-start justify-center overflow-hidden"
-          style={{
-            width: introVideo4Ended ? "50%" : "0%",
-            opacity: introVideo4Ended ? 1 : 0,
-            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 1.2s ease-in-out 0.5s",
-          }}
-        >
-          <div className="essayPetals" aria-hidden="true">
-            {ESSAY_PETALS.map((p, i) => (
-              <span
-                key={i}
-                className="essayPetal"
-                style={{
-                  left: `${p.left}%`,
-                  animationDelay: `${p.delay}s`,
-                  animationDuration: `${p.duration}s`,
-                  "--petalScale": p.scale,
-                }}
-              />
-            ))}
-          </div>
-
-          <div className="relative z-10 w-full max-w-md px-16">
-            <p className="text-xs tracking-[0.25em] uppercase text-muted-foreground mb-5 whitespace-nowrap" style={MONO}>
-              THE KOREAN HALL
-            </p>
-            <h3 className="text-3xl md:text-4xl font-light leading-snug mb-6 whitespace-nowrap" style={SERIF}>
-              집다움 한국관으로
-              <br />
-              오세요
-            </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm mb-10 whitespace-nowrap">
-              한지, 나전, 도자의 결을 담은 한국 전통의 미감.
-              <br />
-              한국관에서 집다움만의 공간을 만나보세요.
-            </p>
-            <button
-              type="button"
-              onClick={() => navigate("/korean-hall")}
-              className="px-8 py-3.5 bg-foreground text-background text-sm font-medium tracking-wide hover:opacity-85 transition-opacity whitespace-nowrap"
-              style={SANS}
-            >
-              한국관 바로가기 →
-            </button>
-          </div>
-        </div>
-
-        <div
-          className="relative h-full overflow-hidden"
-          style={{
-            width: introVideo4Ended ? "50%" : "100%",
-            transition: "width 1.6s cubic-bezier(0.22, 1, 0.36, 1)",
-          }}
-        >
-          <video
-            ref={introVideo4Ref}
-            className="w-full h-full object-cover"
-            src="/videos/jipdaum-hanok.mp4"
-            muted
-            playsInline
-            preload="auto"
-            onEnded={() => setIntroVideo4Ended(true)}
-          />
-        </div>
-      </section>
-
       {/* PRODUCT GRID */}
       <section
         id="home-products"
@@ -936,8 +782,8 @@ function Home() {
                 ` (${Object.values(cartCounts).reduce((sum, n) => sum + n, 0)})`}
             </button>
             <span aria-hidden="true" className="text-border">|</span>
-            <button type="button" onClick={() => navigate("/korean-hall")} className="hover:text-foreground transition-colors">
-              한국관
+            <button type="button" onClick={() => navigate("/lookbook")} className="hover:text-foreground transition-colors">
+              룩북
             </button>
             <span aria-hidden="true" className="text-border">|</span>
             <button type="button" onClick={() => navigate("/notice")} className="hover:text-foreground transition-colors">
@@ -1057,6 +903,20 @@ function Home() {
         className="metallicSilver w-screen h-screen shrink-0 overflow-y-auto overscroll-contain flex flex-col justify-start"
       >
         <div className="max-w-7xl mx-auto px-8 py-20 w-full">
+          <div className="flex items-end justify-between gap-4 flex-wrap mb-6">
+            <div>
+              <span className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase" style={MONO}>LOOKBOOK</span>
+              <h2 className="text-2xl font-light mt-1" style={SERIF}>리빙 갤러리</h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => navigate("/lookbook")}
+              className="flex items-center gap-1 text-xs font-medium text-foreground hover:opacity-70 transition-opacity"
+              style={SANS}
+            >
+              상품으로 보는 룩북 <ChevronRight size={13} />
+            </button>
+          </div>
           <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 gap-2">
             {lookbookPhotos.map((src, i) => (
               <div

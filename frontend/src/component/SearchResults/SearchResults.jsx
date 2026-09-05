@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { searchProducts } from '../../api';
-import localProducts from '../../data/products';
 import './SearchResults.css';
 
 function SearchResults() {
@@ -49,10 +48,10 @@ function SearchResults() {
             <ul className="srGrid">
                 {products.map((product) => (
                     <li key={product.id} className="srCard">
-                        <Link to={`/product/${product.id}`} className="srCardLink">
+                        <Link to={`/item/${product.id}`} className="srCardLink">
                             <div className="srImgWrap">
                                 <img
-                                    src={localProducts.find(p => p.name === product.name)?.image || product.thumbnail_url || 'https://placehold.co/400x400?text=No+Image'}
+                                    src={product.thumbnail_url || 'https://placehold.co/400x400?text=No+Image'}
                                     alt={product.name}
                                     className="srImg"
                                 />

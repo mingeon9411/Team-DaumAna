@@ -102,8 +102,8 @@ export const deleteCartItem = (itemId) => API.delete('/cart', { data: { item_id:
 // [상품 API]
 export const searchProducts = (query) => API.get(`/products?search=${encodeURIComponent(query)}`);
 export const getProductDetail = (id) => API.get(`/products/${id}`);
-// collection: "main"(메인 페이지 PRODUCTS) | "korean_hall". 이름/가격/설명/썸네일을
-// DB에서 받아와 프론트 로컬 데이터(이미지 import, 인테리어 컷, 뱃지 등)에 덮어씌우는 용도.
+// collection: "main"(메인 페이지 PRODUCTS). 이름/가격/설명/썸네일을 DB에서 받아와
+// 프론트 로컬 데이터(이미지 import, 인테리어 컷, 뱃지 등)에 덮어씌우는 용도.
 export const getProductsByCollection = (collection) => API.get(`/products?collection=${encodeURIComponent(collection)}`);
 
 // [리뷰 API]
@@ -138,10 +138,8 @@ export const validateCoupon = (code, order_amount) =>
   API.post('/coupons/validate', { code, order_amount });
 
 // [챗봇 API] history는 멀티턴 문맥 유지를 위해 함께 보낸다 (캡차 게이트는 없음 — ChatController 참고).
-// channel은 어느 페이지 챗봇인지("korean-hall" | undefined = 기본 쇼핑몰) — 서버가 상품 검색
-// 범위(collection)를 그 문맥에 맞게 고정하는 데 쓴다.
-export const sendChatMessage = (message, history, channel) =>
-  API.post('/chat', { message, history, channel });
+export const sendChatMessage = (message, history) =>
+  API.post('/chat', { message, history });
 
 // [소셜 로그인 code 교환 → Spring Boot /api/auth]
 export const socialExchange = (code) =>

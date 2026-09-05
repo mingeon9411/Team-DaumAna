@@ -40,17 +40,6 @@
   100% { background-position: 100% 70%; }
 }
 
-/* 한국관 — 라이트모드에서만 홀로그램 대신 한지 질감 배경 (다크모드는 기존 홀로그램 유지) */
-.doorIntro.hanji:not(.dark) {
-  background:
-    radial-gradient(circle at 50% 48%, rgba(59, 41, 20, 0.32) 0%, rgba(59, 41, 20, 0) 32%),
-    repeating-linear-gradient(115deg, rgba(120, 90, 50, 0.06) 0px, rgba(120, 90, 50, 0.06) 1px, transparent 1px, transparent 3px),
-    repeating-linear-gradient(25deg, rgba(120, 90, 50, 0.05) 0px, rgba(120, 90, 50, 0.05) 1px, transparent 1px, transparent 4px),
-    radial-gradient(circle at 50% 45%, #f3ead2 0%, #e8dcb8 55%, #d3c092 100%);
-  background-size: auto;
-  animation: mistDissolve 7.5s ease forwards;
-}
-
 /* 다크모드에서는 안개를 옅게 눌러 별빛이 가려지지 않게 함 */
 .doorIntro.dark .mistLayer {
   opacity: 0.28;

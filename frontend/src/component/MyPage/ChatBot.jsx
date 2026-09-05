@@ -12,7 +12,6 @@ import { NAV_FLAGS } from "../../utils/navFlags";
 import { PRODUCTS } from "../Home/Home";
 import { TERMS_OF_SERVICE, PRIVACY_POLICY } from "../../data/legalContent";
 import JDLogo from "../../assets/J.D 로고.svg";
-import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
 
 const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 const SPRING_URL = import.meta.env.VITE_SPRING_API_URL || "http://localhost:8081";
@@ -33,10 +32,9 @@ const WITHDRAW_KEYWORDS = /회원탈퇴|탈퇴할래|탈퇴하고\s?싶|탈퇴�
 
 // 로그인 계정의 대화 기록을 페이지 이동/챗봇 재오픈에도 유지하는 모듈 스코프 저장소.
 // 새로고침하면 초기화된다("메모리에 저장" 요구사항) — 로그아웃하면 clearChatMemory()가 비운다.
-// variant("default" | "korean-hall")별로 따로 저장해 메인/한국관 챗봇 기록이 섞이지 않는다.
-const chatMemory = {};
+const chatMemory = { messages: null };
 function clearChatMemory() {
-  for (const k of Object.keys(chatMemory)) delete chatMemory[k];
+  chatMemory.messages = null;
 }
 
 const QUICK_REPLIES = ["배송 조회", "반품·교환 안내", "회원 등급 혜택", "매장 위치 안내"];
@@ -541,7 +539,7 @@ function BuyPanel({ item, onClose, onPaid }) {
   const displaySub = selectedColor?.label || item.sub;
 
   // 상세 설명 하이라이트 — HomeProductDetail.jsx와 동일한 방식으로 spec 문자열을 쪼갠다.
-  // spec이 있는 카탈로그(메인)에서만 의미가 있고, 한국관은 longDesc 자체가 이미 상세 설명이라 생략.
+  // spec 필드가 있는 상품에서만 의미가 있다.
   const materialText = item.spec?.split("MATERIAL :")[1]?.trim();
   const sizeText = item.spec?.split("·")[0]?.replace("SIZE :", "").trim();
   const highlights = item.spec
@@ -696,14 +694,11 @@ function BuyPanel({ item, onClose, onPaid }) {
   );
 }
 
-// catalog: 상품 추천 패널이 검색할 상품 목록 (라우트별로 카탈로그가 분리돼 있어 기본값은 메인 페이지 PRODUCTS).
-// detailBasePath: 카드 클릭 시 이동할 상세페이지 경로 접두사 — 메인은 /item, 한국관은 /product.
-// variant: "korean-hall"이면 ChatBot.css의 .chatBotKoreanHall 테마(한지톤+오방색)가 적용된다.
-// botName / greeting: 헤더 이름과 첫 인사말 — 페이지별로 챗봇 정체성을 다르게 줄 때 사용.
+// catalog: 상품 추천 패널이 검색할 상품 목록. detailBasePath: 카드 클릭 시 이동할
+// 상세페이지 경로 접두사. botName / greeting: 헤더 이름과 첫 인사말.
 function ChatBot({
   catalog = PRODUCTS,
   detailBasePath = "/item",
-  variant = "default",
   botName = "집다움 챗봇",
   greeting = DEFAULT_GREETING,
 }) {
@@ -711,9 +706,9 @@ function ChatBot({
   const [open, setOpen] = useState(false);
   const [loggedIn, setLoggedIn] = useState(() => !!localStorage.getItem("access_token"));
   const [messages, setMessages] = useState(() => {
-    // 로그인 상태면 저장해둔 이 챗봇(variant)의 대화 기록을 복원 — 없으면 인사말만.
+    // 로그인 상태면 저장해둔 대화 기록을 복원 — 없으면 인사말만.
     if (loggedIn) {
-      const saved = chatMemory[variant]?.messages;
+      const saved = chatMemory.messages;
       return saved?.length ? saved : [{ id: 0, role: "bot", text: greeting, time: Date.now() }];
     }
     // 비회원 — 인사말 다음에 브랜드 소개, 그다음 회원가입 유도 버튼까지 먼저 보여준다.
@@ -755,8 +750,8 @@ function ChatBot({
 
   // 로그인 상태에서만 대화 내용을 모듈 메모리에 계속 반영한다.
   useEffect(() => {
-    if (loggedIn) chatMemory[variant] = { messages };
-  }, [messages, loggedIn, variant]);
+    if (loggedIn) chatMemory.messages = messages;
+  }, [messages, loggedIn]);
 
   // 결제 패널(PortOne)·회원가입 패널(hCaptcha)은 화면 좌표에 고정으로 뜨는 외부 팝업을
   // 띄운다 — AuthModalContext가 로그인/회원가입 모달에서 이미 쓰는 것과 같은 이유로,
@@ -822,10 +817,10 @@ function ChatBot({
     setInput("");
     setLoading(true);
     try {
-      const res = await sendChatMessage(text, history, variant);
+      const res = await sendChatMessage(text, history);
       setMessages((prev) => [...prev, { id: Date.now() + 1, role: "bot", text: res.data.reply, time: Date.now() }]);
-      // 챗봇이 실제로 검색해서 찾은 상품이 있으면(예: "한국관 상품 뭐가 있어" 같은 일반 질문도
-      // 포함) 로컬 키워드 매칭(matchProducts) 결과를 실제 검색 결과로 덮어써서 화면과 챗봇
+      // 챗봇이 실제로 검색해서 찾은 상품이 있으면(예: "요즘 인기 상품 뭐가 있어" 같은 일반
+      // 질문도 포함) 로컬 키워드 매칭(matchProducts) 결과를 실제 검색 결과로 덮어써서 화면과 챗봇
       // 답변이 항상 일치하게 한다. 못 찾았으면(products 없음) 로컬 매칭 결과를 그대로 둔다.
       if (res.data.products?.length > 0) {
         setBuyItem(null);
@@ -842,10 +837,7 @@ function ChatBot({
 
   return (
     <div
-      className={
-        "chatBotRoot" +
-        (variant === "korean-hall" ? " chatBotKoreanHall" : "")
-      }
+      className="chatBotRoot"
       // data-lenis-prevent — onWheel stopPropagation만으로는 부족했다(Sidebar.jsx의
       // sidebarRail/recentDock/railTopBtnWrap과 같은 이유). 이 FAB은 상품 목록
       // 페이지 위에 fixed로 떠 있어서, 이 위에서 휠을 굴리면 Lenis가 이 버튼을
@@ -859,7 +851,7 @@ function ChatBot({
           <div className="chatBotHeader">
             <div className="chatBotAvatar">
               <img
-                src={variant === "korean-hall" ? JipdaumHanokLogo : JDLogo}
+                src={JDLogo}
                 alt="집다움"
                 className="chatBotAvatarImg"
               />
@@ -877,7 +869,7 @@ function ChatBot({
                 {msg.role === "bot" && (
                   <span className="chatMsgAvatar">
                     <img
-                      src={variant === "korean-hall" ? JipdaumHanokLogo : JDLogo}
+                      src={JDLogo}
                       alt="집다움"
                       className="chatMsgAvatarImg"
                     />
@@ -905,7 +897,7 @@ function ChatBot({
               <div className="chatMsg bot">
                 <span className="chatMsgAvatar">
                   <img
-                    src={variant === "korean-hall" ? JipdaumHanokLogo : JDLogo}
+                    src={JDLogo}
                     alt="집다움"
                     className="chatMsgAvatarImg"
                   />
@@ -985,7 +977,7 @@ function ChatBot({
             </div>
             <div className="chatBotSideList" data-lenis-prevent>
               {panel.items.map((p) => {
-                // 카탈로그마다 price 표기가 다르다 (메인은 "328,000" 콤마 문자열, 한국관은 128000 숫자) —
+                // price가 "328,000" 콤마 문자열로 올 수도, 숫자로 올 수도 있어 —
                 // parseWon으로 한 번 숫자로 정규화한 뒤 toLocaleString으로 통일해서 표기한다.
                 const priceNum = parseWon(p.price);
                 const originalNum = p.originalPrice ? parseWon(p.originalPrice) : null;
@@ -1029,10 +1021,9 @@ function ChatBot({
         >
           <svg className="chatBotFabIcon" viewBox="0 0 24 24" fill="none">
             <defs>
-              {/* 집다움(메인)만 파스텔 — 한국관은 원래 실버 톤 유지 (variant 공용 컴포넌트라 여기서 분기) */}
               <linearGradient id="chatBotFabGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stopColor={variant === "korean-hall" ? "#eef0f2" : "#f7b8d8"} />
-                <stop offset="1" stopColor={variant === "korean-hall" ? "#8b9098" : "#c9baf7"} />
+                <stop offset="0" stopColor="#f7b8d8" />
+                <stop offset="1" stopColor="#c9baf7" />
               </linearGradient>
             </defs>
             <path d="M4 5.5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H10l-4.4 3.3A.6.6 0 0 1 4.7 19.3V16.5H6a2 2 0 0 1-2-2z" fill="url(#chatBotFabGrad)" />

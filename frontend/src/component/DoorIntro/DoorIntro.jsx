@@ -2,7 +2,7 @@ import "./DoorIntro.css";
 import { useEffect, useMemo, useState } from "react";
 import JDLogo from "../../assets/J.D 로고.svg";
 
-function DoorIntro({ logoLight = JDLogo, logoDark = JDLogo, lightEffect = "petals", theme = "holo" }) {
+function DoorIntro({ logoLight = JDLogo, logoDark = JDLogo, lightEffect = "petals" }) {
   const [darkMode, setDarkMode] = useState(
     () => document.body.classList.contains("dark")
   );
@@ -36,7 +36,7 @@ function DoorIntro({ logoLight = JDLogo, logoDark = JDLogo, lightEffect = "petal
   );
 
   return (
-    <div className={`doorIntro${theme === "hanji" ? " hanji" : ""}${darkMode ? " dark" : ""}`}>
+    <div className={`doorIntro${darkMode ? " dark" : ""}`}>
       <div className="mistLayer mistLayerA" />
       <div className="mistLayer mistLayerB" />
       <div className="mistLayer mistLayerC" />

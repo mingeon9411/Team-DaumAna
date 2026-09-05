@@ -24,89 +24,6 @@ body.dark .chatBotPanel {
     linear-gradient(150deg, #9c8fd4 0%, #7fd0ac 45%, #dd9ac0 100%) border-box;
 }
 
-/* ── 한국관 전용 테마 (ChatBot variant="korean-hall") ──
-   메인 페이지의 파스텔/메탈릭 톤 대신, 한국관 페이지가 이미 쓰고 있는
-   한지 종이색 + 오방색(청/백/적/흑/황) 조합을 그대로 가져와 한국관 안에서만 톤을 바꾼다.
-   CSS 변수를 .chatBotKoreanHall 스코프에서 재정의하는 방식이라 메인 챗봇에는 영향 없음. */
-.chatBotKoreanHall {
-  --chatbot-glass-bg: rgba(248, 241, 227, 0.86);
-  --chatbot-glass-border: rgba(166, 52, 42, 0.22);
-  --chatbot-bubble-bot-bg: rgba(255, 250, 240, 0.65);
-  --chatbot-bar-bg: rgba(255, 250, 240, 0.55);
-  --chatbot-accent-1: #a6342a;
-  --chatbot-accent-2: #c9a227;
-  --chatbot-accent-3: #7c261e;
-  --chatbot-fab-grad: linear-gradient(115deg, #f8ecd2, #d6a86a 25%, #a6342a 50%, #d6a86a 75%, #f8ecd2);
-}
-body.dark .chatBotKoreanHall {
-  --chatbot-glass-bg: rgba(20, 14, 8, 0.64);
-  --chatbot-glass-border: rgba(214, 168, 106, 0.26);
-  --chatbot-bubble-bot-bg: rgba(191, 203, 236, 0.06);
-  --chatbot-bar-bg: rgba(191, 203, 236, 0.05);
-  --chatbot-accent-1: #c2564a;
-  --chatbot-accent-2: #d6a86a;
-  --chatbot-accent-3: #7c261e;
-}
-
-.chatBotKoreanHall .chatBotPanel {
-  font-family: "TwayFly", "Noto Serif KR", "Song Myung", "Noto Sans KR", serif;
-  background:
-    linear-gradient(var(--chatbot-glass-bg), var(--chatbot-glass-bg)) padding-box,
-    linear-gradient(150deg, #2a4d8f 0%, #f5f1ea 25%, #a6342a 50%, #1c1a16 75%, #c9a227 100%) border-box;
-}
-body.dark .chatBotKoreanHall .chatBotPanel {
-  background:
-    linear-gradient(var(--chatbot-glass-bg), var(--chatbot-glass-bg)) padding-box,
-    linear-gradient(150deg, #3f5f9e 0%, #2b2013 25%, #b8453a 50%, #14100a 75%, #d6a86a 100%) border-box;
-}
-
-/* 아바타는 흑백 J.D 대신 집다움 한옥 컬러 로고를 그대로 보여준다 — 메인 챗봇 아바타에
-   걸려있는 brightness(0) invert(1)(흰 실루엣용)를 여기서만 해제. */
-.chatBotKoreanHall .chatBotAvatarImg,
-.chatBotKoreanHall .chatMsgAvatarImg {
-  filter: none;
-  width: 100%;
-  height: 100%;
-}
-
-/* 컬러 로고 뒤 배경도 오방색 그러데이션 대신 흰색으로 — 로고가 원형을 꽉 채우지
-   않아 가장자리에 배경이 비치는데, 붉은 그러데이션 위에서는 로고 색이 묻혔다. */
-.chatBotKoreanHall .chatBotAvatar,
-.chatBotKoreanHall .chatMsgAvatar {
-  background: #fff;
-}
-
-.chatBotKoreanHall .chatBotName,
-.chatBotKoreanHall .chatBotSideTitle,
-.chatBotKoreanHall .chatBotSideName {
-  font-family: "TwayFly", "Song Myung", "Noto Serif KR", serif;
-  letter-spacing: 0.02em;
-}
-
-/* 상품 카드 상단 오방색 라인 — 한국관 상품 그리드(.khImgWrap::after)와 같은 연출 */
-.chatBotKoreanHall .chatBotSideCard {
-  position: relative;
-  overflow: hidden;
-}
-.chatBotKoreanHall .chatBotSideCard::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #2a4d8f 0%, #f5f1ea 25%, #a6342a 50%, #1c1a16 75%, #c9a227 100%);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.chatBotKoreanHall .chatBotSideCard:hover::before {
-  opacity: 0.85;
-}
-
-body.dark .chatBotKoreanHall .chatBotSideDiscount {
-  color: #d98a7a;
-}
-
 @keyframes bubbleIn {
   from { opacity: 0; transform: translateY(6px) scale(0.98); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
@@ -174,15 +91,10 @@ body.dark .chatBotKoreanHall .chatBotSideDiscount {
   position: absolute;
   inset: -6px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(200, 205, 212, 0.6), transparent 70%);
+  background: radial-gradient(circle, rgba(247, 184, 216, 0.55), transparent 70%);
   filter: blur(6px);
   animation: fabGlow 2.6s ease-in-out infinite;
   pointer-events: none;
-}
-
-/* 집다움(메인) 변형만 파스텔 글로우 — 한국관은 원래의 실버 글로우 그대로 둔다 */
-.chatBotRoot:not(.chatBotKoreanHall) .chatBotFabWrap::before {
-  background: radial-gradient(circle, rgba(247, 184, 216, 0.55), transparent 70%);
 }
 
 .chatBotFab {

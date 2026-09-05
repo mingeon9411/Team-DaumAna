@@ -1,33 +1,23 @@
 import "./Cart.css";
 import { useEffect, useState, useCallback } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Check, Trash2, ShoppingBag, Ticket, ChevronDown } from "lucide-react";
 import { getCartItems, updateCartItem, deleteCartItem, getMyCoupons } from "../../api";
-import koreanHallProducts from "../../data/products";
-import { PRODUCTS as homeProducts } from "../Home/Home";
+import { PRODUCTS as products } from "../Home/Home";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 
 function Cart() {
   const navigate = useNavigate();
-  const location = useLocation();
-  // 모달 시절엔 현재 열려있는 페이지(/korean-hall)로 구역을 판단했지만, 이제 카트
-  // 자체가 페이지(/cart, /korean-hall/cart)라 자기 경로로 판단한다 — checkout과 동일한 규칙.
-  const isKoreanHall = location.pathname.startsWith("/korean-hall");
-  // 한국관/메인은 상품 id가 겹쳐도 서로 다른 상품이므로, 현재 페이지에 맞는 목록에서만 대체 이미지를 찾는다.
-  const products = isKoreanHall ? koreanHallProducts : homeProducts;
   const { openLogin } = useAuthModal();
-  const goBack = () => navigate(isKoreanHall ? "/korean-hall" : "/");
+  const goBack = () => navigate("/");
 
-  // ProductDetail.jsx와 같은 신호 재사용 — 마운트 시점에 남겨둬야 닫기 버튼 클릭이든
-  // 브라우저 뒤로가기든 상관없이, "/"·"/korean-hall" 도착 시 DoorIntroController가 이
+  // HomeProductDetail.jsx와 같은 신호 재사용 — 마운트 시점에 남겨둬야 닫기 버튼
+  // 클릭이든 브라우저 뒤로가기든 상관없이, "/" 도착 시 DoorIntroController가 이
   // 흔적을 보고 대문 애니메이션·기본 패널 없이 곧장 상품 목록으로 스크롤한다.
   useEffect(() => {
-    sessionStorage.setItem(
-      NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE,
-      isKoreanHall ? NAV_ZONE.KOREAN_HALL : NAV_ZONE.HOME
-    );
-  }, [isKoreanHall]);
+    sessionStorage.setItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE, NAV_ZONE.HOME);
+  }, []);
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -127,7 +117,7 @@ function Cart() {
   // 갖고 있어 별도 API 없이도 가능). 담은 상품은 제외하고 최대 5개.
   // ponytail: 카테고리 매칭 휴리스틱 — 실사용 데이터 기반 추천이 필요해지면 백엔드
   // 주문 이력 집계 API로 교체.
-  const detailBasePath = isKoreanHall ? "/product" : "/item";
+  const detailBasePath = "/item";
   const cartProductIds = new Set(cartItems.map((i) => i.product_id));
   const cartCategories = new Set(
     cartItems.map((i) => products.find((p) => p.id === i.product_id)?.category).filter(Boolean)
@@ -139,21 +129,17 @@ function Cart() {
   const formatPrice = (price) =>
     (typeof price === "number" ? price : Number(String(price).replace(/,/g, ""))).toLocaleString();
 
-  // 한국관 상품은 백엔드 Product 데이터를 신뢰하지 않는다(id 충돌 + 로컬 파일 경로가
-  // 그대로 저장돼 있어 이미지 URL로 못 씀) — 항상 로컬 카탈로그 이미지를 우선한다.
   const toCheckoutItem = (item) => ({
     id: item.product_id,
     name: item.product_name,
     price: item.price,
-    image: isKoreanHall
-      ? products.find((p) => p.id === item.product_id)?.image
-      : item.image,
+    image: item.image,
     quantity: item.quantity,
     option_id: item.option_id || null,
   });
 
   const goToCheckout = (items) => {
-    navigate(isKoreanHall ? "/korean-hall/checkout" : "/checkout", { state: { cartItems: items } });
+    navigate("/checkout", { state: { cartItems: items } });
   };
 
   const handleBuySelected = () => {
@@ -170,8 +156,8 @@ function Cart() {
   };
 
   return (
-    <main className={`cartPage${isKoreanHall ? " koreanHallCart" : " metallicSilver"}`} data-hsnap data-lenis-prevent>
-      <div className={`cartInner${isKoreanHall ? " koreanHallCart" : ""}`}>
+    <main className="cartPage metallicSilver" data-hsnap data-lenis-prevent>
+      <div className="cartInner">
         <button type="button" className="cartModalClose" onClick={goBack} aria-label="닫기">
           ×
         </button>
@@ -261,11 +247,7 @@ function Cart() {
 
                     <div className="cartItemThumb">
                       <img
-                        src={
-                          isKoreanHall
-                            ? products.find((p) => p.id === item.product_id)?.image
-                            : item.image
-                        }
+                        src={item.image}
                         alt={item.product_name}
                         onError={(e) => {
                           const local = products.find((p) => p.id === item.product_id);

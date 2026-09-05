@@ -51,16 +51,6 @@
   100% { opacity: 1;    transform: scale(1); }
 }
 
-/* 한국관 하단 기능바는 유리 대신 한지 톤의 따뜻한 배경 적용 — 맨 위로/맨 아래로
-   버튼은 한국관에서 애초에 렌더링되지 않으므로(Sidebar.jsx 조건부 렌더) 여기엔
-   포함하지 않는다. */
-.sidebarRail.koreanHallRail {
-  background: linear-gradient(135deg, #f8f1e3 0%, #efe2c9 100%);
-  border-color: rgba(180, 132, 74, 0.28);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
 /* ── 사이드바 스타일 프리셋 (팔레트 아이콘으로 선택) ──────────────────
    왼쪽 독(.sidebarRail)·우하단 맨 위로/맨 아래로 버튼(.railTopBtnWrap)이 항상
    같은 값을 쓰도록 selector를 묶어서 선언한다 — 따로 적으면 하나만 고치고
@@ -497,10 +487,6 @@ body.dark .khPetal:nth-child(12) { top: 40%; }
   transform: scale(1.08);
 }
 
-.sidebarRail.koreanHallRail .railBtn:hover {
-  background: var(--muted);
-}
-
 /* 호버 시 뜨는 라벨 툴팁 — 공통 스타일만 여기서 정의하고, 방향(위/오른쪽)은
    독마다 아래에서 따로 준다: 왼쪽 세로 독(.sidebarRail)은 옆으로 긴 형태라
    오른쪽으로, 오른쪽 하단 모서리에 붙는 맨 위로/맨 아래로 버튼(.railTopBtnWrap)은
@@ -574,12 +560,6 @@ body.dark .sidebarRail.railStyle-metallic .railBtn::after {
 
 body.dark .sidebarRail.railStyle-pastel .railBtn::after {
   background: linear-gradient(120deg, #3a2f4a 0%, #2a3550 50%, #223d38 100%);
-}
-
-.sidebarRail.koreanHallRail .railBtn::after {
-  background: var(--card);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
 }
 
 /* 개별 버튼 클릭 피드백 — 예전엔 80%까지 눌렸다가 118%까지 튀어오른 뒤
@@ -882,23 +862,11 @@ body.dark .railTopBtnWrap {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(150, 185, 255, 0.16);
 }
 
-/* 한국관 미니바는 다크모드에서도 은은한 등불빛 톤 유지 */
-body.dark .sidebarRail.koreanHallRail {
-  background: linear-gradient(135deg, #2b2013 0%, #1a1309 100%);
-  border-color: rgba(214, 168, 106, 0.24);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
 body.dark .railBtn {
   color: #c8d5f2;
 }
 
 body.dark .railBtn:hover {
-  background: rgba(150, 185, 255, 0.12);
-}
-
-body.dark .sidebarRail.koreanHallRail .railBtn:hover {
   background: rgba(150, 185, 255, 0.12);
 }
 
@@ -919,10 +887,6 @@ body.dark .railBtn::after {
   background: rgba(6, 13, 30, 0.96);
   border-color: rgba(150, 185, 255, 0.16);
   color: #c8d5f2;
-}
-
-body.dark .sidebarRail.koreanHallRail .railBtn::after {
-  background: rgba(6, 13, 30, 0.96);
 }
 
 /* 맨 위로/맨 아래로 버튼 — .railBtn 두 개를 감싸는 캡슐 하나만큼의 작은 독.

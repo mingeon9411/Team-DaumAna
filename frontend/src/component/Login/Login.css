@@ -85,30 +85,6 @@
       linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
   }
 
-  /* 한국관 스코프 로그인 — 독바 프리셋(레인보우/메탈릭/파스텔) 대신 한지 베이지 배경 +
-     오방색 오색띠 테두리로 고정. 프리셋 클래스가 같이 붙어 있어도 이겨야 하므로
-     railStyle-* 조합까지 같이 명시해 특이도를 맞춘다 */
-  .loginBox.koreanHallLogin,
-  .loginBox.railStyle-glass.koreanHallLogin,
-  .loginBox.railStyle-metallic.koreanHallLogin,
-  .loginBox.railStyle-pastel.koreanHallLogin {
-    background:
-      linear-gradient(160deg, #f6efdc 0%, #ecdfbd 55%, #e3d2a4 100%) padding-box,
-      linear-gradient(150deg, #2a4d8f 0%, #f5f1ea 25%, #a6342a 50%, #1c1a16 75%, #c9a227 100%) border-box;
-    background-size: 100% 100%, 100% 100%;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-  }
-
-  body.dark .loginBox.koreanHallLogin,
-  body.dark .loginBox.railStyle-glass.koreanHallLogin,
-  body.dark .loginBox.railStyle-metallic.koreanHallLogin,
-  body.dark .loginBox.railStyle-pastel.koreanHallLogin {
-    background:
-      linear-gradient(160deg, #2a2115 0%, #241d12 100%) padding-box,
-      linear-gradient(150deg, #2a4d8f 0%, #f5f1ea 25%, #a6342a 50%, #1c1a16 75%, #c9a227 100%) border-box;
-  }
-
     /* CustomerCenter.css의 .ccBackBtn과 같은 레시피 — 텍스트 링크 톤의 얇은 뒤로가기 */
   .loginBackBtn {
     display: flex;

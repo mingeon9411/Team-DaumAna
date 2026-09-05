@@ -11,7 +11,7 @@ import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 const FAQS = [
   {
     q: "배송은 얼마나 걸리나요?",
-    a: "결제 완료 후 평균 2~5일 내 출고돼요. 한국관 시공 상품은 별도 일정 협의 후 진행됩니다.",
+    a: "결제 완료 후 평균 2~5일 내 출고돼요.",
   },
   {
     q: "교환·반품은 어떻게 하나요?",
@@ -37,7 +37,7 @@ function CustomerCenter() {
   const { openLogin } = useAuthModal();
 
   // data-lenis-prevent로 전역 가로 Lenis(App.jsx)는 건너뛰므로, 이 페이지 전용
-  // 세로 스크롤에도 KoreanHall.jsx와 같은 부드러운 관성을 붙인다.
+  // 세로 스크롤에도 부드러운 관성을 붙인다.
   const pageRef = useRef(null);
   useNestedLenis(pageRef);
 
@@ -115,7 +115,7 @@ function CustomerCenter() {
             <button type="button" className="ccConsultCard ccConsultCardBtn" onClick={openChatbot}>
               <LuMessageCircle className="ccConsultIcon" />
               <h3>채팅 상담</h3>
-              <p>메인·한국관 화면의<br />채팅 아이콘을 눌러주세요</p>
+              <p>화면 우측 하단<br />채팅 아이콘을 눌러주세요</p>
               <span className="ccConsultMeta">평일 09:00~18:00</span>
             </button>
 

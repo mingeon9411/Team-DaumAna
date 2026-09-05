@@ -2,11 +2,6 @@ import "./Header.css";
 import { useEffect, useRef, useState } from "react";
 
 import JDLogo from "../../assets/J.D 로고.svg";
-import Ilwolobongdo from "../../assets/decor/ilwolobongdo.png";
-import IlwolobongdoDark from "../../assets/decor/ilwolobongdo-dark.png";
-// -sm: 헤더에선 37px로만 쓰여서 원본(1015x600, 750KB) 대신 축소본을 쓴다.
-import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
-import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent-sm.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Search, Clock, X, Settings as SettingsIcon } from "lucide-react";
 import { getCartItems, logoutUser } from "../../api";
@@ -15,26 +10,16 @@ import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import { getRecentSearches, addRecentSearch, removeRecentSearch, clearRecentSearches } from "../../utils/recentSearches";
-import { KH_POPULAR_KEYWORDS } from "../../data/koreanHallKeywords";
 
 const SANS = { fontFamily: "'TwayFly', 'Noto Sans KR', sans-serif" };
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [isFooterPanel, setIsFooterPanel] = useState(false);
-  const [darkMode, setDarkMode] = useState(
-    () => document.body.classList.contains("dark")
-  );
   const navigate = useNavigate();
   const location = useLocation();
   const isCartPage = location.pathname === "/cart";
   const isHome = location.pathname === "/";
-  const isKoreanHall = location.pathname === "/korean-hall";
-  // /product/:id는 한국관 상품만 다루는 상세페이지(App.jsx 라우팅) — 로고·인기
-  // 검색어는 한국관 기준으로 보여준다. 스크롤 배너 전환(showExpandedNav 등)까지
-  // isKoreanHall에 얹으면 이 페이지의 상시 노출 헤더가 스크롤 전엔 숨어버리므로
-  // 그쪽엔 관여하지 않고, 로고/검색어 표시에만 별도로 쓴다.
-  const isKoreanHallProduct = location.pathname.startsWith("/product/");
   const isItemDetail = location.pathname.startsWith("/item/");
   const isSettingsPage = location.pathname === "/settings";
   const isCustomerCenterPage = location.pathname === "/customer-center";
@@ -50,15 +35,14 @@ function Header() {
   // 유일한 상시 내비게이션이 된 페이지(장바구니 등)에서는 스크롤 여부와 무관하게
   // 항상 노출한다 — 이 페이지들은 헤더 말고는 빠져나갈 다른 수단이 없기 때문.
   //
-  // 상품 목록(홈)·상품상세·설정·고객센터·한국관 페이지는 최상단에서부터 검색창·
-  // 링크가 떠 있으면 위화감이 크다(홈·한국관은 전체화면 인트로 영상, 설정·고객
-  // 센터는 파스텔 배경의 첫 화면, 상품상세는 배너 자체가 스크롤 전엔 안 보이는데
-  // 그 안의 검색창·링크만 먼저 떠 있으면 배너 없이 붕 떠 보인다) — 이 다섯 곳은
-  // 스크롤을 내려야 배너와 함께 나타나게 한다. 고객센터는 자체 "목록으로" 버튼
-  // (CustomerCenter.jsx)이, 한국관은 항상 떠 있는 로고(홈 이동)와 하단 독바가,
-  // 상품상세는 자체 "목록으로" 버튼(HomeProductDetail.jsx)이 따로 있어, 헤더
-  // 내비가 잠깐 숨어 있어도 홈으로 돌아갈 수단이 없어지지 않는다.
-  const showExpandedNav = (isHome || isSettingsPage || isCustomerCenterPage || isKoreanHall || isItemDetail) ? scrolled : true;
+  // 상품 목록(홈)·상품상세·설정·고객센터 페이지는 최상단에서부터 검색창·링크가
+  // 떠 있으면 위화감이 크다(홈은 전체화면 인트로 영상, 설정·고객센터는 파스텔
+  // 배경의 첫 화면, 상품상세는 배너 자체가 스크롤 전엔 안 보이는데 그 안의
+  // 검색창·링크만 먼저 떠 있으면 배너 없이 붕 떠 보인다) — 이 네 곳은 스크롤을
+  // 내려야 배너와 함께 나타나게 한다. 고객센터는 자체 "목록으로" 버튼
+  // (CustomerCenter.jsx)이, 상품상세는 자체 "목록으로" 버튼(HomeProductDetail.jsx)이
+  // 따로 있어, 헤더 내비가 잠깐 숨어 있어도 홈으로 돌아갈 수단이 없어지지 않는다.
+  const showExpandedNav = (isHome || isSettingsPage || isCustomerCenterPage || isItemDetail) ? scrolled : true;
 
   // 유틸 링크(로그인/회원가입 · 마이페이지/로그아웃 · 장바구니)용 — Home.jsx의
   // 카테고리 위 유틸 링크와 같은 기준(access_token)·같은 이벤트로 동기화한다.
@@ -147,14 +131,13 @@ function Header() {
   }, []);
   const showRecentSearches = headerSearchFocused && !headerSearchQuery.trim() && recentSearches.length > 0;
 
-  // 한국관(.khPage)·상품상세(.homeDetailPage)·상품목록(#home-products)·설정
-  // (.ssPage)·고객센터(.ccPage)는 전부 Lenis의 가로 스크롤에서 제외된
+  // 상품상세(.homeDetailPage)·상품목록(#home-products)·설정(.ssPage)·
+  // 고객센터(.ccPage)는 전부 Lenis의 가로 스크롤에서 제외된
   // (data-lenis-prevent) 자기만의 세로 스크롤(overflow-y: auto) 영역이라
   // window에는 scroll 이벤트가 전혀 발생하지 않는다 — 그래서 리스너를 window가
   // 아니라 해당 엘리먼트에 따로 붙여야 하고, "최상단"도 window가 아니라 그
   // 엘리먼트 자신의 scrollTop 기준으로 판단해야 한다.
   useEffect(() => {
-    const koreanHallEl = isKoreanHall ? document.querySelector(".khPage") : null;
     const itemDetailEl = isItemDetail ? document.querySelector(".homeDetailPage") : null;
     const productListEl = isHome ? document.querySelector("#home-products") : null;
     const settingsEl = isSettingsPage ? document.querySelector(".ssPage") : null;
@@ -172,8 +155,6 @@ function Header() {
           ? Math.abs(productListEl.getBoundingClientRect().left) < window.innerWidth / 2
           : false;
         setScrolled(isProductGridActive && (productListEl?.scrollTop ?? 0) > 50);
-      } else if (isKoreanHall) {
-        setScrolled((koreanHallEl?.scrollTop ?? 0) > 50);
       } else if (isItemDetail) {
         setScrolled((itemDetailEl?.scrollTop ?? 0) > 50);
       } else if (isSettingsPage) {
@@ -185,7 +166,7 @@ function Header() {
       }
 
       // 푸터 패널에 도달했는지 — 헤더 로고는 그 패널에서만 숨긴다.
-      // (한국관처럼 푸터 자체가 없는 라우트에서는 항상 false)
+      // (푸터 자체가 없는 라우트에서는 항상 false)
       const footerPanel = document.querySelector(".footer");
       setIsFooterPanel(
         footerPanel ? footerPanel.getBoundingClientRect().left <= window.innerWidth / 2 : false
@@ -194,7 +175,6 @@ function Header() {
 
     handleScroll();
     window.addEventListener("scroll", handleScroll);
-    koreanHallEl?.addEventListener("scroll", handleScroll);
     itemDetailEl?.addEventListener("scroll", handleScroll);
     productListEl?.addEventListener("scroll", handleScroll);
     settingsEl?.addEventListener("scroll", handleScroll);
@@ -202,20 +182,12 @@ function Header() {
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      koreanHallEl?.removeEventListener("scroll", handleScroll);
       itemDetailEl?.removeEventListener("scroll", handleScroll);
       productListEl?.removeEventListener("scroll", handleScroll);
       settingsEl?.removeEventListener("scroll", handleScroll);
       customerCenterEl?.removeEventListener("scroll", handleScroll);
     };
-  }, [isHome, isKoreanHall, isItemDetail, isSettingsPage, isCustomerCenterPage]);
-
-  // 다크모드는 Sidebar가 소유 — body.dark 클래스 변경을 이벤트로 전달받아 일월오봉도만 동기화
-  useEffect(() => {
-    const syncDarkMode = () => setDarkMode(document.body.classList.contains("dark"));
-    window.addEventListener("darkmodechange", syncDarkMode);
-    return () => window.removeEventListener("darkmodechange", syncDarkMode);
-  }, []);
+  }, [isHome, isItemDetail, isSettingsPage, isCustomerCenterPage]);
 
   // 이 헤더는 fixed + height:auto라 상태(scrolled/검색창 포커스 등)에 따라 실제
   // 높이가 계속 바뀐다 — RecentlyViewedSidebar(오른쪽 최근 본 상품 독)가 예전엔
@@ -244,19 +216,10 @@ function Header() {
 
     <header ref={headerRef} className={`header ${scrolled ? "scrolled" : ""} ${
       isCartPage ? "cartHeader" : ""
-    } ${!isHome ? "lightBg" : ""} ${isKoreanHall ? "koreanHallHeader" : ""} ${
+    } ${!isHome ? "lightBg" : ""} ${
       isProductPage ? "productPageHeader" : ""
     } ${isProductPage ? "homePageHeader" : ""} ${showExpandedNav ? "expanded" : ""}`}
     >
-      {isKoreanHall && (
-        <>
-          <div className="starField" />
-          <span className="headerMoon" />
-          <span className="headerSun" />
-          <img src={darkMode ? IlwolobongdoDark : Ilwolobongdo} alt="" aria-hidden="true" className="headerIlwol" />
-        </>
-      )}
-
       {/* 검색창에 포커스가 가면 확대해 부각시키고, 배경은 스크림으로 살짝 눌러
           시선을 검색창에 모은다(29CM류 검색 모달의 축소판 — 별도 페이지/모달
           없이 이 배너 안에서 크기만 순간적으로 커졌다 줄어드는 정도로 구현). */}
@@ -327,7 +290,6 @@ function Header() {
                  예전엔 이걸 위 form 안에 한 줄(flex row)로 같이 넣어서 좁은 폭
                  안에서 입력창과 겹쳐 보였다. 이제 검색줄과 별도의 블록으로 분리. */
               <PopularKeywordsSidebar
-                data={isKoreanHall || isKoreanHallProduct ? KH_POPULAR_KEYWORDS : undefined}
                 onSelect={(keyword) => { setHeaderSearchQuery(keyword); submitHeaderSearch(keyword); }}
               />
             )}
@@ -336,16 +298,8 @@ function Header() {
       )}
 
       {!isFooterPanel && (
-        <Link to={isKoreanHall || isKoreanHallProduct ? "/korean-hall" : "/"} className="logo" aria-label="집다움 홈">
-          {isKoreanHall || isKoreanHallProduct ? (
-            <img
-              src={darkMode ? JipdaumHanokLogoDark : JipdaumHanokLogo}
-              alt="집다움"
-              className="logoImg logoImgHanok"
-            />
-          ) : (
-            <img src={JDLogo} alt="J.D" className="logoImg" />
-          )}
+        <Link to="/" className="logo" aria-label="집다움 홈">
+          <img src={JDLogo} alt="J.D" className="logoImg" />
         </Link>
       )}
 
@@ -369,11 +323,7 @@ function Header() {
             장바구니{cartCount > 0 && ` (${cartCount})`}
           </button>
           <span aria-hidden="true" className="headerNavDivider">|</span>
-          {/* 한국관 안에서는 "한국관" 탭이 제자리 이동이라 무의미 — 메인으로 돌아가는
-              기능으로 바꾼다. */}
-          <button type="button" onClick={() => navigate(isKoreanHall ? "/" : "/korean-hall")} className="headerNavLink">
-            {isKoreanHall ? "메인페이지" : "한국관"}
-          </button>
+          <button type="button" onClick={() => navigate("/lookbook")} className="headerNavLink">룩북</button>
           <span aria-hidden="true" className="headerNavDivider">|</span>
           <button type="button" onClick={() => navigate("/notice")} className="headerNavLink">공지사항</button>
           <span aria-hidden="true" className="headerNavDivider">|</span>

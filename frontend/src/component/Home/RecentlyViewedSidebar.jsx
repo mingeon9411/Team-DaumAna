@@ -12,16 +12,11 @@ const MAX_VISIBLE = 6;
 
 // 최근에 들어가 본 상품을 macOS 독처럼 화면 오른쪽에 이미지로 항상 띄워두고,
 // 올리면 살짝 튀어나오며 커지고(독 매그니피케이션), 이름/가격 툴팁이 왼쪽으로 뜬다.
-// detailBasePath: 클릭 시 이동할 상세페이지 경로 접두사 — 메인은 /item, 한국관은 /product.
-// namespace: recentlyViewed.js에 넘길 저장소 구분자 — 메인은 "main", 한국관은 "korean-hall".
-// variant: "korean-hall"이면 사용자가 고른 유리/메탈릭/파스텔 독 스타일 대신
-// RecentlyViewedSidebar.css의 .recentDockKoreanHall 테마(한지톤+오방색)가 항상 적용된다.
 function RecentlyViewedSidebar({
   items,
   onChange,
   detailBasePath = "/item",
   namespace = "main",
-  variant = "default",
 }) {
   const navigate = useNavigate();
 
@@ -101,7 +96,7 @@ function RecentlyViewedSidebar({
       // "top-32(128px)" 같은 어림값은 헤더가 그보다 조금만 더 자라도 이 독의
       // 윗부분이 z-index 더 높은 헤더 배너에 가려 안 보이는 원인이었다.
       // Header.jsx가 ResizeObserver로 공개하는 --header-h를 그대로 따라간다.
-      className={`recentDock railStyle-${railStyle} ${variant === "korean-hall" ? "recentDockKoreanHall" : ""} ${styleSwitching ? "styleSwitching" : ""} ${collapsed ? "collapsed" : ""} fixed right-[19px] z-40 flex flex-col items-center ${collapsed ? "gap-0" : "gap-2"} p-2 rounded-[18px]`}
+      className={`recentDock railStyle-${railStyle} ${styleSwitching ? "styleSwitching" : ""} ${collapsed ? "collapsed" : ""} fixed right-[19px] z-40 flex flex-col items-center ${collapsed ? "gap-0" : "gap-2"} p-2 rounded-[18px]`}
       style={{ top: "calc(var(--header-h, 128px) + 8px)" }}
       data-lenis-prevent
     >

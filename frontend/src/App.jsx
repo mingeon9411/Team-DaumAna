@@ -5,8 +5,6 @@ import Snap from "lenis/snap";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import ScrollToTop from "./component/ScrollToTop";
 import DoorIntro from "./component/DoorIntro/DoorIntro";
-import JipdaumHanokLogo from "./assets/logo/Jipdaum-logo-Light-transparent.png";
-import JipdaumHanokLogoDark from "./assets/logo/Jipdaum-logo-Dark-transparent.png";
 import Header from "./component/Header/Header";
 import Sidebar from "./component/Sidebar/Sidebar";
 import MyPage from "./component/MyPage/MyPage";
@@ -16,17 +14,16 @@ import Home from "./component/Home/Home";
 import Cart from "./component/Cart/Cart";
 import Notice from "./component/Notice/Notice";
 import Welcome from "./component/Welcome/Welcome";
-import ProductDetail from "./component/ProductDetail/ProductDetail";
 import HomeProductDetail from "./component/Home/HomeProductDetail";
 import SocialCallback from "./component/SocialCallback/SocialCallback";
 import EmailVerify from "./component/EmailVerify/EmailVerify";
 import SearchResults from "./component/SearchResults/SearchResults";
-import KoreanHall from "./component/KoreanHall/KoreanHall";
 import CustomerCenter from "./component/CustomerCenter/CustomerCenter";
 import Settings from "./component/Settings/Settings";
 import Checkout from "./component/Checkout/Checkout";
-import CheckoutKoreanHall from "./component/Checkout/CheckoutKoreanHall";
 import OrderComplete from "./component/OrderComplete/OrderComplete";
+import Lookbook from "./component/Lookbook/Lookbook";
+import LookbookTips from "./component/Lookbook/LookbookTips";
 import AuthModal from "./component/AuthModal/AuthModal";
 import AuthPage from "./component/AuthModal/AuthPage";
 import { AuthModalProvider } from "./context/AuthModalContext";
@@ -39,37 +36,31 @@ import "./App.css";
 function DoorIntroController() {
   const { pathname, key } = useLocation();
   const [showDoorIntro, setShowDoorIntro] = useState(false);
-  const isKoreanHall = pathname === "/korean-hall";
 
   useEffect(() => {
-    if (pathname !== "/" && !isKoreanHall) {
+    if (pathname !== "/") {
       setShowDoorIntro(false);
       return;
     }
 
-    // 상품 상세페이지(HomeProductDetail/ProductDetail)는 마운트될 때 자신이
-    // "home"/"korean-hall" 중 어느 쪽 상세페이지인지 productDetailReturnZone에
-    // 남겨둔다. 여기서 그 흔적을 보고 "방금 그 상세페이지를 보다가 여기로
-    // 돌아왔다"를 판단하면, "목록으로" 버튼 클릭(PUSH)이든 브라우저 뒤로가기
-    // (POP)든 트리거 방식과 무관하게 동일하게 처리된다 — 대문 애니메이션 없이
-    // 곧장 상품 목록으로. 이 페이지에 도착한 이상(스킵 대상이든 아니든) 다음
+    // HomeProductDetail은 마운트될 때 productDetailReturnZone을 남겨둔다.
+    // 여기서 그 흔적을 보고 "방금 그 상세페이지를 보다가 여기로 돌아왔다"를
+    // 판단하면, "목록으로" 버튼 클릭(PUSH)이든 브라우저 뒤로가기(POP)든
+    // 트리거 방식과 무관하게 동일하게 처리된다 — 대문 애니메이션 없이 곧장
+    // 상품 목록으로. 이 페이지에 도착한 이상(스킵 대상이든 아니든) 다음
     // 방문에 잘못 재사용되지 않도록 항상 지운다.
     const returnZone = sessionStorage.getItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE);
     sessionStorage.removeItem(NAV_FLAGS.PRODUCT_DETAIL_RETURN_ZONE);
     // 독의 "회사 정보" 버튼으로 홈까지 넘어온 경우(Sidebar.jsx가 세팅, 아직 소비 전)도
     // 대문 애니메이션 없이 곧장 맨 끝(룩북 패널의 SiteFooter)으로 스크롤되어야 하므로 스킵 대상.
     // 값은 Sidebar.jsx가 마운트 후에 읽고 지우므로 여기서는 확인만 하고 지우지 않는다.
-    const pendingScrollToEnd = !isKoreanHall && sessionStorage.getItem(NAV_FLAGS.PENDING_SCROLL_TO_END);
-    const isProductDetailReturn = returnZone === (isKoreanHall ? NAV_ZONE.KOREAN_HALL : NAV_ZONE.HOME);
+    const pendingScrollToEnd = sessionStorage.getItem(NAV_FLAGS.PENDING_SCROLL_TO_END);
+    const isProductDetailReturn = returnZone === NAV_ZONE.HOME;
     const skip = isProductDetailReturn || !!pendingScrollToEnd;
 
     if (isProductDetailReturn) {
-      if (isKoreanHall) {
-        sessionStorage.setItem(NAV_FLAGS.SKIP_KOREAN_HALL_INTRO, "1");
-      } else {
-        sessionStorage.setItem(NAV_FLAGS.SKIP_HOME_DEFAULT_PANEL, "1");
-        sessionStorage.setItem(NAV_FLAGS.PENDING_HOME_PANEL_INDEX, "2");
-      }
+      sessionStorage.setItem(NAV_FLAGS.SKIP_HOME_DEFAULT_PANEL, "1");
+      sessionStorage.setItem(NAV_FLAGS.PENDING_HOME_PANEL_INDEX, "1");
     }
 
     // doorintroend 이벤트(사이드바 펼침 등)는 건너뛸 때도 그대로 쏴줘야 하므로
@@ -80,15 +71,11 @@ function DoorIntroController() {
       window.dispatchEvent(new Event("doorintroend"));
     }, skip ? 0 : 7700);
     return () => clearTimeout(timer);
-  }, [key, pathname, isKoreanHall]);
+  }, [key, pathname]);
 
   if (!showDoorIntro) return null;
 
-  return isKoreanHall ? (
-    <DoorIntro logoLight={JipdaumHanokLogo} logoDark={JipdaumHanokLogoDark} theme="hanji" />
-  ) : (
-    <DoorIntro lightEffect="sparkle" />
-  );
+  return <DoorIntro lightEffect="sparkle" />;
 }
 
 function App() {
@@ -207,7 +194,8 @@ function App() {
         <Route path="/social-callback" element={<SocialCallback />} />
         <Route path="/email-verify" element={<EmailVerify />} />
         <Route path="/search" element={<SearchResults />} />
-        <Route path="/korean-hall" element={<KoreanHall />} />
+        <Route path="/lookbook" element={<Lookbook />} />
+        <Route path="/lookbook/tips" element={<LookbookTips />} />
         <Route path="/customer-center" element={<CustomerCenter />} />
         <Route path="/notice" element={<Notice />} />
         <Route path="/settings" element={<Settings />} />
@@ -215,12 +203,9 @@ function App() {
         <Route path="/login" element={<AuthPage />} />
         <Route path="/register" element={<AuthPage />} />
 
-        <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/item/:id" element={<HomeProductDetail />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/korean-hall/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
-        <Route path="/korean-hall/checkout" element={<CheckoutKoreanHall />} />
         <Route path="/order-complete" element={<OrderComplete />} />
 
       </Routes>

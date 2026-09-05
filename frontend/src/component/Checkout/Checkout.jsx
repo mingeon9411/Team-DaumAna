@@ -17,7 +17,7 @@ function Checkout() {
   const { openLogin } = useAuthModal();
 
   // data-lenis-prevent로 전역 가로 Lenis(App.jsx)는 건너뛰므로, 이 페이지 전용
-  // 세로 스크롤에도 KoreanHall.jsx와 같은 부드러운 관성을 붙인다.
+  // 세로 스크롤에도 부드러운 관성을 붙인다.
   const pageRef = useRef(null);
   useNestedLenis(pageRef);
 

@@ -1,5 +1,5 @@
 import "./Login.css";
-import { useNavigate, useLocation, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { SiKakaotalk, SiNaver } from "react-icons/si";
 import { FcGoogle } from "react-icons/fc";
 import { LuChevronLeft } from "react-icons/lu";
@@ -12,7 +12,6 @@ import { NAV_FLAGS, NAV_ZONE } from "../../utils/navFlags";
 import JDLogo from "../../assets/J.D 로고.svg";
 // -sm: 48px 높이로만 쓰이는데 원본이 1015x600(750KB)이라 로그인창이 뜰 때마다
 // 불필요하게 무거웠음 — 표시 크기에 맞춰 300px 높이로 미리 축소해둔 버전으로 교체.
-// DoorIntro(한국관 인트로, 420px+)처럼 실제로 큰 화면에 쓰는 곳만 원본을 그대로 쓴다.
 import JipdaumHanokLogo from "../../assets/logo/Jipdaum-logo-Light-transparent-sm.png";
 import JipdaumHanokLogoDark from "../../assets/logo/Jipdaum-logo-Dark-transparent-sm.png";
 import { BUSINESS_INFO } from "../../data/businessInfo";
@@ -22,9 +21,6 @@ const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 
 function Login() {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-  // 한국관 스코프에서 뜬 로그인창은 독바 스타일 프리셋 대신 한지 톤 + 오색띠 테두리로 고정
-  const isKoreanHall = pathname.startsWith("/korean-hall");
   const recaptchaRef = useRef(null);
   const { openRegister, openFindId, openFindPassword, closeAuthPage } = useAuthModal();
   const [darkMode, setDarkMode] = useState(
@@ -152,7 +148,7 @@ function Login() {
   };
 
   return (
-      <section className={`loginBox railStyle-${railStyle} ${styleSwitching ? "styleSwitching" : ""} ${isKoreanHall ? "koreanHallLogin" : ""}`}>
+      <section className={`loginBox railStyle-${railStyle} ${styleSwitching ? "styleSwitching" : ""}`}>
         {/* 독립 페이지라 CustomerCenter의 "목록으로"와 같은 패턴으로 돌아가기 버튼을 둔다
             (closeAuthPage는 항상 홈으로 보낸다 — AuthModalContext.jsx 참고). 로고를
             눌러도 같은 곳(홈)으로 가지만, 이 버튼이 더 명확한 이탈 동선이다. */}

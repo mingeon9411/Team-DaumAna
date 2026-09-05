@@ -433,7 +433,7 @@ function MyPage() {
                     <div
                       key={item.id}
                       className="wishPreviewCard"
-                      onClick={() => { closeMyPage(); navigate(`/product/${item.id}`); }}
+                      onClick={() => { closeMyPage(); navigate(`/item/${item.id}`); }}
                     >
                       <div className="wishPreviewImgBox">
                         <img src={item.image} alt={item.name} />
@@ -730,7 +730,7 @@ function MyPage() {
                   <div
                     key={item.id}
                     className="myWishCard"
-                    onClick={() => { closeMyPage(); navigate(`/product/${item.id}`); }}
+                    onClick={() => { closeMyPage(); navigate(`/item/${item.id}`); }}
                   >
                     <div className="myWishImgBox">
                       <img src={item.image} alt={item.name} />
