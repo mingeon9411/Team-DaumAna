@@ -48,7 +48,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   background: var(--background);
-  font-family: "Noto Sans KR", sans-serif;
+  font-family: "GmarketSans", "Noto Sans KR", "Pretendard", sans-serif;
   padding: 108px 20px 80px; /* 헤더 82px + 여백 26px */
 }
 
@@ -193,7 +193,7 @@ body.dark .checkoutPage {
 /* ── 카드 ── */
 .checkoutCard {
   background: var(--card);
-  border: 1px solid var(--border);
+  border: 1px solid #1c1a16;
   border-radius: 16px;
   padding: 26px 28px;
   margin-bottom: 14px;
@@ -534,6 +534,7 @@ body.dark .couponApplied { background: #0a1e14; border-color: #1e5a35; }
 /* ── 결제 요약 카드 (영수증 모티프) ── */
 .checkoutSummaryCard {
   background: var(--card);
+  border: 1px solid #1c1a16;
   border-radius: 4px;
   padding: 26px 24px 22px;
   box-shadow: 0 8px 34px rgba(0,0,0,0.1);
@@ -649,6 +650,16 @@ body.dark .couponApplied { background: #0a1e14; border-color: #1e5a35; }
   cursor: not-allowed;
 }
 
+/* ── 배경 톤(설정 페이지와 동일한 원칙) — 화이트/베이지는 위 기본 검정 테두리
+   그대로, 파스텔만 Login.css .loginBox와 같은 오색 그러데이션 테두리로 덮어쓴다 */
+body[data-bg="pastel"] .checkoutCard,
+body[data-bg="pastel"] .checkoutSummaryCard {
+  border-color: transparent;
+  background:
+    var(--card) padding-box,
+    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+}
+
 /* ── 반응형 ── */
 @media (max-width: 760px) {
   .checkoutPage { padding: 96px 16px 60px; }
@@ -666,7 +677,8 @@ body.dark .checkoutSummaryCard {
   background: #0c1432;
   box-shadow: 0 2px 14px rgba(0,0,0,0.28);
 }
-body.dark .checkoutCard { border-color: #182648; }
+body.dark .checkoutCard,
+body.dark .checkoutSummaryCard { border-color: #182648; }
 
 body.dark .checkoutTitle { color: #c0ccee; border-bottom-color: #182648; }
 

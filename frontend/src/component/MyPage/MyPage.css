@@ -1458,7 +1458,7 @@ body.dark .profileNicknameRow button {
 
 .gradeHeroName {
   margin: 0 0 14px;
-  font-family: "Noto Serif KR", serif;
+  font-family: "GmarketSans", "Noto Serif KR", serif;
   font-size: 48px;
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -1575,7 +1575,7 @@ body.dark .profileNicknameRow button {
   letter-spacing: 0.06em;
 }
 .gradeTierName {
-  font-family: "Noto Serif KR", serif;
+  font-family: "GmarketSans", "Noto Serif KR", serif;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.04em;
