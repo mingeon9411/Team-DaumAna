@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'Orders',
     'payments',
     'coupons',
+    'Inquiries',
 ]
 
 AUTH_USER_MODEL = 'Users.User'

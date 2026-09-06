@@ -2,7 +2,7 @@ import "./MyPage.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { LuChevronLeft, LuCrown, LuTrophy, LuMedal, LuLeaf, LuUser } from "react-icons/lu";
-import { logoutUser, getOrderHistory, getMyCoupons, cancelOrder, getMe } from "../../api";
+import { logoutUser, getOrderHistory, getMyCoupons, cancelOrder, getMe, getMyInquiries, createInquiry } from "../../api";
 import { getWishlist, removeWish } from "../../utils/wishlist";
 import korfurni from "../../assets/products/korfurni.png";
 import bird2 from "../../assets/decor/bird2.png";
@@ -22,7 +22,6 @@ const TABS = [
   { key: "wishlist", label: "위시리스트" },
   { key: "grade", label: "회원등급" },
   { key: "coupon", label: "쿠폰" },
-  { key: "points", label: "적립금" },
   { key: "address", label: "배송지 관리" },
   { key: "inquiry", label: "1:1 문의" },
   { key: "profile", label: "회원 정보" },
@@ -83,6 +82,12 @@ function MyPage() {
   });
   const [addressModalOpen, setAddressModalOpen] = useState(false);
   const [editingAddress, setEditingAddress] = useState(null);
+
+  // 1:1 문의 — 관리자는 Django Admin에서 answer 필드를 채워 답변한다.
+  const [inquiries, setInquiries] = useState([]);
+  const [inquiryTitle, setInquiryTitle] = useState("");
+  const [inquiryContent, setInquiryContent] = useState("");
+  const [inquirySubmitting, setInquirySubmitting] = useState(false);
 
   const updateAddresses = (next) => {
     setAddresses(next);
@@ -179,6 +184,9 @@ function MyPage() {
     getMe()
       .then((res) => setProfile(res.data))
       .catch(() => setProfile(null));
+    getMyInquiries()
+      .then((res) => setInquiries(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setInquiries([]));
   }, []);
 
   useEffect(() => {
@@ -242,6 +250,25 @@ function MyPage() {
   const handleShowTracking = (e, order) => {
     e.stopPropagation();
     setTrackingOrder(order);
+  };
+
+  const handleSubmitInquiry = async (e) => {
+    e.preventDefault();
+    if (!inquiryTitle.trim() || !inquiryContent.trim()) {
+      alert("제목과 문의 내용을 모두 입력해주세요.");
+      return;
+    }
+    setInquirySubmitting(true);
+    try {
+      const res = await createInquiry(inquiryTitle.trim(), inquiryContent.trim());
+      setInquiries((prev) => [res.data, ...prev]);
+      setInquiryTitle("");
+      setInquiryContent("");
+    } catch (err) {
+      alert(err.response?.data?.message || "문의 등록에 실패했습니다.");
+    } finally {
+      setInquirySubmitting(false);
+    }
   };
 
   return (
@@ -799,6 +826,67 @@ function MyPage() {
                 ))}
               </div>
             )}
+          </section>
+        )}
+
+        {/* ── 1:1 문의 섹션 ── */}
+        {activeSection === "inquiry" && (
+          <section className="myInquirySection">
+            <div className="inquiryFormCard">
+              <h2>문의 남기기</h2>
+              <form className="inquiryForm" onSubmit={handleSubmitInquiry}>
+                <label>
+                  제목
+                  <input
+                    type="text"
+                    value={inquiryTitle}
+                    onChange={(e) => setInquiryTitle(e.target.value)}
+                    placeholder="문의 제목을 입력해주세요"
+                    maxLength={200}
+                  />
+                </label>
+                <label>
+                  문의 내용
+                  <textarea
+                    value={inquiryContent}
+                    onChange={(e) => setInquiryContent(e.target.value)}
+                    placeholder="문의하실 내용을 자세히 적어주시면 빠르게 답변드릴게요."
+                    rows={6}
+                  />
+                </label>
+                <button type="submit" className="inquirySubmitBtn" disabled={inquirySubmitting}>
+                  {inquirySubmitting ? "전송 중..." : "전송"}
+                </button>
+              </form>
+            </div>
+
+            <div className="inquiryListCard">
+              <h2>문의 내역</h2>
+              {inquiries.length === 0 ? (
+                <p className="emptyText">등록한 문의가 없습니다.</p>
+              ) : (
+                <div className="inquiryList">
+                  {inquiries.map((q) => (
+                    <div key={q.id} className="inquiryItem">
+                      <div className="inquiryItemHead">
+                        <span className="inquiryItemTitle">{q.title}</span>
+                        <span className={"inquiryStatusBadge" + (q.answer ? " answered" : "")}>
+                          {q.answer ? "답변완료" : "답변대기"}
+                        </span>
+                      </div>
+                      <p className="inquiryItemDate">{formatDate(q.created_at)}</p>
+                      <p className="inquiryItemContent">{q.content}</p>
+                      {q.answer && (
+                        <div className="inquiryAnswerBox">
+                          <span className="inquiryAnswerLabel">관리자 답변</span>
+                          <p>{q.answer}</p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </section>
         )}
 

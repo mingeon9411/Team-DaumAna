@@ -137,6 +137,11 @@ export const getMyCoupons = () => API.get('/coupons/my');
 export const validateCoupon = (code, order_amount) =>
   API.post('/coupons/validate', { code, order_amount });
 
+// [1:1 문의 API]
+export const getMyInquiries = () => API.get('/inquiries');
+export const createInquiry = (title, content) =>
+  API.post('/inquiries', { title, content });
+
 // [챗봇 API] history는 멀티턴 문맥 유지를 위해 함께 보낸다 (캡차 게이트는 없음 — ChatController 참고).
 export const sendChatMessage = (message, history) =>
   API.post('/chat', { message, history });
