@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag, Star } from "lucide-react";
 import "./Home.css";
 import ChatBot from "../MyPage/ChatBot";
 import LookbookViewer from "./LookbookViewer";
@@ -65,7 +65,8 @@ import darkBrownSofaInterior from "../../assets/interior/(소파) 다크 브라�
 import mushroomLampInterior from "../../assets/interior/(무드등) LED 무드 버섯등 - 인테리어.png";
 import wideLiberoSandalInterior from "../../assets/interior/(욕실화)  미끄럼방지 와이드 리베로 EVA 욕실화 - 레드 인테리어.png";
 import cloudSandalInterior from "../../assets/interior/(욕실화) EVA 미끄럼 방지 욕실화 - 인테리어 2.png";
-import { getCartItems, getProductsByCollection, logoutUser } from "../../api";
+import { getCartItems, getProductsByCollection, getPhotoReviews, logoutUser } from "../../api";
+import { POSTS } from "../Lookbook/posts";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 
@@ -319,19 +320,6 @@ const LOOKBOOK_PHOTOS = [
 
 const LOOKBOOK_PAGE_SIZE = 21;
 
-// 관리자가 신상품에 붙이는 스타일링 한마디 — 지금은 프론트 목업 데이터.
-// PRODUCTS의 label이 "NEW"인 상품 id에 매칭시켜두고, 해당하지 않는 상품은
-// 자동으로 팁 목록에서 빠진다(새 신상품이 들어오면 여기 한 줄만 추가하면 됨).
-// 예전엔 룩북 쪽 별도 페이지(/lookbook/tips)였는데, 상품 목록을 보다가 바로
-// 이어서 보는 게 자연스러워 상품 그리드 맨 아래로 옮겼다.
-const NEW_PRODUCT_TIPS = {
-  2: "라탄 케인 갓 사이로 새어나오는 그물무늬 빛은 벽에서 30cm 정도 띄워야 무늬가 온전히 살아납니다.",
-  3: "협탁 위보다 낮은 콘솔이나 바닥에 두면 마사 로프의 자연스러운 그림자가 더 길게 드리워집니다.",
-  6: "월넛 프레임은 원목 가구와, 라탄 등받이는 패브릭 소품과 번갈아 매치하면 질리지 않습니다.",
-  8: "가죽 손잡이는 시간이 지나면 짙어지니 처음엔 조금 밝은 톤의 옷·수건을 담아 대비를 주세요.",
-  9: "지오메트릭 패턴 러그는 가구를 적게 올릴수록 무늬가 도드라져 좁은 방에도 잘 어울립니다.",
-};
-
 function Hairline({ className = "" }) {
   return (
     <div
@@ -505,6 +493,20 @@ function Home() {
 
   const [recentlyViewed, setRecentlyViewed] = useState(() => withFreshProductData(getRecentlyViewed()));
   const navigate = useNavigate();
+
+  // "신상품 스타일링 팁" 자리를 대신하는 상품 리뷰 모음 — 사진 첨부된 리뷰만
+  // 최신순으로 모아서 보여주는 공개 API(로그인 불필요, 룩북 갤러리 패널용으로
+  // 이미 만들어져 있었지만 프론트에서 아직 안 쓰고 있던 엔드포인트).
+  const [photoReviews, setPhotoReviews] = useState([]);
+  useEffect(() => {
+    getPhotoReviews()
+      .then((res) => setPhotoReviews(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setPhotoReviews([]));
+  }, []);
+
+  // 룩북 최신 게시물 미리보기 — 날짜 내림차순(POSTS 배열 자체의 삽입 순서에
+  // 기대지 않고 직접 정렬). "YYYY.MM.DD" 형식이라 문자열 비교로 충분하다.
+  const latestLookbookPosts = [...POSTS].sort((a, b) => b.date.localeCompare(a.date));
 
   // 카테고리 위 유틸 링크(로그인/회원가입 · 마이페이지/로그아웃)용 — Sidebar의 독과
   // 같은 기준(access_token)으로 로그인 상태를 판단하고, 같은 authchange 이벤트로 동기화한다.
@@ -869,43 +871,86 @@ function Home() {
         </div>
         )}
 
-        {/* 신상품 스타일링 팁 — 상품 목록을 다 훑어본 바로 다음 자리에 이어 붙인다
-            (예전엔 룩북 쪽 별도 페이지였음). 카테고리 필터와 무관하게 항상 전체
-            신상품 기준으로 보여준다. */}
-        {(() => {
-          const newTipProducts = PRODUCTS.filter((p) => p.label === "NEW" && NEW_PRODUCT_TIPS[p.id]);
-          if (newTipProducts.length === 0) return null;
-          return (
-            <div className="relative z-10 max-w-7xl mx-auto w-full mt-20">
-              <span className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase" style={MONO}>TIPS</span>
-              <h2 className="text-2xl md:text-3xl font-light mt-2 mb-3" style={SERIF}>신상품 스타일링 팁</h2>
-              <p className="text-sm text-muted-foreground mb-8 max-w-md">
-                이번에 새로 들어온 상품, 집다움 스타일팀이 짧게 코멘트를 남겼어요.
-              </p>
-              <Hairline className="mb-10" />
-              <div className="flex flex-col gap-6">
-                {newTipProducts.map((p) => (
+        {/* 상품 리뷰 모음 — 사진 첨부 리뷰만 최신순으로, 좌우로 넘겨보는 가로 카드열.
+            예전 "신상품 스타일링 팁" 자리를 대신한다(오늘의집 "추천 집들이" 레퍼런스). */}
+        {photoReviews.length > 0 && (
+          <div className="relative z-10 max-w-7xl mx-auto w-full mt-20">
+            <span className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase" style={MONO}>REVIEW</span>
+            <h2 className="text-2xl md:text-3xl font-light mt-2 mb-3" style={SERIF}>고객님들의 솔직한 후기</h2>
+            <p className="text-sm text-muted-foreground mb-8 max-w-md">
+              실제로 담아보신 분들이 사진과 함께 남겨주신 이야기예요.
+            </p>
+            <Hairline className="mb-10" />
+            <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2">
+              {photoReviews.map((r) => {
+                const product = PRODUCTS.find((p) => p.id === r.product);
+                return (
                   <div
-                    key={p.id}
-                    className="flex gap-5 items-start p-5 rounded-2xl border border-border hover:border-foreground/30 transition-colors cursor-pointer"
-                    onClick={() => navigate(`/item/${p.id}`)}
+                    key={r.id}
+                    className="shrink-0 w-56 snap-start cursor-pointer group"
+                    onClick={() => product && navigate(`/item/${product.id}`)}
                   >
-                    <div className="overflow-hidden rounded-xl bg-muted w-24 h-24 shrink-0">
-                      <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                    <div className="relative overflow-hidden rounded-2xl bg-muted aspect-square mb-3">
+                      <img src={r.review_image_url} alt="" className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500" />
                     </div>
-                    <div className="min-w-0">
-                      <span className="text-[10px] font-semibold text-foreground/70 border border-border rounded px-1.5 py-0.5" style={MONO}>
-                        NEW
-                      </span>
-                      <h3 className="text-base font-medium text-foreground mt-1.5 mb-1" style={SERIF}>{p.name}</h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{NEW_PRODUCT_TIPS[p.id]}</p>
+                    <div className="flex items-center gap-0.5 mb-1.5">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star key={i} size={11} className={i < r.rating ? "fill-foreground text-foreground" : "text-border"} />
+                      ))}
                     </div>
+                    <p className="text-sm text-foreground/85 leading-snug line-clamp-2 mb-1">{r.comment}</p>
+                    {product && <p className="text-xs text-muted-foreground truncate">{product.name}</p>}
                   </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
-          );
-        })()}
+          </div>
+        )}
+
+        {/* 룩북 최신 게시물 미리보기 — 좌우로 넘겨보는 가로 카드열, 전체는 /lookbook에서. */}
+        {latestLookbookPosts.length > 0 && (
+          <div className="relative z-10 max-w-7xl mx-auto w-full mt-20">
+            <div className="flex items-end justify-between gap-4 mb-6">
+              <div>
+                <span className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase" style={MONO}>LOOKBOOK</span>
+                <h2 className="text-2xl md:text-3xl font-light mt-2" style={SERIF}>새로 올라온 룩북</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => navigate("/lookbook")}
+                className="flex items-center gap-1 text-xs font-medium text-foreground hover:opacity-70 transition-opacity shrink-0"
+                style={SANS}
+              >
+                더보기 <ChevronRight size={13} />
+              </button>
+            </div>
+            <Hairline className="mb-10" />
+            <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2">
+              {latestLookbookPosts.map((post) => {
+                const cover = resolveProductVariant(post.coverId, post.coverColor);
+                return (
+                  <div
+                    key={post.id}
+                    className="shrink-0 w-64 snap-start cursor-pointer group"
+                    onClick={() => navigate(`/lookbook/${post.id}`)}
+                  >
+                    <div className="relative overflow-hidden rounded-2xl bg-muted aspect-[4/3] mb-3">
+                      <img
+                        src={cover?.interiorImage || cover?.image}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500"
+                      />
+                    </div>
+                    <span className="text-[10px] text-muted-foreground" style={MONO}>{post.date}</span>
+                    <h3 className="text-sm font-medium text-foreground mt-1 leading-snug line-clamp-2 group-hover:opacity-70 transition-opacity" style={SERIF}>
+                      {post.title}
+                    </h3>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         <SiteFooter />
       </section>
