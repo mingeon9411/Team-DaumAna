@@ -37,6 +37,9 @@
 }
 
 /* ── 페이지 ── */
+/* 배경(화이트/베이지/파스텔 톤)은 이 규칙이 아니라 Home.css가 정의하는
+   .metallicSilver 클래스(Cart/Settings 페이지와 동일하게 JSX에서 함께 붙임)가
+   책임진다 — 그래서 여기엔 background 선언이 없다. */
 .checkoutPage {
   --co-accent: #a8783a;
   --co-accent-2: #7a4f22;
@@ -47,7 +50,6 @@
   flex-shrink: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  background: var(--background);
   font-family: "GmarketSans", "Noto Sans KR", "Pretendard", sans-serif;
   padding: 108px 20px 80px; /* 헤더 82px + 여백 26px */
 }
@@ -59,7 +61,7 @@ body.dark .checkoutPage {
 }
 
 .checkoutInner {
-  max-width: 920px;
+  max-width: 1080px;
   margin: 0 auto;
 }
 
@@ -181,7 +183,7 @@ body.dark .checkoutPage {
 /* ── 2-컬럼 그리드 ── */
 .checkoutBody {
   display: grid;
-  grid-template-columns: 1fr 340px;
+  grid-template-columns: 1fr 380px;
   gap: 16px;
   align-items: start;
 }
@@ -193,9 +195,9 @@ body.dark .checkoutPage {
 /* ── 카드 ── */
 .checkoutCard {
   background: var(--card);
-  border: 1px solid #1c1a16;
+  border: 3px solid #1c1a16;
   border-radius: 16px;
-  padding: 26px 28px;
+  padding: 32px 36px;
   margin-bottom: 14px;
   position: relative;
   overflow: hidden;
@@ -463,40 +465,6 @@ body.dark .checkoutPage {
 .couponCond { font-size: 11px; color: var(--muted-foreground); }
 .couponValue { font-size: 13px; font-weight: 700; color: #c0392b; white-space: nowrap; }
 
-.couponInputRow { display: flex; gap: 8px; }
-
-.couponInput {
-  flex: 1;
-  height: 42px;
-  padding: 0 12px;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  font-size: 13px;
-  letter-spacing: 0.06em;
-  outline: none;
-  background: var(--secondary);
-  transition: border-color 0.16s;
-}
-
-.couponInput:focus { border-color: var(--co-accent); background: var(--card); }
-.couponInput::placeholder { color: var(--muted-foreground); }
-
-.couponApplyBtn {
-  height: 42px;
-  padding: 0 16px;
-  background: var(--foreground);
-  color: var(--primary-foreground);
-  font-size: 13px;
-  font-weight: 700;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.16s;
-}
-
-.couponApplyBtn:hover { background: var(--foreground); }
-
 .couponError { font-size: 12px; color: #c0392b; margin: 8px 0 0; }
 
 .couponApplied {
@@ -527,16 +495,14 @@ body.dark .checkoutPage {
 body.dark .couponItem { background: #0a1228; border-color: #1e2d4e; }
 body.dark .couponItem.active { border-color: var(--co-accent); background: var(--co-accent-soft); }
 body.dark .couponName { color: #c0ccee; }
-body.dark .couponInput { background: #060d1e; border-color: #1e2d4e; color: #c0ccee; }
-body.dark .couponApplyBtn { background: #2a3a5e; }
 body.dark .couponApplied { background: #0a1e14; border-color: #1e5a35; }
 
 /* ── 결제 요약 카드 (영수증 모티프) ── */
 .checkoutSummaryCard {
   background: var(--card);
-  border: 1px solid #1c1a16;
+  border: 3px solid #1c1a16;
   border-radius: 4px;
-  padding: 26px 24px 22px;
+  padding: 32px 30px 28px;
   box-shadow: 0 8px 34px rgba(0,0,0,0.1);
   position: sticky;
   top: 24px;
@@ -670,8 +636,6 @@ body[data-bg="pastel"] .checkoutSummaryCard {
 }
 
 /* ── 다크 모드 ── */
-body.dark .checkoutPage { background: #070e20; }
-
 body.dark .checkoutCard,
 body.dark .checkoutSummaryCard {
   background: #0c1432;

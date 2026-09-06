@@ -32,7 +32,6 @@ function Checkout() {
   const STEPS = ["배송 정보", "결제 수단", "최종 확인"];
 
   const [myCoupons, setMyCoupons] = useState([]);
-  const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [discountAmount, setDiscountAmount] = useState(0);
   const [couponError, setCouponError] = useState("");
@@ -92,25 +91,9 @@ function Checkout() {
     }
   };
 
-  const handleApplyCouponCode = async () => {
-    if (!couponInput.trim()) return;
-    setCouponError("");
-    const code = couponInput.trim().toUpperCase();
-    try {
-      const res = await validateCoupon(code, totalAmount);
-      setAppliedCoupon({ ...res.data, code, name: res.data.coupon_name });
-      setDiscountAmount(res.data.discount_amount);
-    } catch (e) {
-      setCouponError(e.response?.data?.error || "쿠폰 적용에 실패했습니다.");
-      setAppliedCoupon(null);
-      setDiscountAmount(0);
-    }
-  };
-
   const handleRemoveCoupon = () => {
     setAppliedCoupon(null);
     setDiscountAmount(0);
-    setCouponInput("");
     setCouponError("");
   };
 
@@ -220,7 +203,7 @@ function Checkout() {
   const selectedPayLabel = PAYMENT_METHODS.find((m) => m.key === payMethod)?.label;
 
   return (
-    <main className="checkoutPage" data-lenis-prevent data-hsnap ref={pageRef}>
+    <main className="checkoutPage metallicSilver" data-lenis-prevent data-hsnap ref={pageRef}>
       <div className="checkoutInner">
         <p className="coEyebrow">SECURE CHECKOUT</p>
         <h1 className="checkoutTitle">주문 / 결제</h1>
@@ -324,19 +307,6 @@ function Checkout() {
                         ))}
                       </div>
                     )}
-
-                    <div className="couponInputRow">
-                      <input
-                        className="couponInput"
-                        value={couponInput}
-                        onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                        placeholder="쿠폰 코드 입력"
-                        onKeyDown={(e) => e.key === "Enter" && handleApplyCouponCode()}
-                      />
-                      <button className="couponApplyBtn" onClick={handleApplyCouponCode}>
-                        적용
-                      </button>
-                    </div>
 
                     {couponError && <p className="couponError">{couponError}</p>}
 
