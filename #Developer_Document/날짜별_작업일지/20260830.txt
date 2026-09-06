@@ -1,0 +1,60 @@
+⭐ 2026-08-30
+
+✅ 브라우저 창 리사이즈 시 가로 스크롤 패널 겹침 버그 수정
+➡️ Snap이 window resize에 viewport 치수만 갱신하고 현재 패널로 재스냅은
+   안 해줘서, 패널 폭(w-screen)이 바뀌어도 스크롤 좌표가 그대로 남아 두
+   패널이 반씩 겹쳐 보였음. resize 시 lenis.resize() + snap.goTo(현재
+   인덱스)로 재정렬 — Snap 내부 좌표 갱신이 500ms 디바운스라 그보다 늦게
+   (600ms) 실행되도록 함 (커밋 ad4e152)
+
+✅ 2026-06~08 프론트/장고 주요 장애 포스트모템 문서화
+➡️ PASS/hCaptcha+Cloudflare 배포 정지 복합 장애, 상품 이미지 107MB로 인한
+   배포 화면 렌더 불능, res.data 배열 미검증으로 인한 홈페이지 전체 크래시
+   (5곳), Django AUTH_USER_MODEL 오류, ScrollToTop 대소문자로 인한 Linux
+   CI 전용 빌드 실패, 방금 고친 Lenis 리사이즈 패널 겹침까지 총 6건을
+   증상/진단 과정/근본 원인/해결/재발 방지 순으로 정리 (커밋 55a2a95)
+
+✅ 포트폴리오 사이트(portfolio/) 최초 커밋
+➡️ React/Vite 기반 케이스 스터디 포트폴리오 신설 — 집다움 프로젝트에서 겪은
+   장애 6건 종합 포스트모템 + 프론트엔드 단독 4건 케이스 스터디 포함
+   (커밋 0170106)
+
+✅ 포트폴리오 케이스 스터디 2건 추가, gray-matter 브라우저 크래시 버그 수정
+➡️ jipdaum-backend-incident-review.md: Spring Boot 백엔드 장애 2건(설정 키
+   기본값 부재로 인한 전체 502, 인증 크래시 3주 뒤 재발) + 사전 발견한
+   쿠폰 동시성 결함 1건을 기존 케이스 스터디와 동일한 문체로 작성
+➡️ jipdaum-db-architecture.md: Django/Spring DB 스키마 공유 설계와
+   Oracle→MySQL 마이그레이션을 제약조건→의사결정→트레이드오프 구조로 정리
+   (장애가 아닌 설계 결정 기록)
+➡️ gray-matter가 내부적으로 참조하는 Node 전용 Buffer가 브라우저에 없어서
+   /case-studies, /case-studies/:slug가 케이스 스터디 파일 유무와 무관하게
+   전부 빈 화면으로 크래시하던 사전 존재 버그를 발견/수정(buffer 패키지
+   폴리필). frontmatter 파싱·빌드·실제 렌더링(스크린샷)까지 확인 완료
+   (커밋 858945b)
+
+✅ 포트폴리오 About/Contact/Case Studies 페이지 보강 (커밋 f726cf5)
+➡️ About: 인트로 카드 확대, 페이지 폭 확장, Stack 섹션을 분야별(Frontend/
+   Backend/Database/Auth/Payment/DevOps) 카드 그리드로 재구성(shields.io
+   배지), "구성원 · 역할" 섹션 신설
+➡️ CaseStudiesList: 카드 날짜 중복 표기 버그 수정 → "집다움 프로젝트" 라벨로
+   교체, role/기술 스택 배지·핵심 성과 한 줄 추가
+➡️ CaseStudyDetail 폭을 max-w-7xl로 통일
+➡️ Home 퀵링크·Contact에 "집다움 홈페이지"(jipdaum.life) 카드 추가
+➡️ Layout 헤더 내비 중앙 정렬, 푸터 문구 개선, README DevOps 배지에
+   Amazon EC2 추가
+
+✅ [jipdaum-spring] 6~8월 최대 원인(설정 드리프트) 분석 및 DB 이관 문서화
+➡️ git log 72개 커밋과 기존 작업일지를 근거로 6/26~8/30 기간 최대 반복
+   원인을 분석: 1위는 application.yml을 시크릿 때문에 git에서 제외해
+   로컬/EC2가 독립된 설정 소스가 된 구조 + 배포 파이프라인 헬스체크 부재
+   (일주일 새 hCaptcha 로그 부재/SMTP 발송 실패/CORS 설정 누락 502 3연속
+   인시던트로 이어짐), 2위는 Spring Security 302 리다이렉트가 axios JSON
+   기대와 충돌하는 문제의 재발 경위(8/7 최초 → 8/27 재발), 3위는 6~7월
+   초기 보안 취약점·계정 정합성·DB 전환 이관 버그 개요(커밋 fca4974,
+   오탈자 수정 f22899e)
+➡️ DB 구조/Oracle→MySQL 이관 문서 신규 작성(엔티티 클래스 전수 대조로
+   Django 소유 12개 + Spring 자체 소유 2개 테이블 구조 정리, 이관 커밋
+   근거로 Oracle과의 차이 6가지 기록) + 날짜별 작업일지 중 동일 날짜를
+   다루면서 완전히 subset인 4개 파일(20260820/22/23/24.txt) 정리·삭제
+   (커밋 3eefbcb)
+➡️ 상세 내용은 jipdaum-spring 저장소의 같은 날짜 작업일지 참고

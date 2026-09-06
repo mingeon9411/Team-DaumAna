@@ -1,0 +1,112 @@
+⭐ 2026-09-03
+
+✅ [jipdaum-spring] 카카오 QR 로그인 조사 마무리 — 되돌림
+➡️ 어제 추가한 미문서화 파라미터 prompt=qr_login을 배포했으나, 실사용자
+   리포트로 QR 로그인은 여전히 안 되고 오히려 카카오 ID/PW를 정확히
+   입력해도 로그인 화면으로 되돌아오는 새로운 회귀가 발생함을 확인.
+   qr_login이 카카오 공식 REST API 문서에 없는 값이라, 인가 요청(GET)은
+   통과시키고 로그인 확인(POST) 단계에서 카카오 서버가 재검증해 거부하는
+   것으로 추정(미검증) — 걷어내 "카카오는 강제 파라미터 없음" 상태로
+   되돌림. QR 로그인 자체는 카카오 웹 OAuth가 공식 지원하지 않는 것으로
+   잠정 결론 (커밋 25b4180, 병합 3dd9c38)
+
+✅ 생활용품 카테고리(발매트/수건/실내화/욕실화) 13종 추가, 사업자정보를
+   SiteFooter로 통합
+➡️ Home.jsx PRODUCTS에 발매트 2/수건 3/실내화 4/욕실화 4종 추가(id
+   18~30, korean_hall이 DB에서 11~17을 이미 쓰고 있어 그 범위를 피해
+   18부터 배정), CATEGORY_TREE 생활용품 하위에 실내화/욕실화 탭 추가,
+   챗봇 카테고리 키워드 반영, Django reset_main_products 커맨드+실제 DB
+   삽입까지 반영
+➡️ BusinessInfoPanel.jsx(홈 전용 고정 패널) 제거, ProductListFooter.jsx를
+   SiteFooter로 승격해 상품 목록/상세/결제/한국관 하단에 공용 배치, 사업자
+   정보를 data/businessInfo.js로 분리해 로그인/회원가입 페이지 하단에도
+   노출. 로그인/회원가입 페이지에 "돌아가기" 버튼 + 홈 복귀 시 대문
+   애니메이션 스킵 신호 추가 (커밋 6abb612)
+➡️ 상품 목록 검색창도 헤더 검색창처럼 포커스 시 확대되도록 통일 (커밋 5e88b71)
+
+✅ 상세/결제/고객센터에 관성 스크롤 적용
+➡️ data-lenis-prevent로 네이티브 스크롤만 쓰던 5개 페이지(ProductDetail,
+   HomeProductDetail, Checkout, CheckoutKoreanHall, CustomerCenter)에
+   useNestedLenis로 한국관과 같은 페이지 전용 Lenis를 붙임. 훅 자체도
+   duration:1.8/smoothWheel:true로 튜닝해 관성 느낌 통일(상품 그리드에도
+   자동 반영) (커밋 4030fc9)
+
+✅ 마이페이지 독립 페이지 전환, 홈 인트로 축소, 장바구니 쿠폰/추천 등
+   (커밋 1c45f6d)
+➡️ 마이페이지(MyPage)를 모달에서 /mypage 독립 페이지로 전환, 상품목록
+   페이지군과 같은 metallicSilver 전면 배경 + 히어로 + 탭 레이아웃으로
+   재구성
+➡️ 홈 인트로 에세이 패널 2·3번 삭제(1번 영상 → 한국관 배너 → 상품
+   그리드로 단축), 관련 패널 인덱스/카운트를 App.jsx/Sidebar.jsx/
+   Settings.jsx 전체에서 갱신
+➡️ 한국관 페이지 헤더 "한국관" 탭이 "메인페이지"로 바뀌어 홈으로 돌아가도록 수정
+➡️ 장바구니에 보유 쿠폰 배너, "함께 구매하면 좋은 상품" 추천 섹션 추가
+➡️ 챗봇 로직/스타일 보완, 공지사항 신규 항목 추가 및 상단 여백 보정,
+   상품상세(HomeProductDetail) 보완
+➡️ 포토리뷰 업로드/뷰어 기능 제거(PhotoReviewUploadModal, PhotoReviewViewer,
+   관련 Home.jsx 연동) — 이후 09-06에 다른 형태(사진 리뷰 최신순 슬라이드)로
+   재도입됨
+
+✅ Redis 캐싱 도입 (docker-compose 인프라 + 케이스 스터디)
+➡️ Spring 쪽 상품 목록 조회 캐싱이 로컬에서 붙을 수 있도록 jibdaum-redis
+   컨테이너를 mysql과 같은 compose 파일에 추가. 포트폴리오에 해당 작업
+   케이스 스터디 추가 — 캐싱 자체보다 실측으로 잡은 직렬화 버그 2건과,
+   배포 워크플로우를 먼저 읽고 막은 프로덕션 500 위험을 중심으로 정리
+   (커밋 effc110)
+
+✅ 프로젝트 문서 정비
+➡️ 두 저장소(Team-DaumAna+jipdaum-spring) 커밋 히스토리를 날짜별로 정리한
+   CHANGELOG 신규 — 2026-09-03 기준 278개 커밋을 재서술 없이 시간순 병합
+   (커밋 b836498)
+➡️ 프로젝트 일정표를 git log 실측 기반으로 추가 — 임의로 계획을 지어내지
+   않고 두 저장소의 실제 git log를 ISO 주차별로 집계해 7단계로 구성,
+   각 단계 커밋 수 합계가 실제 총 커밋 수와 일치하는지 검산 (커밋 066f905)
+➡️ README에 화면 캡처·기능표·CI/CD 다이어그램·Quick Start 등 보강
+   (커밋 a60cfec), Tech Stack을 뱃지+기술명+설명 표로 재구성하고 AI 챗봇
+   스택 반영(커밋 b796487), 일정표에 P0 이슈/아키텍처 전략/배포 현황
+   섹션 추가(커밋 ec04729)
+
+✅ 포트폴리오 스택 정리
+➡️ Stack 섹션을 뱃지+설명 표로 재구성해 루트 README와 동일한 구성 반영
+   (커밋 7cd9488), About Stack 표에 잘못 적힌 Spring Boot 저장소명 수정
+   jipdaum-spring → jipdaum_Springboot(커밋 5cba68a), Tools 스택에 Figma
+   추가(커밋 1b39f37), Gemini 설명에 상품 이미지 생성 용도 추가(커밋
+   c6b3e56), Cloudflare Pages SPA 폴백 _redirects를 portfolio에도 미리
+   추가(커밋 c9ae99b), Case Study 상세 페이지 폭을 max-w-4xl→max-w-5xl로
+   재확장(커밋 244bb58)
+
+✅ 한국관 정리
+➡️ 영상 밑 대/중분류 카테고리 버튼 배너 제거(인기 검색어만 유지), 헤더
+   해는 라이트모드에서만·달은 다크모드에서만 보이던 것을 테마 무관하게
+   항상 같이 뜨도록 수정(일월오봉도 구도상 해와 달이 함께 있어야 좌우
+   균형이 맞음) (커밋 352915c)
+➡️ 상품 상세페이지 "목록으로" 위 집다움 워드마크 로고(detailLogoLink) 및
+   전용 다크모드 상태·로고 import 정리(커밋 8293251)
+➡️ /product/:id(한국관 전용 라우트)인데 헤더가 이를 모르고 메인 로고·
+   인기 검색어를 보여주던 버그 — 한국관 기준(hanok 로고, /korean-hall,
+   전용 인기 검색어 목록)으로 수정, 인기 검색어 목록을 Header.jsx와
+   공유하도록 data/koreanHallKeywords.js로 분리(커밋 801f1ec)
+➡️ 한국관 상품 상세페이지를 쿠팡 명품관류 레이아웃(브레드크럼 → 정품
+   배지 바 → 브랜드/상품명 → 가격 → 스펙 로우 → 배송 → 수량/주문금액 →
+   구매 버튼 → 필수 표기 정보 표)으로 오방색(먹색+금) 팔레트 재구성 —
+   없는 데이터(원산지 등)는 지어내지 않고 실제 필드만 사용, 새 클래스는
+   전부 이 페이지 전용 CSS에 둬 /item에는 영향 없음(커밋 4daea15)
+
+✅ [jipdaum-spring] 장바구니 리뉴얼, Redis 캐싱 구현, 동시성 테스트, 일정표
+➡️ 장바구니 리뉴얼 개선(커밋 e1dc928)
+➡️ ProductService.getProducts를 30초 TTL로 Redis 캐싱(Django Admin이 같은
+   DB를 직접 쓰기 때문에 캐시 무효화 이벤트 연동 없이 TTL로 최종 일관성
+   선택). 캐시 대상 DTO가 record라 GenericJackson2JsonRedisSerializer로
+   전환하며 JSR-310 모듈 누락, WRITE_DATES_AS_TIMESTAMPS 미비활성화 두
+   가지 실측 직렬화 버그를 미리 잡음(실측: 534ms → 캐시 히트 시 28ms).
+   관리자 상품/옵션 CUD에 캐시 무효화 적용(커밋 4b83b31)
+➡️ 프로덕션에 Redis가 없을 수도 있는 상황을 대비해, 캐시 조회/저장/무효화
+   실패를 예외 전파 대신 로그로만 남기도록 해 Redis 장애 시에도 DB 직접
+   조회로 안전하게 폴백(Redis 컨테이너를 내리고 실제 200 응답 확인) (커밋 aa3f580)
+➡️ 재고 차감 동시성 방어 로직(DB 레벨 조건부 UPDATE)에 실제 부하 테스트
+   추가 — 가드를 일부러 제거하는 뮤테이션 테스트로, stock_count가
+   BIGINT UNSIGNED라 가드 없이도 수치 자체는 우연히 맞아떨어지지만 그
+   경우 SQL 예외로 죽는다는 차이까지 검증(커밋 c1ef280)
+➡️ VisionFlow-Drone을 참고해 두 저장소 git log 실측 기반 일정표를
+   Daily_Schedule 폴더에 마크다운+docx로 추가(커밋 7f7ca78, 85ff053)
+➡️ 상세 내용은 jipdaum-spring 저장소의 같은 날짜 작업일지 참고
