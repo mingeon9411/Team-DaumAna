@@ -5,7 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, ChevronDown, Heart, Star, Sparkles, Ruler, ShieldCheck, ImagePlus, X, Share2 } from "lucide-react";
 import { PRODUCTS, labelKo, LABEL_BADGE } from "./Home";
 import { addToCart, getReviews, createReview, uploadReviewImage, getProductDetail } from "../../api";
-import { isWished, toggleWish } from "../../utils/wishlist";
+import { useWishlist } from "../../hooks/useWishlist";
 import { addRecentlyViewed } from "../../utils/recentlyViewed";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useNestedLenis } from "../../hooks/useNestedLenis";
@@ -73,7 +73,8 @@ function HomeProductDetail() {
   // null(미선택)에서 시작한다 — 갤러리 미리보기(activeImage)는 선택 여부와 무관하게 0번부터 보여준다.
   const [colorIdx, setColorIdx] = useState(null);
   const [optionOpen, setOptionOpen] = useState(false);
-  const [wished, setWished] = useState(false);
+  const { wishlist, toggleWish } = useWishlist();
+  const wished = wishlist.some((item) => item.id === Number(id));
   const [reviews, setReviews] = useState([]);
   const [reviewsLoading, setReviewsLoading] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
@@ -90,7 +91,6 @@ function HomeProductDetail() {
     setActiveImage(0);
     setColorIdx(null);
     setOptionOpen(false);
-    setWished(isWished(product.id));
     setReviewRating(5);
     setReviewTitle("");
     setReviewComment("");
@@ -181,7 +181,6 @@ function HomeProductDetail() {
       image: product.image,
       review: reviews.length,
     });
-    setWished(isWished(product.id));
   };
 
   const handleShare = async () => {

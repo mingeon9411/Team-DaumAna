@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Check, ShoppingBag, Ticket, ChevronDown, ChevronLeft, ChevronRight, Heart } from "lucide-react";
 import { getCartItems, updateCartItem, deleteCartItem, getMyCoupons, validateCoupon } from "../../api";
 import { PRODUCTS as products } from "../Home/Home";
-import { getWishlist, toggleWish } from "../../utils/wishlist";
+import { useWishlist } from "../../hooks/useWishlist";
 import { useAuthModal } from "../../context/AuthModalContext";
 
 const RECOMMEND_PAGE_SIZE = 5;
@@ -89,13 +89,8 @@ function Cart() {
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponDiscount, setCouponDiscount] = useState(0);
   const [couponError, setCouponError] = useState("");
-  const [wishlist, setWishlist] = useState(() => getWishlist().map((p) => p.id));
-  // utils/wishlist.js는 price를 숫자로 저장 — Home 카탈로그의 "168,000" 콤마 문자열을
-  // 그대로 넘기면 Number()가 NaN → 0으로 깨지므로 여기서 벗겨서 넘긴다.
-  const handleToggleWish = (product) => {
-    toggleWish({ ...product, price: String(product.price).replace(/,/g, "") });
-    setWishlist(getWishlist().map((p) => p.id));
-  };
+  const { wishlist: wishItems, toggleWish: handleToggleWish } = useWishlist();
+  const wishlist = wishItems.map((item) => item.id);
 
   useEffect(() => {
     if (!localStorage.getItem("access_token")) return;

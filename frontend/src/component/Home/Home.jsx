@@ -1,3 +1,4 @@
+import { useWishlist } from "../../hooks/useWishlist";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, Heart, X, Search, Camera, ShoppingBag, Star } from "lucide-react";
@@ -440,7 +441,8 @@ function ProductCard({ p, wished, cartCount, onToggleWish, onClick }) {
 }
 
 function Home() {
-  const [wishlist, setWishlist] = useState([]);
+  const { wishlist: wishItems, toggleWish } = useWishlist();
+  const wishlist = wishItems.map((item) => item.id);
   const [productSearchQuery, setProductSearchQuery] = useState("");
   const [selectedTop, setSelectedTop] = useState("전체");
   const [selectedCategory, setSelectedCategory] = useState("전체");
@@ -653,8 +655,6 @@ function Home() {
     lookbookPage * LOOKBOOK_PAGE_SIZE + LOOKBOOK_PAGE_SIZE
   );
 
-  const toggleWish = (id) =>
-    setWishlist((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
 
   // 도어인트로를 지나 홈에 들어오면 상품 그리드(0번 패널)가 첫 화면이다. 예전엔
   // 앞에 에세이(인트로 영상) 패널이 있어 "목록으로" 복귀 시 그 패널을 건너뛰고

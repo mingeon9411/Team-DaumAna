@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 import products from "../../data/products";
-import { getWishlist, toggleWish } from "../../utils/wishlist";
+import { useWishlist } from "../../hooks/useWishlist";
 import { addToCart } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 
@@ -14,9 +14,8 @@ const bestPages = Array.from(
 );
 
 function BestItem() {
-  const [likedItems, setLikedItems] = useState(() =>
-    getWishlist().map((p) => p.id)
-  );
+  const { wishlist, toggleWish: handleLike } = useWishlist();
+  const likedItems = wishlist.map((item) => item.id);
   const [page, setPage] = useState(0);
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
@@ -25,10 +24,6 @@ function BestItem() {
     setPage(Math.min(Math.max(index, 0), bestPages.length - 1));
   };
 
-  const handleLike = (product) => {
-    toggleWish(product);
-    setLikedItems(getWishlist().map((p) => p.id));
-  };
 
   const handleCart = async (product) => {
     if (!localStorage.getItem("access_token")) {

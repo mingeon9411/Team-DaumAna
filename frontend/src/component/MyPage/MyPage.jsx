@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { LuChevronLeft, LuCrown, LuTrophy, LuMedal, LuLeaf, LuUser } from "react-icons/lu";
 import { logoutUser, getOrderHistory, getMyCoupons, cancelOrder, getMe, getMyInquiries, createInquiry, updateSecurityQa } from "../../api";
 import { SECURITY_QUESTIONS } from "../../data/securityQuestions";
-import { getWishlist, removeWish } from "../../utils/wishlist";
+import { useWishlist } from "../../hooks/useWishlist";
 import korfurni from "../../assets/products/korfurni.png";
 import bird2 from "../../assets/decor/bird2.png";
 import flowers from "../../assets/decor/flowers.png";
@@ -70,7 +70,7 @@ function MyPage() {
   const [trackingOrder, setTrackingOrder] = useState(null);
   const [myCoupons, setMyCoupons] = useState([]);
   const [profile, setProfile] = useState(null);
-  const [wishlist, setWishlist] = useState(() => getWishlist());
+  const { wishlist, removeWish: handleRemoveWish, loading: wishlistLoading, error: wishlistError } = useWishlist();
   // 보안질문 설정/변경 — 안내 모달(EmailVerify.jsx)을 계속 건너뛴 회원의 유일한 재설정 경로.
   const [qaQuestion, setQaQuestion] = useState("");
   const [qaAnswer, setQaAnswer] = useState("");
@@ -222,14 +222,7 @@ function MyPage() {
       .catch(() => setInquiries([]));
   }, []);
 
-  useEffect(() => {
-    setWishlist(getWishlist());
-  }, [activeSection]);
 
-  const handleRemoveWish = (id) => {
-    removeWish(id);
-    setWishlist(getWishlist());
-  };
 
   const counts = {
     PENDING: orders.filter((o) => o.status === "PENDING").length,
@@ -484,7 +477,7 @@ function MyPage() {
                 <h2>위시리스트</h2>
                 <button onClick={() => setActiveSection("wishlist")}>전체보기</button>
               </div>
-              {wishlist.length === 0 ? (
+              {wishlistLoading ? <p>위시리스트를 불러오는 중입니다.</p> : wishlistError ? <p role="alert">{wishlistError}</p> : wishlist.length === 0 ? (
                 <p className="emptyText">관심상품 내역이 없습니다.</p>
               ) : (
                 <div className="wishPreviewGrid">
@@ -777,7 +770,7 @@ function MyPage() {
             <div className="myWishCountBar">
               총 <strong>{wishlist.length}</strong>개의 관심상품
             </div>
-            {wishlist.length === 0 ? (
+            {wishlistLoading ? <p>위시리스트를 불러오는 중입니다.</p> : wishlistError ? <p role="alert">{wishlistError}</p> : wishlist.length === 0 ? (
               <div className="myWishEmpty">
                 <span className="myWishEmptyIcon">🤍</span>
                 <p>관심상품이 없습니다</p>

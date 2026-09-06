@@ -2,6 +2,16 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 # [1] 카테고리 (셀프 참조 계층형)
+class Wishlist(models.Model):
+    user = models.ForeignKey('Users.User', on_delete=models.CASCADE, related_name='wishlist_items')
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='wishlist_items')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'JIPDAUM_WISHLIST'
+        constraints = [models.UniqueConstraint(fields=['user', 'product'], name='wishlist_user_product_unique')]
+
+
 class Category(models.Model):
     id = models.AutoField(primary_key=True) # 오라클 시퀀스 매핑
     name = models.CharField(max_length=100)

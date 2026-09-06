@@ -94,6 +94,10 @@ API.interceptors.response.use((res) => res, handle401);
 PAYMENT_API.interceptors.response.use((res) => res, handle401);
 
 // [장바구니 API]
+export const fetchWishlist = () => API.get('/wishlist');
+export const addWishlistItem = (id) => API.put(`/wishlist/${id}`);
+export const deleteWishlistItem = (id) => API.delete(`/wishlist/${id}`);
+
 export const getCartItems = () => API.get('/cart');
 export const addToCart = (data) => API.post('/cart', data);
 export const updateCartItem = (data) => API.put('/cart', data);
