@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { sendEmailOTP, verifyEmailOTP } from '../../api';
+import { sendEmailOTP, verifyEmailOTP, updateSecurityQa } from '../../api';
 import { useAuthModal } from '../../context/AuthModalContext';
+import { SECURITY_QUESTIONS } from '../../data/securityQuestions';
 import './EmailVerify.css';
 
 function EmailVerify() {
@@ -9,13 +10,20 @@ function EmailVerify() {
     const { openLogin } = useAuthModal();
     const verifiedRef = useRef(false);
     const cleanupTimerRef = useRef(null);
-    const [step, setStep] = useState(1);       // 1: 이메일 입력, 2: 코드 입력
+    const [step, setStep] = useState(1);       // 1: 이메일 입력, 2: 코드 입력, 3: 보안질문 설정 안내
     const [email, setEmail] = useState('');
     const [code, setCode] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [countdown, setCountdown] = useState(0);
     const [devCode, setDevCode] = useState('');
+
+    // 보안질문 미설정 회원(기존 회원 대부분)에게 로그인 성공 직후 한 번 더 보여주는 안내 —
+    // 여기서 설정하지 않아도 마이페이지에서 나중에 설정할 수 있다("나중에" 건너뛰기 가능).
+    const [qaQuestion, setQaQuestion] = useState('');
+    const [qaAnswer, setQaAnswer] = useState('');
+    const [qaError, setQaError] = useState('');
+    const [qaSaving, setQaSaving] = useState(false);
 
     useEffect(() => {
         // localStorage(일반 로그인) 또는 sessionStorage(소셜 미인증 임시) 토큰 확인
@@ -95,7 +103,7 @@ function EmailVerify() {
         setError('');
         setLoading(true);
         try {
-            await verifyEmailOTP(email, code);
+            const res = await verifyEmailOTP(email, code);
             // 인증 성공: 임시 토큰 → localStorage로 이동 (정식 로그인)
             const pendingAccess = sessionStorage.getItem('pending_access_token');
             const pendingRefresh = sessionStorage.getItem('pending_refresh_token');
@@ -110,11 +118,39 @@ function EmailVerify() {
                 window.dispatchEvent(new Event('authchange'));
             }
             verifiedRef.current = true;
+            if (!res.data?.has_security_question) {
+                setStep(3);
+                return;
+            }
             navigate('/', { replace: true });
         } catch (err) {
             setError(err.response?.data?.error || '인증에 실패했습니다.');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const goHome = () => navigate('/', { replace: true });
+
+    const handleSaveSecurityQa = async (e) => {
+        e.preventDefault();
+        if (!qaQuestion) {
+            setQaError('보안 질문을 선택해주세요.');
+            return;
+        }
+        if (!qaAnswer.trim()) {
+            setQaError('답변을 입력해주세요.');
+            return;
+        }
+        setQaError('');
+        setQaSaving(true);
+        try {
+            await updateSecurityQa(qaQuestion, qaAnswer);
+            goHome();
+        } catch (err) {
+            setQaError(err.response?.data?.error || '저장에 실패했습니다.');
+        } finally {
+            setQaSaving(false);
         }
     };
 
@@ -198,6 +234,44 @@ function EmailVerify() {
                             onClick={() => { setStep(1); setError(''); setCode(''); }}
                         >
                             이메일 변경
+                        </button>
+                    </form>
+                )}
+
+                {step === 3 && (
+                    <form className="evForm" onSubmit={handleSaveSecurityQa}>
+                        <div className="evInfoBox">
+                            <span className="evInfoIcon">✓</span>
+                            <span>아이디·비밀번호를 잊었을 때 본인확인에 쓸 보안 질문을 설정해주세요.</span>
+                        </div>
+
+                        <label className="evLabel">보안 질문</label>
+                        <select
+                            className="evInput"
+                            value={qaQuestion}
+                            onChange={(e) => setQaQuestion(e.target.value)}
+                        >
+                            <option value="">질문 선택</option>
+                            {SECURITY_QUESTIONS.map((q) => (
+                                <option key={q} value={q}>{q}</option>
+                            ))}
+                        </select>
+
+                        <label className="evLabel">답변</label>
+                        <input
+                            type="text"
+                            className="evInput"
+                            placeholder="답변을 입력하세요"
+                            value={qaAnswer}
+                            onChange={(e) => setQaAnswer(e.target.value)}
+                        />
+                        {qaError && <p className="evError">{qaError}</p>}
+
+                        <button type="submit" className="evBtn" disabled={qaSaving}>
+                            {qaSaving ? '저장 중...' : '설정하기'}
+                        </button>
+                        <button type="button" className="evBtnText" onClick={goHome}>
+                            나중에 하기
                         </button>
                     </form>
                 )}

@@ -2,7 +2,8 @@ import "./MyPage.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { LuChevronLeft, LuCrown, LuTrophy, LuMedal, LuLeaf, LuUser } from "react-icons/lu";
-import { logoutUser, getOrderHistory, getMyCoupons, cancelOrder, getMe, getMyInquiries, createInquiry } from "../../api";
+import { logoutUser, getOrderHistory, getMyCoupons, cancelOrder, getMe, getMyInquiries, createInquiry, updateSecurityQa } from "../../api";
+import { SECURITY_QUESTIONS } from "../../data/securityQuestions";
 import { getWishlist, removeWish } from "../../utils/wishlist";
 import korfurni from "../../assets/products/korfurni.png";
 import bird2 from "../../assets/decor/bird2.png";
@@ -70,6 +71,11 @@ function MyPage() {
   const [myCoupons, setMyCoupons] = useState([]);
   const [profile, setProfile] = useState(null);
   const [wishlist, setWishlist] = useState(() => getWishlist());
+  // 보안질문 설정/변경 — 안내 모달(EmailVerify.jsx)을 계속 건너뛴 회원의 유일한 재설정 경로.
+  const [qaQuestion, setQaQuestion] = useState("");
+  const [qaAnswer, setQaAnswer] = useState("");
+  const [qaMessage, setQaMessage] = useState("");
+  const [qaSaving, setQaSaving] = useState(false);
   const [activeSection, setActiveSection] = useState("main");
 
   // 배송지 관리 — 별도 백엔드 모델이 없어 위시리스트/리뷰와 같은 방식으로 로컬에 저장한다.
@@ -137,6 +143,30 @@ function MyPage() {
     alert("닉네임이 저장되었습니다.");
   };
 
+  // 아이디/비밀번호 찾기 본인확인용 보안질문 설정·변경.
+  const handleSaveSecurityQa = async () => {
+    if (!qaQuestion) {
+      setQaMessage("보안 질문을 선택해주세요.");
+      return;
+    }
+    if (!qaAnswer.trim()) {
+      setQaMessage("답변을 입력해주세요.");
+      return;
+    }
+    setQaSaving(true);
+    setQaMessage("");
+    try {
+      await updateSecurityQa(qaQuestion, qaAnswer);
+      setProfile((prev) => (prev ? { ...prev, has_security_question: true, security_question: qaQuestion } : prev));
+      setQaAnswer("");
+      setQaMessage("저장되었습니다.");
+    } catch (err) {
+      setQaMessage(err.response?.data?.error || "저장에 실패했습니다.");
+    } finally {
+      setQaSaving(false);
+    }
+  };
+
   const handleAvatarChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -182,7 +212,10 @@ function MyPage() {
       .then((res) => setMyCoupons(Array.isArray(res.data) ? res.data : []))
       .catch(() => {});
     getMe()
-      .then((res) => setProfile(res.data))
+      .then((res) => {
+        setProfile(res.data);
+        if (res.data?.security_question) setQaQuestion(res.data.security_question);
+      })
       .catch(() => setProfile(null));
     getMyInquiries()
       .then((res) => setInquiries(Array.isArray(res.data) ? res.data : []))
@@ -940,6 +973,35 @@ function MyPage() {
                 </strong>
               </div>
             </div>
+
+            <section className="accountSection">
+              <div>
+                <h2>보안 질문</h2>
+                <p>
+                  {profile?.has_security_question
+                    ? "아이디·비밀번호를 잊었을 때 본인확인에 쓰입니다. 답변만 다시 입력하면 변경됩니다."
+                    : "아직 설정되지 않았습니다 — 설정해두면 아이디·비밀번호 찾기를 이용할 수 있어요."}
+                </p>
+              </div>
+              <div className="securityQaRow">
+                <select value={qaQuestion} onChange={(e) => setQaQuestion(e.target.value)}>
+                  <option value="">질문 선택</option>
+                  {SECURITY_QUESTIONS.map((q) => (
+                    <option key={q} value={q}>{q}</option>
+                  ))}
+                </select>
+                <input
+                  type="text"
+                  placeholder="답변"
+                  value={qaAnswer}
+                  onChange={(e) => setQaAnswer(e.target.value)}
+                />
+                <button type="button" onClick={handleSaveSecurityQa} disabled={qaSaving}>
+                  {qaSaving ? "저장 중..." : "저장"}
+                </button>
+              </div>
+              {qaMessage && <p className="profileInfoRow"><span>{qaMessage}</span></p>}
+            </section>
 
             <section className="accountSection">
               <div>

@@ -1189,6 +1189,50 @@ body.dark .profileNicknameRow button {
   background: #8a3226;
 }
 
+/* 보안질문 설정 — profileNicknameRow와 같은 패턴이지만 select까지 들어가 폭을 넓힌다 */
+.securityQaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  max-width: 560px;
+}
+
+.securityQaRow select,
+.securityQaRow input {
+  flex: 1;
+  min-width: 160px;
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 14px;
+  font-family: "Noto Sans KR", sans-serif;
+  outline: none;
+}
+
+.securityQaRow button {
+  flex-shrink: 0;
+  padding: 0 20px;
+  border: none;
+  border-radius: 8px;
+  background: #a6342a;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.securityQaRow button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+body.dark .securityQaRow button {
+  background: #8a3226;
+}
+
 .profileInfoCard {
   border: 1px solid var(--border);
   border-radius: 12px;

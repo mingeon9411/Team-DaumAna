@@ -157,7 +157,8 @@
     gap: 12px;
   }
 
-  .loginForm input {
+  .loginForm input,
+  .loginForm select {
     height: 50px;
     padding: 0 18px;
 
@@ -175,16 +176,19 @@
     font-family: "Noto Sans KR", "Pretendard", sans-serif;
   }
 
-  body.dark .loginForm input {
+  body.dark .loginForm input,
+  body.dark .loginForm select {
     background: #3a3d42;
     border: 1px solid rgba(255, 255, 255, 0.18);
   }
 
-  .loginForm input:focus {
+  .loginForm input:focus,
+  .loginForm select:focus {
     border-color: #070707;
   }
 
-  body.dark .loginForm input:focus {
+  body.dark .loginForm input:focus,
+  body.dark .loginForm select:focus {
     border-color: #bfcbec;
   }
   /* 로그인 유지 */

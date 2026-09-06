@@ -165,3 +165,16 @@ export const checkNicknameAPI = (nickname) =>
 export const getMe = () => AUTH_API.get('/me');
 export const sendEmailOTP = (email) => AUTH_API.post('/email-verify/send', { email });
 export const verifyEmailOTP = (email, code) => AUTH_API.post('/email-verify/confirm', { email, code });
+
+// [아이디/비밀번호 찾기]
+export const getSecurityQuestion = (email) =>
+  AUTH_API.get(`/security-question?email=${encodeURIComponent(email)}`);
+export const sendFindIdCode = (email) => AUTH_API.post('/find-id/send-code', { email });
+export const verifyFindId = (email, code, securityAnswer) =>
+  AUTH_API.post('/find-id/verify', { email, code, security_answer: securityAnswer });
+export const verifyFindPasswordIdentity = (nickname, email, securityAnswer) =>
+  AUTH_API.post('/find-password/verify', { nickname, email, security_answer: securityAnswer });
+export const resetPassword = (resetToken, newPassword) =>
+  AUTH_API.post('/find-password/reset', { reset_token: resetToken, new_password: newPassword });
+export const updateSecurityQa = (securityQuestion, securityAnswer) =>
+  AUTH_API.patch('/security-qa', { security_question: securityQuestion, security_answer: securityAnswer });

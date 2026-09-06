@@ -6,6 +6,10 @@ class User(AbstractUser):
     email = models.EmailField(max_length=100, unique=True)
     nickname = models.CharField(max_length=100)
     is_email_verified = models.BooleanField(default=False)
+    # 아이디/비밀번호 찾기 본인확인용 — 실제 read/write는 Spring UserAuthService가 한다.
+    # 답변은 해시(BCrypt) 저장, 평문 금지.
+    security_question = models.CharField(max_length=255, null=True, blank=True)
+    security_answer = models.CharField(max_length=255, null=True, blank=True)
 
     AbstractUser._meta.get_field('date_joined').db_column = 'created_at'
 

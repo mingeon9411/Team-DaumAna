@@ -36,7 +36,8 @@
     gap: 12px;
   }
   
-  .registerForm input {
+  .registerForm input,
+  .registerForm select {
     height: 52px;
     padding: 0 16px;
 
@@ -59,11 +60,13 @@
   color: var(--muted-foreground);
   }
 
-  .registerForm input:focus {
+  .registerForm input:focus,
+  .registerForm select:focus {
     border-color: var(--foreground);
   }
 
-  body.dark .registerForm input {
+  body.dark .registerForm input,
+  body.dark .registerForm select {
     background: rgba(50, 52, 56, 0.92);
   }
   

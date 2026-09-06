@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { LuChevronLeft } from "react-icons/lu";
 import { registerUser, checkNicknameAPI } from "../../api";
+import { SECURITY_QUESTIONS } from "../../data/securityQuestions";
 import { useAuthModal } from "../../context/AuthModalContext";
 import JDLogo from "../../assets/J.D 로고.svg";
 // -sm: 48px로만 쓰여서 원본(1015x600, 750KB) 대신 축소본을 쓴다.
@@ -34,11 +35,15 @@ function Register() {
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [securityQuestion, setSecurityQuestion] = useState("");
+  const [securityAnswer, setSecurityAnswer] = useState("");
 
   const [emailError, setEmailError] = useState("");
   const [nicknameError, setNicknameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordConfirmError, setPasswordConfirmError] = useState("");
+  const [securityQuestionError, setSecurityQuestionError] = useState("");
+  const [securityAnswerError, setSecurityAnswerError] = useState("");
   const [agreeError, setAgreeError] = useState("");
   const [captchaError, setCaptchaError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -124,6 +129,20 @@ function Register() {
       setPasswordConfirmError("");
     }
 
+    if (!securityQuestion) {
+      setSecurityQuestionError("보안 질문을 선택해주세요.");
+      isValid = false;
+    } else {
+      setSecurityQuestionError("");
+    }
+
+    if (!securityAnswer.trim()) {
+      setSecurityAnswerError("답변을 입력해주세요.");
+      isValid = false;
+    } else {
+      setSecurityAnswerError("");
+    }
+
     if (!termsAgree || !privacyAgree) {
       setAgreeError("필수 약관에 동의해주세요.");
       isValid = false;
@@ -153,6 +172,8 @@ function Register() {
         nickname,
         password,
         password_confirm: passwordConfirm,
+        security_question: securityQuestion,
+        security_answer: securityAnswer,
         recaptcha_token: token,
       });
       localStorage.setItem("nickname", nickname);
@@ -167,6 +188,8 @@ function Register() {
       if (data.nickname) setNicknameError(Array.isArray(data.nickname) ? data.nickname[0] : data.nickname);
       if (data.password) setPasswordError(Array.isArray(data.password) ? data.password[0] : data.password);
       if (data.password_confirm) setPasswordConfirmError(Array.isArray(data.password_confirm) ? data.password_confirm[0] : data.password_confirm);
+      if (data.security_question) setSecurityQuestionError(Array.isArray(data.security_question) ? data.security_question[0] : data.security_question);
+      if (data.security_answer) setSecurityAnswerError(Array.isArray(data.security_answer) ? data.security_answer[0] : data.security_answer);
       if (data.non_field_errors) setPasswordError(Array.isArray(data.non_field_errors) ? data.non_field_errors[0] : data.non_field_errors);
       // hCaptcha 검증 실패 등 필드에 안 묶이는 에러는 {"error": "..."} 형태로 옴 (Spring AuthException)
       if (data.error) setCaptchaError(`※${data.error}`);
@@ -274,6 +297,26 @@ function Register() {
           {passwordConfirmError && (
             <p className="errorText">{passwordConfirmError}</p>
           )}
+
+          {/* 아이디/비밀번호 찾기 본인확인용 — 목록은 SECURITY_QUESTIONS(백엔드와 동기화된 고정 목록) */}
+          <select
+            value={securityQuestion}
+            onChange={(e) => setSecurityQuestion(e.target.value)}
+          >
+            <option value="">보안 질문 선택 (아이디·비밀번호 찾기에 사용)</option>
+            {SECURITY_QUESTIONS.map((q) => (
+              <option key={q} value={q}>{q}</option>
+            ))}
+          </select>
+          {securityQuestionError && <p className="errorText">{securityQuestionError}</p>}
+
+          <input
+            type="text"
+            placeholder="보안 질문 답변"
+            value={securityAnswer}
+            onChange={(e) => setSecurityAnswer(e.target.value)}
+          />
+          {securityAnswerError && <p className="errorText">{securityAnswerError}</p>}
 
           <button
             type="button"
