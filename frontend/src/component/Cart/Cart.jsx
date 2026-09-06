@@ -178,8 +178,10 @@ function Cart() {
     }
   };
 
-  const checkedItems = cartItems.filter((i) => i.checked);
-  const displayItems = checkedItems.length > 0 ? checkedItems : cartItems;
+  // 체크된 상품이 하나도 없으면 결제 금액도 0원부터 시작해야 한다 — 예전엔
+  // 전부 해제해도 장바구니 전체 합계를 그대로 보여줘서(cartItems로 폴백),
+  // "선택한 것만 결제한다"는 체크박스의 의미와 화면 금액이 어긋났다.
+  const displayItems = cartItems.filter((i) => i.checked);
   // 29CM 장바구니 참고 — "총 주문 금액"은 정가(카탈로그 originalPrice) 합계,
   // "총 할인 금액"은 그 정가와 실제 판매가(item.price, 이미 할인 적용된 값) 차이의
   // 합계, "총 결제 금액"이 쿠폰까지 뺀 뒤 실제로 내는 돈이다. 카탈로그에 없는
