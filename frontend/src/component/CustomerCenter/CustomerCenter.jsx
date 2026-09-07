@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LuChevronLeft, LuMessageSquare, LuMessageCircle, LuPhone, LuChevronDown } from "react-icons/lu";
+import { LuChevronLeft, LuMessageSquare, LuMessageCircle, LuPhone, LuChevronDown, LuSearch } from "react-icons/lu";
 import "./CustomerCenter.css";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useNestedLenis } from "../../hooks/useNestedLenis";
@@ -41,10 +41,41 @@ const FAQS = [
     q: "쿠키 사용 동의를 나중에 바꿀 수 있나요?",
     a: "cookie-settings-reopen",
   },
+  { q: "주문 내역은 어디에서 확인하나요?", a: "로그인 후 마이페이지 > 주문내역 조회에서 주문 상태와 상세 내역을 확인할 수 있어요." },
+  { q: "주문 후 배송지를 변경할 수 있나요?", a: "출고 전 주문이라면 1:1 문의 또는 채팅 상담으로 변경 가능 여부를 확인해 주세요. 출고가 시작된 뒤에는 변경이 어려울 수 있어요." },
+  { q: "주문을 취소하고 싶어요.", a: "출고 전 주문은 마이페이지 > 주문내역에서 취소할 수 있어요. 출고된 주문은 반품 절차를 이용해 주세요." },
+  { q: "비회원도 주문할 수 있나요?", a: "현재 주문과 주문 조회는 회원 로그인 후 이용할 수 있어요." },
+  { q: "결제 수단에는 어떤 것이 있나요?", a: "결제 화면에서 제공되는 결제 수단을 선택해 이용할 수 있어요. 표시되는 수단은 결제 서비스의 지원 범위에 따라 달라질 수 있어요." },
+  { q: "결제는 완료됐는데 주문이 보이지 않아요.", a: "결제 직후에는 주문 정보가 반영되기까지 잠시 걸릴 수 있어요. 잠시 후 마이페이지를 다시 확인하고, 계속 보이지 않으면 결제 정보와 함께 1:1 문의를 남겨주세요." },
+  { q: "결제 영수증을 받을 수 있나요?", a: "마이페이지 > 주문내역에서 주문을 선택하면 결제 정보를 확인할 수 있어요. 카드 영수증은 카드사에서도 확인할 수 있습니다." },
+  { q: "현금영수증은 어떻게 발급받나요?", a: "결제 과정에서 현금영수증 발급 항목이 제공되는 경우 필요한 정보를 입력해 신청할 수 있어요." },
+  { q: "배송비는 얼마인가요?", a: "배송비는 상품과 배송지에 따라 달라질 수 있으며, 결제 전 주문 금액에서 최종 배송비를 확인할 수 있어요." },
+  { q: "배송 조회는 어디에서 하나요?", a: "상품이 출고되면 마이페이지 > 주문내역에서 배송 상태를 확인할 수 있어요." },
+  { q: "여러 상품을 주문하면 함께 배송되나요?", a: "상품의 출고 일정과 재고 상태가 다르면 나누어 배송될 수 있어요." },
+  { q: "도서산간 지역도 배송되나요?", a: "배송 가능 여부와 추가 배송비는 배송지 입력 후 결제 화면에서 확인해 주세요." },
+  { q: "배송 중 상품이 파손됐어요.", a: "상품과 포장 상태가 보이도록 사진을 남긴 뒤, 수령 후 가능한 빨리 1:1 문의로 주문번호와 함께 알려주세요." },
+  { q: "상품이 누락되었어요.", a: "수령하신 상품과 포장 상태를 확인한 뒤 주문번호와 함께 1:1 문의를 남겨주세요. 확인 후 도와드릴게요." },
+  { q: "교환·반품 배송비는 누가 부담하나요?", a: "단순 변심 교환·반품은 고객 부담이며, 상품 하자나 오배송은 확인 후 집다움에서 부담해요." },
+  { q: "교환 상품은 언제 받을 수 있나요?", a: "기존 상품 회수와 상태 확인 후 교환 상품을 준비해 출고해요. 재고와 배송 상황에 따라 일정이 달라질 수 있어요." },
+  { q: "반품이 불가능한 경우가 있나요?", a: "사용 흔적·훼손이 있거나 구성품이 누락된 경우, 또는 수령 후 7일이 지난 경우에는 반품이 제한될 수 있어요." },
+  { q: "상품의 재입고 알림을 받을 수 있나요?", a: "현재 별도 재입고 알림 기능은 제공하지 않아요. 궁금한 상품은 채팅 상담으로 문의해 주세요." },
+  { q: "상품의 실제 색상과 화면 색상이 달라요.", a: "화면 설정과 조명에 따라 색상이 다르게 보일 수 있어요. 상품 상세 이미지와 설명을 함께 확인해 주세요." },
+  { q: "상품의 크기와 소재를 알고 싶어요.", a: "상품 상세 페이지의 제품 사양에서 크기·소재 정보를 확인할 수 있어요. 추가 정보가 필요하면 1:1 문의를 이용해 주세요." },
+  { q: "상품 관리 방법을 알려주세요.", a: "소재별 관리 방법은 상품 상세 설명을 먼저 확인해 주세요. 세탁이나 사용 전에는 제품에 동봉된 안내를 따라주세요." },
+  { q: "찜한 상품은 어디에서 보나요?", a: "로그인 후 마이페이지 > 위시리스트에서 찜한 상품을 모아볼 수 있어요." },
+  { q: "쿠폰을 여러 장 함께 사용할 수 있나요?", a: "주문당 적용 가능한 쿠폰 수와 조건은 결제 화면에서 확인할 수 있어요. 적용 가능한 쿠폰을 선택해 주세요." },
+  { q: "쿠폰이 적용되지 않아요.", a: "최소 주문 금액, 사용 기간, 대상 상품 등 쿠폰 조건을 확인해 주세요. 조건을 만족하는데도 적용되지 않으면 1:1 문의를 남겨주세요." },
+  { q: "쿠폰 유효기간은 어디에서 확인하나요?", a: "마이페이지 > 쿠폰에서 보유 쿠폰의 사용 기간과 조건을 확인할 수 있어요." },
+  { q: "비밀번호를 잊어버렸어요.", a: "로그인 화면의 비밀번호 찾기 기능을 이용해 재설정할 수 있어요." },
+  { q: "회원 정보를 수정하고 싶어요.", a: "마이페이지 > 회원 정보에서 변경 가능한 정보를 확인하고 수정할 수 있어요." },
+  { q: "로그인이 되지 않아요.", a: "이메일과 비밀번호를 다시 확인해 주세요. 계속 문제가 생기면 비밀번호를 재설정하거나 1:1 문의를 이용해 주세요." },
+  { q: "개인정보는 어떻게 보호하나요?", a: "서비스 이용에 필요한 최소한의 정보만 처리하며, 개인정보 처리 관련 문의는 1:1 문의로 남겨주세요." },
+  { q: "1:1 문의 답변은 어디에서 확인하나요?", a: "로그인 후 채팅 상담을 열면 문의 내용과 답변을 이어서 확인할 수 있어요." },
 ];
 
 function CustomerCenter() {
-  const [openIdx, setOpenIdx] = useState(null);
+  const [openQuestion, setOpenQuestion] = useState(null);
+  const [query, setQuery] = useState("");
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
 
@@ -54,6 +85,10 @@ function CustomerCenter() {
   useNestedLenis(pageRef);
 
   const goBack = () => navigate("/");
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredFaqs = normalizedQuery
+    ? FAQS.filter(({ q, a }) => `${q} ${a}`.toLowerCase().includes(normalizedQuery))
+    : FAQS;
 
   // 홈으로 이동한 뒤 챗봇을 자동으로 여는 신호를 남긴다 — 실제 챗봇 위젯은
   // Home.jsx에서만 마운트되므로(ChatBot.jsx가 이 신호를 소비) 여기선 이동만.
@@ -97,19 +132,29 @@ function CustomerCenter() {
 
         <section className="ccFaq">
           <h2 className="ccSectionTitle">집다움에 물어보세요</h2>
+          <label className="ccFaqSearch">
+            <LuSearch size={18} aria-hidden="true" />
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="궁금한 내용을 검색해 보세요"
+              aria-label="자주 묻는 질문 검색"
+            />
+          </label>
           <ul className="ccFaqList">
-            {FAQS.map((item, i) => (
-              <li key={item.q} className={`ccFaqItem${openIdx === i ? " ccFaqItemOpen" : ""}`}>
+            {filteredFaqs.map((item) => (
+              <li key={item.q} className={`ccFaqItem${openQuestion === item.q ? " ccFaqItemOpen" : ""}`}>
                 <button
                   type="button"
                   className="ccFaqQ"
-                  aria-expanded={openIdx === i}
-                  onClick={() => setOpenIdx(openIdx === i ? null : i)}
+                  aria-expanded={openQuestion === item.q}
+                  onClick={() => setOpenQuestion(openQuestion === item.q ? null : item.q)}
                 >
                   <span>{item.q}</span>
                   <LuChevronDown className="ccFaqChevron" />
                 </button>
-                {openIdx === i && (
+                {openQuestion === item.q && (
                   item.a === "cookie-settings-reopen" ? (
                     <p className="ccFaqA">
                       네, 처음 방문 시 고르신 내용은 브라우저에 저장돼 재방문 시엔 다시 묻지
@@ -125,6 +170,9 @@ function CustomerCenter() {
                 )}
               </li>
             ))}
+            {filteredFaqs.length === 0 && (
+              <li className="ccFaqEmpty">검색 결과가 없습니다. 다른 검색어를 입력해 보세요.</li>
+            )}
           </ul>
         </section>
 

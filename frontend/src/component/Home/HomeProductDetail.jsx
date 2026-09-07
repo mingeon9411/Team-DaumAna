@@ -3,7 +3,7 @@ import "./HomeProductDetail.css";
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, ChevronDown, Heart, Star, Sparkles, Ruler, ShieldCheck, ImagePlus, X, Share2 } from "lucide-react";
-import { PRODUCTS, labelKo, LABEL_BADGE } from "./Home";
+import { PRODUCTS, labelKo, LABEL_BADGE, isTodayShipAvailable } from "./Home";
 import { addToCart, getReviews, createReview, uploadReviewImage, getProductDetail } from "../../api";
 import { useWishlist } from "../../hooks/useWishlist";
 import { addRecentlyViewed } from "../../utils/recentlyViewed";
@@ -301,6 +301,7 @@ function HomeProductDetail() {
   };
 
   const labelBadge = LABEL_BADGE[product.label];
+  const todayShipAvailable = isTodayShipAvailable();
 
   return (
     <main className="homeDetailPage metallicSilver" data-lenis-prevent data-hsnap ref={pageRef}>
@@ -363,6 +364,11 @@ function HomeProductDetail() {
                     {labelKo(product.label)}
                   </span>
                 )}
+                {todayShipAvailable && (
+                  <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 border border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-800/60 dark:bg-violet-950/40 dark:text-violet-300" style={MONO}>
+                    ⚡ 오늘 발송
+                  </span>
+                )}
                 <span className="text-[11px] font-medium text-muted-foreground rounded-full px-2 py-0.5 border border-border" style={MONO}>
                   무료배송
                 </span>
@@ -413,7 +419,7 @@ function HomeProductDetail() {
                   지적 지점) — 두 라벨 다 여유 있게 들어가는 w-20으로 넓힌다. */}
               <div className="flex items-center gap-2 text-muted-foreground">
                 <span className="w-20 shrink-0 tracking-wide" style={MONO}>배송정보</span>
-                <span>결제 완료 후 평균 2~5일 내 출고</span>
+                <span>{todayShipAvailable ? "평일 12:00 이전 결제 시 오늘 발송" : "결제 완료 후 평균 2~5일 내 출고"}</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <span className="w-20 shrink-0 tracking-wide" style={MONO}>배송비</span>

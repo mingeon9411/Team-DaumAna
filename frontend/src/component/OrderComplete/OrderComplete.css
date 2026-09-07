@@ -23,12 +23,17 @@
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
-  background: var(--background);
-  font-family: "Noto Sans KR", sans-serif;
+  font-family: "GmarketSans", sans-serif;
+  overflow-y: auto;
+}
+
+.ocPage,
+.ocPage * {
+  font-family: "GmarketSans", sans-serif !important;
 }
 
 .ocCard {
-  background: var(--card);
+  background: rgba(255, 255, 255, 0.68);
   border-radius: 16px;
   padding: 48px 40px 40px;
   max-width: 480px;
@@ -77,6 +82,59 @@
   height: 1px;
   background: var(--border);
   margin: 0 0 24px;
+}
+
+.ocProducts {
+  margin: 0 0 24px;
+  text-align: left;
+}
+
+.ocProductsTitle {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.ocProduct {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+
+.ocProductImage {
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  object-fit: cover;
+  background: var(--muted);
+}
+
+.ocProductInfo {
+  min-width: 0;
+}
+
+.ocProductName,
+.ocProductMeta {
+  margin: 0;
+}
+
+.ocProductName {
+  overflow: hidden;
+  color: var(--foreground);
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ocProductMeta {
+  margin-top: 4px;
+  color: var(--muted-foreground);
+  font-size: 12px;
 }
 
 /* 주문 정보 */
@@ -167,11 +225,11 @@
 
 /* 다크모드 */
 body.dark .ocPage {
-  background: #060d1e;
+  color: #bfcbec;
 }
 
 body.dark .ocCard {
-  background: #0b1430;
+  background: rgba(6, 13, 30, 0.72);
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 

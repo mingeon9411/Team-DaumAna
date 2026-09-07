@@ -92,6 +92,32 @@
   margin-bottom: 56px;
 }
 
+.ccFaqSearch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--muted-foreground);
+}
+
+.ccFaqSearch input {
+  width: 100%;
+  height: 46px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--foreground);
+  font: inherit;
+}
+
+.ccFaqSearch input::placeholder {
+  color: var(--muted-foreground);
+}
+
 .ccFaqList {
   list-style: none;
   margin: 0;
@@ -101,6 +127,13 @@
 
 .ccFaqItem {
   border-bottom: 1px solid var(--border);
+}
+
+.ccFaqEmpty {
+  padding: 32px 4px;
+  text-align: center;
+  color: var(--muted-foreground);
+  font-size: 14px;
 }
 
 .ccFaqQ {
@@ -267,6 +300,11 @@ body.dark .ccConsultCard p,
 body.dark .ccConsultMeta,
 body.dark .ccFaqChevron {
   color: #7a8db5;
+}
+
+body.dark .ccFaqSearch {
+  background: rgba(6, 13, 30, 0.5);
+  border-color: rgba(150, 185, 255, 0.16);
 }
 
 body.dark .ccConsultCard {

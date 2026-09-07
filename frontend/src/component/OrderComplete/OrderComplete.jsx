@@ -7,11 +7,11 @@ function OrderComplete() {
   const navigate = useNavigate();
   const { openMyPage } = useMyPageModal();
 
-  const { productName, totalAmount, quantity, shippingAddr } = state || {};
+  const { productName, totalAmount, shippingAddr, orderItems = [] } = state || {};
 
   if (!productName) {
     return (
-      <main className="ocPage" data-hsnap>
+      <main className="ocPage metallicSilver" data-hsnap>
         <p className="ocError">잘못된 접근입니다.</p>
         <button className="ocHomeBtn" onClick={() => navigate("/")}>홈으로</button>
       </main>
@@ -19,7 +19,7 @@ function OrderComplete() {
   }
 
   return (
-    <main className="ocPage">
+    <main className="ocPage metallicSilver" data-hsnap>
       <div className="ocCard">
         <div className="ocIconWrap">
           <div className="ocIcon">✓</div>
@@ -30,15 +30,20 @@ function OrderComplete() {
 
         <div className="ocDivider" />
 
+        <section className="ocProducts" aria-label="주문 상품">
+          <p className="ocProductsTitle">주문 상품</p>
+          {orderItems.map((item) => (
+            <article className="ocProduct" key={`${item.id}-${item.option_id || "default"}`}>
+              {item.image && <img src={item.image} alt="" className="ocProductImage" />}
+              <div className="ocProductInfo">
+                <p className="ocProductName">{item.name}</p>
+                <p className="ocProductMeta">{Number(item.price || 0).toLocaleString()}원 · {item.quantity}개</p>
+              </div>
+            </article>
+          ))}
+        </section>
+
         <ul className="ocInfo">
-          <li>
-            <span className="ocLabel">상품명</span>
-            <span className="ocValue">{productName}</span>
-          </li>
-          <li>
-            <span className="ocLabel">수량</span>
-            <span className="ocValue">{quantity}개</span>
-          </li>
           <li>
             <span className="ocLabel">결제 금액</span>
             <span className="ocValue ocAmount">{Number(totalAmount).toLocaleString()}원</span>

@@ -154,7 +154,7 @@ function Checkout() {
         navigate("/order-complete", {
           replace: true,
           state: { productName: items.length === 1 ? items[0].name : `${items[0].name} 외 ${items.length - 1}건`, totalAmount: 0,
-            quantity: items.reduce((s, i) => s + i.quantity, 0), shippingAddr },
+            quantity: items.reduce((s, i) => s + i.quantity, 0), shippingAddr, orderItems: items },
         });
         return;
       }
@@ -193,6 +193,7 @@ function Checkout() {
             totalAmount,
             quantity: items.reduce((s, i) => s + i.quantity, 0),
             shippingAddr,
+            orderItems: items,
           },
         });
       } catch (e) {

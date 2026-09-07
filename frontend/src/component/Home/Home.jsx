@@ -91,6 +91,20 @@ export const LABEL_BADGE = {
   ECO: { className: "text-emerald-700 bg-emerald-50 border-emerald-200 dark:text-emerald-300 dark:bg-emerald-950/40 dark:border-emerald-800/60" },
 };
 
+export const isTodayShipAvailable = (now = new Date()) => {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-US", {
+      timeZone: "Asia/Seoul",
+      weekday: "short",
+      hour: "2-digit",
+      hourCycle: "h23",
+    }).formatToParts(now)
+      .filter(({ type }) => type !== "literal")
+      .map(({ type, value }) => [type, value])
+  );
+  return !["Sat", "Sun"].includes(parts.weekday) && Number(parts.hour) < 12;
+};
+
 export const PRODUCTS = [
   { id: 1, no: "No.1", name: "북유럽풍 러그 B형", sub: "멀티 파스텔 아브스트랙트", price: "168,000", originalPrice: "198,000", label: "BESTSELLER",
     desc: "크림 베이스 위에 블루·올리브·더스티핑크가 어우러진 추상 아라베스크 무늬 터프팅 러그입니다. 두툼한 울 파일감이 발끝에 포근하게 감기고, 어느 벽지·바닥재와도 무난하게 어울려 거실이나 침실 중심에 깔기 좋습니다.",
@@ -354,6 +368,7 @@ function ProductCard({ p, wished, cartCount, onToggleWish, onClick }) {
   const displayImage = p.colors ? p.colors[colorIdx].image : p.image;
   const displayAlt = p.colors ? p.colors[colorIdx].alt : p.alt;
   const labelBadge = LABEL_BADGE[p.label];
+  const todayShipAvailable = isTodayShipAvailable();
 
   return (
     <article className="group cursor-pointer" onClick={onClick}>
@@ -420,6 +435,11 @@ function ProductCard({ p, wished, cartCount, onToggleWish, onClick }) {
         {p.label && (
           <span className={`text-[11px] font-semibold rounded-full px-2 py-0.5 border ${labelBadge?.className || "text-foreground border-border"}`} style={MONO}>
             {labelKo(p.label)}
+          </span>
+        )}
+        {todayShipAvailable && (
+          <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 border border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-800/60 dark:bg-violet-950/40 dark:text-violet-300" style={MONO}>
+            ⚡ 오늘 발송
           </span>
         )}
         <span className="text-[11px] font-medium text-muted-foreground rounded-full px-2 py-0.5 border border-border" style={MONO}>
