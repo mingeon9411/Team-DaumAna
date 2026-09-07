@@ -54,6 +54,19 @@ function formatDate(isoStr) {
   });
 }
 
+function normalizeOrder(order) {
+  const items = Array.isArray(order.items) ? order.items : [];
+  return {
+    ...order,
+    total_amount: Number(order.total_amount) || 0,
+    items: items.map((item) => ({
+      ...item,
+      ordered_price: Number(item.ordered_price) || 0,
+      quantity: Number(item.quantity) || 0,
+    })),
+  };
+}
+
 function MyPage() {
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
@@ -204,7 +217,7 @@ function MyPage() {
     getOrderHistory()
       // res.data가 배열이 아니면(만료된 토큰 등으로 인증 실패 응답이 예상과 다르게 와도)
       // orders.filter/.reduce에서 앱 전체가 죽지 않도록 방어한다.
-      .then((res) => setOrders(Array.isArray(res.data) ? res.data : []))
+      .then((res) => setOrders(Array.isArray(res.data) ? res.data.map(normalizeOrder) : []))
       .catch(() => setOrders([]))
       .finally(() => setLoading(false));
     getMyCoupons()

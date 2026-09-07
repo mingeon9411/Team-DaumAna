@@ -34,6 +34,7 @@
 
 .ocCard {
   background: rgba(255, 255, 255, 0.68);
+  border: 3px solid #000;
   border-radius: 16px;
   padding: 48px 40px 40px;
   max-width: 480px;
