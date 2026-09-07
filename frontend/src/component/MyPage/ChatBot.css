@@ -841,12 +841,17 @@ body.dark[data-bg="pastel"] .chatBotPanel {
 /* ── 챗봇 안 간편 회원가입 패널 (SignupPanel) ── */
 .chatBotSignupBody {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
-  padding: 16px 14px;
+  overscroll-behavior: contain;
+  padding: 24px 20px 32px;
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 14px;
 }
+
+.chatBotSignupBody::-webkit-scrollbar { width: 6px; }
+.chatBotSignupBody::-webkit-scrollbar-thumb { background: var(--chatbot-glass-border); border-radius: 999px; }
 
 .chatBotSignupHero {
   display: flex;
@@ -885,7 +890,7 @@ body.dark[data-bg="pastel"] .chatBotPanel {
   display: flex;
   align-items: center;
   gap: 9px;
-  height: 42px;
+  min-height: 48px;
   padding: 0 14px;
   border: 1px solid var(--chatbot-glass-border);
   border-radius: 12px;
@@ -925,6 +930,7 @@ body.dark[data-bg="pastel"] .chatBotPanel {
 }
 .chatBotSignupCheckBtn {
   flex-shrink: 0;
+  min-height: 48px;
   padding: 0 14px;
   border: 1px solid var(--chatbot-glass-border);
   border-radius: 12px;
