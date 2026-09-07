@@ -372,10 +372,6 @@ function MyPage() {
                 <span>회원등급</span>
                 <strong>{userGrade} 회원</strong>
               </div>
-              <div>
-                <span>적립금</span>
-                <strong>0포인트</strong>
-              </div>
               <div
                 className="couponCell"
                 onClick={() => setActiveSection("coupon")}

@@ -3,6 +3,7 @@
   --chatbot-glass-border: rgba(28, 26, 22, 0.14);
   --chatbot-bubble-bot-bg: rgba(255, 255, 255, 0.55);
   --chatbot-bar-bg: rgba(255, 255, 255, 0.5);
+  --chatbot-panel-bg: #ffffff;
   /* J.D 블랙 + 실버 하이라이트 — 사이드바/로그인/최근 본 상품과 같은 메탈릭 계열로 통일 */
   --chatbot-accent-1: #2c2c30;
   --chatbot-accent-2: #c7cad0;
@@ -15,13 +16,27 @@ body.dark {
   --chatbot-glass-border: rgba(150, 185, 255, 0.18);
   --chatbot-bubble-bot-bg: rgba(191, 203, 236, 0.07);
   --chatbot-bar-bg: rgba(191, 203, 236, 0.06);
+  --chatbot-panel-bg: #0b1430;
 }
 
-/* 챗봇 패널 테두리 — 사이드바(.sidebarRail)와 같은 띠 구조를 쓰되, 챗봇만 파스텔 톤으로 부드럽게 */
-body.dark .chatBotPanel {
-  background:
-    linear-gradient(var(--chatbot-glass-bg), var(--chatbot-glass-bg)) padding-box,
-    linear-gradient(150deg, #9c8fd4 0%, #7fd0ac 45%, #dd9ac0 100%) border-box;
+body[data-bg="beige"] {
+  --chatbot-panel-bg: linear-gradient(115deg, #f8f2e6 0%, #f3ead9 20%, #f7f1e4 35%, #f8f2e6 50%, #f2e8d6 65%, #f6efe0 80%, #f8f2e6 100%);
+}
+
+body[data-bg="pastel"] {
+  --chatbot-panel-bg: linear-gradient(115deg, #f7ddc9 0%, #cfe0f2 20%, #cdeed2 35%, #f7ddc9 50%, #ddd3f2 65%, #f4d3e4 80%, #f7ddc9 100%);
+}
+
+body[data-bg="pastel"][data-pastel="medium"] {
+  --chatbot-panel-bg: linear-gradient(115deg, #f8e9dc 0%, #e1e9f2 20%, #dff2e2 35%, #f8e9dc 50%, #e8e2f5 65%, #f5e1ec 80%, #f8e9dc 100%);
+}
+
+body[data-bg="pastel"][data-pastel="light"] {
+  --chatbot-panel-bg: linear-gradient(115deg, #f9f4ef 0%, #eef2f7 20%, #f0f7f0 35%, #f9f4ef 50%, #f2eef7 65%, #f7f0f5 80%, #f9f4ef 100%);
+}
+
+body.dark[data-bg] {
+  --chatbot-panel-bg: #0b1430;
 }
 
 @keyframes bubbleIn {
@@ -141,11 +156,8 @@ body.dark .chatBotPanel {
   height: 690px;
   font-family: "GmarketSans", "Noto Sans KR", "Pretendard", sans-serif;
   border-radius: 26px;
-  /* 파스텔 무지개 띠 테두리 — 얇은 라인 대신 두꺼운 띠로 존재감을 줌 */
-  border: 5px solid transparent;
-  background:
-    linear-gradient(var(--chatbot-glass-bg), var(--chatbot-glass-bg)) padding-box,
-    linear-gradient(150deg, #c9baf7 0%, #a8ecc6 45%, #f7b8d8 100%) border-box;
+  border: 3px solid #000;
+  background: var(--chatbot-panel-bg);
   backdrop-filter: blur(28px) saturate(150%);
   -webkit-backdrop-filter: blur(28px) saturate(150%);
   box-shadow:
@@ -171,6 +183,33 @@ body.dark .chatBotPanel {
   min-width: 0;
   display: flex;
   flex-direction: column;
+  background: var(--chatbot-panel-bg);
+}
+
+/* 파스텔 설정에서만 오색띠 테두리를 사용한다. */
+body[data-bg="pastel"] .chatBotPanel {
+  border-color: transparent;
+  background:
+    linear-gradient(115deg, #f7ddc9 0%, #cfe0f2 20%, #cdeed2 35%, #f7ddc9 50%, #ddd3f2 65%, #f4d3e4 80%, #f7ddc9 100%) padding-box,
+    linear-gradient(115deg, #e8606e 0%, #e9bd4f 25%, #58ad70 50%, #5185d2 75%, #a174cf 100%) border-box;
+}
+
+body[data-bg="pastel"][data-pastel="medium"] .chatBotPanel {
+  background:
+    linear-gradient(115deg, #f8e9dc 0%, #e1e9f2 20%, #dff2e2 35%, #f8e9dc 50%, #e8e2f5 65%, #f5e1ec 80%, #f8e9dc 100%) padding-box,
+    linear-gradient(115deg, #e8606e 0%, #e9bd4f 25%, #58ad70 50%, #5185d2 75%, #a174cf 100%) border-box;
+}
+
+body[data-bg="pastel"][data-pastel="light"] .chatBotPanel {
+  background:
+    linear-gradient(115deg, #f9f4ef 0%, #eef2f7 20%, #f0f7f0 35%, #f9f4ef 50%, #f2eef7 65%, #f7f0f5 80%, #f9f4ef 100%) padding-box,
+    linear-gradient(115deg, #e8606e 0%, #e9bd4f 25%, #58ad70 50%, #5185d2 75%, #a174cf 100%) border-box;
+}
+
+body.dark[data-bg="pastel"] .chatBotPanel {
+  background:
+    linear-gradient(#0b1430, #0b1430) padding-box,
+    linear-gradient(115deg, #e8606e 0%, #e9bd4f 25%, #58ad70 50%, #5185d2 75%, #a174cf 100%) border-box;
 }
 
 .chatBotPanelOpen {

@@ -98,10 +98,41 @@
   gap: 10px;
   margin-bottom: 16px;
   padding: 0 14px;
-  border: 1px solid var(--border);
+  border: 2px solid transparent;
   border-radius: 12px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)) padding-box,
+    linear-gradient(100deg, #f0a8c4, #a9bff5 50%, #8fdbc0) border-box;
+  color: var(--muted-foreground);
+}
+
+.ccFaqCategories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.ccFaqCategory,
+.ccFaqMore {
+  border: 1px solid var(--border);
+  border-radius: 999px;
   background: rgba(255, 255, 255, 0.6);
   color: var(--muted-foreground);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.ccFaqCategory {
+  padding: 8px 12px;
+}
+
+.ccFaqCategoryActive {
+  border-color: #a184e8;
+  background: #eee8ff;
+  color: #6849a9;
+  font-weight: 500;
 }
 
 .ccFaqSearch input {
@@ -177,6 +208,19 @@
   color: var(--muted-foreground);
 }
 
+.ccFaqMore {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px;
+  color: var(--foreground);
+}
+
+.ccFaqMore:hover,
+.ccFaqCategory:hover {
+  border-color: #a184e8;
+}
+
 .ccFaqInlineBtn {
   padding: 0;
   border: none;
@@ -203,10 +247,8 @@
   gap: 6px;
   padding: 24px 18px;
   border-radius: 16px;
-  border: 1.5px solid transparent;
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)) padding-box,
-    linear-gradient(150deg, #a184e8 0%, #5fd99c 45%, #ef6fac 100%) border-box;
+  border: 3px solid #000;
+  background: transparent;
   color: inherit;
   text-decoration: none;
   font-family: "GmarketSans", "Noto Sans KR", sans-serif;
@@ -303,14 +345,25 @@ body.dark .ccFaqChevron {
 }
 
 body.dark .ccFaqSearch {
-  background: rgba(6, 13, 30, 0.5);
-  border-color: rgba(150, 185, 255, 0.16);
+  background:
+    linear-gradient(rgba(6, 13, 30, 0.7), rgba(6, 13, 30, 0.7)) padding-box,
+    linear-gradient(100deg, #8d5b79, #596fa8 50%, #4f947d) border-box;
+}
+
+body.dark .ccFaqCategory,
+body.dark .ccFaqMore {
+  background: rgba(6, 13, 30, 0.55);
+}
+
+body.dark .ccFaqCategoryActive {
+  border-color: #b9a3f0;
+  background: rgba(107, 79, 176, 0.35);
+  color: #d8ccff;
 }
 
 body.dark .ccConsultCard {
-  background:
-    linear-gradient(rgba(6, 13, 30, 0.75), rgba(6, 13, 30, 0.75)) padding-box,
-    linear-gradient(150deg, #6b4fb0 0%, #2f9e6c 45%, #c04d8a 100%) border-box;
+  border-color: #000;
+  background: transparent;
 }
 
 body.dark .ccConsultIcon {

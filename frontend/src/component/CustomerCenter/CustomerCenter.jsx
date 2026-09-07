@@ -67,15 +67,32 @@ const FAQS = [
   { q: "쿠폰이 적용되지 않아요.", a: "최소 주문 금액, 사용 기간, 대상 상품 등 쿠폰 조건을 확인해 주세요. 조건을 만족하는데도 적용되지 않으면 1:1 문의를 남겨주세요." },
   { q: "쿠폰 유효기간은 어디에서 확인하나요?", a: "마이페이지 > 쿠폰에서 보유 쿠폰의 사용 기간과 조건을 확인할 수 있어요." },
   { q: "비밀번호를 잊어버렸어요.", a: "로그인 화면의 비밀번호 찾기 기능을 이용해 재설정할 수 있어요." },
+  { q: "회원가입은 어떻게 하나요?", a: "로그인 화면에서 회원가입을 선택한 뒤, 안내에 따라 이메일과 비밀번호를 입력해 가입할 수 있어요." },
   { q: "회원 정보를 수정하고 싶어요.", a: "마이페이지 > 회원 정보에서 변경 가능한 정보를 확인하고 수정할 수 있어요." },
   { q: "로그인이 되지 않아요.", a: "이메일과 비밀번호를 다시 확인해 주세요. 계속 문제가 생기면 비밀번호를 재설정하거나 1:1 문의를 이용해 주세요." },
   { q: "개인정보는 어떻게 보호하나요?", a: "서비스 이용에 필요한 최소한의 정보만 처리하며, 개인정보 처리 관련 문의는 1:1 문의로 남겨주세요." },
   { q: "1:1 문의 답변은 어디에서 확인하나요?", a: "로그인 후 채팅 상담을 열면 문의 내용과 답변을 이어서 확인할 수 있어요." },
 ];
 
+const FAQ_CATEGORIES = ["전체", "배송", "교환·환불", "결제", "쿠폰", "로그인", "회원가입", "마이페이지", "상품", "기타"];
+
+function getFaqCategory(question) {
+  if (/배송|출고|도서산간|파손|누락/.test(question)) return "배송";
+  if (/교환|반품|환불/.test(question)) return "교환·환불";
+  if (/결제|영수증|현금/.test(question)) return "결제";
+  if (/쿠폰/.test(question)) return "쿠폰";
+  if (/로그인|비밀번호/.test(question)) return "로그인";
+  if (/회원가입/.test(question)) return "회원가입";
+  if (/주문 내역|배송지를 변경|회원 탈퇴|회원 정보를 수정|찜한 상품|1:1 문의/.test(question)) return "마이페이지";
+  if (/상품|재입고|색상|크기|소재|관리/.test(question)) return "상품";
+  return "기타";
+}
+
 function CustomerCenter() {
   const [openQuestion, setOpenQuestion] = useState(null);
   const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("전체");
+  const [showAll, setShowAll] = useState(false);
   const navigate = useNavigate();
   const { openLogin } = useAuthModal();
 
@@ -86,9 +103,17 @@ function CustomerCenter() {
 
   const goBack = () => navigate("/");
   const normalizedQuery = query.trim().toLowerCase();
-  const filteredFaqs = normalizedQuery
-    ? FAQS.filter(({ q, a }) => `${q} ${a}`.toLowerCase().includes(normalizedQuery))
-    : FAQS;
+  const filteredFaqs = FAQS.filter(({ q, a }) =>
+    (category === "전체" || getFaqCategory(q) === category) &&
+    (!normalizedQuery || `${q} ${a}`.toLowerCase().includes(normalizedQuery))
+  );
+  const visibleFaqs = showAll || normalizedQuery ? filteredFaqs : filteredFaqs.slice(0, 5);
+
+  const selectCategory = (nextCategory) => {
+    setCategory(nextCategory);
+    setShowAll(false);
+    setOpenQuestion(null);
+  };
 
   // 홈으로 이동한 뒤 챗봇을 자동으로 여는 신호를 남긴다 — 실제 챗봇 위젯은
   // Home.jsx에서만 마운트되므로(ChatBot.jsx가 이 신호를 소비) 여기선 이동만.
@@ -137,13 +162,29 @@ function CustomerCenter() {
             <input
               type="search"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                if (e.target.value) setCategory("전체");
+                setShowAll(false);
+              }}
               placeholder="궁금한 내용을 검색해 보세요"
               aria-label="자주 묻는 질문 검색"
             />
           </label>
+          <div className="ccFaqCategories" role="group" aria-label="FAQ 카테고리">
+            {FAQ_CATEGORIES.map((item) => (
+              <button
+                key={item}
+                type="button"
+                className={`ccFaqCategory${category === item ? " ccFaqCategoryActive" : ""}`}
+                onClick={() => selectCategory(item)}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
           <ul className="ccFaqList">
-            {filteredFaqs.map((item) => (
+            {visibleFaqs.map((item) => (
               <li key={item.q} className={`ccFaqItem${openQuestion === item.q ? " ccFaqItemOpen" : ""}`}>
                 <button
                   type="button"
@@ -174,6 +215,11 @@ function CustomerCenter() {
               <li className="ccFaqEmpty">검색 결과가 없습니다. 다른 검색어를 입력해 보세요.</li>
             )}
           </ul>
+          {!normalizedQuery && !showAll && filteredFaqs.length > 5 && (
+            <button type="button" className="ccFaqMore" onClick={() => setShowAll(true)}>
+              더보기 ({filteredFaqs.length - 5})
+            </button>
+          )}
         </section>
 
         <section className="ccConsult">
