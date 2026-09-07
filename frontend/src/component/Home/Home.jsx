@@ -920,7 +920,7 @@ function Home() {
             운영 DB에 사진 리뷰가 아직 없어도 섹션을 숨기지 않아 첫 리뷰를 남길 경로가 보인다. */}
         <div className="relative z-10 max-w-7xl mx-auto w-full mt-20">
           <span className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase" style={MONO}>REVIEW</span>
-          <h2 className="text-2xl md:text-3xl font-light mt-2 mb-3" style={SERIF}>최근 리뷰</h2>
+          <h2 className="text-2xl md:text-3xl font-light mt-2 mb-3" style={SERIF}>리뷰 모음</h2>
           <p className="text-sm text-muted-foreground mb-8 max-w-md">
             실제로 담아보신 분들이 사진과 함께 남겨주신 이야기예요.
           </p>
