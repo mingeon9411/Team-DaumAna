@@ -20,6 +20,19 @@ export function useNestedLenis(ref, { enabled = true } = {}) {
 
     const lenis = new Lenis({ wrapper: el, content: el, duration: 1.8, smoothWheel: true, autoRaf: true });
 
+    // wrapper와 content가 같은 고정 높이 패널이라 콘텐츠만 늘어나면 ResizeObserver가
+    // 감지하지 못한다. 상품·리뷰 렌더링 뒤에도 Lenis의 최대 스크롤 범위를 갱신한다.
+    let resizeFrame = null;
+    const refreshLimit = () => {
+      if (resizeFrame !== null) return;
+      resizeFrame = requestAnimationFrame(() => {
+        resizeFrame = null;
+        lenis.resize();
+      });
+    };
+    const contentObserver = new MutationObserver(refreshLimit);
+    contentObserver.observe(el, { childList: true, subtree: true });
+
     // 휠 관성이 아직 진행 중일 때(최대 duration=1.8초) 네이티브 스크롤바를 잡아
     // 끌면 버벅였다 — Lenis는 자기가 만든 보간 애니메이션이 도는 동안
     // (isScrolling === "smooth") 네이티브 scroll 이벤트를 무시하고 매 프레임
@@ -35,6 +48,8 @@ export function useNestedLenis(ref, { enabled = true } = {}) {
     el.addEventListener("pointerdown", onPointerDown);
 
     return () => {
+      contentObserver.disconnect();
+      if (resizeFrame !== null) cancelAnimationFrame(resizeFrame);
       el.removeEventListener("pointerdown", onPointerDown);
       lenis.destroy();
     };

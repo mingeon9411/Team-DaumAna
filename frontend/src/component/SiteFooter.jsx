@@ -17,7 +17,7 @@ function SiteFooter() {
   const toggle = (section) => setOpenSection((cur) => (cur === section ? null : section));
 
   return (
-    <footer className="max-w-7xl mx-auto w-full mt-16 pt-8 border-t border-border text-muted-foreground" style={SANS}>
+    <footer className="max-w-7xl mx-auto w-full shrink-0 mt-16 pt-8 border-t border-border text-muted-foreground" style={SANS}>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs mb-4">
         <button
           type="button"
