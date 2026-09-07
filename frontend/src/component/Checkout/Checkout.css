@@ -41,6 +41,14 @@
    .metallicSilver 클래스(Cart/Settings 페이지와 동일하게 JSX에서 함께 붙임)가
    책임진다 — 그래서 여기엔 background 선언이 없다. */
 .checkoutPage {
+  /* Match My Page: all neutral fields and cards use white, not beige. */
+  --background: #fff;
+  --card: #fff;
+  --secondary: #fff;
+  --muted: #fff;
+  --card-foreground: #000;
+  --secondary-foreground: #000;
+  --muted-foreground: #000;
   --co-accent: #a8783a;
   --co-accent-2: #7a4f22;
   --co-accent-soft: rgba(168, 120, 58, 0.14);
@@ -59,6 +67,9 @@ body.dark .checkoutPage {
   --co-accent-2: #a8783a;
   --co-accent-soft: rgba(217, 176, 107, 0.12);
 }
+
+.checkoutPage,
+.checkoutPage * { font-family: "GmarketSans", sans-serif !important; }
 
 .checkoutInner {
   max-width: 1080px;

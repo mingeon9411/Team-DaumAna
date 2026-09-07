@@ -29,6 +29,7 @@ const FIRST_REAL_INDEX = 1;
 const LAST_REAL_INDEX = REAL_SLIDES.length; // SLIDES 기준 마지막 진짜 슬라이드 위치
 const IMAGE_SLIDE_DURATION = 5000;
 const VIDEO_FALLBACK_DURATION = 15000; // ended 이벤트가 안 올 때 대비한 안전장치
+const MOBILE_HERO_VIDEO = "/videos/jipdaum-video-1-compressed.mp4";
 
 function sliderReducer(state, action) {
   switch (action.type) {
@@ -69,6 +70,9 @@ function Hero() {
   const [isTouching, setIsTouching] = useState(false);
   const [isTabHidden, setIsTabHidden] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [isMobile, setIsMobile] = useState(() =>
+    window.matchMedia("(max-width: 767px)").matches
+  );
 
   const isAutoplayPaused =
     isHovering || isTouching || isTabHidden || prefersReducedMotion;
@@ -96,6 +100,13 @@ function Hero() {
     const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
     setPrefersReducedMotion(mql.matches);
     const onChange = (e) => setPrefersReducedMotion(e.matches);
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 767px)");
+    const onChange = (e) => setIsMobile(e.matches);
     mql.addEventListener("change", onChange);
     return () => mql.removeEventListener("change", onChange);
   }, []);
@@ -232,7 +243,7 @@ function Hero() {
                   videoRefs.current[index] = el;
                 }}
                 className="heroMedia"
-                src={slide.src}
+                src={isMobile ? MOBILE_HERO_VIDEO : slide.src}
                 muted
                 playsInline
                 preload={index === FIRST_REAL_INDEX ? "auto" : "metadata"}

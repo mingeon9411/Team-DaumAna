@@ -1,35 +1,35 @@
-import { useEffect, useRef } from "react";
+import { lazy, Suspense, useEffect, useRef } from "react";
 import Lenis from "lenis";
 import Snap from "lenis/snap";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ScrollToTop from "./component/ScrollToTop";
 import Header from "./component/Header/Header";
-import MyPage from "./component/MyPage/MyPage";
 import WithdrawModal from "./component/WithDraw/WithdrawModal";
 import Home from "./component/Home/Home";
-
-import Cart from "./component/Cart/Cart";
-import Notice from "./component/Notice/Notice";
-import Welcome from "./component/Welcome/Welcome";
-import HomeProductDetail from "./component/Home/HomeProductDetail";
-import SocialCallback from "./component/SocialCallback/SocialCallback";
-import EmailVerify from "./component/EmailVerify/EmailVerify";
-import SearchResults from "./component/SearchResults/SearchResults";
-import CustomerCenter from "./component/CustomerCenter/CustomerCenter";
-import Settings from "./component/Settings/Settings";
-import Checkout from "./component/Checkout/Checkout";
-import OrderComplete from "./component/OrderComplete/OrderComplete";
-import Lookbook from "./component/Lookbook/Lookbook";
-import LookbookPost from "./component/Lookbook/LookbookPost";
 import AuthModal from "./component/AuthModal/AuthModal";
-import AuthPage from "./component/AuthModal/AuthPage";
 import CookieConsent from "./component/CookieConsent/CookieConsent";
 import { AuthModalProvider } from "./context/AuthModalContext";
 import { MyPageModalProvider } from "./context/MyPageModalContext";
 import { WithdrawModalProvider } from "./context/WithdrawModalContext";
 import { createPagingController } from "./utils/snapSetup";
 import "./App.css";
+
+const MyPage = lazy(() => import("./component/MyPage/MyPage"));
+const Cart = lazy(() => import("./component/Cart/Cart"));
+const Notice = lazy(() => import("./component/Notice/Notice"));
+const Welcome = lazy(() => import("./component/Welcome/Welcome"));
+const HomeProductDetail = lazy(() => import("./component/Home/HomeProductDetail"));
+const SocialCallback = lazy(() => import("./component/SocialCallback/SocialCallback"));
+const EmailVerify = lazy(() => import("./component/EmailVerify/EmailVerify"));
+const SearchResults = lazy(() => import("./component/SearchResults/SearchResults"));
+const CustomerCenter = lazy(() => import("./component/CustomerCenter/CustomerCenter"));
+const Settings = lazy(() => import("./component/Settings/Settings"));
+const Checkout = lazy(() => import("./component/Checkout/Checkout"));
+const OrderComplete = lazy(() => import("./component/OrderComplete/OrderComplete"));
+const Lookbook = lazy(() => import("./component/Lookbook/Lookbook"));
+const LookbookPost = lazy(() => import("./component/Lookbook/LookbookPost"));
+const AuthPage = lazy(() => import("./component/AuthModal/AuthPage"));
 
 function App() {
     const lenisRef = useRef(null);
@@ -141,6 +141,7 @@ function App() {
     <CookieConsent />
 
     <div className="hTrack">
+      <Suspense fallback={<div className="min-h-screen" aria-busy="true" />}>
       <Routes>
 
         <Route path="/" element={<Home />} />
@@ -164,6 +165,7 @@ function App() {
         <Route path="/order-complete" element={<OrderComplete />} />
 
       </Routes>
+      </Suspense>
     </div>
     </WithdrawModalProvider>
     </MyPageModalProvider>

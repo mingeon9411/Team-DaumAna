@@ -18,8 +18,12 @@
 
 /* ── 영수증 카드 ── */
 .receiptModal {
-  background: var(--card);
-  font-family: "Noto Sans KR", sans-serif;
+  --background: #fff;
+  --card: #fff;
+  --secondary: #fff;
+  --muted: #fff;
+  background: #fff;
+  font-family: "GmarketSans", sans-serif;
   width: 100%;
   max-width: 400px;
   max-height: 90vh;
@@ -36,6 +40,8 @@
   -webkit-mask-image: radial-gradient(circle at 0 100%, transparent 10px, #ede8dd 10px),
                       radial-gradient(circle at 100% 100%, transparent 10px, #ede8dd 10px);
 }
+
+.receiptModal * { font-family: "GmarketSans", sans-serif !important; }
 
 @keyframes receiptIn {
   from { opacity: 0; transform: translateY(20px) scale(0.97); }

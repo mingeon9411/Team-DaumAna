@@ -20,9 +20,13 @@
 }
 
 .trackingModal {
-  background: var(--card);
+  --background: #fff;
+  --card: #fff;
+  --secondary: #fff;
+  --muted: #fff;
+  background: #fff;
   color: var(--foreground);
-  font-family: "Noto Sans KR", sans-serif;
+  font-family: "GmarketSans", sans-serif;
   width: 100%;
   max-width: 380px;
   max-height: 90vh;
@@ -33,6 +37,8 @@
   position: relative;
   animation: trackingModalIn 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+
+.trackingModal * { font-family: "GmarketSans", sans-serif !important; }
 
 .trackingHeader {
   text-align: center;

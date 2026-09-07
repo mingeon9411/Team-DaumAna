@@ -24,13 +24,19 @@
   height: 100%;
   width: 400px;
   max-width: 100vw;
-  background: var(--background);
-  font-family: "Noto Sans KR", sans-serif;
+  --background: #fff;
+  --card: #fff;
+  --secondary: #fff;
+  --muted: #fff;
+  background: #fff;
+  font-family: "GmarketSans", sans-serif;
   display: flex;
   flex-direction: column;
   animation: cdPanelIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
   overflow: hidden;
 }
+
+.cdPanel * { font-family: "GmarketSans", sans-serif !important; }
 
 /* ── 헤더 ── */
 .cdHeader {

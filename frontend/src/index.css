@@ -104,8 +104,9 @@ h1, h2, h3, h4, h5, h6, p, span, a, strong, em, li {
 }
 
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  /* Give the scrollbar a larger hit area so its thumb is easier to grab. */
+  width: 10px;
+  height: 10px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;

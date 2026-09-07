@@ -27,27 +27,27 @@ import woodChairInterior from "../../assets/interior/(의자) 우드 의자 - �
 import resortChair from "../../assets/products/(의자) 유럽풍 피서지 의자.jpg";
 import nordicBed from "../../assets/products/(침대) 북유럽 침대.jpg";
 import pastelPatternBed from "../../assets/products/(침대) 북유럽풍 파스텔 문양 침대.jpg";
-import spriteMatA from "../../assets/products/생활용품/발매트/스프라이트 발매트(A타입).png";
-import spriteMatB from "../../assets/products/생활용품/발매트/스프라이트 발매트(B타입).png";
-import thickTowelA from "../../assets/products/생활용품/수건/두께가 있는 세면 수건(A타입).png";
-import thickTowelB from "../../assets/products/생활용품/수건/두꼐가 있는 세면 수건(B타입).png";
-import waffleTowel from "../../assets/products/생활용품/수건/와플 문양 수건.png";
-import furrySlipperGray from "../../assets/products/생활용품/실내화/부드러운 털 실내화 (그레이).png";
-import furrySlipperGreen from "../../assets/products/생활용품/실내화/부드러운 털 실내화 (그린).png";
-import furrySlipperBrown from "../../assets/products/생활용품/실내화/부드러운 털 실내화 (브라운).png";
-import furrySlipperNavy from "../../assets/products/생활용품/실내화/부드러운 털 실내화(네이비).png";
-import drainSandalRed from "../../assets/products/생활용품/욕실화/물이 잘 빠지는 욕실화 (레드).png";
-import drainSandalBlack from "../../assets/products/생활용품/욕실화/물이 잘 빠지는 욕실화 (블랙).png";
-import drainSandalBlue from "../../assets/products/생활용품/욕실화/물이 잘 빠지는 욕실화 (블루).png";
-import drainSandalWhite from "../../assets/products/생활용품/욕실화/물이 잘 빠지는 욕실화 (화이트).png";
-import darkBrownSofa from "../../assets/products/소파/(소파) 다크 브라운 고급 소파 - 1.png";
-import mushroomLampGreen from "../../assets/products/무드등/(무드등) 버섯 무드등(그린).png";
-import mushroomLampNavy from "../../assets/products/무드등/(무드등) 버섯 무드등(네이비).png";
-import mushroomLampOrange from "../../assets/products/무드등/(무드등) 버섯 무드등(오렌지).png";
-import wideLiberoSandalRed from "../../assets/products/생활용품/욕실화/(욕실화)  미끄럼방지 와이드 리베로 EVA 욕실화 - 레드.png";
-import wideLiberoSandalBlue from "../../assets/products/생활용품/욕실화/(욕실화)  미끄럼방지 와이드 리베로 EVA 욕실화 - 블루.png";
-import cloudSandalBlack from "../../assets/products/생활용품/욕실화/(욕실화) EVA 미끄러짐 방지 욕실화 - 블랙.png";
-import cloudSandalWhite from "../../assets/products/생활용품/욕실화/(욕실화) EVA 미끄러짐 방지 욕실화 - 화이트.png";
+import spriteMatA from "../../assets/products/생활용품/발매트/스프라이트 발매트(A타입).jpg";
+import spriteMatB from "../../assets/products/생활용품/발매트/스프라이트 발매트(B타입).jpg";
+import thickTowelA from "../../assets/products/생활용품/수건/두께가 있는 세면 수건(A타입).jpg";
+import thickTowelB from "../../assets/products/생활용품/수건/두꼐가 있는 세면 수건(B타입).jpg";
+import waffleTowel from "../../assets/products/생활용품/수건/와플 문양 수건.jpg";
+import furrySlipperGray from "../../assets/products/생활용품/실내화/부드러운 털 실내화 (그레이).jpg";
+import furrySlipperGreen from "../../assets/products/생활용품/실내화/부드러운 털 실내화 (그린).jpg";
+import furrySlipperBrown from "../../assets/products/생활용품/실내화/부드러운 털 실내화 (브라운).jpg";
+import furrySlipperNavy from "../../assets/products/생활용품/실내화/부드러운 털 실내화(네이비).jpg";
+import drainSandalRed from "../../assets/products/생활용품/욕실화/물이 잘 빠지는 욕실화 (레드).jpg";
+import drainSandalBlack from "../../assets/products/생활용품/욕실화/물이 잘 빠지는 욕실화 (블랙).jpg";
+import drainSandalBlue from "../../assets/products/생활용품/욕실화/물이 잘 빠지는 욕실화 (블루).jpg";
+import drainSandalWhite from "../../assets/products/생활용품/욕실화/물이 잘 빠지는 욕실화 (화이트).jpg";
+import darkBrownSofa from "../../assets/products/소파/(소파) 다크 브라운 고급 소파 - 1.jpg";
+import mushroomLampGreen from "../../assets/products/무드등/(무드등) 버섯 무드등(그린).jpg";
+import mushroomLampNavy from "../../assets/products/무드등/(무드등) 버섯 무드등(네이비).jpg";
+import mushroomLampOrange from "../../assets/products/무드등/(무드등) 버섯 무드등(오렌지).jpg";
+import wideLiberoSandalRed from "../../assets/products/생활용품/욕실화/(욕실화)  미끄럼방지 와이드 리베로 EVA 욕실화 - 레드.jpg";
+import wideLiberoSandalBlue from "../../assets/products/생활용품/욕실화/(욕실화)  미끄럼방지 와이드 리베로 EVA 욕실화 - 블루.jpg";
+import cloudSandalBlack from "../../assets/products/생활용품/욕실화/(욕실화) EVA 미끄러짐 방지 욕실화 - 블랙.jpg";
+import cloudSandalWhite from "../../assets/products/생활용품/욕실화/(욕실화) EVA 미끄러짐 방지 욕실화 - 화이트.jpg";
 // 인테리어 컷 — 일부 상품만 있음. 카드에 커서를 올리면 스튜디오 사진 대신
 // 방에 놓인 모습으로 잠깐 전환해서 보여준다(마우스를 떼면 원래 사진으로 복귀).
 import rugBInterior from "../../assets/interior/(소품) 북유럽풍 러그 B형 -인테리어.jpg";
@@ -60,12 +60,12 @@ import smallMoodLampInterior from "../../assets/interior/(무드등) 북유럽�
 import linenWoodSofaInterior from "../../assets/interior/(소파) 린넨 우드 소파 - 인테리어.jpg";
 import nordicSofaInterior from "../../assets/interior/(소파) 북유럽 소파 - 인테리어.jpg";
 import europeanWoodSofaInterior from "../../assets/interior/(소파) 유러피안 우드 소파 - 인테리어.jpg";
-import resortChairInterior from "../../assets/interior/(의자) 유럽풍 피서지 의자 - 인테리어.png";
+import resortChairInterior from "../../assets/interior/(의자) 유럽풍 피서지 의자 - 인테리어.jpg";
 import nordicBedInterior from "../../assets/interior/(침대) 북유럽 침대 - 인테리어.jpg";
-import darkBrownSofaInterior from "../../assets/interior/(소파) 다크 브라운 고급 소파 - 인테리어.png";
-import mushroomLampInterior from "../../assets/interior/(무드등) LED 무드 버섯등 - 인테리어.png";
-import wideLiberoSandalInterior from "../../assets/interior/(욕실화)  미끄럼방지 와이드 리베로 EVA 욕실화 - 레드 인테리어.png";
-import cloudSandalInterior from "../../assets/interior/(욕실화) EVA 미끄럼 방지 욕실화 - 인테리어 2.png";
+import darkBrownSofaInterior from "../../assets/interior/(소파) 다크 브라운 고급 소파 - 인테리어.jpg";
+import mushroomLampInterior from "../../assets/interior/(무드등) LED 무드 버섯등 - 인테리어.jpg";
+import wideLiberoSandalInterior from "../../assets/interior/(욕실화)  미끄럼방지 와이드 리베로 EVA 욕실화 - 레드 인테리어.jpg";
+import cloudSandalInterior from "../../assets/interior/(욕실화) EVA 미끄럼 방지 욕실화 - 인테리어 2.jpg";
 import { getCartItems, getProductsByCollection, getRecentReviews, logoutUser } from "../../api";
 import { POSTS } from "../Lookbook/posts";
 import { useAuthModal } from "../../context/AuthModalContext";
@@ -364,7 +364,7 @@ function ProductCard({ p, wished, cartCount, onToggleWish, onClick }) {
         {/* 상품 목록은 비교 스캔이 목적이라 카드 크기를 통일한다.
             사진마다 비율이 달라 5:6 박스에 안 맞으면 object-cover로 채운다
             (세로로 긴 사진은 좌우가 살짝 잘릴 수 있음). */}
-        <img src={displayImage} alt={displayAlt} className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
+        <img src={displayImage} alt={displayAlt} loading="lazy" decoding="async" className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-700" />
         {/* 인테리어 컷이 있는 상품만 — 커서를 올리면 스튜디오 사진 위로 방에 놓인
             모습이 서서히 겹쳐지며 "- 인테리어" 버전으로 잠깐 전환된다. */}
         {p.interiorImage && (
@@ -939,7 +939,7 @@ function Home() {
                   >
                     <div className="relative overflow-hidden rounded-2xl bg-muted aspect-square mb-3">
                       {reviewImage ? (
-                        <img src={reviewImage} alt="" className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500" />
+                        <img src={reviewImage} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">상품 이미지 준비 중</div>
                       )}

@@ -11,7 +11,7 @@
   backdrop-filter: blur(4px);
 
   padding: 24px;
-  font-family: "Noto Sans KR", sans-serif;
+  font-family: "GmarketSans", sans-serif;
 }
 
 @keyframes addressModalIn {
@@ -20,6 +20,10 @@
 }
 
 .addressModalInner {
+  --background: #fff;
+  --card: #fff;
+  --secondary: #fff;
+  --muted: #fff;
   width: 100%;
   max-width: 440px;
   max-height: calc(100vh - 96px);
@@ -28,7 +32,7 @@
   position: relative;
   animation: addressModalIn 0.25s ease;
 
-  background: var(--card);
+  background: #fff;
   color: var(--foreground);
 
   border: 1px solid var(--border);
@@ -37,6 +41,9 @@
 
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18), 0 4px 12px rgba(0, 0, 0, 0.06);
 }
+
+.addressModalInner,
+.addressModalInner * { font-family: "GmarketSans", sans-serif !important; }
 
 .addressModalInner h1 {
   font-family: "Noto Serif KR", serif;

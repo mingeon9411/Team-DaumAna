@@ -3,11 +3,25 @@
    Settings.jsx/CustomerCenter.jsx와 같은 전면 페이지 패턴(히어로 + 콘텐츠) —
    모달 카드(사이드바+박스) 대신 히어로 아래 가로 탭으로 섹션을 전환한다. */
 .mypagePage {
+  /* Keep My Page cards and form fields white instead of inheriting the
+     app-wide beige surfaces. */
+  --background: #fff;
+  --card: #fff;
+  --secondary: #fff;
+  --muted: #fff;
+  --card-foreground: #000;
+  --secondary-foreground: #000;
+  --muted-foreground: #000;
   width: 100vw;
   height: 100vh;
   flex-shrink: 0;
   overflow-y: auto;
   font-family: "GmarketSans", "Noto Sans KR", sans-serif;
+}
+
+.mypagePage,
+.mypagePage * {
+  font-family: "GmarketSans", sans-serif !important;
 }
 
 /* CustomerCenter.css/Settings.css와 동일한 이유 — .metallicSilver가 이미
@@ -184,7 +198,7 @@
   transition: background 0.15s;
 }
 .couponCell:hover {
-  background: #faf8f4;
+  background: #fff;
 }
 
 /* ── 주문내역 섹션 ── */
@@ -279,7 +293,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 16px;
-  background: #faf9f7;
+  background: #fff;
   border-bottom: 1px solid var(--border);
 }
 
@@ -374,7 +388,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #faf9f7;
+  background: #fff;
 }
 
 .orderPayMethod {
@@ -581,7 +595,7 @@
   border-radius: 14px;
   overflow: hidden;
   box-shadow: 0 2px 14px rgba(0,0,0,0.08);
-  background: #fffef9;
+  background: #fff;
   position: relative;
   min-height: 118px;
   border: 1px solid rgba(0,0,0,0.05);
@@ -675,7 +689,7 @@
   font-size: 11px;
   font-weight: 700;
   color: #5a4a3a;
-  background: #f0ebe0;
+  background: #fff;
   padding: 3px 9px;
   border-radius: 5px;
   letter-spacing: 0.08em;
@@ -734,7 +748,7 @@
   position: relative;
   aspect-ratio: 1;
   overflow: hidden;
-  background: #f5f1ea;
+  background: #fff;
 }
 .wishPreviewImgBox img {
   width: 100%;
@@ -1320,7 +1334,7 @@ body.dark .securityQaRow button {
   position: relative;
   aspect-ratio: 1;
   overflow: hidden;
-  background: #f5f1ea;
+  background: #fff;
 }
 .myWishImgBox img {
   width: 100%;
