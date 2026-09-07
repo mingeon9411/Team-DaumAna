@@ -114,8 +114,8 @@ export const getProductsByCollection = (collection) => API.get(`/products?collec
 export const getReviews = (productId) => API.get(`/products/${productId}/reviews`);
 export const createReview = (productId, data) => API.post(`/products/${productId}/reviews`, data);
 
-// 룩북 갤러리용 — 상품 상관없이 사진 첨부된 최신 리뷰 모아보기
-export const getPhotoReviews = () => API.get('/products/reviews/photos');
+// 룩북 아래 리뷰 모음용 — 모든 상품의 리뷰를 최신순으로 조회한다.
+export const getRecentReviews = () => API.get('/products/reviews/recent');
 
 // 리뷰 사진 업로드 — 응답으로 받은 url을 createReview의 review_image_url에 담아 넘긴다.
 export const uploadReviewImage = (file) => {

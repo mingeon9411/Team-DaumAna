@@ -66,7 +66,7 @@ import darkBrownSofaInterior from "../../assets/interior/(소파) 다크 브라�
 import mushroomLampInterior from "../../assets/interior/(무드등) LED 무드 버섯등 - 인테리어.png";
 import wideLiberoSandalInterior from "../../assets/interior/(욕실화)  미끄럼방지 와이드 리베로 EVA 욕실화 - 레드 인테리어.png";
 import cloudSandalInterior from "../../assets/interior/(욕실화) EVA 미끄럼 방지 욕실화 - 인테리어 2.png";
-import { getCartItems, getProductsByCollection, getPhotoReviews, logoutUser } from "../../api";
+import { getCartItems, getProductsByCollection, getRecentReviews, logoutUser } from "../../api";
 import { POSTS } from "../Lookbook/posts";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
@@ -496,14 +496,12 @@ function Home() {
   const [recentlyViewed, setRecentlyViewed] = useState(() => withFreshProductData(getRecentlyViewed()));
   const navigate = useNavigate();
 
-  // "신상품 스타일링 팁" 자리를 대신하는 상품 리뷰 모음 — 사진 첨부된 리뷰만
-  // 최신순으로 모아서 보여주는 공개 API(로그인 불필요, 룩북 갤러리 패널용으로
-  // 이미 만들어져 있었지만 프론트에서 아직 안 쓰고 있던 엔드포인트).
-  const [photoReviews, setPhotoReviews] = useState([]);
+  // 룩북 아래 리뷰 모음 — 사진 유무와 무관하게 모든 상품의 리뷰를 최신순으로 보여준다.
+  const [recentReviews, setRecentReviews] = useState([]);
   useEffect(() => {
-    getPhotoReviews()
-      .then((res) => setPhotoReviews(Array.isArray(res.data) ? res.data : []))
-      .catch(() => setPhotoReviews([]));
+    getRecentReviews()
+      .then((res) => setRecentReviews(Array.isArray(res.data) ? res.data : []))
+      .catch(() => setRecentReviews([]));
   }, []);
 
   // 룩북 최신 게시물 미리보기 — 날짜 내림차순(POSTS 배열 자체의 삽입 순서에
@@ -922,13 +920,14 @@ function Home() {
           <span className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase" style={MONO}>REVIEW</span>
           <h2 className="text-2xl md:text-3xl font-light mt-2 mb-3" style={SERIF}>리뷰 모음</h2>
           <p className="text-sm text-muted-foreground mb-8 max-w-md">
-            실제로 담아보신 분들이 사진과 함께 남겨주신 이야기예요.
+            모든 상품에 남겨주신 후기를 최신순으로 모았어요.
           </p>
           <Hairline className="mb-10" />
-          {photoReviews.length > 0 ? (
+          {recentReviews.length > 0 ? (
             <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2">
-              {photoReviews.map((r) => {
+              {recentReviews.map((r) => {
                 const product = PRODUCTS.find((p) => p.id === r.product);
+                const reviewImage = r.review_image_url || r.product_thumbnail_url || product?.image;
                 return (
                   <div
                     key={r.id}
@@ -936,7 +935,11 @@ function Home() {
                     onClick={() => product && navigate(`/item/${product.id}`)}
                   >
                     <div className="relative overflow-hidden rounded-2xl bg-muted aspect-square mb-3">
-                      <img src={r.review_image_url} alt="" className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500" />
+                      {reviewImage ? (
+                        <img src={reviewImage} alt="" className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">상품 이미지 준비 중</div>
+                      )}
                     </div>
                     <div className="flex items-center gap-0.5 mb-1.5">
                       {Array.from({ length: 5 }).map((_, i) => (
@@ -944,14 +947,14 @@ function Home() {
                       ))}
                     </div>
                     <p className="text-sm text-foreground/85 leading-snug line-clamp-2 mb-1">{r.comment}</p>
-                    {product && <p className="text-xs text-muted-foreground truncate">{product.name}</p>}
+                    <p className="text-xs text-muted-foreground truncate">{r.product_name || product?.name}</p>
                   </div>
                 );
               })}
             </div>
           ) : (
             <div className="rounded-2xl border border-border bg-background/50 px-6 py-10 text-center">
-              <p className="text-sm text-muted-foreground">아직 사진과 함께 등록된 리뷰가 없습니다.</p>
+              <p className="text-sm text-muted-foreground">아직 등록된 리뷰가 없습니다.</p>
               <button
                 type="button"
                 onClick={scrollToProductGrid}
