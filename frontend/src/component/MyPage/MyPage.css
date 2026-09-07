@@ -511,8 +511,7 @@
   overflow: hidden;
   margin-bottom: 28px;
   min-height: 200px;
-  background-size: cover;
-  background-position: center 40%;
+  background: linear-gradient(115deg, #f7ddc9 0%, #cfe0f2 50%, #cdeed2 100%);
   display: flex;
   align-items: center;
 }
@@ -520,19 +519,14 @@
 .myCouponBannerOverlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to right,
-    rgba(20, 12, 6, 0.78) 0%,
-    rgba(20, 12, 6, 0.55) 50%,
-    rgba(20, 12, 6, 0.15) 100%
-  );
+  background: rgba(255, 255, 255, 0.16);
 }
 
 .myCouponBannerCenter {
   position: relative;
   z-index: 1;
   padding: 40px 48px;
-  color: #fff;
+  color: var(--foreground);
 }
 
 .myCouponBannerSub {
@@ -540,14 +534,14 @@
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.22em;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--foreground);
 }
 
 .myCouponBannerTitle {
   margin: 0 0 12px;
   font-size: 30px;
   font-weight: 900;
-  color: #fff;
+  color: var(--foreground);
   letter-spacing: -0.02em;
   line-height: 1.1;
 }
@@ -556,13 +550,13 @@
   margin: 0;
   font-size: 14px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--foreground);
 }
 
 .myCouponBannerCount strong {
   font-size: 22px;
   font-weight: 900;
-  color: #f5c97a;
+  color: #913a22;
   margin-right: 3px;
 }
 
@@ -1854,6 +1848,16 @@ body.dark .orderCardFoot {
 body.dark .myCouponCountBar,
 body.dark .myWishCountBar {
   background: rgba(150, 185, 255, 0.08);
+}
+
+body.dark .myCouponBanner {
+  background: linear-gradient(115deg, #2d2340 0%, #1d314b 50%, #1e4038 100%);
+}
+
+body.dark .myCouponBannerSub,
+body.dark .myCouponBannerTitle,
+body.dark .myCouponBannerCount {
+  color: #dbe6f7;
 }
 
 body.dark .profileInfoRow {

@@ -5,13 +5,17 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding-top: 130px;
-  background: #ffffff;
   color: var(--foreground);
   animation: homeDetailPageIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 body.dark .homeDetailPage {
   background: var(--background);
+}
+
+#reviews,
+#reviews * {
+  font-family: "GmarketSans", sans-serif !important;
 }
 
 @keyframes homeDetailPageIn {

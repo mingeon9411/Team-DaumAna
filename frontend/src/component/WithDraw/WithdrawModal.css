@@ -34,7 +34,7 @@
   position: relative;
   animation: withdrawModalIn 0.25s ease;
 
-  background: var(--card);
+  background: #ffffff;
   color: var(--foreground);
 
   border: 1px solid var(--border);
@@ -45,6 +45,32 @@
   box-shadow:
     0 20px 60px rgba(0, 0, 0, 0.12),
     0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* 설정 화면의 "배경 톤" 선택값을 모달에도 그대로 적용한다. */
+body[data-bg="beige"] .withdrawModalInner {
+  background: linear-gradient(115deg, #f8f2e6 0%, #f3ead9 20%, #f7f1e4 35%, #f8f2e6 50%, #f2e8d6 65%, #f6efe0 80%, #f8f2e6 100%);
+  background-size: 160% 160%;
+  animation: withdrawModalIn 0.25s ease, pastelSheenDrift 48s ease-in-out infinite;
+}
+
+body[data-bg="pastel"] .withdrawModalInner {
+  background: linear-gradient(115deg, #f7ddc9 0%, #cfe0f2 20%, #cdeed2 35%, #f7ddc9 50%, #ddd3f2 65%, #f4d3e4 80%, #f7ddc9 100%);
+  background-size: 160% 160%;
+  animation: withdrawModalIn 0.25s ease, pastelSheenDrift 48s ease-in-out infinite;
+}
+
+body[data-bg="pastel"][data-pastel="medium"] .withdrawModalInner {
+  background: linear-gradient(115deg, #f8e9dc 0%, #e1e9f2 20%, #dff2e2 35%, #f8e9dc 50%, #e8e2f5 65%, #f5e1ec 80%, #f8e9dc 100%);
+}
+
+body[data-bg="pastel"][data-pastel="light"] .withdrawModalInner {
+  background: linear-gradient(115deg, #f9f4ef 0%, #eef2f7 20%, #f0f7f0 35%, #f9f4ef 50%, #f2eef7 65%, #f7f0f5 80%, #f9f4ef 100%);
+}
+
+.withdrawModalInner,
+.withdrawModalInner * {
+  font-family: "GmarketSans", sans-serif !important;
 }
 
 .withdrawModalClose {
@@ -190,8 +216,10 @@
 }
 
 /* ── 다크모드 ── */
-body.dark .withdrawModalInner {
-  background: #0a1226;
+body.dark .withdrawModalInner,
+body.dark[data-bg][data-pastel] .withdrawModalInner {
+  background: linear-gradient(115deg, #060d1e 0%, #0b1430 20%, #0f1f3d 35%, #060d1e 50%, #0f1f3d 65%, #0b1430 80%, #060d1e 100%);
+  background-size: 160% 160%;
   border-color: rgba(150, 185, 255, 0.16);
   color: #bfcbec;
 }
@@ -219,4 +247,3 @@ body.dark .cancelBtn {
   background: rgba(150, 185, 255, 0.12);
   color: #bfcbec;
 }
-

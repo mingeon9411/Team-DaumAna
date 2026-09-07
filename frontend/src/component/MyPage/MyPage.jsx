@@ -5,7 +5,6 @@ import { LuChevronLeft, LuCrown, LuTrophy, LuMedal, LuLeaf, LuUser } from "react
 import { logoutUser, getOrderHistory, getMyCoupons, cancelOrder, getMe, getMyInquiries, createInquiry, updateSecurityQa } from "../../api";
 import { SECURITY_QUESTIONS } from "../../data/securityQuestions";
 import { useWishlist } from "../../hooks/useWishlist";
-import korfurni from "../../assets/products/korfurni.png";
 import bird2 from "../../assets/decor/bird2.png";
 import flowers from "../../assets/decor/flowers.png";
 import Receipt from "./Receipt";
@@ -519,7 +518,7 @@ function MyPage() {
         {activeSection === "coupon" && (
           <section className="myCouponSection">
             {/* 배너 */}
-            <div className="myCouponBanner" style={{ backgroundImage: `url(${korfurni})` }}>
+            <div className="myCouponBanner">
               <div className="myCouponBannerOverlay" />
               <div className="myCouponBannerCenter">
                 <p className="myCouponBannerSub">내 쿠폰</p>

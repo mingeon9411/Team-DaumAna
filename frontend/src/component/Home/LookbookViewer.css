@@ -26,23 +26,37 @@
   align-items: center;
   justify-content: center;
   padding: 40px 16px;
-  font-family: "Noto Sans KR", sans-serif;
-
-  background: linear-gradient(
-    115deg,
-    #f4f5f6 0%,
-    #d9dbde 20%,
-    #c3c6cb 35%,
-    #eef0f2 50%,
-    #b7bac0 65%,
-    #dfe1e4 80%,
-    #f4f5f6 100%
-  );
-  background-size: 160% 160%;
-  animation: igOverlayIn 0.18s ease both, igSheen 24s ease-in-out infinite;
+  font-family: "GmarketSans", sans-serif;
+  background: #ffffff;
+  animation: igOverlayIn 0.18s ease both;
 }
 
-body.dark .igOverlay {
+body[data-bg="beige"] .igOverlay {
+  background: linear-gradient(115deg, #f8f2e6 0%, #f3ead9 20%, #f7f1e4 35%, #f8f2e6 50%, #f2e8d6 65%, #f6efe0 80%, #f8f2e6 100%);
+  background-size: 160% 160%;
+  animation: igOverlayIn 0.18s ease both, pastelSheenDrift 48s ease-in-out infinite;
+}
+
+body[data-bg="pastel"] .igOverlay {
+  background: linear-gradient(115deg, #f7ddc9 0%, #cfe0f2 20%, #cdeed2 35%, #f7ddc9 50%, #ddd3f2 65%, #f4d3e4 80%, #f7ddc9 100%);
+  background-size: 160% 160%;
+  animation: igOverlayIn 0.18s ease both, pastelSheenDrift 48s ease-in-out infinite;
+}
+
+body[data-bg="pastel"][data-pastel="medium"] .igOverlay {
+  background: linear-gradient(115deg, #f8e9dc 0%, #e1e9f2 20%, #dff2e2 35%, #f8e9dc 50%, #e8e2f5 65%, #f5e1ec 80%, #f8e9dc 100%);
+}
+
+body[data-bg="pastel"][data-pastel="light"] .igOverlay {
+  background: linear-gradient(115deg, #f9f4ef 0%, #eef2f7 20%, #f0f7f0 35%, #f9f4ef 50%, #f2eef7 65%, #f7f0f5 80%, #f9f4ef 100%);
+}
+
+.igOverlay * {
+  font-family: "GmarketSans", sans-serif !important;
+}
+
+body.dark .igOverlay,
+body.dark[data-bg][data-pastel] .igOverlay {
   background: linear-gradient(
     115deg,
     #060d1e 0%,

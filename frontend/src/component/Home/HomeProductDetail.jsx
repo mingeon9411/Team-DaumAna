@@ -113,7 +113,7 @@ function HomeProductDetail() {
 
   if (!product) {
     return (
-      <main className="homeDetailPage flex items-center justify-center" data-hsnap>
+      <main className="homeDetailPage metallicSilver flex items-center justify-center" data-hsnap>
         <p className="text-sm text-muted-foreground" style={SANS}>상품을 찾을 수 없습니다.</p>
       </main>
     );
@@ -303,7 +303,7 @@ function HomeProductDetail() {
   const labelBadge = LABEL_BADGE[product.label];
 
   return (
-    <main className="homeDetailPage" data-lenis-prevent data-hsnap ref={pageRef}>
+    <main className="homeDetailPage metallicSilver" data-lenis-prevent data-hsnap ref={pageRef}>
       {/* max-w-7xl(1280px)→1440px — 아래 "상세정보" 프로즈 섹션들은 이미 각자
           더 좁은 max-w-4xl/2xl로 따로 잡혀있어 이 폭 변화의 영향을 안 받고,
           카드(homeDetailGlassCard)만 그 폭을 그대로 채우므로 카드만 넓어진다. */}
