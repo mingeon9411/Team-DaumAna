@@ -373,7 +373,7 @@ function ProductCard({ p, wished, cartCount, onToggleWish, onClick }) {
   return (
     <article className="group cursor-pointer" onClick={onClick}>
       <div
-        className="relative overflow-hidden bg-muted mb-3 aspect-5/6"
+        className="relative overflow-hidden rounded-2xl bg-muted mb-3 aspect-5/6"
         onMouseLeave={() => setColorIdx(0)}
       >
         {/* 상품 목록은 비교 스캔이 목적이라 카드 크기를 통일한다.

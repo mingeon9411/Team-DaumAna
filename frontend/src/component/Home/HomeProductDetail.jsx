@@ -337,7 +337,7 @@ function HomeProductDetail() {
                 ))}
               </div>
             )}
-            <div className="relative overflow-hidden bg-muted aspect-5/6 flex-1 min-w-0">
+            <div className="relative overflow-hidden rounded-2xl bg-muted aspect-5/6 flex-1 min-w-0">
               <img src={galleryImages[activeImage]} alt="" aria-hidden="true" className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-70" />
               <img src={galleryImages[activeImage]} alt={selectedColor?.alt || product.alt} className="relative w-full h-full object-contain" />
             </div>
