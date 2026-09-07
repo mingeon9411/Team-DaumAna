@@ -926,8 +926,11 @@ function Home() {
           {recentReviews.length > 0 ? (
             <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2">
               {recentReviews.map((r) => {
-                const product = PRODUCTS.find((p) => p.id === r.product);
-                const reviewImage = r.review_image_url || r.product_thumbnail_url || product?.image;
+                // 운영 DB의 일부 초기 상품은 PK가 프론트 상품 ID와 다르다.
+                // 이름도 함께 비교해 번들에 포함된 정확한 상품 이미지를 우선 사용한다.
+                const product = PRODUCTS.find((p) => p.id === r.product)
+                  || PRODUCTS.find((p) => p.name === r.product_name);
+                const reviewImage = r.review_image_url || product?.image || r.product_thumbnail_url;
                 return (
                   <div
                     key={r.id}
