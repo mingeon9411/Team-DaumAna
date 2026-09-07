@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="920" viewBox="0 0 1440 920" role="img" aria-labelledby="title desc">
+  <title id="title">집다움 시스템 아키텍처</title>
+  <desc id="desc">사용자 브라우저가 React 프런트엔드를 거쳐 Spring Boot API와 통신하고, Django Admin과 Spring Boot가 MySQL을 공유하며 Redis와 외부 서비스를 사용하는 구조</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10Z" fill="#52616b"/></marker>
+    <style>
+      .title{font:700 40px Arial,'Noto Sans KR',sans-serif;fill:#17202a}.sub{font:18px Arial,'Noto Sans KR',sans-serif;fill:#5e6770}.box{stroke-width:3}.name{font:700 27px Arial,'Noto Sans KR',sans-serif;fill:#17202a}.meta{font:16px Arial,'Noto Sans KR',sans-serif;fill:#3e4a54}.tag{font:14px Arial,'Noto Sans KR',sans-serif;fill:#1f4d78}.line{fill:none;stroke:#52616b;stroke-width:2.5;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1440" height="920" fill="#faf8f3"/>
+  <text x="720" y="62" text-anchor="middle" class="title">시스템 아키텍처 다이어그램</text>
+  <text x="720" y="94" text-anchor="middle" class="sub">집다움 · React + Spring Boot API + Django Admin + 공유 MySQL</text>
+
+  <rect x="575" y="122" width="290" height="54" rx="27" fill="#fff" stroke="#8b8176" stroke-dasharray="4 4"/>
+  <text x="720" y="156" text-anchor="middle" class="meta">사용자 브라우저</text>
+  <path d="M720 176V212" class="line"/>
+
+  <rect x="385" y="215" width="670" height="130" rx="20" fill="#dff1ff" stroke="#4fa9e5" class="box"/>
+  <text x="420" y="267" class="name">React (Vite)</text>
+  <text x="420" y="298" class="meta">프런트엔드 · Cloudflare Pages 자동 배포</text>
+  <text x="420" y="324" class="tag">BrowserRouter · PortOne browser SDK</text>
+  <rect x="910" y="245" width="108" height="66" rx="10" fill="#fff"/><text x="964" y="273" text-anchor="middle" class="meta">Vite</text><text x="964" y="296" text-anchor="middle" class="tag">React</text>
+  <path d="M720 345V395" class="line"/>
+  <rect x="612" y="370" width="216" height="34" rx="17" fill="#fff" stroke="#2783d5"/><text x="720" y="393" text-anchor="middle" class="tag">REST JSON · JWT</text>
+
+  <rect x="660" y="438" width="430" height="156" rx="20" fill="#ffe6df" stroke="#ef846c" class="box"/>
+  <text x="695" y="485" class="name">Spring Boot</text>
+  <text x="695" y="513" class="meta">API 서버 · 인증 · 상품 · 주문 · 결제 · 쿠폰 · 챗봇</text>
+  <text x="695" y="541" class="tag">JWT 단독 발급·검증 · PortOne 서버 검증</text>
+  <text x="695" y="568" class="tag">별도 저장소 → Docker Hub → EC2 배포</text>
+  <path d="M760 594V636H400V658" class="line"/>
+
+  <rect x="120" y="438" width="410" height="156" rx="20" fill="#e5f5e7" stroke="#63b97a" class="box"/>
+  <text x="155" y="485" class="name">Django Admin</text>
+  <text x="155" y="513" class="meta">관리자 화면 · MySQL 마이그레이션 소유</text>
+  <text x="155" y="541" class="tag">REST API 없음 · JWT 처리 없음</text>
+  <path d="M325 594V658" class="line"/>
+
+  <rect x="235" y="680" width="330" height="142" rx="20" fill="#fff0dd" stroke="#e79a4d" class="box"/>
+  <text x="270" y="730" class="name">MySQL</text>
+  <text x="270" y="759" class="meta">Django · Spring Boot 공유 DB</text>
+  <text x="270" y="787" class="tag">스키마: Django 마이그레이션</text>
+
+  <rect x="645" y="680" width="250" height="142" rx="20" fill="#fff0f4" stroke="#df7394" class="box"/>
+  <text x="680" y="730" class="name">Redis</text>
+  <text x="680" y="759" class="meta">상품 목록 조회 캐시</text>
+  <text x="680" y="787" class="tag">TTL 30초 · 장애 시 캐시 미스</text>
+  <path d="M875 594V658" class="line"/>
+
+  <rect x="970" y="680" width="350" height="142" rx="20" fill="#e8efff" stroke="#7394db" class="box"/>
+  <text x="1005" y="730" class="name">외부 연동</text>
+  <text x="1005" y="759" class="meta">OAuth · hCaptcha · PortOne · Gemini</text>
+  <text x="1005" y="787" class="tag">SMTP · Naver Smart Store</text>
+  <path d="M990 594V636H1145V658" class="line"/>
+
+  <line x1="120" y1="862" x2="1320" y2="862" stroke="#d6cec4"/>
+  <text x="120" y="892" class="sub">Django는 관리자 전용이며, 사용자 API와 JWT는 Spring Boot가 단독으로 담당합니다.</text>
+</svg>

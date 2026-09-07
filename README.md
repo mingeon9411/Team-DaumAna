@@ -285,9 +285,9 @@
 
 ### 🗂 Architecture Diagram
 
-<img src="backend/img/architecture.diagram.png" alt="Architecture Diagram" width="860"/>
+<img src="assets/architecture-current.svg" alt="집다움 시스템 아키텍처: React가 Spring Boot API와 통신하고, Django Admin과 Spring Boot가 MySQL을 공유하며 Redis와 외부 서비스를 연동하는 구조" width="860"/>
 
-<sub>⚠️ 이 다이어그램은 Redis 캐시 계층 추가 이전 버전입니다 — 실제로는 Spring Boot가 상품 목록 조회 시 Redis를 거치고(TTL 30초), Django는 REST API가 없어 화살표처럼 프론트가 직접 호출하지 않습니다(관리자 화면 전용). 갱신 전까지는 아래 텍스트 기준을 최신으로 봐주세요.</sub>
+<sub>React는 Spring Boot API만 호출합니다. Django는 관리자 화면과 MySQL 마이그레이션을 담당하며 REST API와 JWT 처리에는 관여하지 않습니다.</sub>
 
 </div>
 
