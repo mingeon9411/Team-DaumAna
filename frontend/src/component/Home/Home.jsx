@@ -431,7 +431,7 @@ function ProductCard({ p, wished, cartCount, onToggleWish, onClick }) {
       {/* 상세페이지(HomeProductDetail.jsx)와 같은 뱃지 — 라벨(색상은 LABEL_BADGE)과
           무료배송을 알약 모양 태그로. p.no는 이 태그 줄 아래 상품명 위 자리를
           잃은 대신 별 의미 없는 진열 번호라 그냥 뺐다. */}
-      <div className="flex items-center gap-1.5 mb-1.5">
+      <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
         {p.label && (
           <span className={`text-[11px] font-semibold rounded-full px-2 py-0.5 border ${labelBadge?.className || "text-foreground border-border"}`} style={MONO}>
             {labelKo(p.label)}
@@ -440,6 +440,11 @@ function ProductCard({ p, wished, cartCount, onToggleWish, onClick }) {
         {todayShipAvailable && (
           <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 border border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-800/60 dark:bg-violet-950/40 dark:text-violet-300" style={MONO}>
             ⚡ 오늘 발송
+          </span>
+        )}
+        {todayShipAvailable && (
+          <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 border border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800/60 dark:bg-sky-950/40 dark:text-sky-300" style={MONO}>
+            12:00 전 주문 시 당일배송
           </span>
         )}
         <span className="text-[11px] font-medium text-muted-foreground rounded-full px-2 py-0.5 border border-border" style={MONO}>

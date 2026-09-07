@@ -358,7 +358,7 @@ function HomeProductDetail() {
               </div>
               {/* 상품 라벨 + 배송 태그를 한 줄에 — 29cm처럼 제목 위 작은 태그 묶음으로,
                   아래 가격 옆에 따로 있던 큰 무료배송 박스는 배송정보 줄로 옮겼다. */}
-              <div className="flex items-center gap-1.5">
+              <div className="flex flex-wrap items-center gap-1.5">
                 {product.label && (
                   <span className={`text-[11px] font-semibold rounded-full px-2 py-0.5 border ${labelBadge?.className || "text-foreground border-border"}`} style={MONO}>
                     {labelKo(product.label)}
@@ -367,6 +367,11 @@ function HomeProductDetail() {
                 {todayShipAvailable && (
                   <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 border border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-800/60 dark:bg-violet-950/40 dark:text-violet-300" style={MONO}>
                     ⚡ 오늘 발송
+                  </span>
+                )}
+                {todayShipAvailable && (
+                  <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 border border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800/60 dark:bg-sky-950/40 dark:text-sky-300" style={MONO}>
+                    12:00 전 주문 시 당일배송
                   </span>
                 )}
                 <span className="text-[11px] font-medium text-muted-foreground rounded-full px-2 py-0.5 border border-border" style={MONO}>
