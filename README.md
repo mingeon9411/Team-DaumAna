@@ -167,7 +167,7 @@
 <br/>
 
 <p>
-  <code>React</code>(프론트) · <code>Spring Boot</code>(회원 · 상품 · 주문 · 결제) · <code>Django</code>(JWT 블랙리스트, 상품 · 쿠폰 · 회원 관리 등)로
+  <code>React</code>(프론트) · <code>Spring Boot</code>(회원 · 상품 · 주문 · 결제 API) · <code>Django</code>(관리자 화면 · MySQL 스키마 마이그레이션)로
   <br/>
   <b>서로 다른 두 백엔드를 하나의 서비스로 연결</b>하는 구조를 일부러 선택했습니다.
   <br/>
@@ -237,7 +237,7 @@
 | | 기술 | 설명 |
 |---|---|---|
 | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white) | MySQL (Docker) | Django · Spring Boot 공용 DB, 스키마는 Django 마이그레이션이 소유(`ddl-auto: none`) |
-| ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white) | Redis (Docker) | Spring Boot 상품 목록 조회 캐시(TTL 30초) — 장애 시 캐시 미스로 자동 우회, 조회 자체는 실패하지 않음 |
+| ![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white) | Redis (Docker) | Spring Boot 상품 목록 조회 캐시(TTL 30초) — Spring 관리자 API 변경 시 즉시 무효화, Django Admin 직접 변경은 최대 30초 내 반영; 장애 시 캐시 미스로 자동 우회 |
 
 <br/>
 
@@ -256,7 +256,7 @@
 
 | | 기술 | 설명 |
 |---|---|---|
-| ![PortOne V2](https://img.shields.io/badge/PortOne_V2-6C1EF2?style=flat-square&logoColor=white) | PortOne V2 | 결제 연동 — 프론트(browser-sdk)와 Spring Boot(API Secret) 양쪽에서 검증 |
+| ![PortOne V2](https://img.shields.io/badge/PortOne_V2-6C1EF2?style=flat-square&logoColor=white) | PortOne V2 | 결제 연동 — 프론트(browser-sdk) 요청 뒤 Spring Boot가 API Secret으로 금액·상태를 검증 |
 
 <br/>
 
@@ -373,7 +373,7 @@
 | | |
 |---|---|
 | 🐬 **MySQL (Docker)** | `Oracle → MySQL` 전환 완료(2026-07) · Django · Spring Boot가 하나의 DB를 공유 |
-| ⚡ **Redis (Docker)** | Spring Boot 상품 목록 조회 캐시(TTL 30초) · `jibdaum-redis` 컨테이너, 장애 시 캐시 미스로 우회해 조회 자체는 영향 없음 |
+| ⚡ **Redis (Docker)** | Spring Boot 상품 목록 조회 캐시(TTL 30초) · Spring 관리자 API 변경 시 즉시 무효화, Django Admin 직접 변경은 최대 30초 내 반영 · `jibdaum-redis` 컨테이너 장애 시 캐시 미스로 우회 |
 | 🔗 **연동** | `docker compose up -d`로 로컬 컨테이너(`jibdaum-mysql`, `jibdaum-redis`) 기동, PC마다 `.env`만 새로 생성하면 동일 스키마 공유 |
 
 </div>
@@ -399,7 +399,9 @@
 | 🛍 카탈로그 | 한국관 폐지, 룩북(오늘의집 스타일 상품 피드 + 핀 위젯) 신설 — 상품 상세페이지는 `/item/:id` 하나로 통일 |
 | 🧭 상품 상세 | 카테고리 브레드크럼 표시, 컬러 옵션이 있는 상품은 드롭다운으로 옵션·수량 선택 후 구매 |
 | 🎟 웰컴 쿠폰 | 회원가입 시 웰컴 쿠폰 자동 지급(Spring Boot) — Django에 결제 적용용 일반 쿠폰 10종 시드 |
-| ⚡ 캐싱 | Spring Boot 상품 목록 조회에 Redis 캐시 도입(TTL 30초, 장애 시 자동 우회) |
+| ⚡ 캐싱 | Spring Boot 상품 목록 조회에 Redis 캐시 적용(TTL 30초) — Spring 관리자 API 변경은 즉시 무효화, Django Admin 직접 변경은 TTL 내 반영 |
+| 💳 결제 안정성 | PortOne 결제 검증에 결제 행 잠금을 적용하고, 옵션 소속 검증·재고 원자 차감·쿠폰 복구·무결제 주문 처리를 보완 |
+| 🚀 성능 최적화 | PNG를 JPEG로 경량화하고 Hero 모바일 저용량 영상·라우트 코드 분할을 적용해 초기 로드 비용 축소 |
 | 🧭 네비게이션 | 상세 → 목록 뒤가기 시 인트로를 건너뛰고 원래 스크롤 위치로 즉시 복귀 |
 | 📜 법적 고지 | 전자상거래법상 사업자 정보 표시 패널(BusinessInfoPanel) 신설 |
 | 📱 반응형 | 로그인/회원가입/챗봇/사이드바 모바일 레이아웃 및 터치 스크롤 대응 |
@@ -422,8 +424,8 @@
 | | |
 |---|---|
 | 🎨 **Frontend (React)** | **Cloudflare Pages** — 저장소 Git 연동, `main` 푸시마다 자동 빌드/배포 (Root `frontend`, Build `npm run build`, Output `dist`) |
-| 🛠 **Django** | **Docker** 이미지 빌드 → Docker Hub → **EC2** 컨테이너 배포 (GitHub Actions, `main` 푸시 시 자동 트리거) |
-| ☕ **Spring Boot** | 별도 저장소 `jipdaum-spring`에서 동일하게 Docker Hub → EC2 컨테이너 배포 |
+| 🛠 **Django** | 이 저장소 `main` 푸시 → **Docker** 이미지 빌드 → Docker Hub → **EC2** 컨테이너 배포 |
+| ☕ **Spring Boot** | 별도 저장소 `jipdaum-spring`의 `main` 푸시 → Docker Hub → EC2 컨테이너 배포 |
 
 <br/>
 
@@ -446,15 +448,15 @@
 
 ### 📸 화면
 
-<img src="assets/screenshots/home.png" alt="메인 페이지 - 상품 그리드" width="860"/>
+<img src="assets/screenshots/home-current.png" alt="집다움 최신 메인 페이지" width="860"/>
 
-<sub>메인 페이지 — 카테고리 필터, 인기 상품 랭킹, 상품 그리드</sub>
+<sub>메인 페이지 — Hero 영상, 프로모션 배너, 상품 피드, 검색과 최근 본 상품·장바구니 위젯</sub>
 
 <br/><br/>
 
-<img src="assets/screenshots/cart.png" alt="장바구니" width="860"/>
+<img src="assets/screenshots/cart-current.png" alt="집다움 최신 장바구니 페이지" width="860"/>
 
-<sub>장바구니 — Spring Boot API 연동, 로그인 여부에 따른 안내 분기</sub>
+<sub>장바구니 — 선택·수량 변경·즉시 구매, 주문 금액 요약과 함께 구매하는 상품 추천</sub>
 
 </div>
 
@@ -476,10 +478,10 @@
 | 🛍 상품 | 단일 카탈로그(`/item/:id`), 카테고리 브레드크럼, 컬러 옵션 드롭다운(옵션·수량 선택 후 구매), 사이드바 검색 |
 | 📷 룩북 | 오늘의집 스타일 상품 피드 + 이미지 핀 위젯, 게시물 상세 페이지 |
 | 🛒 장바구니 · 주문 | 장바구니 CRUD, 주문 생성, 최근 본 상품(macOS 독 스타일 위젯) |
-| 💳 결제 | PortOne V2 연동 결제, 결제 검증 실패 시 `@Transactional` 롤백 |
+| 💳 결제 | PortOne V2 결제 준비·검증·완료, 결제 검증 시 비관적 잠금; 결제 시작 전 PENDING 주문만 취소하며 재고·쿠폰 복구 |
 | 🎟 쿠폰 | 회원가입 시 웰컴 쿠폰 자동 지급, 조회 · 적용은 원자적 조건부 UPDATE로 동시 사용 시 초과 차감 방지 |
 | 📦 재고 | 조건부 UPDATE(`stockCount >= qty`)로 동시 주문 시 오버셀 방지 |
-| ⚡ 캐싱 | Redis로 상품 목록 조회 캐시(TTL 30초), 장애 시 캐시 미스로 자동 우회 |
+| ⚡ 캐싱 | Redis 상품 목록 조회 캐시(TTL 30초), Spring 관리자 API 변경 시 즉시 무효화; Django Admin 직접 변경은 TTL 내 반영, 장애 시 캐시 미스로 자동 우회 |
 | 🤖 AI 챗봇 | Gemini 기반 상담 — 임베딩(`gemini-embedding-001`) 코사인 유사도 검색 + 함수 호출로 상품 추천 |
 | 👤 마이페이지 | 주문 내역, 리뷰 작성, 회원 정보 관리 |
 | 🛠 관리자 | Django Admin — 상품 · 카테고리 · 쿠폰 · 회원 관리(API는 없음, admin 전용) |
@@ -504,7 +506,7 @@
 1. **MySQL · Redis 컨테이너 기동** — 저장소 루트에서 `docker compose up -d` (`jibdaum-mysql` 3306 · `jibdaum-redis` 6379)
 2. **`backend/.env` 생성** — `backend/.env.example`을 복사해 값 채우기
 3. **`frontend/.env` 생성** — `frontend/.env.example`을 복사해 PortOne·hCaptcha 키 채우기
-4. **`jipdaum-spring` 별도 클론** — `application.yml.example`을 복사해 `application.yml` 생성, `jwt.secret`을 `backend/.env`의 `SECRET_KEY`와 동일하게 설정
+4. **`jipdaum-spring` 별도 클론** — `application.yml.example`을 복사해 `application.yml` 생성. `jwt.secret`은 Spring Boot 전용이므로 Django `SECRET_KEY`와 공유하지 않음
 5. **각자 실행**
    ```bash
    # Django (backend/)
@@ -553,7 +555,7 @@ flowchart LR
     end
 ```
 
-3개 저장소가 각자 독립된 파이프라인으로 `main` 푸시 시 자동 배포된다 — 프론트는 Cloudflare Pages가 Git 연동으로 직접 빌드, Django·Spring Boot는 GitHub Actions가 Docker Hub에 이미지를 올린 뒤 EC2에 SSH로 접속해 컨테이너를 교체한다.
+프론트·Django는 이 저장소의 `main` 푸시를 기준으로 각각 Cloudflare Pages와 GitHub Actions 파이프라인이 동작한다. Spring Boot는 별도 `jipdaum-spring` 저장소의 `main` 푸시가 Docker Hub·EC2 배포를 별도로 트리거한다.
 
 <br/>
 
@@ -571,9 +573,9 @@ flowchart LR
 
 | 상태 | 내용 |
 |---|---|
-| ✅ 완료 | 상품 상세 디자인 통일 · 네비게이션 스크롤 복귀 · 전자상거래법 사업자 정보 패널 · 로그인/회원가입/챗봇/사이드바 반응형 · 프론트 배포 EC2 → Cloudflare Pages 전환 |
-| 🟡 진행중 | README/발표 자료 보강(스크린샷 · 아키텍처 문서화), 프론트 이미지 WebP 빌드 파이프라인 |
-| 🔵 계획 | 라우트 단위 코드 스플리팅, 체크아웃 플로우 ErrorBoundary, 챗봇 임베딩 인덱스를 활용한 취향 기반 추천 노출 |
+| ✅ 완료 | 상품 상세 디자인 통일 · 네비게이션 스크롤 복귀 · 전자상거래법 사업자 정보 패널 · 반응형 · Cloudflare Pages 전환 · 이미지 경량화 · Hero 모바일 영상 · 라우트 코드 분할 |
+| 🟡 진행중 | README/발표 자료 보강(스크린샷 · 아키텍처 문서화) |
+| 🔵 계획 | PortOne 웹훅 검증 · 승인 완료 결제 환불 API · 체크아웃 플로우 ErrorBoundary · 챗봇 임베딩 인덱스를 활용한 취향 기반 추천 노출 |
 
 <br/>
 
