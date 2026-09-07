@@ -84,6 +84,18 @@
 
 <sub>헤더·로그인 화면 등에 함께 쓰이는 이니셜 심볼 &nbsp;·&nbsp; "J.D"(Jipdaum)</sub>
 
+<br/><br/>
+
+![3차 프로젝트 로고](https://img.shields.io/badge/3차_프로젝트_로고-6b4423?style=flat-square)
+
+<br/><br/>
+
+<img src="assets/logo-third.png" alt="3차 프로젝트 로고 - 집다움 워드마크" width="287"/>
+
+<br/>
+
+<sub>간결한 한글 워드마크를 중심으로 한 3차 프로젝트 로고</sub>
+
 </div>
 
 <br/><br/><br/>
