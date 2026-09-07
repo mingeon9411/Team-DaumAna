@@ -871,42 +871,6 @@ function Home() {
         </div>
         )}
 
-        {/* 상품 리뷰 모음 — 사진 첨부 리뷰만 최신순으로, 좌우로 넘겨보는 가로 카드열.
-            예전 "신상품 스타일링 팁" 자리를 대신한다(오늘의집 "추천 집들이" 레퍼런스). */}
-        {photoReviews.length > 0 && (
-          <div className="relative z-10 max-w-7xl mx-auto w-full mt-20">
-            <span className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase" style={MONO}>REVIEW</span>
-            <h2 className="text-2xl md:text-3xl font-light mt-2 mb-3" style={SERIF}>고객님들의 솔직한 후기</h2>
-            <p className="text-sm text-muted-foreground mb-8 max-w-md">
-              실제로 담아보신 분들이 사진과 함께 남겨주신 이야기예요.
-            </p>
-            <Hairline className="mb-10" />
-            <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2">
-              {photoReviews.map((r) => {
-                const product = PRODUCTS.find((p) => p.id === r.product);
-                return (
-                  <div
-                    key={r.id}
-                    className="shrink-0 w-56 snap-start cursor-pointer group"
-                    onClick={() => product && navigate(`/item/${product.id}`)}
-                  >
-                    <div className="relative overflow-hidden rounded-2xl bg-muted aspect-square mb-3">
-                      <img src={r.review_image_url} alt="" className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500" />
-                    </div>
-                    <div className="flex items-center gap-0.5 mb-1.5">
-                      {Array.from({ length: 5 }).map((_, i) => (
-                        <Star key={i} size={11} className={i < r.rating ? "fill-foreground text-foreground" : "text-border"} />
-                      ))}
-                    </div>
-                    <p className="text-sm text-foreground/85 leading-snug line-clamp-2 mb-1">{r.comment}</p>
-                    {product && <p className="text-xs text-muted-foreground truncate">{product.name}</p>}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
         {/* 룩북 최신 게시물 미리보기 — 좌우로 넘겨보는 가로 카드열, 전체는 /lookbook에서. */}
         {latestLookbookPosts.length > 0 && (
           <div className="relative z-10 max-w-7xl mx-auto w-full mt-20">
@@ -951,6 +915,53 @@ function Home() {
             </div>
           </div>
         )}
+
+        {/* 룩북을 본 뒤 실제 고객 후기까지 자연스럽게 이어지도록 최신 룩북 바로 아래에 둔다.
+            운영 DB에 사진 리뷰가 아직 없어도 섹션을 숨기지 않아 첫 리뷰를 남길 경로가 보인다. */}
+        <div className="relative z-10 max-w-7xl mx-auto w-full mt-20">
+          <span className="text-[10px] tracking-[0.25em] text-muted-foreground uppercase" style={MONO}>REVIEW</span>
+          <h2 className="text-2xl md:text-3xl font-light mt-2 mb-3" style={SERIF}>최근 리뷰</h2>
+          <p className="text-sm text-muted-foreground mb-8 max-w-md">
+            실제로 담아보신 분들이 사진과 함께 남겨주신 이야기예요.
+          </p>
+          <Hairline className="mb-10" />
+          {photoReviews.length > 0 ? (
+            <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory pb-2">
+              {photoReviews.map((r) => {
+                const product = PRODUCTS.find((p) => p.id === r.product);
+                return (
+                  <div
+                    key={r.id}
+                    className={`shrink-0 w-56 snap-start group ${product ? "cursor-pointer" : ""}`}
+                    onClick={() => product && navigate(`/item/${product.id}`)}
+                  >
+                    <div className="relative overflow-hidden rounded-2xl bg-muted aspect-square mb-3">
+                      <img src={r.review_image_url} alt="" className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500" />
+                    </div>
+                    <div className="flex items-center gap-0.5 mb-1.5">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star key={i} size={11} className={i < r.rating ? "fill-foreground text-foreground" : "text-border"} />
+                      ))}
+                    </div>
+                    <p className="text-sm text-foreground/85 leading-snug line-clamp-2 mb-1">{r.comment}</p>
+                    {product && <p className="text-xs text-muted-foreground truncate">{product.name}</p>}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-border bg-background/50 px-6 py-10 text-center">
+              <p className="text-sm text-muted-foreground">아직 사진과 함께 등록된 리뷰가 없습니다.</p>
+              <button
+                type="button"
+                onClick={scrollToProductGrid}
+                className="mt-4 text-xs font-medium text-foreground underline underline-offset-4 hover:opacity-70 transition-opacity"
+              >
+                상품 둘러보고 첫 리뷰 남기기
+              </button>
+            </div>
+          )}
+        </div>
 
         <SiteFooter />
       </section>

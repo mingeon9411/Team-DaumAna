@@ -53,9 +53,9 @@ function SiteFooter() {
           사이에서 끊기지 않고(예: "전화번호" 다음 줄에 "02-123-4567") 쌍 단위로만
           일어난다 — 구분자 "·"의 여백도 gap으로 통일해 좌우 여백이 자간마다 달라
           보이지 않게 한다. */}
-      <div className="flex flex-wrap gap-x-1.5 gap-y-1 text-[11px] leading-relaxed" style={MONO}>
+      <div className="flex flex-wrap justify-center gap-x-1.5 gap-y-1 text-center text-[11px] leading-relaxed" style={MONO}>
         {BUSINESS_INFO.map(([label, value], i) => (
-          <span key={label} className="flex items-center gap-x-1.5">
+          <span key={label} className="flex items-center justify-center gap-x-1.5">
             <span className="whitespace-nowrap">{label} {value}</span>
             {i < BUSINESS_INFO.length - 1 && <span aria-hidden="true" className="text-border">·</span>}
           </span>
