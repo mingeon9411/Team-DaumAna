@@ -576,7 +576,11 @@ function BuyPanel({ item, onClose, onPaid }) {
         alert(`[주문 생성 오류] ${e.response?.data?.message || e.message}`);
         return;
       }
-      const { order_id } = orderRes.data;
+      const { order_id, payment_required } = orderRes.data;
+      if (!payment_required) {
+        onPaid(item);
+        return;
+      }
 
       let readyRes;
       try {

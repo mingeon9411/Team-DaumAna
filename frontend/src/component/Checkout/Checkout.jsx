@@ -149,7 +149,15 @@ function Checkout() {
         alert(`[주문 생성 오류] ${e.response?.data?.message || e.message}`);
         return;
       }
-      const { order_id } = orderRes.data;
+      const { order_id, payment_required } = orderRes.data;
+      if (!payment_required) {
+        navigate("/order-complete", {
+          replace: true,
+          state: { productName: items.length === 1 ? items[0].name : `${items[0].name} 외 ${items.length - 1}건`, totalAmount: 0,
+            quantity: items.reduce((s, i) => s + i.quantity, 0), shippingAddr },
+        });
+        return;
+      }
 
       let readyRes;
       try {
