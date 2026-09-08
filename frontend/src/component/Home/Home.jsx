@@ -475,7 +475,7 @@ function ProductCard({ p, wished, cartCount, todayShipRemaining, onToggleWish, o
         </div>
       )}
       {todayShipAvailable && (
-        <p className="text-xs text-sky-700 dark:text-sky-300" style={MONO}>오늘 발송 마감까지 {formatCountdown(todayShipRemaining)}</p>
+        <p className="text-xs text-red-600 dark:text-red-400" style={MONO}>오늘 발송 마감까지 {formatCountdown(todayShipRemaining)}</p>
       )}
       {lowestStock <= 5 && (
         <p className="text-sm font-bold text-red-600 dark:text-red-400">마감임박! 상품이 {lowestStock}개 남았습니다!</p>
