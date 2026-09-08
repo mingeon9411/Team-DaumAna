@@ -5,24 +5,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--background);
+    background: #ffffff;
     font-family: "GmarketSans", "Noto Sans KR", sans-serif;
     padding: 20px;
 }
 
 .evBox {
-    background: linear-gradient(
-        115deg,
-        #f4f5f6 0%,
-        #d9dbde 20%,
-        #c3c6cb 35%,
-        #eef0f2 50%,
-        #b7bac0 65%,
-        #dfe1e4 80%,
-        #f4f5f6 100%
-    );
-    background-size: 160% 160%;
-    border: 1px solid rgba(0, 0, 0, 0.14);
+    background: #ffffff;
+    border: 8px solid #1c1a16;
     border-radius: 16px;
     padding: 52px 44px 44px;
     width: 100%;
@@ -31,18 +21,55 @@
     text-align: center;
 }
 
-body.dark .evBox {
-    background: linear-gradient(
-        115deg,
-        #2b2d31 0%,
-        #44474d 20%,
-        #5a5d64 35%,
-        #323438 50%,
-        #6b6e75 65%,
-        #3c3e43 80%,
-        #2b2d31 100%
-    );
-    border: 1px solid rgba(255, 255, 255, 0.18);
+body[data-bg="beige"] .evWrap,
+body[data-bg="beige"] .evBox {
+    background: linear-gradient(115deg, #f8f2e6 0%, #f3ead9 20%, #f7f1e4 35%, #f8f2e6 50%, #f2e8d6 65%, #f6efe0 80%, #f8f2e6 100%);
+    background-size: 160% 160%;
+    animation: pastelSheenDrift 48s ease-in-out infinite;
+}
+
+body[data-bg="pastel"] .evWrap {
+    background: linear-gradient(115deg, #f7ddc9 0%, #cfe0f2 20%, #cdeed2 35%, #f7ddc9 50%, #ddd3f2 65%, #f4d3e4 80%, #f7ddc9 100%);
+    background-size: 160% 160%;
+    animation: pastelSheenDrift 48s ease-in-out infinite;
+}
+
+body[data-bg="pastel"] .evBox {
+    border-color: transparent;
+    background:
+        linear-gradient(115deg, #f7ddc9 0%, #cfe0f2 20%, #cdeed2 35%, #f7ddc9 50%, #ddd3f2 65%, #f4d3e4 80%, #f7ddc9 100%) padding-box,
+        linear-gradient(90deg, #ef6fac, #f3c952, #5fd99c, #5aa9ef, #a184e8) border-box;
+    background-size: 160% 160%, 100% 100%;
+    animation: pastelSheenDrift 48s ease-in-out infinite;
+}
+
+body[data-bg="pastel"][data-pastel="medium"] .evWrap,
+body[data-bg="pastel"][data-pastel="medium"] .evBox {
+    background-image: linear-gradient(115deg, #f8e9dc 0%, #e1e9f2 20%, #dff2e2 35%, #f8e9dc 50%, #e8e2f5 65%, #f5e1ec 80%, #f8e9dc 100%);
+}
+
+body[data-bg="pastel"][data-pastel="medium"] .evBox {
+    background-image: linear-gradient(115deg, #f8e9dc 0%, #e1e9f2 20%, #dff2e2 35%, #f8e9dc 50%, #e8e2f5 65%, #f5e1ec 80%, #f8e9dc 100%), linear-gradient(90deg, #ef6fac, #f3c952, #5fd99c, #5aa9ef, #a184e8);
+}
+
+body[data-bg="pastel"][data-pastel="light"] .evWrap,
+body[data-bg="pastel"][data-pastel="light"] .evBox {
+    background-image: linear-gradient(115deg, #f9f4ef 0%, #eef2f7 20%, #f0f7f0 35%, #f9f4ef 50%, #f2eef7 65%, #f7f0f5 80%, #f9f4ef 100%);
+}
+
+body[data-bg="pastel"][data-pastel="light"] .evBox {
+    background-image: linear-gradient(115deg, #f9f4ef 0%, #eef2f7 20%, #f0f7f0 35%, #f9f4ef 50%, #f2eef7 65%, #f7f0f5 80%, #f9f4ef 100%), linear-gradient(90deg, #ef6fac, #f3c952, #5fd99c, #5aa9ef, #a184e8);
+}
+
+body.dark[data-bg][data-pastel] .evWrap {
+    background: #060d1e;
+}
+
+body.dark[data-bg][data-pastel] .evBox {
+    border-color: transparent;
+    background:
+        linear-gradient(#0b1430, #0b1430) padding-box,
+        linear-gradient(90deg, #6b4fb0, #2f9e6c, #c04d8a) border-box;
 }
 
 .evIcon {
@@ -52,7 +79,7 @@ body.dark .evBox {
 }
 
 .evTitle {
-    font-family: "GmarketSans", "Noto Serif KR", serif;
+    font-family: "GmarketSans", sans-serif;
     font-size: 22px;
     font-weight: 500;
     color: var(--foreground);
@@ -107,6 +134,7 @@ body.dark .evBox {
     outline: none;
     box-sizing: border-box;
     background: var(--secondary);
+    font-family: "GmarketSans", sans-serif;
     transition: border-color 0.2s;
 }
 
@@ -159,6 +187,7 @@ body.dark .evBox {
     border-radius: 10px;
     font-size: 15px;
     font-weight: 600;
+    font-family: "GmarketSans", sans-serif;
     cursor: pointer;
     transition: opacity 0.2s;
     margin-top: 4px;
@@ -180,6 +209,7 @@ body.dark .evBox {
     border: 1.5px solid var(--border);
     border-radius: 10px;
     font-size: 14px;
+    font-family: "GmarketSans", sans-serif;
     cursor: pointer;
     transition: all 0.2s;
 }
@@ -199,6 +229,7 @@ body.dark .evBox {
     border: none;
     color: var(--muted-foreground);
     font-size: 13px;
+    font-family: "GmarketSans", sans-serif;
     cursor: pointer;
     text-align: center;
     padding: 4px;
