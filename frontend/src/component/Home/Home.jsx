@@ -459,21 +459,21 @@ function ProductCard({ p, wished, cartCount, todayShipRemaining, onToggleWish, o
             {labelKo(p.label)}
           </span>
         )}
-        {todayShipAvailable && (
-          <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 border border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-800/60 dark:bg-violet-950/40 dark:text-violet-300" style={MONO}>
-            ⚡ 오늘 발송
-          </span>
-        )}
-        {todayShipAvailable && (
-          <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 border border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800/60 dark:bg-sky-950/40 dark:text-sky-300" style={MONO}>
-            12:00 전 주문 시 당일 배송
-          </span>
-        )}
         <span className="text-[11px] font-medium text-muted-foreground rounded-full px-2 py-0.5 border border-border" style={MONO}>
           무료배송
         </span>
       </div>
-      <h4 className="text-base font-semibold text-foreground mb-0.5" style={SANS}>{p.name}</h4>
+      {todayShipAvailable && (
+        <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+          <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 border border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-800/60 dark:bg-violet-950/40 dark:text-violet-300" style={MONO}>
+            당일배송
+          </span>
+          <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 border border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800/60 dark:bg-sky-950/40 dark:text-sky-300" style={MONO}>
+            오후 12시 이전까지 구매 시 당일 배송
+          </span>
+        </div>
+      )}
+      <h4 className="text-lg font-semibold text-foreground mb-0.5" style={SANS}>{p.name}</h4>
       {lowestStock <= 5 && (
         <p className="text-sm font-bold text-red-600 dark:text-red-400">마감임박! 상품이 {lowestStock}개 남았습니다!</p>
       )}
