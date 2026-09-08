@@ -1,11 +1,13 @@
 import "../Login/Login.css";
 import { useState, useEffect } from "react";
+import * as PortOne from "@portone/browser-sdk/v2";
 import { useAuthModal } from "../../context/AuthModalContext";
 import {
   getSecurityQuestion,
   sendFindIdCode,
   verifyFindId,
   verifyFindPasswordIdentity,
+  verifyIdentityVerification,
   resetPassword,
 } from "../../api";
 import JDLogo from "../../assets/J.D 로고.svg";
@@ -39,6 +41,7 @@ function FindAccount({ mode }) {
   const [newPassword, setNewPassword] = useState("");
   const [newPasswordConfirm, setNewPasswordConfirm] = useState("");
   const [foundUsername, setFoundUsername] = useState("");
+  const [identityVerified, setIdentityVerified] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -71,6 +74,46 @@ function FindAccount({ mode }) {
       await sendFindIdCode(email);
     } catch (err) {
       fail(err, "인증 코드 재발송에 실패했습니다.");
+    }
+  };
+
+  // 개발용 KG이니시스 통합인증: 브라우저에서 인증 후 서버가 PortOne 상태를 검증한다.
+  const handleIdentityVerification = async () => {
+    const storeId = import.meta.env.VITE_PORTONE_STORE_ID;
+    const channelKey = import.meta.env.VITE_INICIS_IDENTITY_CHANNEL_KEY;
+    if (!storeId || !channelKey) {
+      setError("KG이니시스 본인인증 테스트 채널 키가 설정되지 않았습니다.");
+      return;
+    }
+    if (!EMAIL_REGEX.test(email)) {
+      setError("본인인증 전에 올바른 이메일을 입력해주세요.");
+      return;
+    }
+
+    setError("");
+    setSubmitting(true);
+    try {
+      const identityVerificationId = `identity-${crypto.randomUUID()}`;
+      const response = await PortOne.requestIdentityVerification({
+        storeId,
+        channelKey,
+        identityVerificationId,
+        customer: { email: email.trim() },
+        bypass: { inicisUnified: { flgFixedUser: "N" } },
+        popup: { center: true },
+      });
+
+      if (!response || response.code) {
+        throw new Error(response?.message || "본인인증이 취소되었습니다.");
+      }
+
+      await verifyIdentityVerification(response.identityVerificationId);
+      setIdentityVerified(true);
+    } catch (err) {
+      setIdentityVerified(false);
+      fail(err, "본인인증 확인에 실패했습니다.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -241,6 +284,15 @@ function FindAccount({ mode }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+            <button
+              type="button"
+              className="identityVerifyBtn"
+              onClick={handleIdentityVerification}
+              disabled={submitting || identityVerified}
+            >
+              {identityVerified ? "본인인증 완료" : "KG이니시스 본인인증 테스트"}
+            </button>
+            {identityVerified && <p className="identityVerifiedText">본인인증 결과가 서버에서 확인되었습니다.</p>}
             {error && <p className="errorText">{error}</p>}
             <button type="submit" disabled={submitting}>
               {submitting ? "확인 중..." : "다음"}

@@ -178,6 +178,10 @@ export const verifyFindId = (email, code, securityAnswer) =>
   AUTH_API.post('/find-id/verify', { email, code, security_answer: securityAnswer });
 export const verifyFindPasswordIdentity = (nickname, email, securityAnswer) =>
   AUTH_API.post('/find-password/verify', { nickname, email, security_answer: securityAnswer });
+export const verifyIdentityVerification = (identityVerificationId) =>
+  AUTH_API.post('/identity-verification/verify', {
+    identity_verification_id: identityVerificationId,
+  });
 export const resetPassword = (resetToken, newPassword) =>
   AUTH_API.post('/find-password/reset', { reset_token: resetToken, new_password: newPassword });
 export const updateSecurityQa = (securityQuestion, securityAnswer) =>
