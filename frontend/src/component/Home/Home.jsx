@@ -453,6 +453,7 @@ function ProductCard({ p, wished, cartCount, todayShipRemaining, onToggleWish, o
       {/* 상세페이지(HomeProductDetail.jsx)와 같은 뱃지 — 라벨(색상은 LABEL_BADGE)과
           무료배송을 알약 모양 태그로. p.no는 이 태그 줄 아래 상품명 위 자리를
           잃은 대신 별 의미 없는 진열 번호라 그냥 뺐다. */}
+      <h4 className="text-lg font-semibold text-foreground mb-1.5" style={SANS}>{p.name}</h4>
       <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
         {p.label && (
           <span className={`text-[11px] font-semibold rounded-full px-2 py-0.5 border ${labelBadge?.className || "text-foreground border-border"}`} style={MONO}>
@@ -473,12 +474,11 @@ function ProductCard({ p, wished, cartCount, todayShipRemaining, onToggleWish, o
           </span>
         </div>
       )}
-      <h4 className="text-lg font-semibold text-foreground mb-0.5" style={SANS}>{p.name}</h4>
-      {lowestStock <= 5 && (
-        <p className="text-sm font-bold text-red-600 dark:text-red-400">마감임박! 상품이 {lowestStock}개 남았습니다!</p>
-      )}
       {todayShipAvailable && (
         <p className="text-xs text-sky-700 dark:text-sky-300" style={MONO}>오늘 발송 마감까지 {formatCountdown(todayShipRemaining)}</p>
+      )}
+      {lowestStock <= 5 && (
+        <p className="text-sm font-bold text-red-600 dark:text-red-400">마감임박! 상품이 {lowestStock}개 남았습니다!</p>
       )}
       <div className="mt-1 flex flex-col items-end gap-1">
         <div className={`flex items-center gap-1.5 ${hasDiscount ? "" : "invisible"}`}>
