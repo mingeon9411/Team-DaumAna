@@ -85,6 +85,8 @@ COLOR_OPTIONS = {
     23: ['그레이', '그린', '브라운', '네이비'],
 }
 
+SAME_DAY_SHIPPING_IDS = {2, 7, 19, 23, 32, 34}
+
 
 class Command(BaseCommand):
     help = '메인 "전체 상품" 페이지(Home.jsx PRODUCTS) 14개로 collection=main 데이터를 완전히 재입력합니다.'
@@ -115,6 +117,7 @@ class Command(BaseCommand):
                 description=data['description'],
                 thumbnail_url=f"/products-main/product-{data['id']:02d}.jpg",
                 collection='main',
+                same_day_shipping=data['id'] in SAME_DAY_SHIPPING_IDS,
             )
             colors = COLOR_OPTIONS.get(data['id'])
             if colors:

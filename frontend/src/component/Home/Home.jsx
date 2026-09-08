@@ -389,7 +389,7 @@ function ProductCard({ p, wished, cartCount, todayShipRemaining, onToggleWish, o
   const displayImage = p.colors ? p.colors[colorIdx].image : p.image;
   const displayAlt = p.colors ? p.colors[colorIdx].alt : p.alt;
   const labelBadge = LABEL_BADGE[p.label];
-  const todayShipAvailable = todayShipRemaining !== null;
+  const todayShipAvailable = p.sameDayShipping && todayShipRemaining !== null;
   const lowestStock = p.options?.reduce((lowest, option) => Math.min(lowest, option.stock_count), Infinity);
 
   return (
@@ -539,6 +539,7 @@ function Home() {
         desc: api.description || p.desc,
         price: typeof api.base_price === "number" ? api.base_price.toLocaleString() : p.price,
         options: api.options,
+        sameDayShipping: api.same_day_shipping,
       };
   });
 

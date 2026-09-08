@@ -52,6 +52,7 @@ class Product(models.Model):
     description = models.TextField() # 오라클 CLOB 대응
     thumbnail_url = models.CharField(max_length=500) # URLField보다 오라클 VARCHAR2(500) 직결을 위해 CharField 권장
     collection = models.CharField(max_length=20, choices=COLLECTION_CHOICES, default='main')
+    same_day_shipping = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

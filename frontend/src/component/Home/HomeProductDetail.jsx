@@ -301,7 +301,7 @@ function HomeProductDetail() {
   };
 
   const labelBadge = LABEL_BADGE[product.label];
-  const todayShipAvailable = isTodayShipAvailable();
+  const todayShipAvailable = apiProduct?.same_day_shipping && isTodayShipAvailable();
 
   return (
     <main className="homeDetailPage metallicSilver" data-lenis-prevent data-hsnap ref={pageRef}>
