@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as PortOne from "@portone/browser-sdk/v2";
+import { SiKakao } from "react-icons/si";
 import { createOrder, readyPayment, verifyPayment, validateCoupon } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useNestedLenis } from "../../hooks/useNestedLenis";
@@ -11,6 +12,14 @@ const PAYMENT_METHODS = [
   { key: "KAKAO", label: "카카오페이", payMethod: "EASY_PAY", provider: "KAKAOPAY" },
   { key: "TOSS", label: "토스페이먼츠 테스트 결제", payMethod: "CARD" },
 ];
+
+function TossBrandIcon() {
+  return (
+    <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+      <path d="M7 8h18v5H19v12h-6V13H7z" fill="currentColor" />
+    </svg>
+  );
+}
 
 function Checkout() {
   const { state } = useLocation();
@@ -282,7 +291,9 @@ function Checkout() {
                           onClick={() => setPayMethod(m.key)}
                           type="button"
                         >
-                          <span className="payMethodBrandIcon" aria-hidden="true">{m.key === "KAKAO" ? "K" : "T"}</span>
+                          <span className="payMethodBrandIcon" aria-hidden="true">
+                            {m.key === "KAKAO" ? <SiKakao /> : <TossBrandIcon />}
+                          </span>
                           <span>{m.key === "TOSS" ? "토스페이먼츠" : m.label}</span>
                         </button>
                       ))}

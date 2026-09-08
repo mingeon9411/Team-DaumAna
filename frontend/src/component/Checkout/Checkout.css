@@ -376,19 +376,23 @@ body.dark .checkoutPage {
   height: 30px;
   flex: 0 0 30px;
   border-radius: 10px;
-  font-size: 16px;
-  font-weight: 800;
   letter-spacing: 0;
 }
 
+.payMethodBrandIcon svg {
+  width: 21px;
+  height: 21px;
+  display: block;
+}
+
 .payMethodBtn.kakao .payMethodBrandIcon {
-  background: #3c1e1e;
-  color: #fee500;
+  background: #fff7bc;
+  color: #3c1e1e;
 }
 
 .payMethodBtn.toss .payMethodBrandIcon {
-  background: #1769dc;
-  color: #fff;
+  background: #fff;
+  color: #1769dc;
 }
 
 .payMethodBtn.toss.active .payMethodBrandIcon {
