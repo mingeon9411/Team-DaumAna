@@ -242,7 +242,7 @@ function Checkout() {
           ))}
         </div>
 
-        <div className="checkoutBody">
+        <div className={`checkoutBody${step === 1 ? " paymentStep" : ""}`}>
           {/* ── 왼쪽: 단계별 패널 ── */}
           <div className="checkoutLeft">
             <div className="coStepPanel" key={step}>
@@ -272,7 +272,7 @@ function Checkout() {
 
               {step === 1 && (
                 <>
-                  <section className="checkoutCard">
+                  <section className="checkoutCard paymentMethodCard">
                     <h2 className="checkoutCardTitle">결제 수단</h2>
                     <div className="payMethodGroup">
                       {PAYMENT_METHODS.map((m) => (
@@ -282,7 +282,8 @@ function Checkout() {
                           onClick={() => setPayMethod(m.key)}
                           type="button"
                         >
-                          {m.label}
+                          <span className="payMethodBrandIcon" aria-hidden="true">{m.key === "KAKAO" ? "K" : "T"}</span>
+                          <span>{m.key === "TOSS" ? "토스페이먼츠" : m.label}</span>
                         </button>
                       ))}
                     </div>
