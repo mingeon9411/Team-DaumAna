@@ -34,20 +34,12 @@ function SocialCallback() {
 
                 try {
                     const me = await getMe();
-                    localStorage.setItem('access_token', access);
-                    localStorage.setItem('refresh_token', refresh);
-                    localStorage.setItem('nickname', me.data.nickname || '회원');
-                    window.dispatchEvent(new Event('authchange'));
+                    sessionStorage.setItem('pending_nickname', me.data.nickname || '회원');
                 } catch {
-                    // getMe 실패해도 토큰은 유효하므로 그대로 저장
-                    localStorage.setItem('access_token', access);
-                    localStorage.setItem('refresh_token', refresh);
+                    // 닉네임 조회 실패와 무관하게 보안 인증은 계속 진행한다.
                 }
 
-                sessionStorage.removeItem('pending_access_token');
-                sessionStorage.removeItem('pending_refresh_token');
-
-                window.location.replace('/');
+                navigate('/email-verify', { replace: true });
             })
             .catch(() => {
                 sessionStorage.removeItem('pending_access_token');
