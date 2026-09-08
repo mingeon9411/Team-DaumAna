@@ -291,7 +291,7 @@ function FindAccount({ mode }) {
               onClick={handleIdentityVerification}
               disabled={submitting || identityVerified}
             >
-              {identityVerified ? "본인인증 완료" : "KG이니시스 본인인증 테스트"}
+              {identityVerified ? "본인인증 완료" : "본인 인증"}
             </button>
             {identityVerified && <p className="identityVerifiedText">본인인증 결과가 서버에서 확인되었습니다.</p>}
             {error && <p className="errorText">{error}</p>}

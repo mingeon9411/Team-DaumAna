@@ -302,7 +302,7 @@ function Register() {
             onClick={handleIdentityVerification}
             disabled={submitting || Boolean(identityVerificationId)}
           >
-            {identityVerificationId ? "본인인증 완료" : "KG이니시스 본인인증"}
+            {identityVerificationId ? "본인인증 완료" : "본인 인증"}
           </button>
           {identityVerificationId && <p className="identityVerifiedText">본인인증 결과가 확인되었습니다.</p>}
           {identityError && <p className="errorText">{identityError}</p>}
