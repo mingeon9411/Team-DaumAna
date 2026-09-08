@@ -201,8 +201,6 @@ function Checkout() {
     }
   };
 
-  const itemSummaryLabel =
-    items.length === 1 ? items[0].name : `${items[0].name} 외 ${items.length - 1}건`;
   const selectedPayLabel = PAYMENT_METHODS.find((m) => m.key === payMethod)?.label;
 
   return (
@@ -384,7 +382,17 @@ function Checkout() {
           {/* ── 오른쪽: 결제 요약 (항상 노출) ── */}
           <div className="checkoutRight">
             <div className="checkoutSummaryCard">
-              <p className="coSummaryItemLabel">{itemSummaryLabel}</p>
+              <div className="coSummaryProducts">
+                {items.map((item, index) => (
+                  <div className="coSummaryProduct" key={`${item.id}-${item.option_id || index}`}>
+                    <img src={item.image} alt="" />
+                    <div className="coSummaryProductInfo">
+                      <span className="coSummaryProductName">{item.name}</span>
+                      <span className="coSummaryProductQuantity">수량 {item.quantity}개</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
               <div className="checkoutSummaryRow">
                 <span>상품 금액</span>
                 <span>{totalAmount.toLocaleString()}원</span>

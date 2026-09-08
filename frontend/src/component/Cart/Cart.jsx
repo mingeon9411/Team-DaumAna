@@ -203,10 +203,14 @@ function Cart() {
     setCouponError("");
     try {
       const res = await validateCoupon(coupon.code, displayFinalTotal);
+      if (!res.data.valid) {
+        setCouponError(res.data.message || "쿠폰을 사용할 수 없습니다.");
+        return;
+      }
       setAppliedCoupon({ ...res.data, code: coupon.code, name: res.data.coupon_name });
       setCouponDiscount(res.data.discount_amount);
     } catch (e) {
-      setCouponError(e.response?.data?.error || "쿠폰 적용에 실패했습니다.");
+      setCouponError(e.response?.data?.error || e.response?.data?.message || "쿠폰 검증 중 오류가 발생했습니다.");
     }
   };
 
