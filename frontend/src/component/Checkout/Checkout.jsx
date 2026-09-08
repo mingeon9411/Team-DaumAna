@@ -179,7 +179,7 @@ function Checkout() {
         totalAmount: amount,   // 백엔드가 할인 적용 후 금액을 반환
         currency: "CURRENCY_KRW",
         payMethod: "EASY_PAY",
-        easyPay: { easyPayProvider: selected.provider },
+        ...(selected.key === "KAKAO" && { easyPay: { easyPayProvider: selected.provider } }),
       });
 
       if (paymentResponse?.code != null) {
