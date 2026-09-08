@@ -102,7 +102,7 @@ export const isTodayShipAvailable = (now = new Date()) => {
       .filter(({ type }) => type !== "literal")
       .map(({ type, value }) => [type, value])
   );
-  return !["Sat", "Sun"].includes(parts.weekday) && Number(parts.hour) < 12;
+  return !["Sat", "Sun"].includes(parts.weekday) && Number(parts.hour) < 14;
 };
 
 const getTodayShipRemaining = (now = new Date()) => {
@@ -118,8 +118,8 @@ const getTodayShipRemaining = (now = new Date()) => {
       .filter(({ type }) => type !== "literal")
       .map(({ type, value }) => [type, value])
   );
-  if (["Sat", "Sun"].includes(parts.weekday) || Number(parts.hour) >= 12) return null;
-  return 12 * 60 * 60 - (Number(parts.hour) * 60 * 60 + Number(parts.minute) * 60 + Number(parts.second));
+  if (["Sat", "Sun"].includes(parts.weekday) || Number(parts.hour) >= 14) return null;
+  return 14 * 60 * 60 - (Number(parts.hour) * 60 * 60 + Number(parts.minute) * 60 + Number(parts.second));
 };
 
 const formatCountdown = (seconds) => [Math.floor(seconds / 3600), Math.floor((seconds % 3600) / 60), seconds % 60]
@@ -470,7 +470,7 @@ function ProductCard({ p, wished, cartCount, todayShipRemaining, onToggleWish, o
             ⚡ 오늘 발송
           </span>
           <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 border border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800/60 dark:bg-sky-950/40 dark:text-sky-300" style={MONO}>
-            오후 12시 이전까지 구매 시 당일 배송
+            오후 2시 이전까지 구매 시 당일 배송
           </span>
         </div>
       )}

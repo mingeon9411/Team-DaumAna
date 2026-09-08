@@ -85,7 +85,7 @@ COLOR_OPTIONS = {
     23: ['그레이', '그린', '브라운', '네이비'],
 }
 
-SAME_DAY_SHIPPING_IDS = {2, 7, 19, 23, 32, 34}
+SAME_DAY_SHIPPING_IDS = {1, 2, 4, 7, 9, 18, 19, 21, 23, 27, 31, 32, 34}
 
 
 class Command(BaseCommand):
