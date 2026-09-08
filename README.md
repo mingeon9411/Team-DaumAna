@@ -456,6 +456,12 @@
 
 <br/><br/>
 
+<img src="assets/screenshots/home.png" alt="집다움 상품 목록 페이지" width="860"/>
+
+<sub>상품 목록 페이지 — 상·중 카테고리 탭과 상품 카드 기반 탐색</sub>
+
+<br/><br/>
+
 <img src="assets/screenshots/cart-current.png" alt="집다움 최신 장바구니 페이지" width="860"/>
 
 <sub>장바구니 — 선택·수량 변경·즉시 구매, 주문 금액 요약과 함께 구매하는 상품 추천</sub>
