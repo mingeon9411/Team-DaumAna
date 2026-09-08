@@ -381,7 +381,7 @@ function HomeProductDetail() {
                 )}
                 {todayShipAvailable && (
                   <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 border border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800/60 dark:bg-sky-950/40 dark:text-sky-300" style={MONO}>
-                    14:00 전 주문 시 당일 배송
+                    오후 6시 전 주문 시 당일 배송
                   </span>
                 )}
                 <span className="text-[11px] font-medium text-muted-foreground rounded-full px-2 py-0.5 border border-border" style={MONO}>
@@ -434,7 +434,7 @@ function HomeProductDetail() {
                   지적 지점) — 두 라벨 다 여유 있게 들어가는 w-20으로 넓힌다. */}
               <div className="flex items-center gap-2 text-muted-foreground">
                 <span className="w-20 shrink-0 tracking-wide" style={MONO}>배송정보</span>
-                <span>{todayShipAvailable ? "평일 14:00 이전 결제 시 오늘 발송" : "결제 완료 후 평균 2~5일 내 출고"}</span>
+                <span>{todayShipAvailable ? "평일 오후 6시 이전 결제 시 오늘 발송" : "결제 완료 후 평균 2~5일 내 출고"}</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
                 <span className="w-20 shrink-0 tracking-wide" style={MONO}>배송비</span>

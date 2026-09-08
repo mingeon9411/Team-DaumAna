@@ -50,8 +50,8 @@ function RecommendCarousel({ title, items, wishlist, onToggleWish, onNavigate })
                 <span className="cartRecommendPrice">₩{p.price}</span>
               </div>
               <div className="cartRecommendTags">
-                <span>무료배송</span>
-                {p.label === "NEW" && <span>신상품</span>}
+                <span className="cartRecommendTag cartRecommendTagShipping">무료배송</span>
+                {p.label === "NEW" && <span className="cartRecommendTag cartRecommendTagNew">신상품</span>}
               </div>
             </div>
           );
