@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as PortOne from "@portone/browser-sdk/v2";
-import { createOrder, readyPayment, verifyPayment, getMyCoupons, validateCoupon } from "../../api";
+import { createOrder, readyPayment, verifyPayment, validateCoupon } from "../../api";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useNestedLenis } from "../../hooks/useNestedLenis";
 import SiteFooter from "../SiteFooter";
@@ -31,16 +31,8 @@ function Checkout() {
 
   const STEPS = ["배송 정보", "결제 수단", "최종 확인"];
 
-  const [myCoupons, setMyCoupons] = useState([]);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [discountAmount, setDiscountAmount] = useState(0);
-  const [couponError, setCouponError] = useState("");
-
-  useEffect(() => {
-    getMyCoupons()
-      .then((res) => setMyCoupons(Array.isArray(res.data) ? res.data : []))
-      .catch(() => setMyCoupons([]));
-  }, []);
 
   // 상품 없이 직접 접근 또는 새로고침 시 장바구니 페이지로 보낸다
   useEffect(() => {
@@ -71,6 +63,7 @@ function Checkout() {
   const totalAmount = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const finalAmount = Math.max(0, totalAmount - discountAmount);
 
+  /*
   const handleSelectCoupon = async (coupon) => {
     if (appliedCoupon?.code === coupon.code) {
       setAppliedCoupon(null);
@@ -97,6 +90,7 @@ function Checkout() {
     setCouponError("");
   };
 
+  */
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -287,6 +281,7 @@ function Checkout() {
                     </div>
                   </section>
 
+                  {/* 쿠폰 선택은 장바구니에서만 제공한다.
                   <section className="checkoutCard couponCard">
                     <h2 className="checkoutCardTitle">쿠폰</h2>
 
@@ -326,6 +321,7 @@ function Checkout() {
                       </div>
                     )}
                   </section>
+                  */}
                 </>
               )}
 
