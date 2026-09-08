@@ -306,6 +306,7 @@ body.dark .checkoutPage {
 /* ── 결제 수단 ── */
 .payMethodGroup {
   display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
@@ -336,6 +337,18 @@ body.dark .checkoutPage {
   opacity: 1;
   border-color: #d4b800;
   box-shadow: 0 0 0 3px rgba(254,229,0,0.28);
+}
+
+.payMethodBtn.toss {
+  background: #0064ff;
+  color: #fff;
+  border-color: #0064ff;
+}
+
+.payMethodBtn.toss.active {
+  opacity: 1;
+  border-color: #0050cc;
+  box-shadow: 0 0 0 3px rgba(0, 100, 255, 0.22);
 }
 
 .payMethodBtn.naver {

@@ -9,6 +9,7 @@ import "./Checkout.css";
 
 const PAYMENT_METHODS = [
   { key: "KAKAO", label: "카카오페이", provider: "KAKAOPAY" },
+  { key: "TOSS", label: "토스페이", provider: "TOSSPAY" },
 ];
 
 function Checkout() {
@@ -125,6 +126,14 @@ function Checkout() {
 
     const shippingAddr = [form.address, form.detail].filter(Boolean).join(" ");
     const selected = PAYMENT_METHODS.find((m) => m.key === payMethod);
+    const channelKey = selected.key === "TOSS"
+      ? import.meta.env.VITE_TOSS_CHANNEL_KEY
+      : import.meta.env.VITE_PORTONE_CHANNEL_KEY;
+
+    if (!channelKey) {
+      alert(selected.label + " 테스트 채널 키가 설정되지 않았습니다.");
+      return;
+    }
 
     setIsPaying(true);
     try {
@@ -164,7 +173,7 @@ function Checkout() {
 
       const paymentResponse = await PortOne.requestPayment({
         storeId: import.meta.env.VITE_PORTONE_STORE_ID,
-        channelKey: import.meta.env.VITE_PORTONE_CHANNEL_KEY,
+        channelKey,
         paymentId: merchant_uid,
         orderName: items.length === 1 ? items[0].name : `${items[0].name} 외 ${items.length - 1}건`,
         totalAmount: amount,   // 백엔드가 할인 적용 후 금액을 반환
