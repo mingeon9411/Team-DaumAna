@@ -97,6 +97,7 @@ function fromApiProduct(p) {
   return {
     id: p.id,
     name: p.name,
+    category: p.category_name,
     desc: p.description,
     image: p.thumbnail_url,
     alt: p.name,
@@ -219,12 +220,15 @@ function SignupPanel({ onClose, onDone }) {
 
   const handleRegisterVerify = async (token) => {
     try {
-      await registerUser({ email, nickname, password, password_confirm: passwordConfirm, recaptcha_token: token });
+      const res = await registerUser({ email, nickname, password, password_confirm: passwordConfirm, recaptcha_token: token });
+      // 일반 회원가입과 동일하게 가입 응답의 JWT를 저장해 바로 로그인 상태로 전환한다.
+      if (res.data.access) localStorage.setItem("access_token", res.data.access);
+      if (res.data.refresh) localStorage.setItem("refresh_token", res.data.refresh);
       localStorage.setItem("nickname", nickname);
+      window.dispatchEvent(new Event("authchange"));
       recaptchaRef.current?.resetCaptcha();
       setSubmitting(false);
       onDone(nickname);
-      openLogin();
     } catch (err) {
       const data = err.response?.data;
       // 이미 가입된 이메일이면 에러로 막지 않고, 방금 입력한 정보로 바로 로그인을 이어서
@@ -827,8 +831,16 @@ function ChatBot({
       // 질문도 포함) 로컬 키워드 매칭(matchProducts) 결과를 실제 검색 결과로 덮어써서 화면과 챗봇
       // 답변이 항상 일치하게 한다. 못 찾았으면(products 없음) 로컬 매칭 결과를 그대로 둔다.
       if (res.data.products?.length > 0) {
+        const apiItems = res.data.products.map(fromApiProduct);
+        // 모델이 의미 검색 결과로 다른 카테고리 상품을 함께 반환할 수 있으므로,
+        // 질문에 카테고리가 명시된 경우 화면 카드도 해당 카테고리로 맞춘다.
+        const normalizedText = text.replace(/\s/g, "");
+        const category = CATEGORY_KEYWORDS.find((keyword) => normalizedText.includes(keyword));
+        const filteredItems = category
+          ? apiItems.filter((item) => item.category === category || item.name.includes(category))
+          : apiItems;
         setBuyItem(null);
-        setPanel({ title: "🔍 찾아본 상품", items: res.data.products.map(fromApiProduct) });
+        setPanel({ title: "🔍 찾아본 상품", items: filteredItems.length > 0 ? filteredItems : apiItems });
       }
     } catch {
       setMessages((prev) => [...prev, { id: Date.now() + 1, role: "bot", text: "일시적인 오류가 발생했습니다.", time: Date.now() }]);
@@ -945,7 +957,7 @@ function ChatBot({
               setShowSignup(false);
               setMessages((prev) => [
                 ...prev,
-                { id: Date.now(), role: "bot", text: `"${nickname}"님, 회원가입이 완료되었습니다! 🎉\n로그인 후 다양한 혜택을 만나보세요.`, time: Date.now() },
+                { id: Date.now(), role: "bot", text: `"${nickname}"님, 회원가입과 로그인이 완료되었습니다! 🎉\n마이페이지에서 다양한 혜택을 확인해보세요.`, time: Date.now() },
               ]);
             }}
           />
