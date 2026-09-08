@@ -3,7 +3,7 @@ import "./HomeProductDetail.css";
 import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, ChevronDown, Heart, Star, Sparkles, Ruler, ShieldCheck, ImagePlus, X, Share2 } from "lucide-react";
-import { PRODUCTS, labelKo, LABEL_BADGE, isTodayShipAvailable } from "./Home";
+import { PRODUCTS, labelKo, LABEL_BADGE, isTodayShipAvailable, CATEGORY_TREE } from "./Home";
 import { addToCart, getReviews, createReview, uploadReviewImage, getProductDetail } from "../../api";
 import { useWishlist } from "../../hooks/useWishlist";
 import { addRecentlyViewed } from "../../utils/recentlyViewed";
@@ -122,6 +122,13 @@ function HomeProductDetail() {
     );
   }
 
+  const categoryPath = [
+    CATEGORY_TREE.find((top) => top.children.some((mid) => mid.label === product.category))?.label,
+    product.category,
+    product.midCategory,
+    product.subCategory,
+  ].filter(Boolean);
+
   const priceNum = Number(product.price.replace(/,/g, ""));
   // 오늘의집류 커머스 상세페이지와 같은 정보 구조(할인율 배지, 별점, 배송 안내 등)를
   // 쓰기 위한 파생값들 — 상품 카드(Home.jsx)의 할인율 계산과 동일한 공식.
@@ -169,7 +176,7 @@ function HomeProductDetail() {
 
   const specRows = [
     ["브랜드", product.brand],
-    ["카테고리", [product.category, product.midCategory, product.subCategory].filter(Boolean).join(" > ")],
+    ["카테고리", categoryPath.join(" > ")],
     ["컬러", displaySub],
     ["사이즈", sizeText],
     ["소재", materialText],
@@ -352,7 +359,7 @@ function HomeProductDetail() {
           <div className="flex flex-col justify-start rounded-2xl bg-background/70 backdrop-blur-sm px-6 py-7 md:px-8 md:py-9 shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
             <div className="flex flex-col gap-2.5 mb-3">
               <div className="flex items-center gap-1 text-[11px] text-muted-foreground tracking-wide" style={MONO}>
-                {[product.category, product.midCategory, product.subCategory].filter(Boolean).map((seg, i, arr) => (
+                {categoryPath.map((seg, i, arr) => (
                   <span key={seg} className="flex items-center gap-1">
                     {seg}
                     {i < arr.length - 1 && <ChevronRight size={10} />}
