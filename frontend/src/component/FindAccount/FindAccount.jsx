@@ -45,7 +45,8 @@ function FindAccount({ mode }) {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const fail = (err, fallback) => setError(err.response?.data?.error || fallback);
+  const fail = (err, fallback) =>
+    setError(err.response?.data?.error || err.response?.data?.message || fallback);
 
   // 아이디 찾기 1단계: 이메일 → 보안질문 조회(미가입/미설정이면 여기서 바로 안내) + 인증코드 발송
   const handleSendCode = async (e) => {
