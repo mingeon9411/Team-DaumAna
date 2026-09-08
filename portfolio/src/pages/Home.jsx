@@ -34,6 +34,7 @@ const QUICK_LINKS = [
       </svg>
     ),
   },
+  /* 이력서 다운로드는 개인정보 보호를 위해 비활성화함.
   {
     label: "이력서 다운로드",
     href: "/resume.pdf",
@@ -47,6 +48,7 @@ const QUICK_LINKS = [
       </svg>
     ),
   },
+  */
   {
     label: "연락처",
     to: "/contact",
