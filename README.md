@@ -450,21 +450,48 @@
 
 ### 📸 화면
 
-<img src="assets/screenshots/home-current.png" alt="집다움 최신 메인 페이지" width="860"/>
-
-<sub>메인 페이지 — Hero 영상, 프로모션 배너, 상품 피드, 검색과 최근 본 상품·장바구니 위젯</sub>
-
-<br/><br/>
-
-<img src="assets/screenshots/home.png" alt="집다움 상품 목록 페이지" width="860"/>
-
-<sub>상품 목록 페이지 — 상·중 카테고리 탭과 상품 카드 기반 탐색</sub>
-
-<br/><br/>
-
-<img src="assets/screenshots/cart-current.png" alt="집다움 최신 장바구니 페이지" width="860"/>
-
-<sub>장바구니 — 선택·수량 변경·즉시 구매, 주문 금액 요약과 함께 구매하는 상품 추천</sub>
+<table>
+  <tr>
+    <td align="center">
+      <img src="assets/screenshots/home-current.png" alt="집다움 메인 페이지" width="480"/><br/>
+      <sub>메인 페이지 — 프로모션과 상품 피드</sub>
+    </td>
+    <td align="center">
+      <img src="assets/screenshots/search.png" alt="집다움 검색창" width="480"/><br/>
+      <sub>검색 — 인기·최근 검색어와 상품 검색</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="assets/screenshots/home.png" alt="집다움 상품 목록 페이지" width="480"/><br/>
+      <sub>상품 목록 — 카테고리 탭과 상품 카드</sub>
+    </td>
+    <td align="center">
+      <img src="assets/screenshots/product-detail.png" alt="집다움 상품 상세 페이지" width="480"/><br/>
+      <sub>상품 상세 — 옵션·배송 정보와 구매</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="assets/screenshots/cart-current.png" alt="집다움 장바구니" width="480"/><br/>
+      <sub>장바구니 — 수량 변경과 주문 금액 요약</sub>
+    </td>
+    <td align="center">
+      <img src="assets/screenshots/lookbook.png" alt="집다움 룩북" width="480"/><br/>
+      <sub>룩북 — 공간 스타일링 콘텐츠와 상품 태그</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src="assets/screenshots/notice.png" alt="집다움 공지사항" width="480"/><br/>
+      <sub>공지사항 — 카테고리별 안내 목록</sub>
+    </td>
+    <td align="center">
+      <img src="assets/screenshots/customer-center.png" alt="집다움 고객센터" width="480"/><br/>
+      <sub>고객센터 — FAQ 검색·카테고리·상담 안내</sub>
+    </td>
+  </tr>
+</table>
 
 </div>
 
