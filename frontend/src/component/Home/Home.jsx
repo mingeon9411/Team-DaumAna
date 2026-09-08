@@ -531,7 +531,7 @@ function Home() {
   }, []);
 
   const mergedProducts = PRODUCTS.map((p) => {
-    const api = apiProductsById[p.id];
+    const api = apiProductsById[p.id] || Object.values(apiProductsById).find((item) => item.name === p.name);
     if (!api) return p;
     return {
       ...p,
