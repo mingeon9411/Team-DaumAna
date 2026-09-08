@@ -466,7 +466,7 @@ function ProductCard({ p, wished, cartCount, todayShipRemaining, onToggleWish, o
       {todayShipAvailable && (
         <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
           <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 border border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-800/60 dark:bg-violet-950/40 dark:text-violet-300" style={MONO}>
-            당일배송
+            ⚡ 오늘 발송
           </span>
           <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 border border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800/60 dark:bg-sky-950/40 dark:text-sky-300" style={MONO}>
             오후 12시 이전까지 구매 시 당일 배송
