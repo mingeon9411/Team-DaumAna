@@ -243,7 +243,9 @@ function MyPage() {
     DELIVERED: orders.filter((o) => o.status === "DELIVERED").length,
   };
 
-  const totalSpent = orders.reduce((sum, o) => sum + (o.total_amount || 0), 0);
+  // 입금대기(PENDING) 주문은 아직 결제가 확정되지 않았으므로 등급 누적 금액에서 제외한다.
+  const completedOrders = orders.filter((o) => ["ORDERED", "SHIPPED", "DELIVERED"].includes(o.status));
+  const totalSpent = completedOrders.reduce((sum, o) => sum + (o.total_amount || 0), 0);
   const userGrade =
     totalSpent >= 1500000 ? "골드" :
     totalSpent >= 700000  ? "실버" :
