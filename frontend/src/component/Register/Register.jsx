@@ -4,8 +4,9 @@ import "../Login/Login.css";
 import { useNavigate, Link } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
+import * as PortOne from "@portone/browser-sdk/v2";
 import { LuChevronLeft } from "react-icons/lu";
-import { registerUser, checkNicknameAPI } from "../../api";
+import { registerUser, checkNicknameAPI, verifyIdentityVerification } from "../../api";
 import { SECURITY_QUESTIONS } from "../../data/securityQuestions";
 import { useAuthModal } from "../../context/AuthModalContext";
 import JDLogo from "../../assets/J.D 로고.svg";
@@ -44,6 +45,8 @@ function Register() {
   const [passwordConfirmError, setPasswordConfirmError] = useState("");
   const [securityQuestionError, setSecurityQuestionError] = useState("");
   const [securityAnswerError, setSecurityAnswerError] = useState("");
+  const [identityVerificationId, setIdentityVerificationId] = useState("");
+  const [identityError, setIdentityError] = useState("");
   const [agreeError, setAgreeError] = useState("");
   const [captchaError, setCaptchaError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -81,6 +84,44 @@ function Register() {
     }
   };
 
+  const handleIdentityVerification = async () => {
+    const storeId = import.meta.env.VITE_PORTONE_STORE_ID;
+    const channelKey = import.meta.env.VITE_INICIS_IDENTITY_CHANNEL_KEY;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!storeId || !channelKey) {
+      setIdentityError("KG이니시스 본인인증 테스트 채널 키가 설정되지 않았습니다.");
+      return;
+    }
+    if (!emailRegex.test(email)) {
+      setIdentityError("본인인증 전에 올바른 이메일을 입력해주세요.");
+      return;
+    }
+
+    setIdentityError("");
+    setSubmitting(true);
+    try {
+      const id = `identity-${crypto.randomUUID()}`;
+      const response = await PortOne.requestIdentityVerification({
+        storeId,
+        channelKey,
+        identityVerificationId: id,
+        customer: { email: email.trim() },
+        bypass: { inicisUnified: { flgFixedUser: "N" } },
+        popup: { center: true },
+      });
+      if (!response || response.code) {
+        throw new Error(response?.message || "본인인증이 취소되었습니다.");
+      }
+      await verifyIdentityVerification(response.identityVerificationId);
+      setIdentityVerificationId(response.identityVerificationId);
+    } catch (err) {
+      setIdentityVerificationId("");
+      setIdentityError(err.response?.data?.message || err.message || "본인인증 확인에 실패했습니다.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   // "회원가입" 버튼을 누르는 순간에만 캡차가 뜨도록 — hCaptcha를 invisible 모드로 두고
   // 필드 검증 통과 시 execute()로 그때 트리거한다. 실제 가입 API 호출은 onVerify에서 진행.
   const handleRegister = (e) => {
@@ -97,6 +138,13 @@ function Register() {
       isValid = false;
     } else {
       setEmailError("");
+    }
+
+    if (!identityVerificationId) {
+      setIdentityError("회원가입 전에 본인인증을 완료해주세요.");
+      isValid = false;
+    } else {
+      setIdentityError("");
     }
 
     if (!nickname) {
@@ -237,9 +285,24 @@ function Register() {
             type="text"
             placeholder="이메일"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setIdentityVerificationId("");
+              setIdentityError("");
+            }}
           />
           {emailError && <p className="errorText">{emailError}</p>}
+
+          <button
+            type="button"
+            className="identityVerifyBtn"
+            onClick={handleIdentityVerification}
+            disabled={submitting || Boolean(identityVerificationId)}
+          >
+            {identityVerificationId ? "본인인증 완료" : "KG이니시스 본인인증"}
+          </button>
+          {identityVerificationId && <p className="identityVerifiedText">본인인증 결과가 확인되었습니다.</p>}
+          {identityError && <p className="errorText">{identityError}</p>}
 
           <div className="nicknameRow">
             <input
