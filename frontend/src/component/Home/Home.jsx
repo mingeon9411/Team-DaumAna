@@ -126,7 +126,13 @@ const formatCountdown = (seconds) => [Math.floor(seconds / 3600), Math.floor((se
   .map((value) => String(value).padStart(2, "0"))
   .join(":");
 
-export const PRODUCTS = [
+const PRODUCT_SALE_DISCOUNTS = {
+  2: 16, 3: 28, 6: 12, 7: 21, 8: 9, 9: 25, 10: 14, 18: 7, 19: 23,
+  20: 11, 21: 27, 22: 19, 23: 8, 27: 26, 31: 18, 34: 30, 35: 17,
+  36: 13, 37: 29, 38: 6,
+};
+
+const HOME_PRODUCTS = [
   { id: 1, no: "No.1", name: "북유럽풍 러그 B형", sub: "멀티 파스텔 아브스트랙트", price: "168,000", originalPrice: "198,000", label: "BESTSELLER",
     desc: "크림 베이스 위에 블루·올리브·더스티핑크가 어우러진 추상 아라베스크 무늬 터프팅 러그입니다. 두툼한 울 파일감이 발끝에 포근하게 감기고, 어느 벽지·바닥재와도 무난하게 어울려 거실이나 침실 중심에 깔기 좋습니다.",
     spec: "SIZE : W160 D230 · MATERIAL : wool, cotton backing",
@@ -271,6 +277,18 @@ export const PRODUCTS = [
       { value: "화이트", label: "화이트", image: cloudSandalWhite, alt: "필로우 쿠션 욕실화 화이트" },
     ] },
 ];
+
+export const PRODUCTS = HOME_PRODUCTS.map((product) => {
+  const discount = PRODUCT_SALE_DISCOUNTS[product.id];
+  if (!discount) return product;
+
+  const originalPrice = Number(product.price.replace(/,/g, ""));
+  return {
+    ...product,
+    price: Math.floor(originalPrice * (100 - discount) / 100).toLocaleString(),
+    originalPrice: originalPrice.toLocaleString(),
+  };
+});
 
 // id로 상품을 찾되, colorValue가 있으면 colors[]에서 그 색상의 image/alt/sub로
 // 덮어쓴 사본을 돌려준다 — 여러 색상을 한 상품(colors[])으로 합친 뒤에도
@@ -538,6 +556,7 @@ function Home() {
         name: api.name || p.name,
         desc: api.description || p.desc,
         price: typeof api.base_price === "number" ? api.base_price.toLocaleString() : p.price,
+        originalPrice: typeof api.original_price === "number" ? api.original_price.toLocaleString() : p.originalPrice,
         options: api.options,
         sameDayShipping: api.same_day_shipping,
       };

@@ -64,6 +64,9 @@ function HomeProductDetail() {
         price: typeof apiProduct?.base_price === "number"
           ? apiProduct.base_price.toLocaleString()
           : localProduct.price,
+        originalPrice: typeof apiProduct?.original_price === "number"
+          ? apiProduct.original_price.toLocaleString()
+          : localProduct.originalPrice,
       }
     : null;
 

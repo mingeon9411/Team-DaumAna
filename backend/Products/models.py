@@ -49,6 +49,7 @@ class Product(models.Model):
     name = models.CharField(max_length=200)
     brand = models.CharField(max_length=100)
     base_price = models.PositiveIntegerField(default=0) # 오라클 CHECK (base_price >= 0) 대응
+    original_price = models.PositiveIntegerField(null=True, blank=True)
     description = models.TextField() # 오라클 CLOB 대응
     thumbnail_url = models.CharField(max_length=500) # URLField보다 오라클 VARCHAR2(500) 직결을 위해 CharField 권장
     collection = models.CharField(max_length=20, choices=COLLECTION_CHOICES, default='main')
