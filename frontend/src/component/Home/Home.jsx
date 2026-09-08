@@ -105,6 +105,27 @@ export const isTodayShipAvailable = (now = new Date()) => {
   return !["Sat", "Sun"].includes(parts.weekday) && Number(parts.hour) < 12;
 };
 
+const getTodayShipRemaining = (now = new Date()) => {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-US", {
+      timeZone: "Asia/Seoul",
+      weekday: "short",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hourCycle: "h23",
+    }).formatToParts(now)
+      .filter(({ type }) => type !== "literal")
+      .map(({ type, value }) => [type, value])
+  );
+  if (["Sat", "Sun"].includes(parts.weekday) || Number(parts.hour) >= 12) return null;
+  return 12 * 60 * 60 - (Number(parts.hour) * 60 * 60 + Number(parts.minute) * 60 + Number(parts.second));
+};
+
+const formatCountdown = (seconds) => [Math.floor(seconds / 3600), Math.floor((seconds % 3600) / 60), seconds % 60]
+  .map((value) => String(value).padStart(2, "0"))
+  .join(":");
+
 export const PRODUCTS = [
   { id: 1, no: "No.1", name: "북유럽풍 러그 B형", sub: "멀티 파스텔 아브스트랙트", price: "168,000", originalPrice: "198,000", label: "BESTSELLER",
     desc: "크림 베이스 위에 블루·올리브·더스티핑크가 어우러진 추상 아라베스크 무늬 터프팅 러그입니다. 두툼한 울 파일감이 발끝에 포근하게 감기고, 어느 벽지·바닥재와도 무난하게 어울려 거실이나 침실 중심에 깔기 좋습니다.",
@@ -359,7 +380,7 @@ function Label({ children, className = "" }) {
 // 올리면 하단에 색상 스와치가 뜨고, 스와치에 커서를 올리면 그 색상 사진으로 바뀐다.
 // 스와치 클릭은 상세페이지 이동(카드 전체 onClick)을 막기만 하고 실제 옵션 선택은
 // 상세페이지에서 한다 — 목록에서는 "미리보기"만 제공.
-function ProductCard({ p, wished, cartCount, onToggleWish, onClick }) {
+function ProductCard({ p, wished, cartCount, todayShipRemaining, onToggleWish, onClick }) {
   const [colorIdx, setColorIdx] = useState(0);
   const priceNum = Number(p.price.replace(/,/g, ""));
   const originalNum = p.originalPrice ? Number(p.originalPrice.replace(/,/g, "")) : 0;
@@ -368,7 +389,8 @@ function ProductCard({ p, wished, cartCount, onToggleWish, onClick }) {
   const displayImage = p.colors ? p.colors[colorIdx].image : p.image;
   const displayAlt = p.colors ? p.colors[colorIdx].alt : p.alt;
   const labelBadge = LABEL_BADGE[p.label];
-  const todayShipAvailable = isTodayShipAvailable();
+  const todayShipAvailable = todayShipRemaining !== null;
+  const lowestStock = p.options?.reduce((lowest, option) => Math.min(lowest, option.stock_count), Infinity);
 
   return (
     <article className="group cursor-pointer" onClick={onClick}>
@@ -444,7 +466,7 @@ function ProductCard({ p, wished, cartCount, onToggleWish, onClick }) {
         )}
         {todayShipAvailable && (
           <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 border border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800/60 dark:bg-sky-950/40 dark:text-sky-300" style={MONO}>
-            12:00 전 주문 시 당일배송
+            12:00 전 주문 시 당일 배송
           </span>
         )}
         <span className="text-[11px] font-medium text-muted-foreground rounded-full px-2 py-0.5 border border-border" style={MONO}>
@@ -452,6 +474,12 @@ function ProductCard({ p, wished, cartCount, onToggleWish, onClick }) {
         </span>
       </div>
       <h4 className="text-base font-semibold text-foreground mb-0.5" style={SANS}>{p.name}</h4>
+      {lowestStock <= 5 && (
+        <p className="text-sm font-bold text-red-600 dark:text-red-400">마감임박! 상품이 {lowestStock}개 남았습니다!</p>
+      )}
+      {todayShipAvailable && (
+        <p className="text-xs text-sky-700 dark:text-sky-300" style={MONO}>오늘 발송 마감까지 {formatCountdown(todayShipRemaining)}</p>
+      )}
       <div className="mt-1 flex flex-col items-end gap-1">
         <div className={`flex items-center gap-1.5 ${hasDiscount ? "" : "invisible"}`}>
           <span className="text-xs font-bold text-white bg-[#c0392b] rounded px-1.5 py-0.5 tracking-wide" style={MONO}>
@@ -475,6 +503,13 @@ function Home() {
   const [lookbookPage, setLookbookPage] = useState(0);
   const [lookbookViewerIndex, setLookbookViewerIndex] = useState(null);
   const [cartCounts, setCartCounts] = useState({});
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(new Date()), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+  const todayShipRemaining = getTodayShipRemaining(now);
 
   // 상품 이름/가격/설명은 더 이상 프론트에만 하드코딩돼 있지 않고, 백엔드
   // JIPDAUM_PRODUCT(collection='main')에서 받아와 덮어쓴다. id로 매칭하고,
@@ -500,10 +535,11 @@ function Home() {
     if (!api) return p;
     return {
       ...p,
-      name: api.name || p.name,
-      desc: api.description || p.desc,
-      price: typeof api.base_price === "number" ? api.base_price.toLocaleString() : p.price,
-    };
+        name: api.name || p.name,
+        desc: api.description || p.desc,
+        price: typeof api.base_price === "number" ? api.base_price.toLocaleString() : p.price,
+        options: api.options,
+      };
   });
 
   // localStorage에 박제된 image URL은 빌드할 때마다 해시가 바뀌어 깨지기 쉽다(상품
@@ -887,6 +923,7 @@ function Home() {
               p={p}
               wished={wishlist.includes(p.id)}
               cartCount={cartCounts[p.id] || 0}
+              todayShipRemaining={todayShipRemaining}
               onToggleWish={toggleWish}
               onClick={() => navigate(`/item/${p.id}`)}
             />

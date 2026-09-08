@@ -371,7 +371,7 @@ function HomeProductDetail() {
                 )}
                 {todayShipAvailable && (
                   <span className="text-[11px] font-semibold rounded-full px-2 py-0.5 border border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-800/60 dark:bg-sky-950/40 dark:text-sky-300" style={MONO}>
-                    12:00 전 주문 시 당일배송
+                    12:00 전 주문 시 당일 배송
                   </span>
                 )}
                 <span className="text-[11px] font-medium text-muted-foreground rounded-full px-2 py-0.5 border border-border" style={MONO}>
