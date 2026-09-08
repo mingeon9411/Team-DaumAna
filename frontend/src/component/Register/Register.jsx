@@ -224,7 +224,10 @@ function Register() {
         security_answer: securityAnswer,
         recaptcha_token: token,
       });
+      if (res.data.access) localStorage.setItem("access_token", res.data.access);
+      if (res.data.refresh) localStorage.setItem("refresh_token", res.data.refresh);
       localStorage.setItem("nickname", nickname);
+      window.dispatchEvent(new Event("authchange"));
       navigate("/welcome", { state: { coupons: res.data.coupons || [] } });
     } catch (err) {
       const data = err.response?.data;
