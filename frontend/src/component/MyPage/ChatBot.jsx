@@ -11,6 +11,7 @@ import { useAuthModal } from "../../context/AuthModalContext";
 import { NAV_FLAGS } from "../../utils/navFlags";
 import { PRODUCTS } from "../Home/Home";
 import { TERMS_OF_SERVICE, PRIVACY_POLICY } from "../../data/legalContent";
+import { SECURITY_QUESTIONS } from "../../data/securityQuestions";
 import JDLogo from "../../assets/J.D 로고.svg";
 
 const HCAPTCHA_SITE_KEY = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
@@ -123,6 +124,8 @@ function SignupPanel({ onClose, onDone }) {
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [securityQuestion, setSecurityQuestion] = useState("");
+  const [securityAnswer, setSecurityAnswer] = useState("");
   const [agree, setAgree] = useState(false);
   const [ageConfirm, setAgeConfirm] = useState(false);
   const [marketingAgree, setMarketingAgree] = useState(false);
@@ -131,6 +134,8 @@ function SignupPanel({ onClose, onDone }) {
   const [nicknameError, setNicknameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordConfirmError, setPasswordConfirmError] = useState("");
+  const [securityQuestionError, setSecurityQuestionError] = useState("");
+  const [securityAnswerError, setSecurityAnswerError] = useState("");
   const [agreeError, setAgreeError] = useState("");
   const [ageConfirmError, setAgeConfirmError] = useState("");
   const [captchaError, setCaptchaError] = useState("");
@@ -173,6 +178,12 @@ function SignupPanel({ onClose, onDone }) {
     if (!passwordConfirm) { setPasswordConfirmError("비밀번호 확인을 입력해주세요."); isValid = false; }
     else if (password !== passwordConfirm) { setPasswordConfirmError("비밀번호가 일치하지 않습니다."); isValid = false; }
     else setPasswordConfirmError("");
+
+    if (!securityQuestion) { setSecurityQuestionError("보안 질문을 선택해주세요."); isValid = false; }
+    else setSecurityQuestionError("");
+
+    if (!securityAnswer.trim()) { setSecurityAnswerError("보안 질문의 답변을 입력해주세요."); isValid = false; }
+    else setSecurityAnswerError("");
 
     if (!agree) { setAgreeError("필수 약관에 동의해주세요."); isValid = false; }
     else setAgreeError("");
@@ -220,7 +231,15 @@ function SignupPanel({ onClose, onDone }) {
 
   const handleRegisterVerify = async (token) => {
     try {
-      const res = await registerUser({ email, nickname, password, password_confirm: passwordConfirm, recaptcha_token: token });
+      const res = await registerUser({
+        email,
+        nickname,
+        password,
+        password_confirm: passwordConfirm,
+        security_question: securityQuestion,
+        security_answer: securityAnswer,
+        recaptcha_token: token,
+      });
       // 일반 회원가입과 동일하게 가입 응답의 JWT를 저장해 바로 로그인 상태로 전환한다.
       if (res.data.access) localStorage.setItem("access_token", res.data.access);
       if (res.data.refresh) localStorage.setItem("refresh_token", res.data.refresh);
@@ -246,6 +265,8 @@ function SignupPanel({ onClose, onDone }) {
         if (data.nickname) setNicknameError(Array.isArray(data.nickname) ? data.nickname[0] : data.nickname);
         if (data.password) setPasswordError(Array.isArray(data.password) ? data.password[0] : data.password);
         if (data.password_confirm) setPasswordConfirmError(Array.isArray(data.password_confirm) ? data.password_confirm[0] : data.password_confirm);
+        if (data.security_question) setSecurityQuestionError(Array.isArray(data.security_question) ? data.security_question[0] : data.security_question);
+        if (data.security_answer) setSecurityAnswerError(Array.isArray(data.security_answer) ? data.security_answer[0] : data.security_answer);
         if (data.non_field_errors) setPasswordError(Array.isArray(data.non_field_errors) ? data.non_field_errors[0] : data.non_field_errors);
         if (data.error) setCaptchaError(`※${data.error}`);
       }
@@ -382,6 +403,28 @@ function SignupPanel({ onClose, onDone }) {
           />
         </div>
         {passwordConfirmError && <p className="chatBotSignupError"><AlertCircle size={12} />{passwordConfirmError}</p>}
+
+        {/* 아이디/비밀번호 찾기 본인확인용 — Register.jsx와 동일하게 필수로 받는다(백엔드 RegisterRequest가 필수 검증). */}
+        <div className="chatBotSignupField">
+          <select value={securityQuestion} onChange={(e) => setSecurityQuestion(e.target.value)} disabled={submitting}>
+            <option value="">보안 질문 선택 (아이디·비밀번호 찾기에 사용)</option>
+            {SECURITY_QUESTIONS.map((q) => (
+              <option key={q} value={q}>{q}</option>
+            ))}
+          </select>
+        </div>
+        {securityQuestionError && <p className="chatBotSignupError"><AlertCircle size={12} />{securityQuestionError}</p>}
+
+        <div className="chatBotSignupField">
+          <input
+            type="text"
+            placeholder="보안 질문 답변"
+            value={securityAnswer}
+            onChange={(e) => setSecurityAnswer(e.target.value)}
+            disabled={submitting}
+          />
+        </div>
+        {securityAnswerError && <p className="chatBotSignupError"><AlertCircle size={12} />{securityAnswerError}</p>}
 
         <button type="button" className="chatBotSignupTermsBtn" onClick={() => setShowTerms(true)}>
           약관 보기 <ChevronDown size={13} />
