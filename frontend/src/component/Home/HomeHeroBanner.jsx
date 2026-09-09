@@ -17,7 +17,7 @@ const PROMO_CARDS = [
 ];
 
 // 카테고리 탭 맨 위 웰컴 배너 — 왼쪽은 브랜드 영상, 오른쪽은 구매 유도 카드 2장.
-function HomeHeroBanner() {
+function HomeHeroBanner({ videoSrc = "/videos/jipdaum-video-1-compressed.mp4" }) {
   const navigate = useNavigate();
   const videoRef = useRef(null);
   const [playing, setPlaying] = useState(true);
@@ -39,7 +39,7 @@ function HomeHeroBanner() {
         <video
           ref={videoRef}
           className="heroBannerVideoEl"
-          src="/videos/jipdaum-video-1-compressed.mp4"
+          src={videoSrc}
           autoPlay
           muted
           loop

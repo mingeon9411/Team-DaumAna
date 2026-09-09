@@ -322,12 +322,12 @@ function MyPage() {
       <div className="mypageWrap">
         <div className="mypageTopRow">
           <button type="button" className="mypageBackBtn" onClick={closeMyPage}>
-            <LuChevronLeft size={14} /> 목록으로
+            <LuChevronLeft size={14} /> 홈으로
           </button>
           <button type="button" className="mypageLogoutBtn" onClick={handleLogout}>로그아웃</button>
         </div>
 
-        <HomeHeroBanner />
+        <HomeHeroBanner videoSrc="/videos/uhdfps.mp4" />
 
         {trackingOrder && (
           <TrackingModal
