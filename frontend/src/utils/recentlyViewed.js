@@ -6,7 +6,11 @@ const NAMESPACE_KEYS = {
 };
 const MAX_ITEMS = 20;
 
-const keyFor = (namespace) => NAMESPACE_KEYS[namespace] || NAMESPACE_KEYS.main;
+const keyFor = (namespace) => {
+  const key = NAMESPACE_KEYS[namespace] || NAMESPACE_KEYS.main;
+  const nickname = localStorage.getItem("nickname");
+  return localStorage.getItem("access_token") && nickname ? `${key}:${nickname}` : key;
+};
 
 export const getRecentlyViewed = (namespace = "main") => {
   try {

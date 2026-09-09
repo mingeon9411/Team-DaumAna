@@ -619,9 +619,11 @@ function Home() {
     const sync = () => setRecentlyViewed(withFreshProductData(getRecentlyViewed()));
     window.addEventListener("recentlyviewedchange", sync);
     window.addEventListener("storage", sync);
+    window.addEventListener("authchange", sync);
     return () => {
       window.removeEventListener("recentlyviewedchange", sync);
       window.removeEventListener("storage", sync);
+      window.removeEventListener("authchange", sync);
     };
   }, []);
 
