@@ -7,6 +7,8 @@ import { SECURITY_QUESTIONS } from "../../data/securityQuestions";
 import { useWishlist } from "../../hooks/useWishlist";
 import bird2 from "../../assets/decor/bird2.png";
 import flowers from "../../assets/decor/flowers.png";
+import nordicBedInterior from "../../assets/interior/(침대) 북유럽 침대 - 인테리어.jpg";
+import woodChairInterior from "../../assets/interior/(의자) 우드 의자 - 인테리어.jpg";
 import Receipt from "./Receipt";
 import TrackingModal from "./TrackingModal";
 import AddressModal from "./AddressModal";
@@ -14,6 +16,11 @@ import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import { useWithdrawModal } from "../../context/WithdrawModalContext";
 import HomeHeroBanner from "../Home/HomeHeroBanner";
+
+const MY_PAGE_PROMO_CARDS = [
+  { id: 33, image: nordicBedInterior, caption: "북유럽 침대, 최대 30% 할인" },
+  { id: 31, image: woodChairInterior, caption: "우드 의자로 완성하는 따뜻한 공간" },
+];
 
 // 사이드바 nav(마이페이지/주문내역/위시리스트/...)를 대체하는 상단 탭 목록.
 // key는 activeSection 값과 그대로 대응한다.
@@ -327,7 +334,11 @@ function MyPage() {
           <button type="button" className="mypageLogoutBtn" onClick={handleLogout}>로그아웃</button>
         </div>
 
-        <HomeHeroBanner videoSrc="/videos/uhdfps.mp4" />
+        <HomeHeroBanner
+          videoSrc="/videos/uhdfps.mp4"
+          videoCaption="추석 맞이 전 상품 최대 30% 할인"
+          promoCards={MY_PAGE_PROMO_CARDS}
+        />
 
         {trackingOrder && (
           <TrackingModal

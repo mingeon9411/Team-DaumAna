@@ -55,7 +55,8 @@ import cloudSandalWhite from "../../assets/products/생활용품/욕실화/(욕�
 import rugBInterior from "../../assets/interior/(소품) 북유럽풍 러그 B형 -인테리어.jpg";
 import patternLaundryBasketInterior from "../../assets/interior/(소품) 북유럽 문양 빨래 바구니 - 인테리어.jpg";
 import rugAInterior from "../../assets/interior/(소품) 북유럽풍 러그 A형 - 인테리어.jpg";
-import ecoWoodLaundryBasketInterior from "../../assets/interior/(소품) 친환경 우드 빨래 바구니 - 인테리어.jpg";
+import linenLaundryBasketInterior from "../../assets/interior/(소품) 린넨 빨래 바구니 - 인테리어.png";
+import ecoWoodLaundryBasketInterior from "../../assets/interior/(수납) 친환경 우드 빨래 바구니 - 인테리어.png";
 import pastelPatternBedInterior from "../../assets/interior/(침대) 북유럽풍 파스텔 문양 침대 - 인테리어.jpg";
 import woodMoodLampInterior from "../../assets/interior/(무드등) 북유럽풍 우드 무드등 - 인테리어.jpg";
 import smallMoodLampInterior from "../../assets/interior/(무드등) 북유럽풍 침대 작은 무드등 - 인테리어.jpg";
@@ -162,10 +163,7 @@ const HOME_PRODUCTS = [
   { id: 7, no: "No.7", name: "린넨 빨래 바구니", sub: "민트 그레이 컬러블록", price: "32,000", label: "ECO",
     desc: "민트, 블루, 아이보리가 컬러블록으로 나뉜 패브릭 빨래 바구니입니다. 가벼운 무광 소재에 메탈 손잡이를 달아 옷방과 욕실을 오가며 들고 다니기 편합니다.",
     spec: "SIZE : W36 D36 H40 · MATERIAL : coated fabric, metal handle",
-    // 예전엔 여기 interiorImage로 라탄 소재 바구니 사진이 잘못 물려 있었다 — 이
-    // 상품은 패브릭인데 완전히 다른 소재 사진이 떠서 삭제함(대체할 정확한
-    // 인테리어 컷은 아직 없음 — 촬영본 생기면 다시 연결할 것).
-    image: linenLaundryBasket, alt: "린넨 빨래 바구니", brand: "집다움", category: "수납", midCategory: "수납바구니", subCategory: "패브릭 메탈핸들" },
+    image: linenLaundryBasket, interiorImage: linenLaundryBasketInterior, alt: "린넨 빨래 바구니", brand: "집다움", category: "수납", midCategory: "수납바구니", subCategory: "패브릭 메탈핸들" },
   { id: 8, no: "No.8", name: "북유럽 문양 빨래 바구니", sub: "내추럴 라탄", price: "45,000", label: "NEW",
     desc: "가는 라탄 가닥을 별무늬로 엮어 짠 바스켓으로, 가죽 손잡이가 포인트를 더합니다. 세탁물 정리는 물론 담요나 잡지꽂이로도 어울리는 다용도 소품입니다.",
     spec: "SIZE : W34 D34 H36 · MATERIAL : rattan, leather handle",
@@ -644,12 +642,19 @@ function Home() {
   // cartchange/authchange와 동일)으로 신호만 보내면 여기서 받아 기존 검색
   // 필터 상태에 그대로 반영하고 상품 그리드로 스크롤한다.
   useEffect(() => {
+    let searchFrame;
     const onHeaderSearch = (e) => {
       setProductSearchQuery(e.detail?.query ?? "");
-      scrollToProductGrid();
+      setSelectedTop("전체");
+      setSelectedCategory("전체");
+      setSelectedMid("전체");
+      cancelAnimationFrame(searchFrame);
+      // 필터 렌더링과 검색 오버레이 닫기가 끝난 뒤 실제 목록으로 이동한다.
+      searchFrame = requestAnimationFrame(scrollToProductGrid);
     };
     window.addEventListener("headerProductSearch", onHeaderSearch);
     return () => {
+      cancelAnimationFrame(searchFrame);
       window.removeEventListener("headerProductSearch", onHeaderSearch);
     };
   }, []);
@@ -689,14 +694,9 @@ function Home() {
   useNestedLenis(productGridRef);
 
   const scrollToProductGrid = () => {
-    const target = document.querySelectorAll("[data-hsnap]")[0];
+    const target = document.getElementById("home-product-filters");
     if (!target) return;
-    if (window.lenis) {
-      window.lenis.resize();
-      window.lenis.scrollTo(target, { duration: 1.6, easing: (t) => 1 - Math.pow(1 - t, 3) });
-    } else {
-      target.scrollIntoView({ behavior: "smooth" });
-    }
+    target.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
   };
 
   // 대카테고리를 고르면 그 안의 중카테고리만 보여준다 — "전체"면 전 카테고리를 합쳐서 보여준다.
@@ -873,7 +873,7 @@ function Home() {
 
           <HomeFeatureBanner products={PRODUCTS} />
 
-          <div className="flex items-center gap-7 overflow-x-auto pb-1 border-b border-border">
+          <div id="home-product-filters" style={{ scrollMarginTop: "calc(var(--header-h, 130px) + 24px)" }} className="flex items-center gap-7 overflow-x-auto pb-1 border-b border-border">
             {[{ label: "전체" }, ...CATEGORY_TREE].map((top) => {
               const selected = selectedTop === top.label;
               return (

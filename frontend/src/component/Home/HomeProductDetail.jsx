@@ -102,10 +102,7 @@ function HomeProductDetail() {
     setReviewImageFile(null);
     setReviewImagePreview(null);
     const viewedProduct = PRODUCTS.find((item) => item.id === productId);
-    if (viewedProduct) addRecentlyViewed({
-      ...viewedProduct,
-      price: Number(viewedProduct.price.replace(/,/g, "")),
-    });
+    addRecentlyViewed(viewedProduct || { id: productId });
   }, [productId]);
 
   useEffect(() => {
@@ -543,20 +540,23 @@ function HomeProductDetail() {
               </div>
             )}
 
-            {/* 정가/할인율 — 예전엔 별점 아래 중간에 따로 있었는데, 구매 직전
-                금액(주문금액)과 붙여서 "얼마나 할인받는지"가 바로 옆에서 보이게 옮겼다. */}
-            {hasDiscount && (
-              <div className="flex items-center justify-between mb-3 text-xs">
-                <span className="text-muted-foreground line-through" style={MONO}>₩{product.originalPrice}</span>
-                <span className="font-bold text-[#c0392b]" style={MONO}>{discountPct}% 할인</span>
-              </div>
-            )}
-
-            <div className="flex items-baseline justify-between mb-7 pb-7 border-b border-border">
+            <div className="flex items-end justify-between gap-3 mb-7 pb-7 border-b border-border">
               <span className="text-xs text-muted-foreground tracking-widest" style={MONO}>주문금액</span>
-              <span className="text-2xl font-bold text-foreground" style={MONO}>
-                ₩{(priceNum * quantity).toLocaleString()}
-              </span>
+              <div className="flex flex-col items-end gap-1">
+                {hasDiscount && (
+                  <div className="flex flex-wrap items-center justify-end gap-1.5">
+                    <span className="text-xs font-bold text-white bg-[#c0392b] rounded px-1.5 py-0.5 tracking-wide" style={MONO}>
+                      {discountPct}% OFF
+                    </span>
+                    <span className="text-sm text-muted-foreground line-through" style={MONO}>
+                      ₩{(originalNum * quantity).toLocaleString()}
+                    </span>
+                  </div>
+                )}
+                <span className="text-right text-2xl font-bold text-foreground" style={MONO}>
+                  ₩{(priceNum * quantity).toLocaleString()}
+                </span>
+              </div>
             </div>
 
             {/* 모바일에서는 이 버튼 대신 화면 하단 스티키 바(아래)를 쓴다 —

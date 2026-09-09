@@ -17,7 +17,11 @@ const PROMO_CARDS = [
 ];
 
 // 카테고리 탭 맨 위 웰컴 배너 — 왼쪽은 브랜드 영상, 오른쪽은 구매 유도 카드 2장.
-function HomeHeroBanner({ videoSrc = "/videos/jipdaum-video-1-compressed.mp4" }) {
+function HomeHeroBanner({
+  videoSrc = "/videos/jipdaum-video-1-compressed.mp4",
+  videoCaption = "집다움에 오신 걸 환영합니다",
+  promoCards = PROMO_CARDS,
+}) {
   const navigate = useNavigate();
   const videoRef = useRef(null);
   const [playing, setPlaying] = useState(true);
@@ -53,11 +57,11 @@ function HomeHeroBanner({ videoSrc = "/videos/jipdaum-video-1-compressed.mp4" })
         >
           {playing ? <Pause size={14} /> : <Play size={14} />}
         </button>
-        <p className="heroBannerCaption" style={SERIF}>집다움에 오신 걸 환영합니다</p>
+        <p className="heroBannerCaption" style={SERIF}>{videoCaption}</p>
       </div>
 
       <div className="heroBannerCards">
-        {PROMO_CARDS.map((c) => (
+        {promoCards.map((c) => (
           <button
             type="button"
             key={c.id}

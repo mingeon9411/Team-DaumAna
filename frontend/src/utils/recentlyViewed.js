@@ -10,7 +10,9 @@ const NAMESPACE_KEYS = { main: "recentlyViewed" };
 const MAX_ITEMS = 20;
 
 const keyFor = (namespace) => NAMESPACE_KEYS[namespace] || NAMESPACE_KEYS.main;
-const isLoggedIn = () => !!localStorage.getItem("access_token");
+const getAuthToken = () =>
+  localStorage.getItem("access_token") || sessionStorage.getItem("pending_access_token");
+const isLoggedIn = () => !!getAuthToken();
 const notify = () => window.dispatchEvent(new Event("recentlyviewedchange"));
 
 export const getRecentlyViewed = (namespace = "main") => {
@@ -24,11 +26,13 @@ export const getRecentlyViewed = (namespace = "main") => {
 };
 
 export const addRecentlyViewed = (product, namespace = "main") => {
-  if (isLoggedIn()) return addRecentlyViewedProduct(product.id).then(notify).catch(() => {});
+  const productId = Number(product?.id);
+  if (!Number.isInteger(productId)) return Promise.resolve([]);
+  if (isLoggedIn()) return addRecentlyViewedProduct(productId).then(notify).catch(() => {});
 
-  const list = getRecentlyViewed(namespace).filter((p) => p.id !== product.id);
+  const list = getRecentlyViewed(namespace).filter((p) => Number(p.id) !== productId);
   list.unshift({
-    id: product.id,
+    id: productId,
     name: product.name ?? "",
     price: Number(product.price) || 0,
     image: product.image ?? "",
