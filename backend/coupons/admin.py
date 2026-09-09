@@ -44,8 +44,8 @@ class CouponAdmin(admin.ModelAdmin):
     def discount_badge(self, obj):
         if obj.discount_type == 'FIXED':
             return format_html(
-                '<span style="color:#c0392b;font-weight:700">{:,}원</span>',
-                obj.discount_value
+                '<span style="color:#c0392b;font-weight:700">{}</span>',
+                f'{obj.discount_value:,}원',
             )
         label = f'{obj.discount_value}%'
         if obj.max_discount_amount:
@@ -57,13 +57,15 @@ class CouponAdmin(admin.ModelAdmin):
     @admin.display(description='상태')
     def status_badge(self, obj):
         if not obj.is_active:
-            return format_html('<span style="color:#999">비활성</span>')
+            return format_html('<span style="color:#999">{}</span>', '비활성')
         from django.utils import timezone
         if obj.expiry_date and obj.expiry_date < timezone.now().date():
-            return format_html('<span style="color:#e65100">만료됨</span>')
+            return format_html('<span style="color:#e65100">{}</span>', '만료됨')
         if obj.usage_limit and obj.used_count >= obj.usage_limit:
-            return format_html('<span style="color:#e65100">소진됨</span>')
-        return format_html('<span style="color:#2e7d32;font-weight:700">사용가능</span>')
+            return format_html('<span style="color:#e65100">{}</span>', '소진됨')
+        return format_html(
+            '<span style="color:#2e7d32;font-weight:700">{}</span>', '사용가능'
+        )
 
 
 @admin.register(UserCoupon)
