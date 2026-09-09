@@ -262,7 +262,9 @@ function MyPage() {
     const refresh = localStorage.getItem("refresh_token");
     try {
       if (refresh) await logoutUser({ refresh });
-    } catch (e) {}
+    } catch {
+      // Logout is best-effort: local credentials must still be cleared.
+    }
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("nickname");

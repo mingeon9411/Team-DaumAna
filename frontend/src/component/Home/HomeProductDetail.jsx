@@ -45,16 +45,17 @@ function HomeProductDetail() {
   useNestedLenis(pageRef);
 
   const localProduct = PRODUCTS.find((p) => p.id === Number(id));
+  const localProductId = localProduct?.id;
   // 이름/가격/설명은 DB(JIPDAUM_PRODUCT, collection='main')에서 받아와 로컬 값
   // 위에 덮어쓴다 — Korean Hall의 ProductDetail.jsx와 동일한 패턴. 이미지/
   // 인테리어 컷/뱃지/할인 전 가격처럼 DB 스키마에 없는 필드는 로컬 값 그대로.
   const [apiProduct, setApiProduct] = useState(null);
   useEffect(() => {
-    if (!localProduct) return;
-    getProductDetail(localProduct.id)
+    if (!localProductId) return;
+    getProductDetail(localProductId)
       .then((res) => setApiProduct(res.data))
       .catch(() => setApiProduct(null));
-  }, [localProduct?.id]);
+  }, [localProductId]);
 
   const product = localProduct
     ? {
@@ -69,6 +70,7 @@ function HomeProductDetail() {
           : localProduct.originalPrice,
       }
     : null;
+  const productId = product?.id;
 
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
@@ -88,7 +90,7 @@ function HomeProductDetail() {
   const [reviewImagePreview, setReviewImagePreview] = useState(null);
 
   useEffect(() => {
-    if (!product) return;
+    if (!productId) return;
     window.scrollTo(0, 0);
     setQuantity(1);
     setActiveImage(0);
@@ -99,20 +101,21 @@ function HomeProductDetail() {
     setReviewComment("");
     setReviewImageFile(null);
     setReviewImagePreview(null);
-    addRecentlyViewed({
-      ...product,
-      price: Number(product.price.replace(/,/g, "")),
+    const viewedProduct = PRODUCTS.find((item) => item.id === productId);
+    if (viewedProduct) addRecentlyViewed({
+      ...viewedProduct,
+      price: Number(viewedProduct.price.replace(/,/g, "")),
     });
-  }, [product?.id]);
+  }, [productId]);
 
   useEffect(() => {
-    if (!product) return;
+    if (!productId) return;
     setReviewsLoading(true);
-    getReviews(product.id)
+    getReviews(productId)
       .then((res) => setReviews(Array.isArray(res.data) ? res.data : []))
       .catch(() => setReviews([]))
       .finally(() => setReviewsLoading(false));
-  }, [product?.id]);
+  }, [productId]);
 
   if (!product) {
     return (

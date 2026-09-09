@@ -1,3 +1,5 @@
+/* eslint-disable react-refresh/only-export-components */
+
 import { useEffect, useRef, useState } from "react";
 import { Flame } from "lucide-react";
 import "./PopularKeywordsSidebar.css";

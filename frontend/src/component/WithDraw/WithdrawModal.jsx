@@ -24,7 +24,7 @@ function WithdrawModal() {
     const refresh = localStorage.getItem("refresh_token");
     try {
       await withdrawUser({ refresh: refresh || null });
-    } catch (e) {
+    } catch {
       alert("탈퇴 처리 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
       return;
     }
