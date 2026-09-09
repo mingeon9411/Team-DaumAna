@@ -13,6 +13,7 @@ import AddressModal from "./AddressModal";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useMyPageModal } from "../../context/MyPageModalContext";
 import { useWithdrawModal } from "../../context/WithdrawModalContext";
+import HomeHeroBanner from "../Home/HomeHeroBanner";
 
 // 사이드바 nav(마이페이지/주문내역/위시리스트/...)를 대체하는 상단 탭 목록.
 // key는 activeSection 값과 그대로 대응한다.
@@ -325,6 +326,8 @@ function MyPage() {
           </button>
           <button type="button" className="mypageLogoutBtn" onClick={handleLogout}>로그아웃</button>
         </div>
+
+        <HomeHeroBanner />
 
         {trackingOrder && (
           <TrackingModal
