@@ -1,16 +1,17 @@
-// "최근 본 상품"을 기록한다 (쿠팡 스타일 사이드바용).
-// wishlist.js와 같은 패턴 — 호출하는 쪽에서 price는 이미 숫자로 변환해서 넘겨야 한다.
-//
-const NAMESPACE_KEYS = {
-  main: "recentlyViewed",
-};
+import {
+  addRecentlyViewedProduct,
+  clearRecentlyViewedProducts,
+  deleteRecentlyViewedProduct,
+  getRecentlyViewedProducts,
+  mergeRecentlyViewedProducts,
+} from "../api";
+
+const NAMESPACE_KEYS = { main: "recentlyViewed" };
 const MAX_ITEMS = 20;
 
-const keyFor = (namespace) => {
-  const key = NAMESPACE_KEYS[namespace] || NAMESPACE_KEYS.main;
-  const nickname = localStorage.getItem("nickname");
-  return localStorage.getItem("access_token") && nickname ? `${key}:${nickname}` : key;
-};
+const keyFor = (namespace) => NAMESPACE_KEYS[namespace] || NAMESPACE_KEYS.main;
+const isLoggedIn = () => !!localStorage.getItem("access_token");
+const notify = () => window.dispatchEvent(new Event("recentlyviewedchange"));
 
 export const getRecentlyViewed = (namespace = "main") => {
   try {
@@ -23,6 +24,8 @@ export const getRecentlyViewed = (namespace = "main") => {
 };
 
 export const addRecentlyViewed = (product, namespace = "main") => {
+  if (isLoggedIn()) return addRecentlyViewedProduct(product.id).then(notify).catch(() => {});
+
   const list = getRecentlyViewed(namespace).filter((p) => p.id !== product.id);
   list.unshift({
     id: product.id,
@@ -32,17 +35,45 @@ export const addRecentlyViewed = (product, namespace = "main") => {
   });
   const trimmed = list.slice(0, MAX_ITEMS);
   localStorage.setItem(keyFor(namespace), JSON.stringify(trimmed));
-  window.dispatchEvent(new Event("recentlyviewedchange"));
+  notify();
   return trimmed;
 };
 
 export const removeRecentlyViewed = (id, namespace = "main") => {
+  if (isLoggedIn()) return deleteRecentlyViewedProduct(id).then(notify);
   const list = getRecentlyViewed(namespace).filter((p) => p.id !== id);
   localStorage.setItem(keyFor(namespace), JSON.stringify(list));
-  window.dispatchEvent(new Event("recentlyviewedchange"));
+  notify();
 };
 
 export const clearRecentlyViewed = (namespace = "main") => {
+  if (isLoggedIn()) return clearRecentlyViewedProducts().then(notify);
   localStorage.removeItem(keyFor(namespace));
-  window.dispatchEvent(new Event("recentlyviewedchange"));
+  notify();
+};
+
+const legacyUserItems = (namespace) => {
+  const nickname = localStorage.getItem("nickname");
+  if (!nickname) return [];
+  try {
+    const list = JSON.parse(localStorage.getItem(`${keyFor(namespace)}:${nickname}`) || "[]");
+    return Array.isArray(list) ? list : [];
+  } catch {
+    return [];
+  }
+};
+
+export const loadRecentlyViewed = async (namespace = "main") => {
+  if (!isLoggedIn()) return getRecentlyViewed(namespace);
+
+  const localItems = [...getRecentlyViewed(namespace), ...legacyUserItems(namespace)];
+  const productIds = [...new Set(localItems.map((item) => item?.id).filter(Number.isInteger))];
+  if (productIds.length) {
+    await mergeRecentlyViewedProducts(productIds);
+    localStorage.removeItem(keyFor(namespace));
+    const nickname = localStorage.getItem("nickname");
+    if (nickname) localStorage.removeItem(`${keyFor(namespace)}:${nickname}`);
+  }
+  const { data } = await getRecentlyViewedProducts();
+  return Array.isArray(data) ? data : [];
 };

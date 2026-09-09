@@ -10,7 +10,7 @@ import HomeHeroBanner from "./HomeHeroBanner";
 import HomeFeatureBanner from "./HomeFeatureBanner";
 import PopularKeywordsSidebar from "../Sidebar/PopularKeywordsSidebar";
 import SiteFooter from "../SiteFooter";
-import { getRecentlyViewed } from "../../utils/recentlyViewed";
+import { loadRecentlyViewed } from "../../utils/recentlyViewed";
 import { useNestedLenis } from "../../hooks/useNestedLenis";
 import rugB from "../../assets/products/(러그) 북유럽풍 러그 B형.jpg";
 import woodMoodLamp from "../../assets/products/(무드등) 우드 롱 무드등.jpg";
@@ -574,7 +574,7 @@ function Home() {
         : item;
     });
 
-  const [recentlyViewed, setRecentlyViewed] = useState(() => withFreshProductData(getRecentlyViewed()));
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
   const navigate = useNavigate();
 
   // 룩북 아래 리뷰 모음 — 사진 유무와 무관하게 모든 상품의 리뷰를 최신순으로 보여준다.
@@ -616,11 +616,21 @@ function Home() {
   // 상품 그리드 패널까지 스크롤해야만 뜨게 해두면 인트로 영상 구간이 많아 체감상
   // 너무 늦게 보이므로, 홈 페이지 안에서는 위치 상관없이 바로 보이게 한다.
   useEffect(() => {
-    const sync = () => setRecentlyViewed(withFreshProductData(getRecentlyViewed()));
+    let active = true;
+    const sync = async () => {
+      try {
+        const list = await loadRecentlyViewed();
+        if (active) setRecentlyViewed(withFreshProductData(list));
+      } catch {
+        if (active) setRecentlyViewed([]);
+      }
+    };
+    sync();
     window.addEventListener("recentlyviewedchange", sync);
     window.addEventListener("storage", sync);
     window.addEventListener("authchange", sync);
     return () => {
+      active = false;
       window.removeEventListener("recentlyviewedchange", sync);
       window.removeEventListener("storage", sync);
       window.removeEventListener("authchange", sync);
@@ -1155,7 +1165,7 @@ function Home() {
           막지 않는다 — 뭘 보여줄지는 RecentlyViewedSidebar 내부에서 판단한다. */}
       <RecentlyViewedSidebar
         items={recentlyViewed}
-        onChange={() => setRecentlyViewed(getRecentlyViewed())}
+        onChange={() => loadRecentlyViewed().then((list) => setRecentlyViewed(withFreshProductData(list))).catch(() => setRecentlyViewed([]))}
       />
 
       <ChatBot />

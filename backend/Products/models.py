@@ -12,6 +12,16 @@ class Wishlist(models.Model):
         constraints = [models.UniqueConstraint(fields=['user', 'product'], name='wishlist_user_product_unique')]
 
 
+class RecentlyViewed(models.Model):
+    user = models.ForeignKey('Users.User', on_delete=models.CASCADE, related_name='recently_viewed_items')
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='recently_viewed_items')
+    viewed_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'JIPDAUM_RECENTLY_VIEWED'
+        constraints = [models.UniqueConstraint(fields=['user', 'product'], name='recently_viewed_user_product_unique')]
+
+
 class Category(models.Model):
     id = models.AutoField(primary_key=True) # 오라클 시퀀스 매핑
     name = models.CharField(max_length=100)

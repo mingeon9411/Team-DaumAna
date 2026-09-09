@@ -178,14 +178,14 @@ function RecentlyViewedSidebar({
     }));
   };
 
-  const handleRemove = (e, id) => {
+  const handleRemove = async (e, id) => {
     e.stopPropagation();
-    removeRecentlyViewed(id, namespace);
+    await removeRecentlyViewed(id, namespace);
     onChange();
   };
 
-  const handleClear = () => {
-    clearRecentlyViewed(namespace);
+  const handleClear = async () => {
+    await clearRecentlyViewed(namespace);
     onChange();
   };
 

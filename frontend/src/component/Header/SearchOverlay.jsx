@@ -1,11 +1,11 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, Clock, Heart, X } from "lucide-react";
 import { PopularKeywordsList, MOCK_KEYWORDS } from "../Sidebar/PopularKeywordsSidebar";
 import { removeRecentSearch, clearRecentSearches } from "../../utils/recentSearches";
 import { PRODUCTS } from "../Home/Home";
 import { getMostLikedPost } from "../Lookbook/posts";
-import { getRecentlyViewed } from "../../utils/recentlyViewed";
+import { loadRecentlyViewed } from "../../utils/recentlyViewed";
 import "./SearchOverlay.css";
 
 const SANS = { fontFamily: "'GmarketSans', 'Noto Sans KR', sans-serif" };
@@ -34,7 +34,7 @@ export default function SearchOverlay({ query, onQueryChange, onSubmit, onClose,
   const popularProducts = PRODUCTS.filter((p) => p.label === "BESTSELLER").slice(0, 3);
   const featuredPost = getMostLikedPost();
   const featuredCover = featuredPost ? PRODUCTS.find((p) => p.id === featuredPost.coverId) : null;
-  const recentlyViewed = getRecentlyViewed().slice(0, 4);
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
   const hasBoard = popularProducts.length > 0 || (featuredPost && featuredCover) || recentlyViewed.length > 0;
 
   const goTo = (path) => {
@@ -44,6 +44,13 @@ export default function SearchOverlay({ query, onQueryChange, onSubmit, onClose,
 
   useEffect(() => {
     inputRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    loadRecentlyViewed().then((items) => setRecentlyViewed(items.slice(0, 4).map((item) => {
+      const local = PRODUCTS.find((product) => product.id === item.id);
+      return local ? { ...item, image: local.image, name: local.name } : item;
+    }))).catch(() => setRecentlyViewed([]));
   }, []);
 
   // AuthModalContext.jsx와 같은 패턴 — 오버레이가 떠 있는 동안 배경 스크롤을 멈추고,

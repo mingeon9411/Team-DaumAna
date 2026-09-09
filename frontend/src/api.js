@@ -110,6 +110,12 @@ export const getProductDetail = (id) => API.get(`/products/${id}`);
 // 프론트 로컬 데이터(이미지 import, 인테리어 컷, 뱃지 등)에 덮어씌우는 용도.
 export const getProductsByCollection = (collection) => API.get(`/products?collection=${encodeURIComponent(collection)}`);
 
+export const getRecentlyViewedProducts = () => API.get('/recently-viewed');
+export const addRecentlyViewedProduct = (productId) => API.put(`/recently-viewed/${productId}`);
+export const mergeRecentlyViewedProducts = (productIds) => API.put('/recently-viewed', { product_ids: productIds });
+export const deleteRecentlyViewedProduct = (productId) => API.delete(`/recently-viewed/${productId}`);
+export const clearRecentlyViewedProducts = () => API.delete('/recently-viewed');
+
 // [리뷰 API]
 export const getReviews = (productId) => API.get(`/products/${productId}/reviews`);
 export const createReview = (productId, data) => API.post(`/products/${productId}/reviews`, data);
