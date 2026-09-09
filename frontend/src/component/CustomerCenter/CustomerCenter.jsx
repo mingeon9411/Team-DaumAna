@@ -5,6 +5,7 @@ import "./CustomerCenter.css";
 import { useAuthModal } from "../../context/AuthModalContext";
 import { useNestedLenis } from "../../hooks/useNestedLenis";
 import { NAV_FLAGS } from "../../utils/navFlags";
+import HomeHeroBanner from "../Home/HomeHeroBanner";
 
 // 실제 상담 티켓/실시간 상담 시스템은 없는 포트폴리오 프로젝트라(data/businessInfo.js 참고),
 // FAQ 답변과 연락처는 그 사업자 정보와 맞춘 플레이스홀더.
@@ -148,6 +149,8 @@ function CustomerCenter() {
         <button type="button" className="ccBackBtn" onClick={goBack}>
           <LuChevronLeft size={14} /> 목록으로
         </button>
+
+        <HomeHeroBanner />
 
         <section className="ccHero">
           <p className="ccHeroGreeting">안녕하세요 👋</p>
