@@ -11,6 +11,11 @@ import SearchOverlay from "./SearchOverlay";
 import { getRecentSearches, addRecentSearch } from "../../utils/recentSearches";
 
 const SANS = { fontFamily: "'GmarketSans', 'Noto Sans KR', sans-serif" };
+const isNaturalLanguageSearch = (query) =>
+  /\s/.test(query.trim()) && (
+    query.trim().split(/\s+/).length >= 3 ||
+    /추천|찾아|보여|싶|위한|어울|공간|방|거실|원룸|신혼/.test(query)
+  );
 
 // 9월 가을 시즌 연출 — 헤더 배너 위로 단풍잎이 흩날리며 떨어진다. Sidebar.css의
 // 옛 한국관 꽃잎 연출(khPetal)과 같은 방식: Math.random() 대신 인덱스 기반
@@ -123,10 +128,11 @@ function Header() {
   };
   const submitHeaderSearch = (query) => {
     setRecentSearches(addRecentSearch(query));
-    if (isHome) {
+    if (isHome && !isNaturalLanguageSearch(query)) {
       window.dispatchEvent(new CustomEvent("headerProductSearch", { detail: { query } }));
     } else {
-      navigate(`/search?q=${encodeURIComponent(query)}`);
+      const semantic = isNaturalLanguageSearch(query) ? "&semantic=1" : "";
+      navigate(`/search?q=${encodeURIComponent(query)}${semantic}`);
     }
     closeSearchOverlay();
   };

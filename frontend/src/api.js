@@ -105,6 +105,7 @@ export const deleteCartItem = (itemId) => API.delete('/cart', { data: { item_id:
 
 // [상품 API]
 export const searchProducts = (query) => API.get(`/products?search=${encodeURIComponent(query)}`);
+export const semanticSearchProducts = (query) => API.get(`/products/semantic-search?q=${encodeURIComponent(query)}`);
 export const getProductDetail = (id) => API.get(`/products/${id}`);
 // collection: "main"(메인 페이지 PRODUCTS). 이름/가격/설명/썸네일을 DB에서 받아와
 // 프론트 로컬 데이터(이미지 import, 인테리어 컷, 뱃지 등)에 덮어씌우는 용도.

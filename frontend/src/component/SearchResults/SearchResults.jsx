@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
-import { searchProducts } from '../../api';
+import { searchProducts, semanticSearchProducts } from '../../api';
 import './SearchResults.css';
 
 function SearchResults() {
     const [searchParams] = useSearchParams();
     const query = searchParams.get('q') || '';
+    const semantic = searchParams.get('semantic') === '1';
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -14,11 +15,11 @@ function SearchResults() {
         if (!query.trim()) return;
         setLoading(true);
         setError('');
-        searchProducts(query)
+        (semantic ? semanticSearchProducts(query) : searchProducts(query))
             .then((res) => setProducts(Array.isArray(res.data) ? res.data : []))
             .catch(() => setError('검색 중 오류가 발생했습니다.'))
             .finally(() => setLoading(false));
-    }, [query]);
+    }, [query, semantic]);
 
     return (
         <div className="srPage">
