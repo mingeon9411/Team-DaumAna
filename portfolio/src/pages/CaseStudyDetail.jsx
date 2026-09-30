@@ -126,7 +126,6 @@ export default function CaseStudyDetail() {
             </a>
             <figcaption className="mt-3 flex flex-wrap gap-4 text-sm">
               <a href={coreErd} target="_blank" rel="noreferrer" className="underline">ERD 크게 보기 ↗</a>
-              <a href={coreErd} download className="underline">ERD 다운로드</a>
             </figcaption>
           </figure>
           <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-relaxed">

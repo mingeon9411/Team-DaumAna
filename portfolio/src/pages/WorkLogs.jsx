@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import firstLog from "../../image/집다움 프로젝트 1차 작업일지.png";
 import secondLog from "../../image/집다움 2차 프로젝트 작업일지.png";
 import thirdLog from "../../image/집다움 프로젝트 3차 작업일지.png";
@@ -9,6 +10,10 @@ const LOGS = [
 ];
 
 export default function WorkLogs() {
+  useEffect(() => {
+    document.getElementById(window.location.hash.slice(1))?.scrollIntoView();
+  }, []);
+
   return (
     <div className="mx-auto max-w-7xl px-6 py-12 space-y-6">
       <header className="card p-6 sm:p-10">
@@ -36,7 +41,6 @@ export default function WorkLogs() {
             </a>
             <figcaption className="mt-3 flex flex-wrap gap-4 text-sm">
               <a href={log.image} target="_blank" rel="noreferrer" className="underline">원본 크게 보기 ↗</a>
-              <a href={log.image} download className="underline">이미지 다운로드</a>
             </figcaption>
           </figure>
         </section>
