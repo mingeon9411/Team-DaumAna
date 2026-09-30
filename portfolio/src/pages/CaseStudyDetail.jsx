@@ -2,7 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getCaseStudyBySlug } from "../lib/markdown.js";
-import systemArchitecture from "../assets/diagrams/system-architecture.svg";
+import systemArchitecture from "../../image/시스템 아키텍처 다이어그램.png";
 import paymentFlow from "../assets/diagrams/payment-flow.svg";
 import coreErd from "../../image/집다움 ERD - 핵심 구성.png";
 import Redirect302Incident from "../components/Redirect302Incident.jsx";
@@ -88,7 +88,7 @@ export default function CaseStudyDetail() {
           style={{ background: "var(--color-accent-soft)" }}
         >
           <span aria-hidden="true">🗂</span>
-          <span>시스템 아키텍처 — Spring Boot API · Django 관리자 · MySQL · Redis</span>
+          <span>집다움 시스템 아키텍처 다이어그램</span>
           <span
             aria-hidden="true"
             className="ml-auto text-xs text-[var(--color-muted)] transition-transform duration-200 group-open:rotate-180"
@@ -99,16 +99,17 @@ export default function CaseStudyDetail() {
         <a href={systemArchitecture} target="_blank" rel="noopener noreferrer" title="새 탭에서 원본 크기로 보기">
           <img
             src={systemArchitecture}
-            alt="집다움 시스템 아키텍처: React는 Spring Boot 전체 API와 통신하고, Spring Boot가 회원 인증·JWT, 공유 MySQL, Redis 상품 캐시와 외부 서비스를 처리합니다. Django는 별도의 관리자 화면과 DB 마이그레이션을 담당합니다."
-            width="1440"
-            height="1160"
+            alt="집다움 시스템 아키텍처 원본 다이어그램: React, Django, Spring Boot, 공유 MySQL, Redis 및 외부 서비스 연결. 이미지의 인증 분담과 JWT 공유 표기는 아래 현재 구현 설명을 참고하세요."
+            width="3008"
+            height="1697"
             className="mt-4 w-full rounded-2xl border cursor-zoom-in"
             style={{ borderColor: "var(--color-line)" }}
             loading="lazy"
           />
         </a>
         <p className="mt-3 text-xs" style={{ color: "var(--color-muted)" }}>
-          2026.09.30 구조 기준 · 이미지를 클릭하면 원본을 확대할 수 있습니다.
+          이미지를 클릭하면 원본을 확대할 수 있습니다. 현재 구현에서는 회원 인증·전체 API·JWT를 Spring Boot가 담당하며,
+          Django는 관리자 전용입니다. 이미지의 인증 분담·JWT 키 공유 표기는 현재 구현과 다릅니다.
         </p>
       </details>
 
