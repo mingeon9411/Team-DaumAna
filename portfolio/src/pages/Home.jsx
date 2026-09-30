@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import ProjectSchedule from "../components/ProjectSchedule.jsx";
 import jdCursiveLogo from "../assets/brand/jd-cursive-logo.svg";
 import jipdaumWordmarkLogo from "../assets/brand/jipdaum-logo-transparent.png";
 
@@ -252,6 +253,7 @@ export default function Home() {
           ))}
         </div>
       </section>
+      <ProjectSchedule />
     </div>
   );
 }

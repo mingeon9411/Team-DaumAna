@@ -1,0 +1,10 @@
+[
+  {"phase":"2차","period":"06.26–07.03","title":"백엔드 기반 구축","frontend":"— (해당 저장소 첫 커밋 이전)","backend":"주문·결제·쿠폰·상품 API 구현, 인증·결제 보안 보완","frontCommit":null,"backCommit":"97fe5a1"},
+  {"phase":"2차","period":"07.13–07.22","title":"화면 구축과 인증 이관","frontend":"React 초기 구현, 로그인·마이페이지 모달, MySQL 전환","backend":"로컬 계정 인증 포팅, MySQL 전환, 소셜 로그인·탈퇴","frontCommit":"e368bc8","backCommit":"9934ff1"},
+  {"phase":"2차","period":"07.23–07.31","title":"쇼핑 흐름 연결","frontend":"장바구니 API 연동, 배송지 관리, 상품 리뷰 UI","backend":"주문 배송조회, 이메일 인증 개선, 인증·권한 보완","frontCommit":"1ab7b0a","backCommit":"cdba918"},
+  {"phase":"3차","period":"08.03–08.07","title":"상품 기능과 배포 기반","frontend":"상품 상세 페이지 분리, 사진 리뷰, 최근 본 상품","backend":"Docker·CI 구성, 관리자 CRUD, 리뷰 이미지 업로드","frontCommit":"2e8c4db","backCommit":"47f29a4"},
+  {"phase":"3차","period":"08.15–08.23","title":"AI 도입과 API 통합","frontend":"Django admin 전용 전환, 챗봇 상품 패널, Pages 이관","backend":"Gemini 도구 호출·RAG, EC2 자동 배포, 응답 지연 개선","frontCommit":"2bb27d8","backCommit":"c70c8a7"},
+  {"phase":"3차","period":"08.24–08.31","title":"운영 안정화","frontend":"상품 이미지 최적화, 상품 API·DB 연결, 포트폴리오 구축","backend":"SMTP 배포 설정, 전역 예외 처리, CORS 폴백·회귀 테스트","frontCommit":"3d57022","backCommit":"2c31df2"},
+  {"phase":"3차","period":"09.01–09.06","title":"성능과 고객 기능","frontend":"Redis 실행 환경, 룩북 전환, 쿠폰·찜 API 연동","backend":"Redis 캐시·장애 폴백, 재고 부하 테스트, 문의·찜 API","frontCommit":"f4e2899","backCommit":"77df49d"},
+  {"phase":"3차","period":"09.07–09.11","title":"결제 정합성과 검색 고도화","frontend":"본인인증, 최근 본 상품 계정 연동, 의미 검색 UI","backend":"결제 대기 재고 예약, 본인인증 검증, 의미 검색 API","frontCommit":"9057166","backCommit":"90d88e6"}
+]
