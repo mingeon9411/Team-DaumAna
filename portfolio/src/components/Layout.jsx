@@ -4,6 +4,7 @@ const NAV = [
   { to: "/", label: "Home", end: true },
   { to: "/about", label: "About" },
   { to: "/case-studies", label: "Case Studies" },
+  { to: "/work-logs", label: "작업일지" },
   { to: "/contact", label: "Contact" },
 ];
 
@@ -11,7 +12,7 @@ export default function Layout({ children }) {
   return (
     <div className="min-h-screen flex flex-col">
       <header className="mx-auto max-w-3xl w-full px-6 pt-8">
-        <nav className="card flex items-center justify-center gap-1 px-2 py-2 text-sm">
+        <nav className="card flex flex-wrap items-center justify-center gap-1 px-2 py-2 text-sm">
           {NAV.map((item) => (
             <NavLink
               key={item.to}

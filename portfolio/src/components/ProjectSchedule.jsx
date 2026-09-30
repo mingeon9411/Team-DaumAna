@@ -1,4 +1,5 @@
 import rows from "../data/projectSchedule.json";
+import { Link } from "react-router-dom";
 
 const frontRepo = "https://github.com/mingeon9411/Team-DaumAna";
 const backRepo = "https://github.com/mingeon9411/jipdaum_Springboot";
@@ -37,6 +38,9 @@ export default function ProjectSchedule() {
           </table>
         </div>
       </details>
+      <Link to="/work-logs" viewTransition className="mt-5 inline-block text-sm font-semibold underline">
+        1·2·3차 작업일지 보기 →
+      </Link>
       <p className="mt-4 text-xs leading-relaxed" style={{ color: "var(--color-muted)" }}>
         출처: <a className="underline" href={`${frontRepo}/commits/main/`} target="_blank" rel="noreferrer">Team-DaumAna 커밋</a>
         {" · "}<a className="underline" href={`${backRepo}/commits/main/`} target="_blank" rel="noreferrer">jipdaum_Springboot 커밋</a>
