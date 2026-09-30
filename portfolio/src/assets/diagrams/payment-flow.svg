@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1240" viewBox="0 0 1440 1240" role="img" aria-labelledby="title desc">
+  <title id="title">집다움 결제 흐름 — 현재 구현과 운영 과제</title>
+  <desc id="desc">주문 생성 트랜잭션에서 서버 금액 계산, 옵션 재고 예약, 쿠폰 사용과 장바구니 정리를 처리합니다. 0원 주문은 즉시 완료합니다. 유료 주문은 결제 준비, PortOne 결제창, 서버 검증을 거쳐 완료하며 웹훅과 자동 복구는 미구현입니다.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10Z" fill="#89749d"/></marker>
+    <style>text{font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif;fill:#3d3358}.head{font-size:25px;font-weight:700}.body{font-size:21px}.small{font-size:18px;fill:#6c5b80}.box{stroke:#c8b8dd;stroke-width:2;rx:20}.flow{fill:none;stroke:#89749d;stroke-width:2.5;marker-end:url(#arrow)}</style>
+  </defs>
+  <rect width="1440" height="1240" fill="#f5f1fa"/>
+  <text x="60" y="57" class="small">JIPDAUM / PAYMENT FLOW · 2026.09.30 코드 확인</text>
+  <text x="60" y="112" font-size="40" font-weight="700">집다움 결제 흐름</text>
+  <text x="60" y="152" class="body">결제 전 재고 예약 → 서버 결제 검증 → 주문 확정</text>
+  <rect x="60" y="195" width="820" height="175" class="box" fill="#e8efff"/>
+  <text x="85" y="237" class="head">01  주문 생성 · 하나의 트랜잭션</text>
+  <text x="85" y="276" class="body">서버 상품 가격·쿠폰으로 금액 계산 → Order PENDING</text>
+  <text x="85" y="310" class="body">옵션 재고 조건부 UPDATE 예약 · 쿠폰 사용 처리 · 장바구니 정리</text>
+  <text x="85" y="344" class="small">재고·쿠폰 조건 불충족 시 전체 롤백</text>
+  <path d="M880 282H970" class="flow"/>
+  <rect x="970" y="215" width="410" height="130" class="box" fill="#e2f4e9"/>
+  <text x="995" y="257" class="head">최종 금액 0원</text>
+  <text x="995" y="293" class="body">Order ORDERED · 결제창 생략</text>
+  <text x="995" y="324" class="small">payment_required = false</text>
+  <path d="M470 370V425" class="flow"/>
+  <text x="490" y="405" class="small">최종 금액 &gt; 0</text>
+  <rect x="60" y="425" width="820" height="105" class="box" fill="#fff"/>
+  <text x="85" y="466" class="head">02  결제 준비 · Payment PENDING</text>
+  <text x="85" y="504" class="body">본인 주문·주문 상태 확인 → merchant_uid와 서버 금액 반환</text>
+  <path d="M470 530V575" class="flow"/>
+  <rect x="60" y="575" width="820" height="105" class="box" fill="#eee7ff"/>
+  <text x="85" y="616" class="head">03  브라우저에서 PortOne V2 결제창 호출</text>
+  <text x="85" y="654" class="body">paymentId = merchant_uid · 서버 금액으로 결제 요청</text>
+  <path d="M470 680V725" class="flow"/>
+  <text x="490" y="710" class="small">성공 응답 후 검증 API 호출</text>
+  <rect x="60" y="725" width="820" height="145" class="box" fill="#fff"/>
+  <text x="85" y="766" class="head">04  서버 검증 · Payment 행 비관적 잠금</text>
+  <text x="85" y="803" class="body">소유자·식별자 확인 → PortOne API 재조회 → PAID·금액 대조</text>
+  <text x="85" y="839" class="small">이미 SUCCESS이면 중복 처리 없이 반환 · 불일치 시 완료 거부</text>
+  <path d="M470 870V915" class="flow"/>
+  <rect x="60" y="915" width="820" height="105" class="box" fill="#e2f4e9"/>
+  <text x="85" y="956" class="head">05  Payment SUCCESS · Order ORDERED</text>
+  <text x="85" y="994" class="body">주문 확정 후 완료 화면 이동 · 예약 재고 추가 차감 없음</text>
+  <rect x="970" y="425" width="410" height="240" class="box" fill="#fff4e6"/>
+  <text x="995" y="467" class="head">현재 가능한 취소</text>
+  <text x="995" y="508" class="body">Payment 생성 전 PENDING 주문</text>
+  <text x="995" y="548" class="body">취소 → 예약 재고·쿠폰 복구</text>
+  <text x="995" y="588" class="small">Payment 생성 후 단순 주문 취소 차단</text>
+  <text x="995" y="625" class="small">장바구니 자동 복원은 없음</text>
+  <rect x="970" y="705" width="410" height="315" class="box" fill="#fff0f0"/>
+  <text x="995" y="747" class="head">실패·이탈 시 현재 한계</text>
+  <text x="995" y="790" class="body">결제창 취소 · 검증 호출 누락</text>
+  <text x="995" y="828" class="body">네트워크 오류 · 검증 실패</text>
+  <text x="995" y="872" class="small">오류 안내 후 PENDING 잔존 가능</text>
+  <text x="995" y="908" class="small">PG 승인과 DB 상태가 다를 수 있음</text>
+  <text x="995" y="944" class="small">자동 만료·예약 해제는 미구현</text>
+  <text x="995" y="981" class="small">웹훅 기반 자동 복구는 미구현</text>
+  <rect x="60" y="1060" width="1320" height="120" rx="20" fill="#fff" stroke="#bd9c77" stroke-dasharray="8 5"/>
+  <text x="85" y="1101" class="head">다음 운영 과제 · 현재 구현과 구분</text>
+  <text x="85" y="1140" class="body">서명 검증 웹훅 + API 재조회 · 실패/만료 정산 · 환불 · 재고·쿠폰 복구 정책</text>
+  <text x="60" y="1212" class="small">근거: Checkout.jsx · OrderService.createOrder / readyPayment / verifyPayment / cancelOrder</text>
+</svg>

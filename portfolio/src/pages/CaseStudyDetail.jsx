@@ -3,6 +3,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getCaseStudyBySlug } from "../lib/markdown.js";
 import systemArchitecture from "../assets/diagrams/system-architecture.svg";
+import paymentFlow from "../assets/diagrams/payment-flow.svg";
 import Redirect302Incident from "../components/Redirect302Incident.jsx";
 
 // "3. 인증 크래시..." 절만 마크다운 대신 Redirect302Incident 컴포넌트로 교체 —
@@ -109,6 +110,20 @@ export default function CaseStudyDetail() {
           2026.09.30 구조 기준 · 이미지를 클릭하면 원본을 확대할 수 있습니다.
         </p>
       </details>
+
+      {slug === "jipdaum-payment-consistency" && (
+        <section className="card mt-6 p-6" aria-labelledby="payment-flow-title">
+          <h2 id="payment-flow-title" className="text-lg font-semibold">집다움 결제 흐름</h2>
+          <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
+            주문 생성 시 옵션 재고를 예약하고, PortOne 서버 조회로 결제 상태와 금액을 검증합니다.
+            0원 주문·중복 검증·취소 경계와 아직 구현하지 않은 자동 복구 과제를 함께 표시했습니다.
+          </p>
+          <a href={paymentFlow} target="_blank" rel="noreferrer" aria-label="집다움 결제 흐름도 원본 열기">
+            <img src={paymentFlow} alt="주문 생성과 재고 예약, 0원 주문 분기, PortOne 결제, 서버 검증, 주문 확정 흐름. 결제 준비 전 취소는 재고·쿠폰을 복구하며 웹훅·환불·자동 만료는 미구현입니다." width="1440" height="1240" loading="lazy" className="mt-4 w-full rounded-2xl" />
+          </a>
+          <a href={paymentFlow} target="_blank" rel="noreferrer" className="mt-3 inline-block text-sm underline">흐름도 크게 보기 ↗</a>
+        </section>
+      )}
 
       <article className="animate-in card markdown mt-6 p-8" style={{ animationDelay: "160ms" }}>
         {split ? (
