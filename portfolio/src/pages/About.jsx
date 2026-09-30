@@ -1,3 +1,4 @@
+import ImageZoomLink from "../components/ImageZoomLink.jsx";
 import canvaIcon from "../assets/icons/canva.png";
 import teamRoles from "../../image/팀원 구성 역할 - 2차.png";
 
@@ -148,7 +149,7 @@ export default function About() {
           강민건 · 1인 풀스택 개발로 프론트엔드, 백엔드, 데이터베이스, 배포까지 담당했습니다.
         </p>
         <figure className="mt-5">
-          <a href={teamRoles} target="_blank" rel="noreferrer" aria-label="집다움 구성원 및 역할 이미지 원본 열기">
+          <ImageZoomLink href={teamRoles} target="_blank" rel="noreferrer" aria-label="집다움 구성원 및 역할 이미지 원본 열기">
             <img
               src={teamRoles}
               alt="강민건의 집다움 1인 개발 담당 영역: React·Vite 프론트엔드, Django 관리자, Spring Boot 인증·상품·주문·결제·챗봇 API, MySQL 데이터베이스, Docker·EC2·Cloudflare Pages 배포."
@@ -157,9 +158,9 @@ export default function About() {
               loading="lazy"
               className="w-full rounded-2xl"
             />
-          </a>
+          </ImageZoomLink>
           <figcaption className="mt-3 text-xs" style={{ color: "var(--color-muted)" }}>
-            <a href={teamRoles} target="_blank" rel="noreferrer" className="underline">원본 크게 보기 ↗</a>
+            <ImageZoomLink href={teamRoles} target="_blank" rel="noreferrer" className="underline">확대해서 보기</ImageZoomLink>
           </figcaption>
         </figure>
       </section>

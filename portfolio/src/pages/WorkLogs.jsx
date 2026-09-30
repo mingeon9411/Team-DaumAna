@@ -1,3 +1,4 @@
+import ImageZoomLink from "../components/ImageZoomLink.jsx";
 import { useEffect } from "react";
 import firstLog from "../../image/집다움 프로젝트 1차 작업일지.png";
 import secondLog from "../../image/집다움 2차 프로젝트 작업일지.png";
@@ -36,11 +37,11 @@ export default function WorkLogs() {
           </div>
           <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>{log.summary}</p>
           <figure className="mt-5">
-            <a href={log.image} target="_blank" rel="noreferrer" aria-label={`${log.title} 이미지 원본 열기`}>
+            <ImageZoomLink href={log.image} target="_blank" rel="noreferrer" aria-label={`${log.title} 이미지 원본 열기`}>
               <img src={log.image} alt={`집다움 ${log.title}, ${log.period}. ${log.summary}`} width="5120" height={log.height} loading="lazy" className="w-full rounded-2xl" />
-            </a>
+            </ImageZoomLink>
             <figcaption className="mt-3 flex flex-wrap gap-4 text-sm">
-              <a href={log.image} target="_blank" rel="noreferrer" className="underline">원본 크게 보기 ↗</a>
+              <ImageZoomLink href={log.image} target="_blank" rel="noreferrer" className="underline">확대해서 보기</ImageZoomLink>
             </figcaption>
           </figure>
         </section>

@@ -1,3 +1,4 @@
+import ImageZoomLink from "../components/ImageZoomLink.jsx";
 import { useParams, Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -96,7 +97,7 @@ export default function CaseStudyDetail() {
             ▼
           </span>
         </summary>
-        <a href={systemArchitecture} target="_blank" rel="noopener noreferrer" title="새 탭에서 원본 크기로 보기">
+        <ImageZoomLink href={systemArchitecture} target="_blank" rel="noopener noreferrer" title="이미지 확대 뷰어 열기">
           <img
             src={systemArchitecture}
             alt="집다움 시스템 아키텍처 원본 다이어그램: React, Django, Spring Boot, 공유 MySQL, Redis 및 외부 서비스 연결. 이미지의 인증 분담과 JWT 공유 표기는 아래 현재 구현 설명을 참고하세요."
@@ -106,7 +107,7 @@ export default function CaseStudyDetail() {
             style={{ borderColor: "var(--color-line)" }}
             loading="lazy"
           />
-        </a>
+        </ImageZoomLink>
         <p className="mt-3 text-xs" style={{ color: "var(--color-muted)" }}>
           이미지를 클릭하면 원본을 확대할 수 있습니다. 현재 구현에서는 회원 인증·전체 API·JWT를 Spring Boot가 담당하며,
           Django는 관리자 전용입니다. 이미지의 인증 분담·JWT 키 공유 표기는 현재 구현과 다릅니다.
@@ -121,11 +122,11 @@ export default function CaseStudyDetail() {
             도메인 이해를 위해 테이블명과 컬럼을 간략히 표시했으며, 전체 물리 스키마와 시스템 테이블은 생략했습니다.
           </p>
           <figure className="mt-4">
-            <a href={coreErd} target="_blank" rel="noreferrer" aria-label="집다움 핵심 ERD 원본 열기">
+            <ImageZoomLink href={coreErd} target="_blank" rel="noreferrer" aria-label="집다움 핵심 ERD 원본 열기">
               <img src={coreErd} alt="집다움 핵심 ERD: 상품·카테고리·옵션·리뷰·찜, 장바구니·주문·주문항목·결제·문의, 회원·인증, 쿠폰·회원쿠폰의 기본키와 외래키 관계." width="2642" height="1650" loading="lazy" className="w-full rounded-2xl" />
-            </a>
+            </ImageZoomLink>
             <figcaption className="mt-3 flex flex-wrap gap-4 text-sm">
-              <a href={coreErd} target="_blank" rel="noreferrer" className="underline">ERD 크게 보기 ↗</a>
+              <ImageZoomLink href={coreErd} target="_blank" rel="noreferrer" className="underline">ERD 확대해서 보기</ImageZoomLink>
             </figcaption>
           </figure>
           <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-relaxed">
@@ -143,10 +144,10 @@ export default function CaseStudyDetail() {
             주문 생성 시 옵션 재고를 예약하고, PortOne 서버 조회로 결제 상태와 금액을 검증합니다.
             0원 주문·중복 검증·취소 경계와 아직 구현하지 않은 자동 복구 과제를 함께 표시했습니다.
           </p>
-          <a href={paymentFlow} target="_blank" rel="noreferrer" aria-label="집다움 결제 흐름도 원본 열기">
+          <ImageZoomLink href={paymentFlow} target="_blank" rel="noreferrer" aria-label="집다움 결제 흐름도 원본 열기">
             <img src={paymentFlow} alt="주문 생성과 재고 예약, 0원 주문 분기, PortOne 결제, 서버 검증, 주문 확정 흐름. 결제 준비 전 취소는 재고·쿠폰을 복구하며 웹훅·환불·자동 만료는 미구현입니다." width="1440" height="1240" loading="lazy" className="mt-4 w-full rounded-2xl" />
-          </a>
-          <a href={paymentFlow} target="_blank" rel="noreferrer" className="mt-3 inline-block text-sm underline">흐름도 크게 보기 ↗</a>
+          </ImageZoomLink>
+          <ImageZoomLink href={paymentFlow} target="_blank" rel="noreferrer" className="mt-3 inline-block text-sm underline">흐름도 확대해서 보기</ImageZoomLink>
         </section>
       )}
 

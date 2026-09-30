@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+.image-zoom-dialog { position: fixed; inset: 0; margin: auto; width: 96vw; max-width: 1800px; height: 94dvh; max-height: 94dvh; padding: 0; border: 1px solid #cbbbde; border-radius: 20px; background: #f5f1fa; color: #3d3358; }
+.image-zoom-dialog[open] { display: flex; flex-direction: column; }
+.image-zoom-dialog::backdrop { background: rgb(20 15 35 / 75%); }
+.image-zoom-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 16px; }
+.image-zoom-toolbar button { padding: 8px 12px; border-radius: 10px; background: #e4dcf5; cursor: pointer; }
+.image-zoom-toolbar button:disabled { opacity: .5; cursor: default; }
+.image-zoom-toolbar input[type="number"] { width: 70px; padding: 6px; background: white; border-radius: 6px; }
+.image-zoom-toolbar input[type="range"] { width: 140px; accent-color: #7654a6; }
+.image-zoom-help { margin: 0; padding: 0 16px 12px; font-size: 12px; }
+.image-zoom-viewport { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; cursor: grab; background: #e9e5ee; }
+.image-zoom-viewport:active { cursor: grabbing; }
+.image-zoom-canvas { display: flex; align-items: center; justify-content: center; min-width: 100%; min-height: 100%; width: max-content; padding: 16px; }
+.image-zoom-canvas img { display: block; max-width: none; height: auto; flex-shrink: 0; user-select: none; }
+
 /* 집다움 프론트(frontend/src/index.css)와 동일한 자체 호스팅 폰트 — 사이트 전체
    워드마크·본문에 쓰는 브랜드 폰트라 여기서도 같은 파일을 그대로 재사용한다. */
 @font-face {
