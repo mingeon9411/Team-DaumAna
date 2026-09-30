@@ -1,4 +1,5 @@
 import canvaIcon from "../assets/icons/canva.png";
+import teamRoles from "../../image/팀원 구성 역할 - 2차.png";
 
 // shields.io 배지 슬러그 — 루트 README의 Tech Stack 섹션과 동일한 값·구성 사용
 const STACK_GROUPS = [
@@ -139,6 +140,28 @@ export default function About() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="card p-6 sm:p-10" aria-labelledby="team-roles-title">
+        <h2 id="team-roles-title" className="text-lg font-semibold">집다움 구성원 · 역할</h2>
+        <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
+          강민건 · 1인 풀스택 개발로 프론트엔드, 백엔드, 데이터베이스, 배포까지 담당했습니다.
+        </p>
+        <figure className="mt-5">
+          <a href={teamRoles} target="_blank" rel="noreferrer" aria-label="집다움 구성원 및 역할 이미지 원본 열기">
+            <img
+              src={teamRoles}
+              alt="강민건의 집다움 1인 개발 담당 영역: React·Vite 프론트엔드, Django 관리자, Spring Boot 인증·상품·주문·결제·챗봇 API, MySQL 데이터베이스, Docker·EC2·Cloudflare Pages 배포."
+              width="2880"
+              height="2868"
+              loading="lazy"
+              className="w-full rounded-2xl"
+            />
+          </a>
+          <figcaption className="mt-3 text-xs" style={{ color: "var(--color-muted)" }}>
+            <a href={teamRoles} target="_blank" rel="noreferrer" className="underline">원본 크게 보기 ↗</a>
+          </figcaption>
+        </figure>
       </section>
 
       <h2
