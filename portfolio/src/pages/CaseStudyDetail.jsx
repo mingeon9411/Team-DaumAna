@@ -4,6 +4,7 @@ import remarkGfm from "remark-gfm";
 import { getCaseStudyBySlug } from "../lib/markdown.js";
 import systemArchitecture from "../assets/diagrams/system-architecture.svg";
 import paymentFlow from "../assets/diagrams/payment-flow.svg";
+import coreErd from "../../image/집다움 ERD - 핵심 구성.png";
 import Redirect302Incident from "../components/Redirect302Incident.jsx";
 
 // "3. 인증 크래시..." 절만 마크다운 대신 Redirect302Incident 컴포넌트로 교체 —
@@ -110,6 +111,30 @@ export default function CaseStudyDetail() {
           2026.09.30 구조 기준 · 이미지를 클릭하면 원본을 확대할 수 있습니다.
         </p>
       </details>
+
+      {slug === "jipdaum-db-architecture" && (
+        <section className="card mt-6 p-6" aria-labelledby="core-erd-title">
+          <h2 id="core-erd-title" className="text-lg font-semibold">집다움 ERD · 핵심 구성</h2>
+          <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
+            상품, 주문·결제, 회원·인증, 쿠폰의 주요 관계를 정리한 요약 ERD입니다.
+            도메인 이해를 위해 테이블명과 컬럼을 간략히 표시했으며, 전체 물리 스키마와 시스템 테이블은 생략했습니다.
+          </p>
+          <figure className="mt-4">
+            <a href={coreErd} target="_blank" rel="noreferrer" aria-label="집다움 핵심 ERD 원본 열기">
+              <img src={coreErd} alt="집다움 핵심 ERD: 상품·카테고리·옵션·리뷰·찜, 장바구니·주문·주문항목·결제·문의, 회원·인증, 쿠폰·회원쿠폰의 기본키와 외래키 관계." width="2642" height="1650" loading="lazy" className="w-full rounded-2xl" />
+            </a>
+            <figcaption className="mt-3 flex flex-wrap gap-4 text-sm">
+              <a href={coreErd} target="_blank" rel="noreferrer" className="underline">ERD 크게 보기 ↗</a>
+              <a href={coreErd} download className="underline">ERD 다운로드</a>
+            </figcaption>
+          </figure>
+          <ul className="mt-5 list-disc space-y-2 pl-5 text-sm leading-relaxed">
+            <li><strong>주문 내역 보존:</strong> 주문항목의 ordered_price에 주문 당시 단가를 저장해 상품 가격 변경과 분리했습니다.</li>
+            <li><strong>주문·결제 분리:</strong> 주문 하나에 결제 레코드는 최대 하나입니다. 결제 준비 전이나 0원 주문은 결제 레코드가 없을 수 있습니다.</li>
+            <li><strong>공유 DB:</strong> Django 관리자와 Spring Boot API가 같은 MySQL 데이터를 사용합니다. 스키마 관리 범위와 예외는 아래 설계 기록에서 설명합니다.</li>
+          </ul>
+        </section>
+      )}
 
       {slug === "jipdaum-payment-consistency" && (
         <section className="card mt-6 p-6" aria-labelledby="payment-flow-title">
