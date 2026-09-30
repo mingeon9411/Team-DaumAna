@@ -2,7 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getCaseStudyBySlug } from "../lib/markdown.js";
-import systemArchitecture from "../assets/diagrams/system-architecture.png";
+import systemArchitecture from "../assets/diagrams/system-architecture.svg";
 import Redirect302Incident from "../components/Redirect302Incident.jsx";
 
 // "3. 인증 크래시..." 절만 마크다운 대신 Redirect302Incident 컴포넌트로 교체 —
@@ -86,7 +86,7 @@ export default function CaseStudyDetail() {
           style={{ background: "var(--color-accent-soft)" }}
         >
           <span aria-hidden="true">🗂</span>
-          <span>시스템 아키텍처 — React → Spring Boot → MySQL 구조 보기</span>
+          <span>시스템 아키텍처 — Spring Boot API · Django 관리자 · MySQL · Redis</span>
           <span
             aria-hidden="true"
             className="ml-auto text-xs text-[var(--color-muted)] transition-transform duration-200 group-open:rotate-180"
@@ -97,12 +97,17 @@ export default function CaseStudyDetail() {
         <a href={systemArchitecture} target="_blank" rel="noopener noreferrer" title="새 탭에서 원본 크기로 보기">
           <img
             src={systemArchitecture}
-            alt="집다움 시스템 아키텍처 다이어그램: React(Vite) 프론트엔드가 REST API로 Spring Boot 백엔드와 통신하고, Spring Boot가 MySQL 및 외부 연동(Gemini, OAuth, PortOne, hCaptcha, SMTP)을 처리하며, Django는 admin 화면과 DB 스키마 마이그레이션을 담당하는 구조도"
+            alt="집다움 시스템 아키텍처: React는 Spring Boot 전체 API와 통신하고, Spring Boot가 회원 인증·JWT, 공유 MySQL, Redis 상품 캐시와 외부 서비스를 처리합니다. Django는 별도의 관리자 화면과 DB 마이그레이션을 담당합니다."
+            width="1440"
+            height="1160"
             className="mt-4 w-full rounded-2xl border cursor-zoom-in"
             style={{ borderColor: "var(--color-line)" }}
             loading="lazy"
           />
         </a>
+        <p className="mt-3 text-xs" style={{ color: "var(--color-muted)" }}>
+          2026.09.30 구조 기준 · 이미지를 클릭하면 원본을 확대할 수 있습니다.
+        </p>
       </details>
 
       <article className="animate-in card markdown mt-6 p-8" style={{ animationDelay: "160ms" }}>

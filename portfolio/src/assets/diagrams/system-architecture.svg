@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1160" viewBox="0 0 1440 1160" role="img" aria-labelledby="title desc">
+  <title id="title">집다움 시스템 아키텍처</title>
+  <desc id="desc">React는 Spring Boot API를 호출합니다. Spring Boot는 전체 회원 인증과 JWT, 상품, 주문, 결제, 챗봇을 담당하며 MySQL, Redis, 외부 서비스와 연결됩니다. 관리자는 Django admin을 사용하며 Django와 Spring Boot는 MySQL을 공유합니다. 프론트는 Cloudflare Pages, 백엔드는 Docker와 EC2로 배포합니다.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="#85739e"/></marker>
+    <style>
+      text {font-family: 'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif; fill:#3d3358}
+      .title {font-size:29px;font-weight:700} .body {font-size:21px} .small {font-size:18px;fill:#6b5b80}
+      .box {stroke:#cbbbde;stroke-width:2;rx:22} .flow {fill:none;stroke:#85739e;stroke-width:2.5;marker-end:url(#arrow)}
+    </style>
+  </defs>
+  <rect width="1440" height="1160" fill="#f5f1fa"/>
+  <text x="60" y="60" class="small">JIPDAUM / SYSTEM ARCHITECTURE</text>
+  <text x="60" y="112" font-size="42" font-weight="700">집다움 시스템 아키텍처</text>
+  <text x="60" y="153" class="body">서비스 API · 관리자 화면 · 데이터 저장소의 역할 분리</text>
+
+  <rect x="60" y="195" width="400" height="60" class="box" fill="#fff"/>
+  <text x="260" y="233" text-anchor="middle" class="body">사용자 브라우저</text>
+  <rect x="980" y="195" width="400" height="60" class="box" fill="#fff"/>
+  <text x="1180" y="233" text-anchor="middle" class="body">관리자 브라우저</text>
+  <path d="M260 255V295" class="flow"/><path d="M1180 255V295" class="flow"/>
+
+  <rect x="60" y="295" width="400" height="140" class="box" fill="#e4efff"/>
+  <text x="85" y="338" class="title">React · Vite</text>
+  <text x="85" y="377" class="body">쇼핑 UI · 로그인 · 결제 · 챗봇</text>
+  <text x="85" y="410" class="small">Cloudflare Pages · 로컬 :5173</text>
+  <rect x="980" y="295" width="400" height="180" class="box" fill="#e4f5eb"/>
+  <text x="1005" y="338" class="title">Django · 관리자 전용</text>
+  <text x="1005" y="377" class="body">/admin/ · 로컬 :8000</text>
+  <text x="1005" y="412" class="body">상품·주문·회원·쿠폰 관리</text>
+  <text x="1005" y="447" class="small">관리자 인증 · DB 마이그레이션</text>
+
+  <path d="M260 435V515" class="flow"/>
+  <text x="280" y="480" class="small">REST API · JSON / JWT</text>
+  <rect x="60" y="515" width="400" height="320" class="box" fill="#ffeae5"/>
+  <text x="85" y="560" class="title">Spring Boot · 전체 API</text>
+  <text x="85" y="599" class="small">:8081 · JWT 발급·검증 단독 처리</text>
+  <text x="85" y="642" class="body">회원가입 · 로그인 · OAuth2</text>
+  <text x="85" y="680" class="body">상품 · 검색 · 리뷰 · 장바구니</text>
+  <text x="85" y="718" class="body">주문 · 결제 · 쿠폰 · 문의 · 찜</text>
+  <text x="85" y="756" class="body">AI 챗봇 · RAG · 의미 검색</text>
+  <text x="85" y="802" class="small">JPA · 스키마 자동 변경 비활성화</text>
+
+  <path d="M460 575H550" class="flow"/>
+  <rect x="550" y="515" width="370" height="145" class="box" fill="#ffe6ef"/>
+  <text x="575" y="560" class="title">Redis · :6379</text>
+  <text x="575" y="599" class="body">상품 목록 캐시 · TTL 30초</text>
+  <text x="575" y="635" class="small">캐시 장애 시 DB 직접 조회</text>
+
+  <path d="M460 770H550" class="flow"/>
+  <rect x="550" y="710" width="370" height="195" class="box" fill="#edeaff"/>
+  <text x="575" y="752" class="title">외부 서비스</text>
+  <text x="575" y="790" class="body">Google · Kakao · Naver OAuth</text>
+  <text x="575" y="824" class="body">PortOne · hCaptcha · SMTP</text>
+  <text x="575" y="858" class="body">Gemini · 챗봇 / 임베딩</text>
+  <text x="575" y="887" class="small">Spring Boot에서 연동 처리</text>
+
+  <path d="M1180 475V710" class="flow"/>
+  <text x="1200" y="579" class="small">관리 데이터</text>
+  <text x="1200" y="609" class="small">스키마 관리</text>
+  <path d="M260 835V940H1180V905" class="flow"/>
+  <text x="605" y="965" class="small">Spring Boot 데이터 읽기·쓰기</text>
+  <rect x="980" y="710" width="400" height="195" class="box" fill="#fff0dd"/>
+  <text x="1005" y="752" class="title">MySQL · :3306</text>
+  <text x="1005" y="792" class="body">공유 DB · jibdaum</text>
+  <text x="1005" y="831" class="body">Django · Spring Boot 공유</text>
+  <text x="1005" y="869" class="small">Django 마이그레이션 중심 관리</text>
+
+  <rect x="60" y="1000" width="1320" height="115" rx="20" fill="#fff"/>
+  <text x="85" y="1037" class="body">배포  |  프론트: Git 연동 → Cloudflare Pages  ·  백엔드: GitHub Actions → Docker Hub → EC2</text>
+  <text x="85" y="1074" class="small">회원 API 인증은 Spring Boot가 담당합니다. Django 관리자 인증과 JWT 키를 공유하지 않습니다.</text>
+  <text x="85" y="1100" class="small">구조 확인: 2026.09.30 · 포트는 개발·서비스 내부 포트 기준</text>
+</svg>
