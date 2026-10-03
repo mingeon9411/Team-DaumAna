@@ -3,9 +3,9 @@ import { useParams, Link } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getCaseStudyBySlug } from "../lib/markdown.js";
-import systemArchitecture from "../../image/시스템 아키텍처 다이어그램.png";
+import systemArchitecture from "../../image/시스템 아키텍처 다이어그램.jpg";
 import paymentFlow from "../assets/diagrams/payment-flow.svg";
-import coreErd from "../../image/집다움 ERD - 핵심 구성.png";
+import coreErd from "../../image/집다움 ERD - 핵심 구성.jpg";
 import Redirect302Incident from "../components/Redirect302Incident.jsx";
 
 // "3. 인증 크래시..." 절만 마크다운 대신 Redirect302Incident 컴포넌트로 교체 —
@@ -61,7 +61,7 @@ export default function CaseStudyDetail() {
         </h1>
 
         <p className="mt-2 text-sm" style={{ color: "var(--color-muted)" }}>
-          👤 1인 개발 — 기획 · 개발 · 배포 전담
+          2·3차 개인 고도화 사례 · 1차는 3인 팀의 백엔드 담당으로 참여
         </p>
 
         {item.meta.highlights?.length ? (

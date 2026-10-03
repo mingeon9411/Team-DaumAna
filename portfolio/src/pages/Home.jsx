@@ -184,7 +184,7 @@ export default function Home() {
             강민건
           </p>
           <p className="mt-1 text-xs tracking-wide" style={{ color: "var(--color-muted)" }}>
-            1인 개발
+            1차 3인 팀 · 백엔드 담당 → 2·3차 개인 고도화
           </p>
         </div>
 

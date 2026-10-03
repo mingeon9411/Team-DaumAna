@@ -19,8 +19,39 @@ export default function CaseStudiesList() {
         Case Studies
       </h1>
       <p className="animate-in mt-3" style={{ color: "var(--color-muted)", animationDelay: `${STEP}ms` }}>
-        운영 장애·원인 분석·재발 방지 중심으로 정리했습니다. (도메인/경로/커밋 해시는 일부 마스킹)
+        1차 3인 팀 프로젝트에서 백엔드를 맡은 뒤, 2·3차 개인 고도화에서 겪은 설계 결정·장애 대응·검증 과정을 정리했습니다.
+        (도메인/경로/커밋 해시는 일부 마스킹)
       </p>
+
+      <section className="card mt-6 p-6" aria-labelledby="evidence-scope-title">
+        <h2 id="evidence-scope-title" className="text-lg font-semibold">프로젝트 범위와 검증 기준</h2>
+        <dl className="mt-4 space-y-4 text-sm leading-relaxed">
+          <div>
+            <dt className="font-semibold">공개 배포한 프로젝트의 개발·운영 경험</dt>
+            <dd className="mt-1" style={{ color: "var(--color-muted)" }}>
+              인증·상품·주문·결제 API 구현과 배포 후 장애 대응을 기록했습니다.
+              실제 이용자 수·주문량·동시 접속 규모는 이 포트폴리오의 검증 지표에 포함하지 않았습니다.
+            </dd>
+          </div>
+          <div>
+            <dt className="font-semibold">관측값과 코드 변경을 구분한 성능 기록</dt>
+            <dd className="mt-1" style={{ color: "var(--color-muted)" }}>
+              <Link to="/case-studies/jipdaum-redis-product-cache" className="underline">Redis의 534ms·28ms</Link>는 캐시 미스·히트 응답 관측값이며,
+              반복 측정과 부하 조건을 갖춘 벤치마크는 후속 과제입니다.{" "}
+              <Link to="/case-studies/jipdaum-chatbot-latency" className="underline">챗봇 호출 상한 변경</Link>은 구현했고, 변경 후 응답시간은 재측정 과제로 남겼습니다.
+            </dd>
+          </div>
+          <div>
+            <dt className="font-semibold">구현·검증 기록과 후속 과제</dt>
+            <dd className="mt-1" style={{ color: "var(--color-muted)" }}>
+              <Link to="/case-studies/jipdaum-payment-consistency" className="underline">주문·결제 정합성 보완</Link>과 테스트 결과를 기록하고,
+              웹훅·환불 등 남은 범위를 함께 명시했습니다.{" "}
+              <Link to="/case-studies/jipdaum-incident-review" className="underline">장애 대응 사례</Link>도 코드 수정과 자동 재발 방지 검증을 구분합니다.
+              각 상태는 사례에 적힌 기록 시점을 기준으로 합니다.
+            </dd>
+          </div>
+        </dl>
+      </section>
 
       <div className="mt-8 space-y-4">
         {items.map((x, i) => (

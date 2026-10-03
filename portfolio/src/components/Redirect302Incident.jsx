@@ -14,7 +14,7 @@ const STATS = [
   },
   { value: "19 → 0", label: "302 경로에 노출됐던 @Valid 엔드포인트 (11개 파일)" },
   { value: "3주", label: "1차 수정 → 재발까지 걸린 기간" },
-  { value: "0 → 0", label: "이 회귀를 잡아주는 테스트 수 (여전히 없음)" },
+  { value: "0 → 0", label: "문서 작성 당시 이 경로의 회귀 테스트 수" },
 ];
 
 const INCIDENTS = [
@@ -103,7 +103,7 @@ const POSTMORTEM_DONE = [
 const POSTMORTEM_OPEN = [
   [
     "회귀 테스트 부재",
-    "GlobalExceptionHandler를 겨냥한 테스트가 0개(전체 security 테스트는 JwtTokenProviderTest 하나뿐). 지금의 보장은 전적으로 코드 리뷰에 의존한다 — 핸들러 순서가 바뀌거나 새 ExceptionHandler가 잘못된 우선순위로 추가돼도 테스트는 그린으로 남는다.",
+    "2026-08-31 확인 당시 GlobalExceptionHandler를 겨냥한 테스트는 0개였다(당시 security 테스트는 JwtTokenProviderTest 하나). 코드에서 처리 경로를 확인했지만, 핸들러 순서나 우선순위 변경에 따른 회귀를 자동으로 검증하지는 못했다.",
   ],
   [
     "제안",
@@ -278,7 +278,7 @@ export default function Redirect302Incident() {
       </div>
 
       {/* 03 Metrics */}
-      <SectionLabel n="03" title="Metrics" sub="코드 기준 실측" />
+      <SectionLabel n="03" title="Metrics" sub="코드 점검 기준" />
       <div className="mt-4 overflow-x-auto rounded-2xl border" style={{ borderColor: "var(--color-line)" }}>
         <table className="w-full border-collapse text-sm">
           <thead>
@@ -314,8 +314,8 @@ export default function Redirect302Incident() {
         </table>
       </div>
       <p className="mt-2 text-xs leading-relaxed" style={{ color: "var(--color-muted)" }}>
-        "예외 타입 수"는 @ExceptionHandler 대상 클래스 수(코드 실측). 테스트 수는 이 문서 작성
-        시점(2026-08-31) src/test 전수 확인 기준.
+        예외 타입 수와 처리 경로는 코드 점검 결과이며, 실제 HTTP 요청을 전수 실행한 통계는 아닙니다.
+        테스트 수는 이 문서 작성 시점(2026-08-31) src/test 확인 기준입니다.
       </p>
 
       {/* 04 Post-mortem */}
@@ -323,7 +323,7 @@ export default function Redirect302Incident() {
       <div className="mt-4 space-y-2">
         <p className="flex items-center gap-2 text-sm font-semibold">
           <span className="inline-block h-2 w-2 rounded-full" style={{ background: GOOD }} />
-          실제로 반영됨
+          문서 작성 당시 반영한 조치
         </p>
         {POSTMORTEM_DONE.map(([label, text]) => (
           <div key={label} className="rounded-xl border-l-4 p-3 text-sm leading-relaxed" style={{ borderColor: GOOD, background: "var(--color-bg)" }}>
@@ -334,7 +334,7 @@ export default function Redirect302Incident() {
       <div className="mt-4 space-y-2">
         <p className="flex items-center gap-2 text-sm font-semibold">
           <span className="inline-block h-2 w-2 rounded-full" style={{ background: WARN }} />
-          아직 안 됨
+          문서 작성 당시 남은 검증 과제
         </p>
         {POSTMORTEM_OPEN.map(([label, text]) => (
           <div key={label} className="rounded-xl border-l-4 p-3 text-sm leading-relaxed" style={{ borderColor: WARN, background: "#fff7ed" }}>

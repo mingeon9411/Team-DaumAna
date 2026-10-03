@@ -1,13 +1,13 @@
 import ImageZoomLink from "../components/ImageZoomLink.jsx";
 import { useEffect } from "react";
-import firstLog from "../../image/집다움 프로젝트 1차 작업일지.png";
-import secondLog from "../../image/집다움 2차 프로젝트 작업일지.png";
-import thirdLog from "../../image/집다움 프로젝트 3차 작업일지.png";
+import firstLog from "../../image/집다움 프로젝트 1차 작업일지.jpg";
+import secondLog from "../../image/집다움 2차 프로젝트 작업일지.jpg";
+import thirdLog from "../../image/집다움 프로젝트 3차 작업일지.jpg";
 
 const LOGS = [
-  { id: "phase-1", title: "1차 작업일지", period: "2026.05.28–06.11", summary: "Oracle DB와 Django 기반 구축, 모델·API 설계, 회원가입과 소셜 로그인 연동을 기록했습니다.", image: firstLog, height: 3886 },
-  { id: "phase-2", title: "2차 작업일지", period: "2026.06.26–08.21", summary: "React 화면 개발과 Spring Boot API 이관, MySQL 전환, 주문·결제 연동, AI 챗봇 도입 과정을 기록했습니다.", image: secondLog, height: 6252 },
-  { id: "phase-3", title: "3차 작업일지", period: "2026.08.22–09.09", summary: "Cloudflare Pages 이관, 운영 장애 대응, Redis 캐시, 룩북·고객 기능 개선과 서비스 안정화 과정을 기록했습니다.", image: thirdLog, height: 4752 },
+  { id: "phase-1", title: "1차 작업일지", period: "2026.05.28–06.11", role: "3인 팀 프로젝트 · 백엔드 담당", summary: "3인 팀에서 백엔드 개발을 담당했습니다. 아래 작업일지는 Oracle DB와 Django 기반 구축, 모델·API 설계, 회원가입과 소셜 로그인 연동 등 1차 프로젝트의 개발 과정을 담고 있습니다.", image: firstLog, height: 3886 },
+  { id: "phase-2", title: "2차 작업일지", period: "2026.06.26–08.21", role: "개인 고도화 · 풀스택 개발", summary: "React 화면 개발과 Spring Boot API 이관, MySQL 전환, 주문·결제 연동, AI 챗봇 도입 과정을 기록했습니다.", image: secondLog, height: 6252 },
+  { id: "phase-3", title: "3차 작업일지", period: "2026.08.22–09.09", role: "개인 고도화 · 기능 개선 및 배포", summary: "Cloudflare Pages 이관, 운영 장애 대응, Redis 캐시, 룩북·고객 기능 개선과 서비스 안정화 과정을 기록했습니다.", image: thirdLog, height: 4752 },
 ];
 
 export default function WorkLogs() {
@@ -22,6 +22,7 @@ export default function WorkLogs() {
         <h1 className="mt-2 text-3xl font-medium">집다움 작업일지</h1>
         <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
           초기 구축부터 서비스 고도화까지, 1·2·3차 개발 과정을 날짜별로 정리했습니다.
+          1차는 3인 팀의 백엔드 담당으로 참여했고, 2·3차는 개인 개발로 진행했습니다.
           각 이미지는 작성 당시의 기술 구성과 작업 내역을 담고 있습니다.
           현재는 MySQL을 사용하며, API는 Spring Boot가, 관리자 화면은 Django가 담당합니다.
         </p>
@@ -35,6 +36,7 @@ export default function WorkLogs() {
             <h2 id={`${log.id}-title`} className="text-xl font-semibold">{log.title}</h2>
             <p className="text-sm" style={{ color: "var(--color-muted)" }}>{log.period}</p>
           </div>
+          <p className="mt-3 text-sm font-semibold" style={{ color: "var(--color-accent)" }}>{log.role}</p>
           <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>{log.summary}</p>
           <figure className="mt-5">
             <ImageZoomLink href={log.image} target="_blank" rel="noreferrer" aria-label={`${log.title} 이미지 원본 열기`}>

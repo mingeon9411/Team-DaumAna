@@ -1,6 +1,6 @@
 import ImageZoomLink from "../components/ImageZoomLink.jsx";
 import canvaIcon from "../assets/icons/canva.png";
-import teamRoles from "../../image/팀원 구성 역할 - 2차.png";
+import teamRoles from "../../image/팀원 구성 역할 - 2차.jpg";
 
 // shields.io 배지 슬러그 — 루트 README의 Tech Stack 섹션과 동일한 값·구성 사용
 const STACK_GROUPS = [
@@ -95,7 +95,7 @@ const STRENGTHS = [
   {
     emoji: "🗄️",
     title: "DB & 아키텍처",
-    desc: "서로 다른 프레임워크(Django/Spring)가 하나의 DB를 안전하게 공유하도록 소유권 경계를 설계하고, 라이선스 비용 없이 동일 인스턴스를 두 백엔드가 공유하는 구조로 프로덕션까지 안정적으로 운영. Oracle → MySQL 전환 과정의 기술적 차이(네이밍, 문법, 드라이버)도 원인부터 파악해 해결.",
+    desc: "Django 관리자와 Spring Boot API가 하나의 MySQL DB를 공유하도록 스키마 관리 범위를 정하고 배포했습니다. Oracle → MySQL 전환 과정에서 네이밍·SQL 문법·드라이버 차이를 해결하고, 두 프레임워크의 변경 순서를 맞춰야 하는 제약도 기록했습니다.",
   },
 ];
 
@@ -119,8 +119,7 @@ export default function About() {
           지금 "장애가 나면 증상보다 근본 원인을 먼저 찾는" 개발 습관의 출발점입니다.
           현장에서 전산 데이터 흐름만 보고도 앞으로 생길 문제를 예측하던 습관은 개발에서도
           그대로 이어집니다 — 커밋 로그와 코드 diff, 작업일지를 근거로 원인을 좁히고,
-          문제 하나를 고치는 데 그치지 않고 같은 유형이 재발하지 않도록 코드·배포
-          파이프라인·팀 컨벤션까지 손을 댑니다.
+          수정한 코드와 검증 결과를 기록하고, 다음 변경에서 확인할 개발·배포 점검 항목으로 정리합니다.
         </p>
       </section>
 
@@ -144,15 +143,34 @@ export default function About() {
       </section>
 
       <section className="card p-6 sm:p-10" aria-labelledby="team-roles-title">
-        <h2 id="team-roles-title" className="text-lg font-semibold">집다움 구성원 · 역할</h2>
+        <h2 id="team-roles-title" className="text-lg font-semibold">집다움 · 단계별 참여와 역할</h2>
         <p className="mt-3 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
-          강민건 · 1인 풀스택 개발로 프론트엔드, 백엔드, 데이터베이스, 배포까지 담당했습니다.
+          1차 프로젝트에서는 3인 팀의 백엔드 담당으로 참여했습니다.
+          이후 2·3차에서는 개인 개발로 프론트엔드, 백엔드, 데이터베이스, 배포까지 범위를 넓혀 집다움을 고도화했습니다.
         </p>
+        <dl className="mt-5 grid gap-4 sm:grid-cols-2">
+          <div className="rounded-2xl p-5" style={{ background: "var(--color-bg)" }}>
+            <dt className="font-semibold">1차 · 3인 팀 프로젝트</dt>
+            <dd className="mt-2 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
+              2026.05.28–06.11 · 담당 역할: 백엔드 개발<br />
+              Django·Oracle 기반 초기 프로젝트에 팀원으로 참여했습니다.
+            </dd>
+            <dd className="mt-3 text-sm"><a href="/work-logs#phase-1" className="underline">1차 작업일지 보기 →</a></dd>
+          </div>
+          <div className="rounded-2xl p-5" style={{ background: "var(--color-bg)" }}>
+            <dt className="font-semibold">2·3차 · 개인 고도화</dt>
+            <dd className="mt-2 text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
+              React 화면 개발, Spring Boot API 이관, MySQL 전환, 주문·결제 연동과 배포를 담당했습니다.
+              공개한 프로젝트에서 겪은 장애와 개선 과정을 케이스 스터디로 정리했습니다.
+            </dd>
+            <dd className="mt-3 text-sm"><a href="/case-studies" className="underline">개인 고도화 사례 보기 →</a></dd>
+          </div>
+        </dl>
         <figure className="mt-5">
-          <ImageZoomLink href={teamRoles} target="_blank" rel="noreferrer" aria-label="집다움 구성원 및 역할 이미지 원본 열기">
+          <ImageZoomLink href={teamRoles} target="_blank" rel="noreferrer" aria-label="집다움 개인 고도화 담당 영역 이미지 원본 열기">
             <img
               src={teamRoles}
-              alt="강민건의 집다움 1인 개발 담당 영역: React·Vite 프론트엔드, Django 관리자, Spring Boot 인증·상품·주문·결제·챗봇 API, MySQL 데이터베이스, Docker·EC2·Cloudflare Pages 배포."
+              alt="1차 팀 프로젝트 이후 개인 고도화 담당 영역: React·Vite 프론트엔드, Django 관리자, Spring Boot API, MySQL 데이터베이스, Docker·EC2·Cloudflare Pages 배포."
               width="2880"
               height="2868"
               loading="lazy"
@@ -160,6 +178,7 @@ export default function About() {
             />
           </ImageZoomLink>
           <figcaption className="mt-3 text-xs" style={{ color: "var(--color-muted)" }}>
+            위 이미지는 1차 팀 구성과 구분되는 이후 개인 개발 범위를 정리한 자료입니다.{" "}
             <ImageZoomLink href={teamRoles} target="_blank" rel="noreferrer" className="underline">확대해서 보기</ImageZoomLink>
           </figcaption>
         </figure>
